@@ -180,7 +180,7 @@
                                     <div class="text-sm text-gray-900">{{ $article->author ?? 'Unknown' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ $article->published_at->format('d M Y') }}
+                                    {{ $article->published_at ? $article->published_at->format('d M Y') : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($article->isPublished())
@@ -198,9 +198,9 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    @if($article->isScheduled())
+                                    @if($article->isScheduled() && $article->scheduled_at)
                                         {{ $article->scheduled_at->format('d M Y H:i') }}
-                                    @elseif($article->isPublished())
+                                    @elseif($article->isPublished() && $article->published_at)
                                         {{ $article->published_at->format('d M Y H:i') }}
                                     @else
                                         -
