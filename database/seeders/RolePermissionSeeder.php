@@ -81,8 +81,10 @@ class RolePermissionSeeder extends Seeder
             // System Management (Super-Admin only)
             'manage roles',
             'manage permissions',
-            
+            'manage roles and permissions',
+
             // Student specific permissions
+            'enroll in courses',
             'enroll courses',
             'view enrolled courses',
             'access course content',
@@ -214,6 +216,7 @@ class RolePermissionSeeder extends Seeder
             // System Management permissions
             'manage roles',
             'manage permissions',
+            'manage roles and permissions',
             // All other permissions are granted automatically via Gate::before in AuthServiceProvider
         ]);
 

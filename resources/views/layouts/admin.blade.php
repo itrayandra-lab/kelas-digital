@@ -211,7 +211,7 @@
                         <i class="fas fa-chevron-down transition-transform duration-200" 
                            :class="{ 'rotate-180': open }"></i>
                     </button>
-                    <div x-show="open" 
+                    <div x-show="open"
                          x-collapse
                          class="space-y-1 mt-2">
                         <a href="{{ route('admin.users.index') }}"
@@ -219,6 +219,13 @@
                             <i class="fas fa-users mr-3 text-base"></i>
                             Manage Users
                         </a>
+                        @can('manage roles and permissions')
+                        <a href="{{ route('admin.roles.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.roles.*') || request()->routeIs('admin.activity-log.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-user-shield mr-3 text-base"></i>
+                            Roles & Permissions
+                        </a>
+                        @endcan
                         <a href="{{ route('admin.payments.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.payments.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-credit-card mr-3 text-base"></i>

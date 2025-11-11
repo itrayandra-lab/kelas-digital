@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryCo
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController;
 use App\Http\Controllers\Admin\SiteSettingsController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -128,6 +130,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::middleware('can:manage site settings')->group(function () {
             Route::get('site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.index');
             Route::put('site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
+        });
+
+        // Role and permission management
+        Route::middleware('can:manage roles and permissions')->group(function () {
+            Route::resource('roles', RoleController::class)->except(['show']);
+            Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
         });
         });
     });
