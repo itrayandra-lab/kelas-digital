@@ -174,6 +174,11 @@
                             <i class="fas fa-file-alt mr-3 text-base"></i>
                             Manage Articles
                         </a>
+                        <a href="{{ route('admin.hero-slider.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.hero-slider.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-images mr-3 text-base"></i>
+                            Hero Slider
+                        </a>
                         <a href="{{ route('admin.article-categories.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.article-categories.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-folder-open mr-3 text-base"></i>
@@ -184,6 +189,13 @@
                             <i class="fas fa-tags mr-3 text-base"></i>
                             Tags
                         </a>
+                        @can('manage site settings')
+                        <a href="{{ route('admin.site-settings.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.site-settings.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-cog mr-3 text-base"></i>
+                            Site Settings
+                        </a>
+                        @endcan
                     </div>
                 </div>
                 @endunless

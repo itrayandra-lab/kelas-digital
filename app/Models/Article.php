@@ -29,6 +29,10 @@ class Article extends Model
         'scheduled_at',
         'status',
         'published_at',
+        'views_count',
+        'is_recommended',
+        'recommended_at',
+        'hero_slider_order',
     ];
 
     protected $richTextAttributes = [
@@ -38,6 +42,10 @@ class Article extends Model
     protected $casts = [
         'scheduled_at' => 'datetime',
         'published_at' => 'datetime',
+        'recommended_at' => 'datetime',
+        'is_recommended' => 'boolean',
+        'views_count' => 'integer',
+        'hero_slider_order' => 'integer',
     ];
 
     /**
@@ -310,5 +318,128 @@ class Article extends Model
     public function getEffectivePublishedAtAttribute(): \DateTime
     {
         return $this->published_at ?? $this->created_at;
+    }
+
+    // ==================== CURATION FUNCTIONALITY ====================
+
+    /**
+     * Scope to get recommended articles
+     */
+    public function scopeRecommended($query)
+    {
+        return $query->where('is_recommended', true)
+                    ->orderBy('recommended_at', 'desc');
+    }
+
+    /**
+     * Scope to get popular articles (all-time views)
+     */
+    public function scopePopular($query)
+    {
+        return $query->orderBy('views_count', 'desc');
+    }
+
+    /**
+     * Scope to get trending articles (last 30 days by views)
+     */
+    public function scopeTrending($query)
+    {
+        return $query->where('published_at', '>=', now()->subDays(30))
+                    ->orderBy('views_count', 'desc');
+    }
+
+    /**
+     * Increment views count without updating updated_at timestamp
+     */
+    public function incrementViews(): int
+    {
+        return $this->newQueryWithoutScopes()
+            ->where($this->getKeyName(), $this->getKey())
+            ->increment('views_count');
+    }
+
+    // ==================== RELATED ARTICLES FUNCTIONALITY ====================
+
+    /**
+     * Get related articles using hybrid algorithm (tags + categories)
+     *
+     * Algorithm:
+     * 1. Find articles sharing the most tags (tag-based matching)
+     * 2. Fill remaining slots with articles from same categories (fallback)
+     * 3. Exclude current article
+     * 4. Order by: tag overlap count DESC, then views_count DESC
+     */
+    public function getRelatedArticles($limit = 4)
+    {
+        // Get current article's tag and category IDs
+        $tagIds = $this->tags()->pluck('tags.id')->toArray();
+        $categoryIds = $this->categories()->pluck('article_categories.id')->toArray();
+
+        // Find articles with shared tags (tag-based matching)
+        if (!empty($tagIds)) {
+            $relatedByTags = Article::published()
+                ->where('articles.id', '!=', $this->id)
+                ->with('categories', 'tags')
+                ->selectRaw('articles.*, COUNT(DISTINCT article_tag.tag_id) as shared_tags_count')
+                ->join('article_tag', 'articles.id', '=', 'article_tag.article_id')
+                ->whereIn('article_tag.tag_id', $tagIds)
+                ->groupBy('articles.id')
+                ->orderByRaw('shared_tags_count DESC, articles.views_count DESC')
+                ->limit($limit)
+                ->get();
+        } else {
+            $relatedByTags = collect();
+        }
+
+        // If we have enough results from tags, return them
+        if ($relatedByTags->count() >= $limit) {
+            return $relatedByTags->take($limit);
+        }
+
+        // Get IDs from tag-based results to exclude them
+        $excludeIds = $relatedByTags->pluck('id')->toArray();
+        $excludeIds[] = $this->id;
+
+        // Fill remaining slots with articles from same categories
+        $remaining = $limit - $relatedByTags->count();
+        if (!empty($categoryIds)) {
+            $relatedByCategories = Article::published()
+                ->whereNotIn('articles.id', $excludeIds)
+                ->with('categories', 'tags')
+                ->whereHas('categories', function ($query) use ($categoryIds) {
+                    $query->whereIn('article_categories.id', $categoryIds);
+                })
+                ->orderByDesc('articles.views_count')
+                ->limit($remaining)
+                ->get();
+        } else {
+            $relatedByCategories = collect();
+        }
+
+        return $relatedByTags->merge($relatedByCategories);
+    }
+
+    // ==================== HERO SLIDER FUNCTIONALITY ====================
+
+    /**
+     * Scope to get articles in hero slider (manually curated)
+     */
+    public function scopeInHeroSlider($query)
+    {
+        return $query->whereNotNull('hero_slider_order')
+                     ->orderBy('hero_slider_order', 'asc');
+    }
+
+    /**
+     * Model boot method to handle auto-removal from hero slider
+     */
+    protected static function booted()
+    {
+        static::updating(function ($article) {
+            // If status changing to draft/scheduled, remove from hero slider
+            if ($article->isDirty('status') && in_array($article->status, ['draft', 'scheduled'])) {
+                $article->hero_slider_order = null;
+            }
+        });
     }
 }

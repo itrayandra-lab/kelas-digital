@@ -33,14 +33,30 @@
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-2">
                     <div>
                         <i class="fas fa-map-marker-alt mr-2"></i>
-                        <span>Bandung - Jawa Barat, Indonesia</span>
+                        <span>{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</span>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="https://www.facebook.com/beautyversitydotid" class="hover:text-primary-400 transition" target="_blank"><i
-                                class="fab fa-facebook-f"></i></a>
-                        <a href="https://x.com/beautyversityid" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/beautyversity_id" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.youtube.com/@beautyversitydotid" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-youtube"></i></a>
+                        @if(!empty($settings['social_facebook']))
+                            <a href="{{ $settings['social_facebook'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        @endif
+                        @if(!empty($settings['social_twitter']))
+                            <a href="{{ $settings['social_twitter'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-twitter"></i></a>
+                        @endif
+                        @if(!empty($settings['social_instagram']))
+                            <a href="{{ $settings['social_instagram'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-instagram"></i></a>
+                        @endif
+                        @if(!empty($settings['social_youtube']))
+                            <a href="{{ $settings['social_youtube'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-youtube"></i></a>
+                        @endif
+                        @if(!empty($settings['social_tiktok']))
+                            <a href="{{ $settings['social_tiktok'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        @endif
+                        @if(!empty($settings['social_whatsapp']))
+                            <a href="{{ $settings['social_whatsapp'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        @endif
+                        @if(!empty($settings['social_linkedin']))
+                            <a href="{{ $settings['social_linkedin'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -347,21 +363,21 @@
                                 <i class="fas fa-envelope text-sm mt-1"></i>
                                 <div>
                                     <p class="text-sm opacity-90">Email</p>
-                                    <p class="text-xs opacity-75">info@kelasdigital.com</p>
+                                    <p class="text-xs opacity-75">{{ $settings['contact_email'] ?? 'info@kelasdigital.com' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
                                 <i class="fas fa-phone text-sm mt-1"></i>
                                 <div>
                                     <p class="text-sm opacity-90">Telepon</p>
-                                    <p class="text-xs opacity-75">+62 123 456 7890</p>
+                                    <p class="text-xs opacity-75">{{ $settings['contact_phone'] ?? '+62 123 456 7890' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
                                 <i class="fas fa-map-marker-alt text-sm mt-1"></i>
                                 <div>
                                     <p class="text-sm opacity-90">Alamat</p>
-                                    <p class="text-xs opacity-75">Bandung, Jawa Barat, Indonesia</p>
+                                    <p class="text-xs opacity-75">{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -370,22 +386,48 @@
                         <div class="mt-6">
                             <h5 class="text-sm font-semibold mb-3 uppercase tracking-wider">Ikuti Kami</h5>
                             <div class="flex space-x-4">
-                                <a href="https://www.facebook.com/beautyversitydotid" target="_blank" 
-                                   class="text-white hover:text-gray-200 transition-colors duration-200">
-                                    <i class="fab fa-facebook-f text-lg"></i>
-                                </a>
-                                <a href="https://x.com/beautyversityid" target="_blank" 
-                                   class="text-white hover:text-gray-200 transition-colors duration-200">
-                                    <i class="fab fa-twitter text-lg"></i>
-                                </a>
-                                <a href="https://www.instagram.com/beautyversity_id" target="_blank" 
-                                   class="text-white hover:text-gray-200 transition-colors duration-200">
-                                    <i class="fab fa-instagram text-lg"></i>
-                                </a>
-                                <a href="https://www.youtube.com/@beautyversitydotid" target="_blank" 
-                                   class="text-white hover:text-gray-200 transition-colors duration-200">
-                                    <i class="fab fa-youtube text-lg"></i>
-                                </a>
+                                @if(!empty($settings['social_facebook']))
+                                    <a href="{{ $settings['social_facebook'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-facebook-f text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_twitter']))
+                                    <a href="{{ $settings['social_twitter'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-twitter text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_instagram']))
+                                    <a href="{{ $settings['social_instagram'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-instagram text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_youtube']))
+                                    <a href="{{ $settings['social_youtube'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-youtube text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_tiktok']))
+                                    <a href="{{ $settings['social_tiktok'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-tiktok text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_whatsapp']))
+                                    <a href="{{ $settings['social_whatsapp'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-whatsapp text-lg"></i>
+                                    </a>
+                                @endif
+                                @if(!empty($settings['social_linkedin']))
+                                    <a href="{{ $settings['social_linkedin'] }}" target="_blank"
+                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                        <i class="fab fa-linkedin-in text-lg"></i>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

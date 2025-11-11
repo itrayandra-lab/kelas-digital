@@ -24,10 +24,13 @@ class Course extends Model
         'trailer_video_id',
         'course_category_id',
         'level',
+        'is_featured',
+        'featured_at',
     ];
 
     protected $casts = [
         // Removed full_video_ids cast as it's no longer needed
+        'featured_at' => 'datetime',
     ];
 
     /**
@@ -47,6 +50,15 @@ class Course extends Model
                 'maxLengthKeepWords' => true,
             ]
         ];
+    }
+
+    /**
+     * Scope a query to only include featured courses
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true)
+                     ->orderBy('featured_at', 'desc');
     }
 
     /**

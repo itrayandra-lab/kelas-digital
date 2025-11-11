@@ -8,6 +8,8 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ArticleController; // Add import for ArticleController
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -17,6 +19,8 @@ use App\Http\Controllers\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Admin\ArticleCategoryController as AdminArticleCategoryController;
 use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
+use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController;
+use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -27,13 +31,19 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
 Route::get('/course/{slug}', [CourseController::class, 'show'])->name('course.show');
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->name('course.enroll');
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index'); // Add route for articles index page
 Route::get('/articles/load-more', [ArticleController::class, 'loadMore'])->name('article.load-more'); // Add route for loading more articles
 Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category'); // Add route for articles by category
+Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+// Tag browsing routes
+Route::get('/articles/tags', [TagController::class, 'index'])->name('tag.index');
+Route::get('/articles/tag/{tag:slug}', [TagController::class, 'show'])->name('tag.show');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
@@ -97,7 +107,14 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::post('articles/{id}/publish', [AdminArticleController::class, 'publish'])->name('articles.publish');
             Route::post('articles/{id}/unschedule', [AdminArticleController::class, 'unschedule'])->name('articles.unschedule');
         });
-        
+
+        // Hero slider management
+        Route::middleware('can:manage articles')->group(function () {
+            Route::get('hero-slider', [AdminHeroSliderController::class, 'index'])->name('hero-slider.index');
+            Route::post('hero-slider', [AdminHeroSliderController::class, 'update'])->name('hero-slider.update');
+            Route::delete('hero-slider/{article}', [AdminHeroSliderController::class, 'remove'])->name('hero-slider.remove');
+        });
+
         // Article category management
         Route::middleware('can:view article categories')->group(function () {
             Route::resource('article-categories', AdminArticleCategoryController::class)->except(['show']);
@@ -106,6 +123,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         // Tag management
         Route::middleware('can:view tags')->group(function () {
             Route::resource('tags', AdminTagController::class)->except(['show']);
+        
+        // Site settings management
+        Route::middleware('can:manage site settings')->group(function () {
+            Route::get('site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.index');
+            Route::put('site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
+        });
         });
     });
 });

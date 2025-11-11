@@ -75,6 +75,7 @@ class RolePermissionSeeder extends Seeder
             // Admin Panel Access
             'access admin panel',
             'view dashboard',
+            'manage site settings',
             'view reports',
             
             // System Management (Super-Admin only)
@@ -86,6 +87,9 @@ class RolePermissionSeeder extends Seeder
             'view enrolled courses',
             'access course content',
             'complete lessons',
+            
+            // Site Settings Management
+            'manage site settings',
         ];
 
         foreach ($permissions as $permission) {
@@ -104,6 +108,9 @@ class RolePermissionSeeder extends Seeder
             'view enrolled courses',
             'access course content',
             'complete lessons',
+            
+            // Site Settings Management
+            'manage site settings',
         ]);
 
         // Content Manager role - Limited to article management only
@@ -128,6 +135,7 @@ class RolePermissionSeeder extends Seeder
             // Admin Panel Access (for dashboard)
             'access admin panel',
             'view dashboard',
+            'manage site settings',
         ]);
 
         // Instructor role - Limited to course management only
@@ -149,6 +157,7 @@ class RolePermissionSeeder extends Seeder
             // Admin Panel Access (for dashboard)
             'access admin panel',
             'view dashboard',
+            'manage site settings',
         ]);
 
         // Admin role
@@ -195,6 +204,7 @@ class RolePermissionSeeder extends Seeder
             'delete tags',
             'access admin panel',
             'view dashboard',
+            'manage site settings',
             'view reports',
         ]);
 

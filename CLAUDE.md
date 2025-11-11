@@ -153,6 +153,17 @@ The platform uses Spatie Laravel Permission with 5 distinct roles and 40+ granul
 - Status scopes: `published()`, `scheduled()`, `draft()`, `readyToPublish()` (app/Models/Article.php:213-246)
 - Manual publish/unschedule actions available in admin panel (routes/web.php:98-99)
 
+**Hero Slider Management:**
+- Content managers can manually curate homepage hero slider (max 5 articles)
+- `hero_slider_order` field (integer, nullable, unique) controls display order (1-5)
+- Hybrid system: manual curation + automatic fallback to latest articles
+- Management interface at `/admin/hero-slider` for overview and quick removal
+- Quick inclusion via checkbox in article create/edit forms
+- Auto-cleanup: unpublished articles automatically removed via model events
+- Stale content warning appears after 30 days without update
+- Scope: `inHeroSlider()` filters and orders articles (app/Models/Article.php:427-431)
+- Query logic in `HomeController::index()` (app/Http/Controllers/HomeController.php:11-32)
+
 **Courses & Lessons:**
 - Courses have many Lessons with `order` field for sequencing
 - Lessons belong to Courses (removed full_video_ids JSON column in migration)
@@ -283,3 +294,17 @@ Scheduler defined in `routes/console.php`:
 - Laravel platform adds LMS functionality
 - Migration commands preserve original content structure
 - Block processing maintains WordPress HTML styling with Tailwind classes
+
+## Feature Documentation
+
+For detailed implementation specs of specific features, see:
+- **OpenSpec Directory** (`openspec/specs/`) - Contains authoritative specifications for all implemented features
+- **Style Guide** (`docs/STYLE_GUIDE.md`) - Comprehensive design system documentation with Tailwind patterns and component examples
+
+Key features documented in OpenSpec:
+- `homepage-sections` - 9-section homepage architecture with content pyramid strategy
+- `article-curation` - Recommendation system and view tracking
+- `featured-category` - Dynamic category spotlight with theme colors
+- `related-articles` - Hybrid recommendation algorithm for article discovery
+- `tag-browsing` - Tag-based content filtering and navigation
+- `enhanced-search` - Advanced search with category, tag, and date filters

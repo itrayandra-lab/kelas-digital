@@ -125,7 +125,7 @@
                         <label for="scheduled_at" class="block text-sm font-medium text-gray-700 mb-2">Schedule Date & Time</label>
                         <input type="datetime-local" name="scheduled_at" id="scheduled_at" value="{{ old('scheduled_at') }}"
                             x-bind:required="status === 'scheduled'"
-                            x-init="if (status === 'scheduled') { 
+                            x-init="if (status === 'scheduled') {
                                 const now = new Date();
                                 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
                                 $el.min = now.toISOString().slice(0, 16);
@@ -135,6 +135,55 @@
                         @error('scheduled_at')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                    <!-- Recommendation -->
+                    <div class="md:col-span-2">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" name="is_recommended" id="is_recommended" value="1"
+                                    {{ old('is_recommended') ? 'checked' : '' }}
+                                    class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
+                            </div>
+                            <div class="ml-3">
+                                <label for="is_recommended" class="font-medium text-gray-700">Recommend this article</label>
+                                <p class="text-sm text-gray-500">Featured in "Recommendation for You" section on homepage (top 4 most recent)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Slider -->
+                    <div class="md:col-span-2" x-data="{ inHeroSlider: {{ old('hero_slider_order') ? 'true' : 'false' }} }">
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Hero Slider</h3>
+
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox"
+                                           name="in_hero_slider"
+                                           id="in_hero_slider"
+                                           x-model="inHeroSlider"
+                                           {{ old('hero_slider_order') ? 'checked' : '' }}
+                                           class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    <span class="text-sm font-medium text-gray-700">Include in Hero Slider</span>
+                                </label>
+
+                                <div x-show="inHeroSlider" x-transition class="flex items-center gap-2">
+                                    <label for="hero_slider_order" class="text-sm font-medium text-gray-700">Order (1-5)</label>
+                                    <input type="number"
+                                           name="hero_slider_order"
+                                           id="hero_slider_order"
+                                           min="1"
+                                           max="5"
+                                           value="{{ old('hero_slider_order') }}"
+                                           class="w-20 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                                </div>
+                            </div>
+
+                            @error('hero_slider_order')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="md:col-span-2">

@@ -32,13 +32,79 @@ This platform represents a complete evolution from the original Beautyversity.id
 
 -   **Backend:** Laravel 12 with MVC architecture, PHP 8.2+
 -   **Database:** Relational database (MySQL/SQLite) with Eloquent ORM
--   **Frontend:** Blade templating with Tailwind CSS v4, Alpine.js
+-   **Frontend:** Blade templating with Tailwind CSS v4, Alpine.js with Splide.js carousels
 -   **Video Hosting:** YouTube (embedded videos for beauty tutorials)
 -   **Authentication:** Laravel built-in authentication with Spatie Laravel Permission
 -   **Security:** Role-based access control with 40+ granular permissions
 -   **Content Management:** Trix rich text editor, WordPress block processing for beauty content
 -   **Asset Management:** Vite for compilation and optimization
 -   **SEO:** ralphjsmit/laravel-seo package for beauty-focused search optimization
+-   **Design System:** Comprehensive Tailwind CSS design system with standardized components, typography, spacing, and color palette
+
+## Design System & Style Guide
+
+The platform features a comprehensive, documented design system ensuring visual consistency across all pages and components.
+
+### Style Guide Documentation
+
+A detailed style guide is available at `docs/STYLE_GUIDE.md` covering:
+
+- **Color Palette** - Dusty rose primary theme (primary-400 to primary-700), secondary colors, and custom gray palette
+- **Typography** - Poppins font family (weights 300-700), complete type scale with hierarchy
+- **Spacing System** - Standardized padding, margin, and gap values (p-2 through p-8, gap-2 through gap-8)
+- **Component Styles** - Pre-defined patterns for buttons, cards, badges, forms, and navigation
+- **Responsive Design** - Mobile-first approach with sm, md, lg, xl breakpoints
+- **Shadows & Elevation** - Consistent shadow scale for depth and visual hierarchy
+- **Animations & Transitions** - Smooth transitions (150-300ms) with Alpine.js integration
+- **Complete Code Examples** - Copy-paste ready components and layouts
+
+### Design Consistency
+
+All public pages and components have been audited and standardized for visual consistency:
+
+- **Homepage** - 9-section content pyramid with featured category spotlight and article recommendations
+- **Article Pages** - Consistent hero headers, typography, and metadata display
+- **Article Categories** - Unified card layouts with standardized image heights and spacing
+- **Search Results** - Consistent card styling matching article listings
+- **Responsive Design** - Full mobile optimization (sm, md, lg breakpoints) with progressive enhancement
+
+### Quick Reference
+
+**Primary Colors:**
+- Action: `bg-primary-600` (#d18a9b)
+- Hover: `bg-primary-700` (#b96f80)
+- Light backgrounds: `bg-gray-50`
+- Dark backgrounds: `bg-gray-900`
+
+**Spacing Standards:**
+- Card padding: `p-6` (24px)
+- Grid gaps: `gap-8` (32px)
+- Section vertical: `py-16 md:py-24` (64px / 96px)
+- Input padding: `px-4 py-2.5`
+
+**Typography:**
+- Font: Poppins (weights 300-700)
+- Headings: `font-bold` with appropriate size scale
+- Body text: `text-gray-900` for primary, `text-gray-600` for secondary
+- Metadata: `text-gray-500` with `text-xs` or `text-sm`
+
+**Component Patterns:**
+- Card border: `border border-gray-100` (light) or `border border-gray-700` (dark)
+- Card radius: `rounded-lg` (8px) for standard radius
+- Shadows: `shadow-sm` (cards), `shadow-lg` (hover/dropdowns)
+- Transitions: `transition` (150ms default)
+
+### Developer Guide
+
+For detailed architecture, permissions, content management patterns, and development workflows, see `CLAUDE.md` which includes:
+
+- Essential commands for development, testing, and deployment
+- Role-based access control implementation details
+- Content management system architecture (articles, courses, lessons)
+- SEO strategy and slug generation
+- Database structure and relationships
+- Testing strategy and configuration
+- WordPress migration patterns
 
 ## Installation & Setup
 
@@ -145,17 +211,36 @@ php artisan migrate:all-wordpress-content
 ## Development Commands
 
 ```bash
+# Start development with all services (Laravel, Queue, Logs, Vite)
+composer dev
+
+# Or run services individually:
+php artisan serve                    # Laravel development server
+npm run dev                          # Vite asset compilation
+php artisan queue:listen --tries=1   # Queue worker
+php artisan pail --timeout=0         # Log viewer
+
 # Run tests
 php artisan test
 
+# Run specific test suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+
 # Assign user roles
 php artisan user:assign-role
+
+# Publish scheduled articles (runs every minute automatically)
+php artisan articles:publish-scheduled
 
 # Clear caches
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
+
+# Database reset (development only)
+php artisan migrate:fresh --seed
 ```
 
 ## Deployment

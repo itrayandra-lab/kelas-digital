@@ -8,6 +8,16 @@ use App\Models\Enrollment;
 
 class CourseController extends Controller
 {
+    public function index()
+    {
+        $courses = \App\Models\Course::with(['category'])
+            ->withCount('enrollments')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('course.index', compact('courses'));
+    }
+
     public function show($slug)
     {
         $course = \App\Models\Course::with(['lessons' => function($query) {

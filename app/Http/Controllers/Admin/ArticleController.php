@@ -93,6 +93,10 @@ class ArticleController extends Controller
             'tags.*' => 'string|max:255', // Allow both existing IDs and new tag names
             'status' => 'required|in:draft,published,scheduled',
             'scheduled_at' => 'nullable|date|after_or_equal:now|required_if:status,scheduled',
+            'is_recommended' => 'nullable|boolean',
+            'hero_slider_order' => 'nullable|integer|min:1|max:5|unique:articles,hero_slider_order',
+        ], [
+            'hero_slider_order.unique' => 'This slider position is already taken. Please choose a different order (1-5).',
         ]);
 
         // Auto-fill author if empty (backup safety)
@@ -118,6 +122,9 @@ class ArticleController extends Controller
             'status' => $data['status'],
             'scheduled_at' => $data['scheduled_at'] ?? null,
             'published_at' => $data['status'] === 'published' ? now() : null,
+            'is_recommended' => $request->has('is_recommended') ? true : false,
+            'recommended_at' => $request->has('is_recommended') ? now() : null,
+            'hero_slider_order' => $data['hero_slider_order'] ?? null,
         ]);
 
         $article->categories()->sync($data['categories']);
@@ -181,6 +188,11 @@ class ArticleController extends Controller
             }
         }
 
+        // If in_hero_slider checkbox is unchecked, set hero_slider_order to null
+        if (!$request->boolean('in_hero_slider')) {
+            $request->merge(['hero_slider_order' => null]);
+        }
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => [
@@ -203,6 +215,16 @@ class ArticleController extends Controller
             'tags.*' => 'string|max:255', // Allow both existing IDs and new tag names
             'status' => 'required|in:draft,published,scheduled',
             'scheduled_at' => $scheduledAtRules,
+            'is_recommended' => 'nullable|boolean',
+            'hero_slider_order' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:5',
+                Rule::unique('articles', 'hero_slider_order')->ignore($id),
+            ],
+        ], [
+            'hero_slider_order.unique' => 'This slider position is already taken. Please choose a different order (1-5).',
         ]);
 
         // Auto-fill author if empty (backup safety)
@@ -221,7 +243,23 @@ class ArticleController extends Controller
             'post_type' => $data['post_type'] ?? 'post',
             'status' => $data['status'],
             'scheduled_at' => $data['scheduled_at'] ?? null,
+            'hero_slider_order' => $data['hero_slider_order'] ?? null,
         ];
+
+        // Handle is_recommended and recommended_at
+        $wasRecommended = $article->is_recommended;
+        $isNowRecommended = $request->has('is_recommended');
+
+        if (!$wasRecommended && $isNowRecommended) {
+            // Just recommended: set recommended_at to now
+            $payload['is_recommended'] = true;
+            $payload['recommended_at'] = now();
+        } elseif ($wasRecommended && !$isNowRecommended) {
+            // Just unrecommended: clear both fields
+            $payload['is_recommended'] = false;
+            $payload['recommended_at'] = null;
+        }
+        // If both true or both false, keep existing recommended_at
 
         // Handle published_at based on status
         if ($data['status'] === 'published' && !$article->published_at) {
