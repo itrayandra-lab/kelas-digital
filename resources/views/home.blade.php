@@ -316,38 +316,39 @@
                 <p class="text-gray-600">Artikel paling banyak dibaca 30 hari terakhir</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-10 gap-8">
-                {{-- Left column: 3 horizontal cards (70%) --}}
-                <div class="lg:col-span-7 space-y-6">
-                    @foreach($trendingArticles->take(3) as $article)
-                        <div class="flex gap-4 bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition">
+            <div class="grid grid-cols-1 lg:grid-cols-10 gap-4 md:gap-6 lg:gap-8">
+                {{-- Left column: All articles on mobile/tablet, first 3 on desktop (70%) --}}
+                <div class="lg:col-span-7 space-y-4 md:space-y-6">
+                    @foreach($trendingArticles as $article)
+                        <div class="flex flex-col md:flex-row gap-4 bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition {{ $loop->index >= 3 ? 'lg:hidden' : '' }}">
                             <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/300x200' }}"
                                  alt="{{ $article->title }}"
-                                 class="w-40 h-40 object-cover flex-shrink-0">
-                            <div class="py-4 pr-4 flex-1">
+                                 class="w-full md:w-40 h-40 object-cover flex-shrink-0">
+                            <div class="p-4 md:py-4 md:pr-4 flex-1">
                                 @if($article->categories->isNotEmpty())
                                     <span class="text-xs font-bold uppercase text-primary-600">
                                         {{ $article->categories->first()->name }}
                                     </span>
                                 @endif
-                                <h3 class="text-lg font-bold text-gray-800 mt-2 mb-2 line-clamp-2">
+                                <p class="text-xs text-gray-500 mt-1">{{ $article->published_at->format('d M Y') }}</p>
+                                <h3 class="text-lg font-bold text-gray-800 mt-3 mb-2 line-clamp-2">
                                     <a href="{{ route('article.show', $article->slug) }}" class="hover:text-primary-600 transition">
                                         {{ $article->title }}
                                     </a>
                                 </h3>
                                 @if($article->excerpt)
-                                    <p class="text-sm text-gray-600 line-clamp-1">{{ $article->excerpt }}</p>
+                                    <p class="text-sm text-gray-600 line-clamp-1 mb-3">{{ $article->excerpt }}</p>
                                 @endif
-                                <div class="flex items-center gap-2 text-xs text-gray-500 mt-2">
-                                    <span>{{ $article->published_at->format('d M Y') }}</span>
-                                </div>
+                                <a href="{{ route('article.show', $article->slug) }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 transition md:hidden inline-block">
+                                    Baca Selengkapnya
+                                </a>
                             </div>
                         </div>
                     @endforeach
                 </div>
 
-                {{-- Right column: 3 articles (30%) --}}
-                <div class="lg:col-span-3 space-y-6">
+                {{-- Right column: 3 articles (30%) - Desktop only --}}
+                <div class="hidden lg:block lg:col-span-3 space-y-6">
                     {{-- Article #1: Vertical card --}}
                     @php $rightArticle = $trendingArticles->slice(3)->first(); @endphp
                     @if($rightArticle)
@@ -441,39 +442,40 @@
                     <p class="text-gray-600">Artikel menarik lainnya untuk Anda</p>
                 </div>
 
-                <div class="space-y-6">
+                <div class="space-y-4 md:space-y-6">
                     @foreach($moreArticles as $article)
-                        <div class="flex gap-6 bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition">
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-6 bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition">
                             <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/400x300' }}"
                                  alt="{{ $article->title }}"
-                                 class="w-48 md:w-64 h-40 object-cover flex-shrink-0">
-                            <div class="py-6 pr-6 flex-1">
+                                 class="w-full md:w-48 lg:w-64 h-48 md:h-40 object-cover flex-shrink-0">
+                            <div class="p-4 md:py-6 md:pr-6 flex-1">
                                 @if($article->categories->isNotEmpty())
                                     <span class="text-xs font-bold uppercase text-primary-600">
                                         {{ $article->categories->first()->name }}
                                     </span>
                                 @endif
-                                <h3 class="text-xl font-bold text-gray-800 mt-2 mb-3 line-clamp-2">
+                                <p class="text-xs text-gray-500 mt-1">{{ $article->published_at->format('d M Y') }}</p>
+                                <h3 class="text-lg md:text-xl font-bold text-gray-800 mt-3 mb-2 md:mb-3 line-clamp-2">
                                     <a href="{{ route('article.show', $article->slug) }}" class="hover:text-primary-600 transition">
                                         {{ $article->title }}
                                     </a>
                                 </h3>
                                 @if($article->excerpt)
-                                    <p class="text-base text-gray-600 line-clamp-2 mb-4">{{ $article->excerpt }}</p>
+                                    <p class="text-sm md:text-base text-gray-600 line-clamp-2 mb-3 md:mb-4">{{ $article->excerpt }}</p>
                                 @endif
-                                <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-500">
                                     <span>{{ $article->author }}</span>
                                     <span>•</span>
-                                    <span>{{ $article->published_at->format('d M Y') }}</span>
+                                    <span class="hidden md:inline">{{ $article->published_at->format('d M Y') }}</span>
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="text-center mt-12">
+                <div class="text-center mt-8 md:mt-12">
                     <a href="{{ route('article.index') }}"
-                       class="inline-block px-8 py-3 bg-primary-600 text-white font-semibold rounded-md hover:bg-primary-700 transition">
+                       class="inline-block px-6 md:px-8 py-2.5 md:py-3 bg-primary-600 text-white text-sm md:text-base font-semibold rounded-md hover:bg-primary-700 transition">
                         See More
                     </a>
                 </div>

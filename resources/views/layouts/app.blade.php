@@ -280,17 +280,17 @@
         </main>
 
         <footer style="background-color: #E6B4B8;" class="text-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
                 <!-- Main Footer Content -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-8 md:mb-12">
                     
                     <!-- Brand & About Section -->
                     <div class="lg:col-span-1">
                         <div class="mb-6">
-                            <a href="{{ route('home') }}" class="flex items-center mb-4">
-                                <img src="{{ asset('logo.webp') }}" alt="Kelas Digital" class="h-10 w-auto">
+                            <a href="{{ route('home') }}" class="inline-block mb-4">
+                                <img src="{{ asset('logo.webp') }}" alt="Kelas Digital" class="h-8 md:h-10 w-auto">
                             </a>
-                            <h3 class="text-xl font-bold mb-3">Beautyversity.id</h3>
+                            <h3 class="text-lg md:text-xl font-bold mb-3">Beautyversity.id</h3>
                             <p class="text-sm opacity-90 leading-relaxed">
                                 Where Beauty Meets Science. Platform edukasi kecantikan berbasis bukti dari Mahasiswa S2 Farmasi UNPAD. 
                                 Pelajari ilmu kecantikan yang benar dan aman.
@@ -304,10 +304,10 @@
                                 @csrf
                                 <input type="email" 
                                        placeholder="Email untuk update" 
-                                       class="w-full px-4 py-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-70 focus:border-white transition-all duration-200 min-h-[48px]"
+                                       class="w-full px-4 py-2.5 md:py-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-70 focus:border-white transition-all duration-200"
                                        required>
                                 <button type="submit" 
-                                        class="w-full bg-white text-gray-800 px-4 py-3 text-sm font-semibold rounded-lg hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 min-h-[48px] flex items-center justify-center">
+                                        class="w-full bg-white text-gray-800 px-4 py-2.5 md:py-3 text-sm font-semibold rounded-lg hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 flex items-center justify-center">
                                     <i class="fas fa-paper-plane mr-2"></i>Daftar Update
                                 </button>
                             </form>
@@ -317,7 +317,7 @@
                     <!-- Quick Links -->
                     <div>
                         <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Navigasi</h4>
-                        <ul class="space-y-3">
+                        <ul class="space-y-2.5 md:space-y-3">
                             <li><a href="{{ route('home') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Beranda</a></li>
                             <li><a href="{{ route('search') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Pencarian</a></li>
                             {{-- kalo masih guest, hidden aja --}}
@@ -336,7 +336,7 @@
                     <!-- Article Categories -->
                     <div>
                         <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Artikel Ilmiah</h4>
-                        <ul class="space-y-3">
+                        <ul class="space-y-2.5 md:space-y-3">
                             @if (isset($articleCategories))
                                 @foreach ($articleCategories->take(6) as $category)
                                     <li>
@@ -358,24 +358,24 @@
                     <!-- Contact & Social -->
                     <div>
                         <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Kontak & Sosial</h4>
-                        <div class="space-y-4">
+                        <div class="space-y-3 md:space-y-4">
                             <div class="flex items-start space-x-3">
-                                <i class="fas fa-envelope text-sm mt-1"></i>
-                                <div>
+                                <i class="fas fa-envelope text-sm mt-1 flex-shrink-0"></i>
+                                <div class="min-w-0">
                                     <p class="text-sm opacity-90">Email</p>
-                                    <p class="text-xs opacity-75">{{ $settings['contact_email'] ?? 'info@kelasdigital.com' }}</p>
+                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_email'] ?? 'info@kelasdigital.com' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
-                                <i class="fas fa-phone text-sm mt-1"></i>
-                                <div>
+                                <i class="fas fa-phone text-sm mt-1 flex-shrink-0"></i>
+                                <div class="min-w-0">
                                     <p class="text-sm opacity-90">Telepon</p>
-                                    <p class="text-xs opacity-75">{{ $settings['contact_phone'] ?? '+62 123 456 7890' }}</p>
+                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_phone'] ?? '+62 123 456 7890' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
-                                <i class="fas fa-map-marker-alt text-sm mt-1"></i>
-                                <div>
+                                <i class="fas fa-map-marker-alt text-sm mt-1 flex-shrink-0"></i>
+                                <div class="min-w-0">
                                     <p class="text-sm opacity-90">Alamat</p>
                                     <p class="text-xs opacity-75">{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</p>
                                 </div>
@@ -385,46 +385,53 @@
                         <!-- Social Media -->
                         <div class="mt-6">
                             <h5 class="text-sm font-semibold mb-3 uppercase tracking-wider">Ikuti Kami</h5>
-                            <div class="flex space-x-4">
+                            <div class="flex flex-wrap gap-3 md:gap-4">
                                 @if(!empty($settings['social_facebook']))
                                     <a href="{{ $settings['social_facebook'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="Facebook">
                                         <i class="fab fa-facebook-f text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_twitter']))
                                     <a href="{{ $settings['social_twitter'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="Twitter">
                                         <i class="fab fa-twitter text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_instagram']))
                                     <a href="{{ $settings['social_instagram'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="Instagram">
                                         <i class="fab fa-instagram text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_youtube']))
                                     <a href="{{ $settings['social_youtube'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="YouTube">
                                         <i class="fab fa-youtube text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_tiktok']))
                                     <a href="{{ $settings['social_tiktok'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="TikTok">
                                         <i class="fab fa-tiktok text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_whatsapp']))
                                     <a href="{{ $settings['social_whatsapp'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="WhatsApp">
                                         <i class="fab fa-whatsapp text-lg"></i>
                                     </a>
                                 @endif
                                 @if(!empty($settings['social_linkedin']))
                                     <a href="{{ $settings['social_linkedin'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200">
+                                       class="text-white hover:text-gray-200 transition-colors duration-200"
+                                       aria-label="LinkedIn">
                                         <i class="fab fa-linkedin-in text-lg"></i>
                                     </a>
                                 @endif
@@ -434,10 +441,10 @@
                 </div>
 
                 <!-- Bottom Footer -->
-                <div class="border-t border-white border-opacity-20 pt-8">
-                    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
-                        <div class="text-center md:text-left">
-                            <p class="text-sm opacity-90">
+                <div class="border-t border-white border-opacity-20 pt-6 md:pt-8">
+                    <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0">
+                        <div class="text-center">
+                            <p class="text-xs md:text-sm opacity-90">
                                 Copyright © {{ date('Y') }}, Beautyversity.id. All Rights Reserved.
                             </p>
                         </div>

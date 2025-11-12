@@ -7,6 +7,214 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added - Role & Permission Management System (2025-11-12)
+
+#### Core Feature
+- **Role & Permission CRUD**: Super-Admin can now manage roles and permissions through a comprehensive admin interface
+  - Full CRUD operations for roles at `/admin/roles` with soft delete support
+  - Interactive permission assignment matrix with Alpine.js (40+ granular permissions)
+  - Complete activity audit trail at `/admin/activity-log` tracking all role/permission changes
+  - Protected role system preventing accidental deletion of critical roles (super-admin, student)
+  - Sidebar menu integration in System Management section
+
+#### Backend Infrastructure
+- **Database Schema Changes**:
+  - Migration `2025_11_12_005407`: Added `soft_deletes` and `description` columns to roles table
+  - Index on `deleted_at` for query performance optimization
+  - Unique index on `hero_slider_order` for data integrity
+
+- **Authentication & Authorization**:
+  - New permission: `manage roles and permissions` (assigned to Super-Admin only)
+  - Protected roles defined in `config/authorization.php`: ['super-admin', 'student']
+  - Critical permissions mapping prevents accidental revocation of essential permissions
+  - Permission-based route middleware: `Route::middleware('can:manage roles and permissions')`
+
+- **Activity Logging**:
+  - Spatie Laravel Activity Log integration for complete audit trail
+  - Logs all role CRUD operations with causer and timestamp
+  - Detailed permission change tracking (permissions_added, permissions_removed arrays)
+  - User-based filtering and date range filtering in activity log
+  - Expandable activity details with Alpine.js collapse component
+
+- **Model Enhancements**:
+  - Custom `Role` model extending Spatie\Permission\Models\Role
+  - Added `SoftDeletes` trait for recoverable deletions
+  - Added `description` field to fillable array
+  - `User` model enhanced with `CausesActivity` trait for activity logging
+
+- **Service Layer**:
+  - `RoleService`: Business logic layer with 4 key methods:
+    - `getPermissionGroups()`: Groups 40+ permissions into 10 categories
+    - `isProtectedRole()`: Validates against protected roles list
+    - `getCriticalPermissions()`: Returns required permissions for protected roles
+    - `validatePermissionUpdate()`: Prevents removal of critical permissions
+
+- **Form Request Validation**:
+  - `StoreRoleRequest`: Validates role creation with unique name constraint
+  - `UpdateRoleRequest`: Validates role updates with permission array validation
+  - Authorization checks integrated into form requests
+
+- **Controller Implementation**:
+  - `RoleController`: Complete CRUD with 6 methods:
+    - `index()`: Lists all roles with user counts
+    - `create()`: Shows role creation form
+    - `store()`: Creates role with activity logging
+    - `edit()`: Shows tabbed edit interface (Details | Permissions)
+    - `update()`: Updates role with permission sync and validation
+    - `destroy()`: Soft deletes role with validation (blocks if users assigned)
+  - `ActivityLogController`: Activity log display with filters
+    - Supports filtering by causer, date range, and description keyword
+    - Paginated display (20 activities per page)
+
+- **New Routes**:
+  - `GET /admin/roles` → Role index page
+  - `GET /admin/roles/create` → Role creation form
+  - `POST /admin/roles` → Store new role
+  - `GET /admin/roles/{role}/edit` → Edit role form
+  - `PUT /admin/roles/{role}` → Update role
+  - `DELETE /admin/roles/{role}` → Soft delete role
+  - `GET /admin/activity-log` → Activity log with filters
+
+- **Configuration Files**:
+  - `config/authorization.php`: Centralized configuration for protected roles and critical permissions
+  - Published `config/activitylog.php` from Spatie package
+
+#### Frontend Components
+- **Role Index Page** (`resources/views/admin/roles/index.blade.php`):
+  - Responsive table layout with 5 columns: Role Name, Description, Users, Last Modified, Actions
+  - "Protected" badge for system roles (yellow background)
+  - Delete button conditionally hidden for protected roles
+  - User count display with `withCount('users')` optimization
+  - Link to activity log at bottom of page
+  - Success/error flash messages with color-coded alerts
+
+- **Role Create Form** (`resources/views/admin/roles/create.blade.php`):
+  - Simple two-field form: name (required) and description (optional)
+  - Back button to roles index
+  - Inline validation error display per field
+  - Note: "You can assign permissions after creating the role"
+
+- **Role Edit Interface** (`resources/views/admin/roles/edit.blade.php`):
+  - Tabbed interface with Alpine.js (Details | Permissions)
+  - Details tab: editable name and description fields
+  - Permissions tab: includes permission matrix component
+  - Yellow warning banner for protected roles
+  - Form footer with Save/Cancel buttons in gray-50 background
+
+- **Permission Matrix Component** (`resources/views/admin/roles/_permission-matrix.blade.php`):
+  - Alpine.js reactive component with `selectedPermissions` array
+  - 10 permission categories with collapsible sections:
+    - Course Management, Lesson Management, Article Management
+    - Category Management, Tag Management, User Management
+    - Enrollment Management, Payment Management, Student Features, System Management
+  - "Select All" / "Deselect All" buttons per category
+  - Critical permissions disabled for protected roles with visual styling
+  - Responsive grid: 1 col mobile, 2 cols sm, 3 cols md
+  - Yellow info box for protected role warnings
+
+- **Activity Log Timeline** (`resources/views/admin/activity-log/index.blade.php`):
+  - Filter card with 4 inputs: User dropdown, Date from/to, Action keyword
+  - Timeline layout with user avatars (ui-avatars.com)
+  - Collapsible activity details showing permissions added/removed
+  - Green badges for added permissions, red for removed
+  - Relative timestamps with `diffForHumans()`
+  - Pagination with Laravel links
+  - Back button to roles index
+
+#### User Experience
+- **Admin Panel Navigation**:
+  - Added "Roles & Permissions" link in System Management section (sidebar)
+  - Icon: `fas fa-user-shield` (shield icon)
+  - Active state for both `admin.roles.*` and `admin.activity-log.*` routes
+  - Permission-gated display: `@can('manage roles and permissions')`
+  - Positioned between "Manage Users" and "Manage Payments"
+
+- **Design Consistency**:
+  - All views follow existing admin design patterns
+  - Headers use `@section('title')` for layout title display
+  - No duplicate headings in content area
+  - Back buttons styled consistently with existing pages
+  - Alert boxes use standardized color scheme (green-50, red-50, yellow-50)
+
+- **Validation Feedback**:
+  - Inline error messages per field with red-600 text
+  - Flash messages for success/error states
+  - Unique role name validation with clear error messages
+  - Protected role deletion blocked with informative error
+  - User assignment validation prevents orphaned users
+
+#### Security & Data Integrity
+- **Protected Role System**:
+  - Super-Admin role: Cannot delete, cannot revoke "manage roles and permissions"
+  - Student role: Cannot delete, cannot revoke "enroll in courses"
+  - Validation at both controller and service layer (defense-in-depth)
+
+- **Soft Delete Strategy**:
+  - Roles soft deleted instead of hard deleted
+  - Relationships preserved for audit trail
+  - "Show Deleted" filter support in index method
+  - Restoration capability (not implemented in UI yet)
+
+- **Activity Logging**:
+  - All role CRUD operations logged with full context
+  - Permission changes tracked with before/after arrays
+  - Causer (authenticated user) recorded for accountability
+  - Timestamps for temporal analysis
+  - Properties stored as JSON for detailed audit
+
+- **Authorization Flow**:
+  - Route middleware: `can:manage roles and permissions`
+  - Form request authorization checks
+  - Gate checks in service layer
+  - Super-Admin bypass via `Gate::before()` in AuthServiceProvider
+
+#### Performance Optimizations
+- **Query Optimization**:
+  - `withCount('users')` prevents N+1 queries on role index
+  - Eager loading: `with(['causer', 'subject'])` on activity log
+  - Index on `deleted_at` for soft delete queries
+  - Pagination (20 per page) on activity log
+
+- **Permission Grouping**:
+  - Static grouping logic in RoleService
+  - Regex-based categorization by permission name patterns
+  - No additional database queries for grouping
+
+#### Technical Notes
+- **Package Dependencies**:
+  - `spatie/laravel-permission`: Already installed (RBAC foundation)
+  - `spatie/laravel-activitylog`: Newly installed (audit trail)
+  - Alpine.js: Already available (interactive components)
+
+- **Permission Categories**: 10 logical groups based on naming conventions
+  - Pattern matching: `* courses` → Course Management, `manage *` → System Management
+  - Fallback: "Other" category for ungrouped permissions
+
+- **Extensibility**:
+  - Permission registry immutable (no UI for permission CRUD)
+  - New permissions added via `RolePermissionSeeder` modification
+  - Category grouping automatically handles new permissions via regex
+
+#### Migration Instructions
+1. Install Spatie Activity Log: `composer require spatie/laravel-activitylog`
+2. Publish migrations: `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"`
+3. Publish config: `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-config"`
+4. Run migrations: `php artisan migrate`
+5. Update permissions: `php artisan db:seed --class=RolePermissionSeeder`
+6. Clear caches: `php artisan config:clear && php artisan route:clear`
+7. Access as Super-Admin: Navigate to `/admin/roles`
+
+#### OpenSpec Documentation
+- **Archived Change**: `openspec/changes/archive/2025-11-12-add-role-permission-crud/`
+- **Authoritative Spec**: `openspec/specs/authorization-management/spec.md`
+- **Requirements Coverage**: 6 main requirements with 30+ test scenarios
+  - Role CRUD Operations
+  - Permission Assignment Matrix
+  - Activity Audit Trail
+  - Protected Role System
+  - Role Soft Delete Management
+  - Permission Registry Immutability
+
 ### Added - Dynamic Site Settings Management (2025-11-11)
 
 #### Core Feature
