@@ -25,6 +25,7 @@ class CategoryComposer
             'MENZONE',
             'BAHANAKTIF',
             'BEAUTYLIFE',
+            'COSMETICNEWS'
         ];
 
         $categories = ArticleCategory::whereIn('name', $desiredCategories)

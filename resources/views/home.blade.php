@@ -55,14 +55,14 @@
                 <p class="text-gray-600">Artikel terbaru dari Beautyversity</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-4 md:gap-6 lg:gap-8">
-                {{-- Left column: All articles (show all 6 on mobile/tablet, first 3 on desktop) --}}
+            <div class="grid grid-cols-1 lg:grid-cols-10 gap-4 md:gap-6 lg:gap-8">
+                {{-- Left column: All articles on mobile/tablet, first 3 on desktop (70%) --}}
                 <div class="lg:col-span-7 space-y-4 md:space-y-6">
                     @foreach($latestArticles as $article)
                         <div class="flex flex-col md:flex-row gap-4 bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition {{ $loop->index >= 3 ? 'lg:hidden' : '' }}">
                             <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/300x200' }}"
                                  alt="{{ $article->title }}"
-                                 class="w-full md:w-40 h-40 md:h-40 object-cover flex-shrink-0">
+                                 class="w-full md:w-40 h-40 object-cover flex-shrink-0">
                             <div class="p-4 md:py-4 md:pr-4 flex-1">
                                 {{-- 1. Category badge --}}
                                 @if($article->categories->isNotEmpty())
