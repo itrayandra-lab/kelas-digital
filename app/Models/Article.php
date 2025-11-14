@@ -379,14 +379,27 @@ class Article extends Model
         if (!empty($tagIds)) {
             $relatedByTags = Article::published()
                 ->where('articles.id', '!=', $this->id)
-                ->with('categories', 'tags')
-                ->selectRaw('articles.*, COUNT(DISTINCT article_tag.tag_id) as shared_tags_count')
+                ->selectRaw('articles.id, COUNT(DISTINCT article_tag.tag_id) as shared_tags_count')
                 ->join('article_tag', 'articles.id', '=', 'article_tag.article_id')
                 ->whereIn('article_tag.tag_id', $tagIds)
                 ->groupBy('articles.id')
-                ->orderByRaw('shared_tags_count DESC, articles.views_count DESC')
+                ->orderByRaw('shared_tags_count DESC')
                 ->limit($limit)
-                ->get();
+                ->pluck('articles.id')
+                ->toArray();
+
+            // Now fetch the full articles with relationships
+            if (!empty($relatedByTags)) {
+                $relatedByTags = Article::whereIn('id', $relatedByTags)
+                    ->with('categories', 'tags')
+                    ->get()
+                    ->sortBy(function ($article) use ($relatedByTags) {
+                        return array_search($article->id, $relatedByTags);
+                    })
+                    ->values();
+            } else {
+                $relatedByTags = collect();
+            }
         } else {
             $relatedByTags = collect();
         }
