@@ -17,15 +17,15 @@ class CategoryComposer
     {
         // Daftar kategori yang ingin ditampilkan sesuai dengan desain header
         $desiredCategories = [
-            'MYTHBUSTER', 
-            'SKINCARE',
-            'PERSONALCARE',
-            'HAIRCARE',
-            'DECORATIVE',
-            'MENZONE',
-            'BAHANAKTIF',
-            'BEAUTYLIFE',
-            'COSMETICNEWS'
+            'MythBuster',
+            'SkinCare',
+            'PersonalCare',
+            'HairCare',
+            'Decorative',
+            'MenZone',
+            'BahanAktif',
+            'BeautyLife',
+            // 'CosmeticNews',
         ];
 
         $categories = ArticleCategory::whereIn('name', $desiredCategories)
