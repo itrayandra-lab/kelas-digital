@@ -25,7 +25,7 @@ class CategoryComposer
             'MenZone',
             'BahanAktif',
             'BeautyLife',
-            // 'CosmeticNews',
+            'CosmeticNews',
         ];
 
         $categories = ArticleCategory::whereIn('name', $desiredCategories)
