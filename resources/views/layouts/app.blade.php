@@ -128,7 +128,7 @@
                                     id="header-search"
                                     name="q"
                                     class="bg-transparent focus:outline-none text-sm text-gray-600 placeholder-gray-400 w-40"
-                                    placeholder="Cari kursus kecantikan atau artikel ilmiah..."
+                                    placeholder="Cari artikel"
                                 >
                                 <button type="submit" class="text-gray-500 hover:text-primary-600 transition">
                                     <i class="fas fa-search h-4 w-4"></i>
