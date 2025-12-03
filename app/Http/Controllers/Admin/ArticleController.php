@@ -7,10 +7,10 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -24,27 +24,28 @@ class ArticleController extends Controller
         }
 
         $tagIds = [];
-        
+
         foreach ($tags as $tag) {
             $tagName = trim($tag);
             if (empty($tagName)) {
                 continue;
             }
-            
-            // Check if tag exists by name first
-            $existingTag = Tag::where('name', $tagName)->first();
+
+            // Check if tag exists by slug (more reliable than name)
+            $slug = Str::slug($tagName);
+            $existingTag = Tag::where('slug', $slug)->first();
+
             if ($existingTag) {
                 $tagIds[] = $existingTag->id;
             } else {
-                // Create new tag
+                // Create new tag - let Sluggable handle the slug generation
                 $newTag = Tag::create([
                     'name' => $tagName,
-                    'slug' => Str::slug($tagName)
                 ]);
                 $tagIds[] = $newTag->id;
             }
         }
-        
+
         return $tagIds;
     }
 
@@ -58,6 +59,7 @@ class ArticleController extends Controller
             ->orderBy('scheduled_at', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+
         return view('admin.articles.index', compact('articles'));
     }
 
@@ -128,7 +130,7 @@ class ArticleController extends Controller
         ]);
 
         $article->categories()->sync($data['categories']);
-        
+
         // Handle tags (both existing and new ones)
         $tagIds = $this->handleTags($data['tags'] ?? []);
         $article->tags()->sync($tagIds);
@@ -144,6 +146,7 @@ class ArticleController extends Controller
         $article = Article::with('categories', 'tags')
             ->withRichText('body')
             ->findOrFail($id);
+
         return view('admin.articles.show', compact('article'));
     }
 
@@ -176,20 +179,20 @@ class ArticleController extends Controller
 
         // Build validation rules dynamically
         $scheduledAtRules = ['nullable', 'date', 'required_if:status,scheduled'];
-        
+
         // Only validate 'after_or_equal:now' if scheduled_at is being changed to a new value
         // Compare datetime values properly to avoid format mismatch (form uses 'Y-m-d\TH:i', DB uses 'Y-m-d H:i:s')
         if ($request->filled('scheduled_at')) {
             $originalScheduledAt = $article->scheduled_at ? $article->scheduled_at->format('Y-m-d H:i') : null;
             $requestScheduledAt = \Carbon\Carbon::parse($request->scheduled_at)->format('Y-m-d H:i');
-            
+
             if ($requestScheduledAt !== $originalScheduledAt) {
                 $scheduledAtRules[] = 'after_or_equal:now';
             }
         }
 
         // If in_hero_slider checkbox is unchecked, set hero_slider_order to null
-        if (!$request->boolean('in_hero_slider')) {
+        if (! $request->boolean('in_hero_slider')) {
             $request->merge(['hero_slider_order' => null]);
         }
 
@@ -250,11 +253,11 @@ class ArticleController extends Controller
         $wasRecommended = $article->is_recommended;
         $isNowRecommended = $request->has('is_recommended');
 
-        if (!$wasRecommended && $isNowRecommended) {
+        if (! $wasRecommended && $isNowRecommended) {
             // Just recommended: set recommended_at to now
             $payload['is_recommended'] = true;
             $payload['recommended_at'] = now();
-        } elseif ($wasRecommended && !$isNowRecommended) {
+        } elseif ($wasRecommended && ! $isNowRecommended) {
             // Just unrecommended: clear both fields
             $payload['is_recommended'] = false;
             $payload['recommended_at'] = null;
@@ -262,7 +265,7 @@ class ArticleController extends Controller
         // If both true or both false, keep existing recommended_at
 
         // Handle published_at based on status
-        if ($data['status'] === 'published' && !$article->published_at) {
+        if ($data['status'] === 'published' && ! $article->published_at) {
             $payload['published_at'] = now();
         } elseif ($data['status'] !== 'published') {
             $payload['published_at'] = null;
@@ -274,7 +277,7 @@ class ArticleController extends Controller
 
         $article->update($payload);
         $article->categories()->sync($data['categories']);
-        
+
         // Handle tags (both existing and new ones)
         $tagIds = $this->handleTags($data['tags'] ?? []);
         $article->tags()->sync($tagIds);
@@ -299,8 +302,8 @@ class ArticleController extends Controller
     public function publish(string $id)
     {
         $article = Article::findOrFail($id);
-        
-        if (!$article->isScheduled()) {
+
+        if (! $article->isScheduled()) {
             return redirect()->back()->with('error', 'Only scheduled articles can be published.');
         }
 
@@ -315,8 +318,8 @@ class ArticleController extends Controller
     public function unschedule(string $id)
     {
         $article = Article::findOrFail($id);
-        
-        if (!$article->isScheduled()) {
+
+        if (! $article->isScheduled()) {
             return redirect()->back()->with('error', 'Only scheduled articles can be unscheduled.');
         }
 
