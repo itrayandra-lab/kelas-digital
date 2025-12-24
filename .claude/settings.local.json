@@ -4,5 +4,6 @@
     "jina-tools",
     "figma-remote-mcp",
     "skill-seeker"
-  ]
+  ],
+  "enableAllProjectMcpServers": true
 }

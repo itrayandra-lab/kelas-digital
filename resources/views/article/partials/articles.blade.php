@@ -27,6 +27,13 @@
                     class="font-semibold text-primary-600 hover:underline text-sm">
                     Baca Selengkapnya
                 </a>
+                <span class="flex items-center gap-1 text-gray-400 text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                        <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                        <path fill-rule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41z" clip-rule="evenodd" />
+                    </svg>
+                    {{ $article->formatted_views }}
+                </span>
             </div>
         </div>
     </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
 use RalphJSmit\Laravel\SEO\Support\HasSEO;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -356,6 +357,50 @@ class Article extends Model
         return $this->newQueryWithoutScopes()
             ->where($this->getKeyName(), $this->getKey())
             ->increment('views_count');
+    }
+
+    /**
+     * Increment views count with IP-based spam protection
+     *
+     * Uses cache to prevent the same IP from incrementing views
+     * multiple times within the cooldown period (30 minutes).
+     */
+    public function incrementViewsWithProtection(string $ipAddress): bool
+    {
+        $cacheKey = "article_view:{$this->id}:" . md5($ipAddress);
+
+        // Already viewed within cooldown period? Skip.
+        if (Cache::has($cacheKey)) {
+            return false;
+        }
+
+        // Increment view count
+        $this->incrementViews();
+
+        // Set cooldown (30 minutes)
+        Cache::put($cacheKey, true, now()->addMinutes(30));
+
+        return true;
+    }
+
+    /**
+     * Get formatted view count (abbreviated for large numbers)
+     */
+    public function getFormattedViewsAttribute(): string
+    {
+        $count = $this->views_count ?? 0;
+
+        if ($count < 1000) {
+            return (string) $count;
+        }
+
+        if ($count < 1000000) {
+            $formatted = $count / 1000;
+            return rtrim(rtrim(number_format($formatted, 1), '0'), '.') . 'k';
+        }
+
+        $formatted = $count / 1000000;
+        return rtrim(rtrim(number_format($formatted, 1), '0'), '.') . 'M';
     }
 
     // ==================== RELATED ARTICLES FUNCTIONALITY ====================

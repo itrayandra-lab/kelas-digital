@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'role.permission' => \App\Http\Middleware\RolePermissionMiddleware::class,
         ]);
+
+        // Trust all proxies (for Hostinger CDN/Cloudflare)
+        // This ensures $request->ip() returns the real visitor IP, not the CDN IP
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

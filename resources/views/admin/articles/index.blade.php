@@ -34,6 +34,8 @@
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
                         <th scope="col"
+                            class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Views</th>
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Published/Scheduled
                         </th>
                         <th scope="col"
@@ -73,6 +75,9 @@
                                         Draft
                                     </span>
                                 @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <div class="text-sm text-gray-700">{{ number_format($article->views_count) }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-700">
@@ -115,7 +120,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-500">
+                            <td colspan="7" class="px-6 py-12 text-center text-sm text-gray-500">
                                 No articles found. Click "Add New Article" to get started.
                             </td>
                         </tr>

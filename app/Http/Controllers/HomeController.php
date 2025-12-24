@@ -124,7 +124,7 @@ class HomeController extends Controller
         ));
     }
     
-    public function showArticle(string $slug)
+    public function showArticle(Request $request, string $slug)
     {
         $article = \App\Models\Article::published()
             ->with('categories', 'tags')
@@ -132,8 +132,8 @@ class HomeController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Increment view count without updating updated_at
-        $article->incrementViews();
+        // Increment view count with IP-based spam protection
+        $article->incrementViewsWithProtection($request->ip());
 
         // Load related articles
         $relatedArticles = $article->getRelatedArticles();
