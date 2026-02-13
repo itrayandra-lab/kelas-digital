@@ -131,19 +131,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {{-- Instructor 1: Do Better Class --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #FF5733 0%, #E84118 100%);">
-                    <!-- Pattern Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <pattern id="pattern-orange" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                                    <circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="2"/>
-                                    <circle cx="75" cy="75" r="15" fill="none" stroke="white" stroke-width="2"/>
-                                    <path d="M 10 50 Q 30 30 50 50" stroke="white" stroke-width="2" fill="none"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#pattern-orange)"/>
-                        </svg>
-                    </div>
                     <div class="relative p-6 z-10">
                         <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-do-better-class.png" 
                              alt="Do Better Class" 
@@ -163,18 +150,6 @@
 
                 {{-- Instructor 2: Psikologi Bisnis --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%);">
-                    <!-- Pattern Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <pattern id="pattern-purple" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-                                    <rect x="10" y="10" width="30" height="30" fill="none" stroke="white" stroke-width="2" rx="5"/>
-                                    <circle cx="60" cy="60" r="12" fill="none" stroke="white" stroke-width="2"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#pattern-purple)"/>
-                        </svg>
-                    </div>
                     <div class="relative p-6 z-10">
                         <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-psikologi-bisnis.png" 
                              alt="Psikologi Bisnis" 
@@ -194,18 +169,6 @@
 
                 {{-- Instructor 3: Sekolah Kosmetik Indonesia --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #FD79A8 0%, #E84393 100%);">
-                    <!-- Pattern Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <pattern id="pattern-pink" x="0" y="0" width="90" height="90" patternUnits="userSpaceOnUse">
-                                    <path d="M 20 20 L 40 40 L 20 60 Z" fill="none" stroke="white" stroke-width="2"/>
-                                    <circle cx="70" cy="45" r="18" fill="none" stroke="white" stroke-width="2"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#pattern-pink)"/>
-                        </svg>
-                    </div>
                     <div class="relative p-6 z-10">
                         <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-ski.png" 
                              alt="Sekolah Kosmetik Indonesia" 
@@ -225,18 +188,6 @@
 
                 {{-- Instructor 4: amAIzing --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #2451AA 0%, #1A3A7D 100%);">
-                    <!-- Pattern Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <pattern id="pattern-blue" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                                    <path d="M 20 50 L 50 20 L 80 50 L 50 80 Z" fill="none" stroke="white" stroke-width="2"/>
-                                    <circle cx="50" cy="50" r="8" fill="white"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#pattern-blue)"/>
-                        </svg>
-                    </div>
                     <div class="relative p-6 z-10">
                         <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-amaizing.png" 
                              alt="amAIzing" 
@@ -256,18 +207,6 @@
 
                 {{-- Instructor 5: Sobat Anak --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1" style="background: linear-gradient(135deg, #EE5B8D 0%, #D63864 100%);">
-                    <!-- Pattern Background -->
-                    <div class="absolute inset-0 opacity-20">
-                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <pattern id="pattern-pink2" x="0" y="0" width="85" height="85" patternUnits="userSpaceOnUse">
-                                    <circle cx="30" cy="30" r="15" fill="none" stroke="white" stroke-width="2"/>
-                                    <rect x="55" y="55" width="20" height="20" fill="none" stroke="white" stroke-width="2" rx="3"/>
-                                </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#pattern-pink2)"/>
-                        </svg>
-                    </div>
                     <div class="relative p-6 z-10">
                         <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-sobat-anak.png" 
                              alt="Sobat Anak" 
