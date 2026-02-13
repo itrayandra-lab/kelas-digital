@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('seo')
-    <title>Browse Topics - Beautyversity</title>
-    <meta name="description" content="Browse all topics and tags on Beautyversity. Explore beauty education articles organized by topic.">
+    <title>Browse Topics - Ray Academy</title>
+    <meta name="description" content="Browse all topics and tags on Ray Academy. Explore business and professional development articles organized by topic.">
 @endsection
 
 @section('content')

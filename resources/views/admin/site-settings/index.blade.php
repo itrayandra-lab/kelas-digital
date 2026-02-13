@@ -57,7 +57,7 @@
                         <input type="email" name="contact_email" id="contact_email"
                             value="{{ old('contact_email', $settings['contact_email'] ?? '') }}"
                             required
-                            placeholder="info@beautyversity.id"
+                            placeholder="info@rayacademy.id"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
                         @error('contact_email')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

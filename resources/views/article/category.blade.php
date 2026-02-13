@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $category->name . ' - Beautyversity.id')
+@section('title', $category->name . ' - Ray Academy')
 
 @section('content')
     <div class="bg-primary-500 py-16 md:py-24 text-center">

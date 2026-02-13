@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard - Beautyversity.id')
+@section('title', 'Dashboard - Ray Academy')
 
 @section('content')
 
@@ -21,13 +21,13 @@
             </div>
             <p class="mt-2 text-lg text-gray-600">
                 @if(auth()->user()->isAdmin())
-                    Anda masuk sebagai Administrator. Kelola platform Beautyversity.id dari dashboard admin.
+                    Anda masuk sebagai Administrator. Kelola platform Ray Academy dari dashboard admin.
                 @elseif(auth()->user()->isInstructor())
-                    Anda masuk sebagai Instruktur. Kelola kursus kecantikan dan materi pembelajaran Anda.
+                    Anda masuk sebagai Instruktur. Kelola kursus dan materi pembelajaran Anda.
                 @elseif(auth()->user()->isContentManager())
-                    Anda masuk sebagai Content Manager. Kelola artikel ilmiah dan konten platform Beautyversity.id.
+                    Anda masuk sebagai Content Manager. Kelola artikel dan konten platform Ray Academy.
                 @else
-                    Lanjutkan perjalanan kecantikan Anda. Pilih kursus di bawah ini untuk memulai.
+                    Lanjutkan perjalanan pembelajaran Anda. Pilih kursus di bawah ini untuk memulai.
                 @endif
             </p>
             

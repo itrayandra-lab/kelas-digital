@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Courses - Beautyversity')
+@section('title', 'All Courses - Ray Academy')
 
 @section('content')
     {{-- Page Header --}}
