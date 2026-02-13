@@ -120,6 +120,113 @@
         </section>
     @endif
 
+    {{-- Featured Instructors Section --}}
+    <section id="featured-instructors" class="py-16 md:py-24" style="background: linear-gradient(135deg, #1991eb 0%, #1474bc 100%);">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Belajar dari Para Ahli</h2>
+                <p class="text-white/90">Instruktur berpengalaman yang siap membimbing perjalanan pembelajaran Anda</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {{-- Instructor 1: Do Better Class --}}
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="p-6">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-do-better-class.png" 
+                             alt="Do Better Class" 
+                             class="h-16 mb-4 object-contain">
+                        <h3 class="text-white font-bold text-lg mb-1">Ria R. Christiana SE, MBA.</h3>
+                        <a href="https://rayacademy.id/do-better-class/" 
+                           class="inline-block mt-3 px-5 py-2 bg-white text-orange-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+                            Mulai Belajar
+                        </a>
+                    </div>
+                    <div class="relative h-64">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-ria.png" 
+                             alt="Ria R. Christiana" 
+                             class="absolute bottom-0 right-0 h-full object-contain">
+                    </div>
+                </div>
+
+                {{-- Instructor 2: Psikologi Bisnis --}}
+                <div class="bg-gradient-to-br from-purple-400 to-purple-500 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="p-6">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-psikologi-bisnis.png" 
+                             alt="Psikologi Bisnis" 
+                             class="h-16 mb-4 object-contain">
+                        <h3 class="text-white font-bold text-lg mb-1">Sukmayanti Ranadireksa, M.Psi.</h3>
+                        <a href="https://rayacademy.id/" 
+                           class="inline-block mt-3 px-5 py-2 bg-white text-purple-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+                            Mulai Belajar
+                        </a>
+                    </div>
+                    <div class="relative h-64">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-sukmayanti.png" 
+                             alt="Sukmayanti Ranadireksa" 
+                             class="absolute bottom-0 right-0 h-full object-contain">
+                    </div>
+                </div>
+
+                {{-- Instructor 3: Sekolah Kosmetik Indonesia --}}
+                <div class="bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="p-6">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-ski.png" 
+                             alt="Sekolah Kosmetik Indonesia" 
+                             class="h-16 mb-4 object-contain">
+                        <h3 class="text-white font-bold text-lg mb-1">Apt. Cahya Khairani K., M.Farm</h3>
+                        <a href="https://rayacademy.id/sekolah-kosmetik-indonesia/" 
+                           class="inline-block mt-3 px-5 py-2 bg-white text-pink-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+                            Mulai Belajar
+                        </a>
+                    </div>
+                    <div class="relative h-64">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-cahya.png" 
+                             alt="Cahya Khairani" 
+                             class="absolute bottom-0 right-0 h-full object-contain">
+                    </div>
+                </div>
+
+                {{-- Instructor 4: amAIzing --}}
+                <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                    <div class="p-6">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-amaizing.png" 
+                             alt="amAIzing" 
+                             class="h-16 mb-4 object-contain">
+                        <h3 class="text-white font-bold text-lg mb-1">Wendra Wilendra M.MT.</h3>
+                        <a href="https://rayacademy.id/amaizing/" 
+                           class="inline-block mt-3 px-5 py-2 bg-white text-blue-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+                            Mulai Belajar
+                        </a>
+                    </div>
+                    <div class="relative h-64">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-wendra.png" 
+                             alt="Wendra Wilendra" 
+                             class="absolute bottom-0 right-0 h-full object-contain">
+                    </div>
+                </div>
+
+                {{-- Instructor 5: Sobat Anak --}}
+                <div class="bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1">
+                    <div class="p-6">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-sobat-anak.png" 
+                             alt="Sobat Anak" 
+                             class="h-16 mb-4 object-contain">
+                        <h3 class="text-white font-bold text-lg mb-1">dr. Frecillia Regina, Sp.A</h3>
+                        <a href="https://rayacademy.id/sobat-anak/" 
+                           class="inline-block mt-3 px-5 py-2 bg-white text-pink-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
+                            Mulai Belajar
+                        </a>
+                    </div>
+                    <div class="relative h-64">
+                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-fricil-1.png" 
+                             alt="Frecillia Regina" 
+                             class="absolute bottom-0 right-0 h-full object-contain">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Latest Article Section --}}
     <section id="latest-articles" class="py-16 md:py-24 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
