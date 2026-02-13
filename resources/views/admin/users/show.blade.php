@@ -33,7 +33,7 @@
     <div class="lg:col-span-1">
         <div class="bg-white rounded-lg shadow-sm">
             <div class="p-6 text-center">
-                <img class="h-24 w-24 rounded-full mx-auto mb-4" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=128&background=E6B4B8&color=333333" alt="User Avatar">
+                <img class="h-24 w-24 rounded-full mx-auto mb-4" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=128&background=1474bc&color=ffffff" alt="User Avatar">
                 <h2 class="text-xl font-bold text-gray-900">{{ $user->name }}</h2>
                 <p class="text-sm text-gray-500">{{ $user->email }}</p>
                 <div class="mt-4">

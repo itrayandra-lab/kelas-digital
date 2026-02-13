@@ -10,10 +10,12 @@ class CourseCategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Skincare',
-            'Makeup',
-            'Hair Care',
-            'Wellness',
+            'Personal Branding',
+            'Digital Marketing',
+            'Business & Strategy',
+            'Leadership',
+            'Technology & AI',
+            'Content & Social Media',
         ];
 
         foreach ($categories as $name) {

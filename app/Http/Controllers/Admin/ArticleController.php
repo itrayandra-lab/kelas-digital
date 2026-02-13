@@ -272,7 +272,24 @@ class ArticleController extends Controller
         }
 
         if ($request->hasFile('thumbnail')) {
+            \Log::info('Thumbnail file detected', [
+                'original_name' => $request->file('thumbnail')->getClientOriginalName(),
+                'size' => $request->file('thumbnail')->getSize(),
+                'mime' => $request->file('thumbnail')->getMimeType(),
+            ]);
+            
             $payload['thumbnail'] = $request->file('thumbnail')->store('articles', 'public');
+            
+            \Log::info('Thumbnail stored', ['path' => $payload['thumbnail']]);
+            
+            session()->flash('thumbnail_info', 'Thumbnail uploaded: ' . $request->file('thumbnail')->getClientOriginalName());
+        } else {
+            \Log::info('No thumbnail file in request', [
+                'has_file' => $request->hasFile('thumbnail'),
+                'all_files' => $request->allFiles(),
+            ]);
+            
+            session()->flash('thumbnail_info', 'No thumbnail file detected in request');
         }
 
         $article->update($payload);

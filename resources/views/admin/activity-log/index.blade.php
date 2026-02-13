@@ -89,7 +89,7 @@
                 <div class="flex-shrink-0">
                     @if($activity->causer)
                         <img
-                            src="https://ui-avatars.com/api/?name={{ urlencode($activity->causer->name) }}&background=E6B4B8&color=333333"
+                            src="https://ui-avatars.com/api/?name={{ urlencode($activity->causer->name) }}&background=1474bc&color=ffffff"
                             alt="{{ $activity->causer->name }}"
                             class="w-10 h-10 rounded-full"
                         >

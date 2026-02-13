@@ -15,23 +15,10 @@ class CategoryComposer
      */
     public function compose(View $view)
     {
-        // Daftar kategori yang ingin ditampilkan sesuai dengan desain header
-        $desiredCategories = [
-            'MythBuster',
-            'SkinCare',
-            'PersonalCare',
-            'HairCare',
-            'Decorative',
-            'MenZone',
-            'BahanAktif',
-            'BeautyLife',
-            'CosmeticNews',
-        ];
-
-        $categories = ArticleCategory::whereIn('name', $desiredCategories)
-            ->whereHas('articles')
+        // Get all article categories for Ray Academy
+        $categories = ArticleCategory::whereHas('articles')
             ->withCount('articles')
-            ->orderByRaw("FIELD(name, '" . implode("', '", $desiredCategories) . "')")
+            ->orderBy('name')
             ->get();
 
         $view->with('articleCategories', $categories);

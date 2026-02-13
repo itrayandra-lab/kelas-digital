@@ -31,13 +31,13 @@
         }
         
         .select2-container--bootstrap-5 .select2-selection:focus {
-            border-color: #E6B4B8 !important;
-            box-shadow: 0 0 0 3px rgba(230, 180, 184, 0.1) !important;
+            border-color: #1474bc !important;
+            box-shadow: 0 0 0 3px rgba(20, 116, 188, 0.1) !important;
         }
         
         .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
-            background-color: #E6B4B8 !important;
-            border: 1px solid #E6B4B8 !important;
+            background-color: #1991eb !important;
+            border: 1px solid #1991eb !important;
             color: #1f2937 !important;
             border-radius: 0.375rem !important;
             padding: 0.25rem 0.5rem !important;
@@ -61,7 +61,7 @@
         }
         
         .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background-color: #E6B4B8 !important;
+            background-color: #1991eb !important;
             color: #1f2937 !important;
         }
         
@@ -78,8 +78,8 @@
         }
         
         .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #E6B4B8 !important;
-            box-shadow: 0 0 0 3px rgba(230, 180, 184, 0.1) !important;
+            border-color: #1474bc !important;
+            box-shadow: 0 0 0 3px rgba(20, 116, 188, 0.1) !important;
             outline: none !important;
         }
         
@@ -100,7 +100,7 @@
         <aside class="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
             <div class="h-20 flex items-center justify-center px-6 border-b border-gray-200">
                 <a href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10">
+                    <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-14">
                 </a>
             </div>
             <nav class="flex-1 px-4 py-4 space-y-6">
@@ -246,7 +246,7 @@
                     <div class="relative" x-data="{ open: false }" @click.away="open = false">
                         <button @click="open = !open" class="flex items-center space-x-2 text-left">
                             <img class="h-10 w-10 rounded-full object-cover"
-                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=E6B4B8&color=333333"
+                                src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1474bc&color=ffffff"
                                 alt="User Avatar">
                             <div>
                                 <span class="font-semibold text-gray-800 text-sm">{{ Auth::user()->name }}</span>

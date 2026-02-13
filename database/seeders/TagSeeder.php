@@ -10,12 +10,21 @@ class TagSeeder extends Seeder
     public function run(): void
     {
         $tags = [
-            'skincare',
-            'makeup',
-            'tutorial',
-            'tips',
-            'review',
-            'product',
+            'branding',
+            'marketing',
+            'social-media',
+            'leadership',
+            'productivity',
+            'ai',
+            'business',
+            'strategy',
+            'content',
+            'digital',
+            'entrepreneurship',
+            'growth',
+            'communication',
+            'team-building',
+            'innovation',
         ];
 
         foreach ($tags as $name) {

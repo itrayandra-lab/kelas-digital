@@ -92,7 +92,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($user->enrolledCourses as $course)
                                 <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
-                                    <img src="https://via.placeholder.com/60x60.png/E6B4B8/333333?text={{ urlencode(substr($course->title, 0, 2)) }}" 
+                                    <img src="https://via.placeholder.com/60x60.png/1474bc/ffffff?text={{ urlencode(substr($course->title, 0, 2)) }}" 
                                          alt="{{ $course->title }}" class="w-12 h-12 rounded-lg object-cover">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate">{{ $course->title }}</p>

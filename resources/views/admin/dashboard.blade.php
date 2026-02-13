@@ -238,7 +238,7 @@
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             <img class="h-10 w-10 rounded-full"
-                                                src="https://ui-avatars.com/api/?name={{ urlencode($enrollment->user->name) }}&background=E6B4B8&color=333333"
+                                                src="https://ui-avatars.com/api/?name={{ urlencode($enrollment->user->name) }}&background=1474bc&color=ffffff"
                                                 alt="">
                                         </div>
                                         <div class="ml-4">

@@ -4,6 +4,31 @@
 
 @section('content')
 
+    @if (session('thumbnail_info'))
+        <div class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle mt-0.5 mr-3"></i>
+                <p>{{ session('thumbnail_info') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-circle mt-0.5 mr-3"></i>
+                <div class="flex-1">
+                    <p class="font-semibold mb-2">There were some errors with your submission:</p>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <form action="{{ route('admin.articles.update', $article->id) }}" method="POST" enctype="multipart/form-data" x-data="{ status: '{{ old('status', $article->status ?? 'draft') }}' }">
         @csrf
         @method('PUT')
@@ -205,17 +230,29 @@
                     </div>
 
                     <!-- Thumbnail -->
-                    <div>
+                    <div x-data="{ imagePreview: null }">
                         <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Thumbnail</label>
                         <div class="flex items-center space-x-6">
                             @if ($article->thumbnail)
-                                <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Current Thumbnail"
-                                    class="h-16 w-16 object-cover rounded-lg">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-1">Current Thumbnail:</p>
+                                    <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Current Thumbnail"
+                                        class="h-24 w-24 object-cover rounded-lg border border-gray-200">
+                                </div>
                             @endif
-                            <input type="file" name="thumbnail" id="thumbnail"
-                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                            <div class="flex-1">
+                                <input type="file" name="thumbnail" id="thumbnail" accept="image/*"
+                                    @change="imagePreview = URL.createObjectURL($event.target.files[0])"
+                                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                                <p class="mt-2 text-xs text-gray-500">Leave blank to keep the current thumbnail.</p>
+                                <template x-if="imagePreview">
+                                    <div class="mt-3">
+                                        <p class="text-xs text-gray-500 mb-1">New Preview:</p>
+                                        <img :src="imagePreview" alt="Preview" class="h-24 w-24 object-cover rounded-lg border-2 border-primary-500">
+                                    </div>
+                                </template>
+                            </div>
                         </div>
-                        <p class="mt-2 text-xs text-gray-500">Leave blank to keep the current thumbnail.</p>
                         @error('thumbnail')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror

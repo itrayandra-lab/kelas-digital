@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Beautyversity.id</title>
+    <title>Daftar - Ray Academy</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
             <div
                 class="flex flex-col items-center justify-center w-full h-full bg-primary-600 bg-opacity-70 p-12 text-white text-center">
                 <a href="{{ route('home') }}" class="mb-6">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-12 mb-4 invert brightness-0">
+                    <img src="{{ asset('logo-white.png') }}" alt="Ray Academy" class="h-16 md:h-20 mb-4">
                 </a>
                 <h1 class="text-4xl font-bold leading-tight mb-4">Mulai Perjalanan Kecantikan Anda</h1>
                 <p class="text-lg opacity-90">

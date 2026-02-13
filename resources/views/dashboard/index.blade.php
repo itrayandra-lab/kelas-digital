@@ -72,7 +72,7 @@
                         <div
                             class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col">
                             <a href="{{ route('course.show', $course->slug) }}">
-                                <img src="https://via.placeholder.com/600x400.png/E6B4B8/333333?text={{ urlencode($course->title) }}"
+                                <img src="https://via.placeholder.com/600x400.png/1474bc/ffffff?text={{ urlencode($course->title) }}"
                                     alt="{{ $course->title }}" class="w-full h-48 object-cover">
                             </a>
                             <div class="p-6 flex-grow flex flex-col">
