@@ -14,7 +14,7 @@ class HeroSliderController extends Controller
      */
     public function index()
     {
-        $this->authorize('manage articles');
+        $this->authorize('view articles');
 
         $heroArticles = Article::inHeroSlider()
             ->with('categories')
@@ -33,7 +33,7 @@ class HeroSliderController extends Controller
      */
     public function update(Request $request)
     {
-        $this->authorize('manage articles');
+        $this->authorize('view articles');
 
         $validated = $request->validate([
             'articles' => 'required|array|max:5',
@@ -62,7 +62,7 @@ class HeroSliderController extends Controller
      */
     public function remove(Article $article)
     {
-        $this->authorize('manage articles');
+        $this->authorize('view articles');
 
         $article->update(['hero_slider_order' => null]);
 
