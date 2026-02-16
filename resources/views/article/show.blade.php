@@ -45,7 +45,7 @@
             @if ($article->thumbnail)
                 <div class="mb-8 rounded-lg overflow-hidden shadow-lg">
                     <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
-                        class="w-full h-auto md:h-96 object-cover">
+                        class="w-full h-auto object-cover">
                 </div>
             @endif
 
