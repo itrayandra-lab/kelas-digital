@@ -132,7 +132,7 @@
                 {{-- Instructor 1: Do Better Class --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #FF5733 0%, #E84118 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-do-better-class.png" 
+                        <img src="{{ asset('assets/logo-do-better-class.png')}}" 
                              alt="Do Better Class" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Ria R. Christiana SE, MBA.</h3>
@@ -142,7 +142,7 @@
                         </a>
                     </div>
                     <div class="relative h-64 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-ria.png" 
+                        <img src="{{ asset('assets/s-ria.png')}}" 
                              alt="Ria R. Christiana" 
                              class="absolute bottom-0 right-0 h-full object-contain">
                     </div>
@@ -151,7 +151,7 @@
                 {{-- Instructor 2: Psikologi Bisnis --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-psikologi-bisnis.png" 
+                        <img src="{{ asset('assets/logo-psikologi-bisnis.png')}}" 
                              alt="Psikologi Bisnis" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Sukmayanti Ranadireksa, M.Psi.</h3>
@@ -161,7 +161,7 @@
                         </a>
                     </div>
                     <div class="relative h-64 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-sukmayanti.png" 
+                        <img src="{{ asset('assets/s-sukmayanti.png')}}" 
                              alt="Sukmayanti Ranadireksa" 
                              class="absolute bottom-0 right-0 h-full object-contain">
                     </div>
@@ -170,7 +170,7 @@
                 {{-- Instructor 3: Sekolah Kosmetik Indonesia --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #FD79A8 0%, #E84393 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-ski.png" 
+                        <img src="{{ asset('assets/logo-ski.png')}}" 
                              alt="Sekolah Kosmetik Indonesia" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Apt. Cahya Khairani K., M.Farm</h3>
@@ -180,7 +180,7 @@
                         </a>
                     </div>
                     <div class="relative h-64 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-cahya.png" 
+                        <img src="{{ asset('assets/s-cahya.png')}}" 
                              alt="Cahya Khairani" 
                              class="absolute bottom-0 right-0 h-full object-contain">
                     </div>
@@ -189,7 +189,7 @@
                 {{-- Instructor 4: amAIzing --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #2451AA 0%, #1A3A7D 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-amaizing.png" 
+                        <img src="{{ asset('assets/logo-amaizing.png')}}" 
                              alt="amAIzing" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Wendra Wilendra M.MT.</h3>
@@ -199,7 +199,7 @@
                         </a>
                     </div>
                     <div class="relative h-64 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-wendra.png" 
+                        <img src="{{ asset('assets/s-wendra.png')}}" 
                              alt="Wendra Wilendra" 
                              class="absolute bottom-0 right-0 h-full object-contain">
                     </div>
@@ -208,7 +208,7 @@
                 {{-- Instructor 5: Sobat Anak --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1" style="background: linear-gradient(135deg, #EE5B8D 0%, #D63864 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/logo-sobat-anak.png" 
+                        <img src="{{ asset('assets/logo-sobat-anak.png')}}" 
                              alt="Sobat Anak" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">dr. Frecillia Regina, Sp.A</h3>
@@ -218,7 +218,7 @@
                         </a>
                     </div>
                     <div class="relative h-64 z-10">
-                        <img src="https://rayacademy.id/wp-content/uploads/2025/08/s-fricil-1.png" 
+                        <img src="{{ asset('assets/s-fricil-1.png')}}" 
                              alt="Frecillia Regina" 
                              class="absolute bottom-0 right-0 h-full object-contain">
                     </div>
