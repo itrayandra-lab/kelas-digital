@@ -132,11 +132,11 @@
                 {{-- Instructor 1: Do Better Class --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #FF5733 0%, #E84118 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="{{ asset('assets/logo-do-better-class.png')}}" 
+                        <img src="{{ asset('assets/logo-do better class.png')}}" 
                              alt="Do Better Class" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Ria R. Christiana SE, MBA.</h3>
-                        <a href="https://rayacademy.id/do-better-class/" 
+                        <a href="#!" 
                            class="inline-block mt-3 px-5 py-2 bg-white text-orange-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
                             Mulai Belajar
                         </a>
@@ -151,11 +151,11 @@
                 {{-- Instructor 2: Psikologi Bisnis --}}
                 <div class="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" style="background: linear-gradient(135deg, #A29BFE 0%, #6C5CE7 100%);">
                     <div class="relative p-6 z-10">
-                        <img src="{{ asset('assets/logo-psikologi-bisnis.png')}}" 
+                        <img src="{{ asset('assets/logo-psikologi bisnis.png')}}" 
                              alt="Psikologi Bisnis" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Sukmayanti Ranadireksa, M.Psi.</h3>
-                        <a href="https://rayacademy.id/" 
+                        <a href="#!" 
                            class="inline-block mt-3 px-5 py-2 bg-white text-purple-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
                             Mulai Belajar
                         </a>
@@ -174,7 +174,7 @@
                              alt="Sekolah Kosmetik Indonesia" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Apt. Cahya Khairani K., M.Farm</h3>
-                        <a href="https://rayacademy.id/sekolah-kosmetik-indonesia/" 
+                        <a href="#!" 
                            class="inline-block mt-3 px-5 py-2 bg-white text-pink-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
                             Mulai Belajar
                         </a>
@@ -193,7 +193,7 @@
                              alt="amAIzing" 
                              class="h-16 mb-4 object-contain">
                         <h3 class="text-white font-bold text-lg mb-1">Wendra Wilendra M.MT.</h3>
-                        <a href="https://rayacademy.id/amaizing/" 
+                        <a href="#!" 
                            class="inline-block mt-3 px-5 py-2 bg-white text-blue-600 font-semibold text-sm rounded-full hover:bg-gray-100 transition">
                             Mulai Belajar
                         </a>
