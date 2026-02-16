@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Recommended Articles - Beautyversity.id')
+@section('title', 'Recommended Articles - Ray Academy')
 
 @section('content')
     <div class="bg-primary-500 py-16 md:py-24 text-center">

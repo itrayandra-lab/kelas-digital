@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Cari Kursus Kecantikan & Artikel Ilmiah - Beautyversity.id')
+@section('title', 'Search Courses & Articles - Ray Academy')
 
 @section('content')
     <section class="py-16 bg-gray-50">

@@ -11,14 +11,14 @@
 @source '../**/*.js';
 
 @theme {
-    /* Primary color palette - Beautyversity Theme */
-    --color-primary-400: #f4d2d6; /* Pale Pink (Extra Light) */
-    --color-primary-500: #e6b4b8; /* Dusty Rose (Light) */
-    --color-primary-600: #d18a9b; /* Rose Pink (Base) */
-    --color-primary-700: #b96f80; /* Darker Rose (Hover) */
+    /* Primary color palette - Ray Academy Theme */
+    --color-primary-400: #5ba8f0; /* Light Blue */
+    --color-primary-500: #1991eb; /* Ray Academy Blue (Base) */
+    --color-primary-600: #1474bc; /* Darker Blue */
+    --color-primary-700: #0f578d; /* Deep Blue (Hover) */
 
-    /* Anda bisa sesuaikan warna secondary jika diperlukan */
-    --color-secondary-500: #d18a9b; /* Menggunakan warna aksen */
+    /* Secondary color */
+    --color-secondary-500: #1474bc; /* Using accent color */
 
     --color-success-500: oklch(58.82% 0.15 127.41); /* Success green */
     --color-warning-500: oklch(74.27% 0.18 85.36); /* Warning amber */

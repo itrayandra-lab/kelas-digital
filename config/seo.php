@@ -12,7 +12,7 @@ return [
     /**
      * Use this setting to specify the site name that will be used in OpenGraph tags.
      */
-    'site_name' => 'Beautyversity.id',
+    'site_name' => 'Ray Academy',
 
     /**
      * Use this setting to specify the path to the sitemap of your website. This exact path will outputted, so
@@ -75,14 +75,14 @@ return [
          * Use this setting to provide a suffix that will be added after the title on each page.
          * If you don't want a suffix, you should specify an empty string.
          */
-        'suffix' => ' - Beautyversity.id',
+        'suffix' => ' - Ray Academy',
 
         /**
          * Use this setting to provide a custom title for the homepage. We will not use the suffix on the homepage,
          * so you'll need to add the suffix manually if you want that. If set to null, we'll determine the title
          * just like the other pages.
          */
-        'homepage_title' => 'Beautyversity.id - Where Beauty Meets Science',
+        'homepage_title' => 'Ray Academy - Empowering Minds for a Lifetime of Growth',
     ],
 
     'description' => [

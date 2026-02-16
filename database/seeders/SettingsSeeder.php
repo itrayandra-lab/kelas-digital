@@ -33,22 +33,22 @@ class SettingsSeeder extends Seeder
             // Social Media URLs
             [
                 'key' => 'social_facebook',
-                'value' => 'https://www.facebook.com/beautyversitydotid',
+                'value' => 'https://www.facebook.com/rayacademy',
                 'type' => 'string',
             ],
             [
                 'key' => 'social_twitter',
-                'value' => 'https://x.com/beautyversityid',
+                'value' => 'https://x.com/rayacademy',
                 'type' => 'string',
             ],
             [
                 'key' => 'social_instagram',
-                'value' => 'https://www.instagram.com/beautyversity_id',
+                'value' => 'https://www.instagram.com/rayacademy.id',
                 'type' => 'string',
             ],
             [
                 'key' => 'social_youtube',
-                'value' => 'https://www.youtube.com/@beautyversitydotid',
+                'value' => 'https://www.youtube.com/@rayacademy',
                 'type' => 'string',
             ],
             [

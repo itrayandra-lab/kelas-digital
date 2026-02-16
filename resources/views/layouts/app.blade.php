@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
+
     @hasSection('seo')
         @yield('seo')
     @else
@@ -61,40 +65,30 @@
                 </div>
             </div>
 
-            <!-- Main Header (Branding) -->
-            <div class="bg-white py-6">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center items-center">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-12">
-                    </a>
-                </div>
-            </div>
-
-            <!-- Navigation Bar (Sticky on Scroll) -->
-            <nav id="main-header" class="bg-white border-b border-gray-200 relative transition-all duration-300">
+            <!-- Main Header with Navigation -->
+            <div class="bg-white border-b border-gray-200 relative">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex items-center justify-between h-16">
-                        <!-- Mobile Menu Button -->
-                        <div class="lg:hidden">
-                            <button @click="mobileMenuOpen = true" class="text-gray-600 p-2 rounded-md">
-                                <i class="fas fa-bars h-6 w-6"></i>
-                            </button>
-                        </div>
+                    <!-- Combined Header: Logo Center, Menu Left-Right -->
+                    <div class="relative flex items-center justify-center py-3" style="min-height: 60px;">
+                        <!-- Logo (Center) -->
+                        <a href="{{ route('home') }}" class="z-10">
+                            <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-12 md:h-14">
+                        </a>
 
-                        <!-- Desktop Navigation Links -->
-                        <div class="hidden lg:flex lg:items-center lg:space-x-8">
+                        <!-- Left Navigation (Desktop) -->
+                        <div class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 items-center space-x-8" style="z-index: 100;">
                             <a href="{{ route('home') }}"
                                 class="nav-link text-gray-700 text-sm font-semibold uppercase tracking-wider hover:text-primary-600 transition">
                                 Beranda
                             </a>
                             
-                            @if (isset($articleCategories))
+                            @if (isset($articleCategories) && $articleCategories->count() > 0)
                             <!-- Article Categories Dropdown -->
                             <div class="relative" x-data="{ open: false }">
                                 <button @mouseenter="open = true" 
                                         @mouseleave="open = false"
                                         class="flex items-center space-x-1 text-gray-700 text-sm font-semibold uppercase tracking-wider hover:text-primary-600 transition">
-                                    <span>Artikel Ilmiah</span>
+                                    <span>Kategori</span>
                                     <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
                                 </button>
                                 
@@ -107,7 +101,8 @@
                                      x-transition:leave="transition ease-in duration-75"
                                      x-transition:leave-start="opacity-100 scale-100"
                                      x-transition:leave-end="opacity-0 scale-95"
-                                     class="absolute top-full left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                                     class="absolute top-full left-0 mt-2 w-56 bg-white rounded-md shadow-xl py-2 border border-gray-200"
+                                     style="z-index: 9999;">
                                     @foreach ($articleCategories as $category)
                                         <a href="{{ route('article.category', $category->slug) }}"
                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
@@ -119,9 +114,9 @@
                             @endif
                         </div>
 
-                        <!-- Search and Auth Links -->
-                        <div class="flex items-center space-x-4">
-                            <form action="{{ route('search') }}" method="GET" class="hidden lg:flex items-center bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500">
+                        <!-- Right Navigation (Desktop) -->
+                        <div class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 items-center space-x-4" style="z-index: 100;">
+                            <form action="{{ route('search') }}" method="GET" class="flex items-center bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500">
                                 <label for="header-search" class="sr-only">Cari</label>
                                 <input
                                     type="search"
@@ -134,16 +129,13 @@
                                     <i class="fas fa-search h-4 w-4"></i>
                                 </button>
                             </form>
-                            <a href="{{ route('search') }}" class="lg:hidden text-gray-600 hover:text-primary-600">
-                                <i class="fas fa-search h-5 w-5"></i>
-                            </a>
                             @auth
-                            <!-- User Dropdown Menu - Desktop (lg and up) -->
-                                <div class="relative hidden lg:block" x-data="{ open: false }">
+                            <!-- User Dropdown Menu -->
+                                <div class="relative" x-data="{ open: false }">
                                     <button @click="open = !open" class="flex items-center space-x-1 text-gray-700 text-sm font-medium hover:text-primary-600 transition">
                                         <span class="hidden lg:inline">{{ Auth::user()->name }}</span>
                                         <i class="fas fa-user-circle ml-2"></i>
-                                        <i class="fas fa-chevron-down ml-1"></i>
+                                        <i class="fas fa-chevron-down ml-1" :class="{ 'rotate-180': open }"></i>
                                     </button>
                                     
                                     <div x-show="open" 
@@ -154,7 +146,8 @@
                                          x-transition:leave="transition ease-in duration-75"
                                          x-transition:leave-start="opacity-100 scale-100"
                                          x-transition:leave-end="opacity-0 scale-95"
-                                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                                         class="absolute top-full right-0 mt-2 w-48 bg-white rounded-md shadow-xl py-2 border border-gray-200"
+                                         style="z-index: 9999;">
                                         <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                             <i class="fas fa-user mr-2"></i>My Profile
                                         </a>
@@ -174,30 +167,45 @@
                                         </form>
                                     </div>
                                 </div>
-
-                                <!-- Mobile User Menu (hidden on lg screens and above - 1024px+) -->
-                                <div class="lg:hidden flex items-center space-x-2">
-                                    <a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" 
-                                       class="text-gray-700 hover:text-primary-600 transition"
-                                       title="{{ Auth::user()->hasRole('student') ? 'Student Dashboard' : 'Admin Panel' }}">
-                                        <i class="{{ Auth::user()->hasRole('student') ? 'fas fa-th-large' : 'fas fa-cog' }} h-5 w-5"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                                        @csrf
-                                        <button type="submit" class="text-gray-700 hover:text-primary-600 transition">
-                                            <i class="fas fa-sign-out-alt h-5 w-5"></i>
-                                        </button>
-                                    </form>
-                                </div>
                             @else
                                 <a href="{{ route('login') }}"
                                     class="auth-link text-gray-700 text-sm font-medium hover:text-primary-600 transition">Log
                                     in</a>
                             @endauth
                         </div>
+
+                        <!-- Mobile Menu Button -->
+                        <div class="lg:hidden absolute left-0 top-1/2 -translate-y-1/2">
+                            <button @click="mobileMenuOpen = true" class="text-gray-600 p-2 rounded-md">
+                                <i class="fas fa-bars h-6 w-6"></i>
+                            </button>
+                        </div>
+
+                        <!-- Mobile Search & User -->
+                        <div class="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                            <a href="{{ route('search') }}" class="text-gray-600 hover:text-primary-600">
+                                <i class="fas fa-search h-5 w-5"></i>
+                            </a>
+                            @auth
+                                <a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" 
+                                   class="text-gray-700 hover:text-primary-600 transition"
+                                   title="{{ Auth::user()->hasRole('student') ? 'Student Dashboard' : 'Admin Panel' }}">
+                                    <i class="{{ Auth::user()->hasRole('student') ? 'fas fa-th-large' : 'fas fa-cog' }} h-5 w-5"></i>
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="text-gray-700 hover:text-primary-600 transition">
+                                        <i class="fas fa-sign-out-alt h-5 w-5"></i>
+                                    </button>
+                                </form>
+                            @endauth
+                        </div>
                     </div>
                 </div>
-            </nav>
+            </div>
+
+            <!-- Sticky Navigation Placeholder (for scroll behavior) -->
+            <nav id="main-header" class="hidden">
         </header>
 
         <!-- Mobile Menu Overlay -->
@@ -212,7 +220,7 @@
              class="fixed inset-0 bg-white z-50 p-4">
             <div class="flex justify-between items-center mb-8">
                 <a href="{{ route('home') }}">
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10">
+                    <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-14 md:h-16">
                 </a>
                 <button @click="mobileMenuOpen = false" class="text-gray-800">
                     <i class="fas fa-times h-6 w-6"></i>
@@ -263,7 +271,7 @@
                 
                 @if (isset($articleCategories))
                     <div class="border-b border-gray-200 pb-4">
-                        <h3 class="text-gray-600 text-sm font-semibold uppercase tracking-wider mb-3">Artikel</h3>
+                        <h3 class="text-gray-600 text-sm font-semibold uppercase tracking-wider mb-3">Kategori</h3>
                         <div class="space-y-2">
                             @foreach ($articleCategories as $category)
                                 <a href="{{ route('article.category', $category->slug) }}"
@@ -279,7 +287,7 @@
             @yield('content')
         </main>
 
-        <footer style="background-color: #E6B4B8;" class="text-white">
+        <footer style="background-color: #1474bc;" class="text-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
                 <!-- Main Footer Content -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-8 md:mb-12">
@@ -288,11 +296,11 @@
                     <div class="lg:col-span-1">
                         <div class="mb-6">
                             <a href="{{ route('home') }}" class="inline-block mb-4">
-                                <img src="{{ asset('logo.webp') }}" alt="Kelas Digital" class="h-8 md:h-10 w-auto">
+                                <img src="{{ asset('logo-white.png') }}" alt="Ray Academy" class="h-12 md:h-16 w-auto">
                             </a>
-                            <h3 class="text-lg md:text-xl font-bold mb-3">Beautyversity.id</h3>
+                            <h3 class="text-lg md:text-xl font-bold mb-3">Ray Academy</h3>
                             <p class="text-sm opacity-90 leading-relaxed">
-                                Where Beauty Meets Science. Platform edukasi kecantikan berbasis bukti dari Mahasiswa S2 Farmasi UNPAD. 
+                                Empowering Minds for a Lifetime of Growth. Platform pembelajaran untuk pengembangan diri, bisnis, dan teknologi. 
                                 Pelajari ilmu kecantikan yang benar dan aman.
                             </p>
                         </div>
@@ -335,7 +343,7 @@
 
                     <!-- Article Categories -->
                     <div>
-                        <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Artikel Ilmiah</h4>
+                        <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Kategori Artikel</h4>
                         <ul class="space-y-2.5 md:space-y-3">
                             @if (isset($articleCategories))
                                 @foreach ($articleCategories->take(6) as $category)
@@ -445,7 +453,7 @@
                     <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0">
                         <div class="text-center">
                             <p class="text-xs md:text-sm opacity-90">
-                                Copyright © {{ date('Y') }}, Beautyversity.id. All Rights Reserved.
+                                Copyright © {{ date('Y') }}, Ray Academy. All Rights Reserved.
                             </p>
                         </div>
                     </div>

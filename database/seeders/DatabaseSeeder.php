@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             ArticleCategorySeeder::class,
             TagSeeder::class,
             CourseSeeder::class,
-            ArticleSeeder::class,
+            ArticleSeederNew::class,
             EnrollmentSeeder::class,
             LessonSeeder::class,
             SettingsSeeder::class,
