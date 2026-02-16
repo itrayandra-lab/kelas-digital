@@ -111,7 +111,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         });
 
         // Hero slider management
-        Route::middleware('can:manage articles')->group(function () {
+        Route::middleware('can:view articles')->group(function () {
             Route::get('hero-slider', [AdminHeroSliderController::class, 'index'])->name('hero-slider.index');
             Route::post('hero-slider', [AdminHeroSliderController::class, 'update'])->name('hero-slider.update');
             Route::delete('hero-slider/{article}', [AdminHeroSliderController::class, 'remove'])->name('hero-slider.remove');
