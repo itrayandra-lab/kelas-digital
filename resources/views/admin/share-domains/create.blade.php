@@ -65,24 +65,18 @@
                                 @enderror
                             </div>
 
-                            <div x-data="{ apiKey: '{{ old('api_key') }}' }">
+                            <div>
                                 <label for="api_key" class="block text-sm font-medium text-gray-700 mb-2">
-                                    API Key
+                                    API Key <span class="text-red-500">*</span>
                                 </label>
-                                <div class="flex gap-2">
-                                    <input type="text" 
-                                           name="api_key" 
-                                           id="api_key" 
-                                           x-model="apiKey"
-                                           placeholder="Leave empty to auto-generate"
-                                           class="flex-1 block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                                    <button type="button" 
-                                            @click="apiKey = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('')"
-                                            class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                                        <i class="fas fa-sync mr-2"></i>Generate
-                                    </button>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">64-character API key. Will be auto-generated if left empty.</p>
+                                <input type="text" 
+                                       name="api_key" 
+                                       id="api_key" 
+                                       value="{{ old('api_key') }}"
+                                       placeholder="Enter API key from your web application"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">API key for authentication (obtained from your web application)</p>
                                 @error('api_key')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -146,8 +140,7 @@
 
                         <div>
                             <h4 class="font-semibold text-gray-700 mb-1">API Key</h4>
-                            <p class="text-gray-600">Secure key for authentication. Click "Generate" for random key.</p>
-                            <p class="text-xs text-gray-500 mt-1">Auto-generated if left empty</p>
+                            <p class="text-gray-600">Secure key for authentication from your web application.</p>
                         </div>
 
                         <div>

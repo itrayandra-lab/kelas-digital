@@ -46,24 +46,12 @@
         @if (session('success'))
             <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">
                 {{ session('success') }}
-                @if(session('new_api_key'))
-                    <div class="mt-3 p-3 bg-white rounded border border-green-300">
-                        <p class="font-semibold mb-2">New API Key (Save this now!):</p>
-                        <div class="flex gap-2">
-                            <code class="flex-1 px-3 py-2 bg-gray-50 rounded text-xs break-all">{{ session('new_api_key') }}</code>
-                            <button type="button" onclick="copyToClipboard('{{ session('new_api_key') }}')" 
-                                    class="px-3 py-2 bg-primary-600 text-white rounded text-xs hover:bg-primary-700">
-                                <i class="fas fa-copy"></i> Copy
-                            </button>
-                        </div>
-                    </div>
-                @endif
             </div>
         @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Form -->
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm">
                     <div class="p-6 md:p-8">
                         <h2 class="text-lg font-semibold text-gray-900 mb-6">Domain Information</h2>
@@ -103,24 +91,18 @@
                                 @enderror
                             </div>
 
-                            <div x-data="{ apiKey: '{{ old('api_key', $shareDomain->api_key) }}' }">
+                            <div>
                                 <label for="api_key" class="block text-sm font-medium text-gray-700 mb-2">
-                                    API Key
+                                    API Key <span class="text-red-500">*</span>
                                 </label>
-                                <div class="flex gap-2">
-                                    <input type="text" 
-                                           name="api_key" 
-                                           id="api_key" 
-                                           x-model="apiKey"
-                                           placeholder="API Key"
-                                           class="flex-1 block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                                    <button type="button" 
-                                            @click="apiKey = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('')"
-                                            class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-                                        <i class="fas fa-sync mr-2"></i>Generate New
-                                    </button>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-500">64-character API key for authentication</p>
+                                <input type="text" 
+                                       name="api_key" 
+                                       id="api_key" 
+                                       value="{{ old('api_key', $shareDomain->api_key) }}"
+                                       placeholder="API Key"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">API key for authentication</p>
                                 @error('api_key')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -151,45 +133,6 @@
                             Update Domain
                         </button>
                     </div>
-                </div>
-
-                <!-- Regenerate API Key Section -->
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                    <h3 class="text-lg font-semibold text-yellow-900 mb-3">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>Regenerate API Key
-                    </h3>
-                    <p class="text-sm text-yellow-800 mb-4">
-                        This will generate a completely new API key and invalidate the current one. 
-                        Make sure to update any applications using the old key.
-                    </p>
-                    <form action="{{ route('admin.share-domains.regenerate-api-key', $shareDomain->id) }}" 
-                          method="POST" 
-                          onsubmit="return confirm('Are you sure? The current API key will stop working immediately.')">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-yellow-600 text-white font-semibold text-sm rounded-lg hover:bg-yellow-700 transition-colors">
-                            <i class="fas fa-key mr-2"></i>Regenerate API Key
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Danger Zone -->
-                <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-                    <h3 class="text-lg font-semibold text-red-900 mb-3">
-                        <i class="fas fa-exclamation-circle mr-2"></i>Danger Zone
-                    </h3>
-                    <p class="text-sm text-red-800 mb-4">
-                        Once you delete this share domain, there is no going back. Please be certain.
-                    </p>
-                    <form action="{{ route('admin.share-domains.destroy', $shareDomain->id) }}" 
-                          method="POST" 
-                          onsubmit="return confirm('Are you absolutely sure? This action cannot be undone!')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-red-600 text-white font-semibold text-sm rounded-lg hover:bg-red-700 transition-colors">
-                            <i class="fas fa-trash mr-2"></i>Delete This Domain
-                        </button>
-                    </form>
                 </div>
             </div>
 
@@ -237,13 +180,3 @@
     </form>
 
 @endsection
-
-@push('scripts')
-<script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert('API Key copied to clipboard!');
-    });
-}
-</script>
-@endpush

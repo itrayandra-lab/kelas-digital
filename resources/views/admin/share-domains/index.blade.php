@@ -17,18 +17,6 @@
     @if (session('success'))
         <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">
             {{ session('success') }}
-            @if(session('new_api_key'))
-                <div class="mt-3 p-3 bg-white rounded border border-green-300">
-                    <p class="font-semibold mb-2">New API Key (Save this now!):</p>
-                    <div class="flex gap-2">
-                        <code class="flex-1 px-3 py-2 bg-gray-50 rounded text-xs break-all">{{ session('new_api_key') }}</code>
-                        <button onclick="copyToClipboard('{{ session('new_api_key') }}')" 
-                                class="px-3 py-2 bg-primary-600 text-white rounded text-xs hover:bg-primary-700">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                </div>
-            @endif
         </div>
     @endif
 
@@ -111,13 +99,3 @@
     </div>
 
 @endsection
-
-@push('scripts')
-<script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert('API Key copied to clipboard!');
-    });
-}
-</script>
-@endpush
