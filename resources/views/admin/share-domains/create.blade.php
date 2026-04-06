@@ -1,139 +1,166 @@
 @extends('layouts.admin')
 
+@section('title', 'Add New Share Domain')
+
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Add New Share Domain</h1>
-        <a href="{{ route('admin.share-domains.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
-        </a>
-    </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Domain Information</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.share-domains.store') }}" method="POST">
-                        @csrf
+    <form action="{{ route('admin.share-domains.store') }}" method="POST">
+        @csrf
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
+            <div>
+                <a href="{{ route('admin.share-domains.index') }}"
+                    class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-arrow-left w-5 h-5 mr-2 text-sm"></i>
+                    Back to Share Domains
+                </a>
+            </div>
+            <div class="mt-4 sm:mt-0">
+                <button type="submit"
+                    class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
+                    <i class="fas fa-save mr-2"></i>
+                    Create Share Domain
+                </button>
+            </div>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="domain_name" class="form-label">Domain Name <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   class="form-control @error('domain_name') is-invalid @enderror" 
-                                   id="domain_name" 
-                                   name="domain_name" 
-                                   value="{{ old('domain_name') }}" 
-                                   placeholder="e.g., example.com"
-                                   required>
-                            @error('domain_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Enter the domain name without http:// or https://</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="webhook_url" class="form-label">Webhook URL <span class="text-danger">*</span></label>
-                            <input type="url" 
-                                   class="form-control @error('webhook_url') is-invalid @enderror" 
-                                   id="webhook_url" 
-                                   name="webhook_url" 
-                                   value="{{ old('webhook_url') }}" 
-                                   placeholder="https://example.com/webhook"
-                                   required>
-                            @error('webhook_url')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Full URL where webhooks will be sent</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="api_key" class="form-label">API Key</label>
-                            <div class="input-group">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-sm">
+                    <div class="p-6 md:p-8">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-6">Domain Information</h2>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label for="domain_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Domain Name <span class="text-red-500">*</span>
+                                </label>
                                 <input type="text" 
-                                       class="form-control @error('api_key') is-invalid @enderror" 
-                                       id="api_key" 
-                                       name="api_key" 
-                                       value="{{ old('api_key') }}" 
-                                       placeholder="Leave empty to auto-generate">
-                                <button class="btn btn-outline-secondary" type="button" onclick="generateApiKey()">
-                                    <i class="fas fa-sync"></i> Generate
-                                </button>
+                                       name="domain_name" 
+                                       id="domain_name" 
+                                       value="{{ old('domain_name') }}" 
+                                       placeholder="e.g., kangwendra.com"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">Enter domain without http:// or https:// (e.g., example.com or subdomain.example.com)</p>
+                                @error('domain_name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            @error('api_key')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">64-character API key. Will be auto-generated if left empty.</small>
+
+                            <div>
+                                <label for="webhook_url" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Webhook URL <span class="text-red-500">*</span>
+                                </label>
+                                <input type="url" 
+                                       name="webhook_url" 
+                                       id="webhook_url" 
+                                       value="{{ old('webhook_url') }}" 
+                                       placeholder="https://kangwendra.com/api/webhook"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">Full URL endpoint that will receive webhook notifications</p>
+                                @error('webhook_url')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div x-data="{ apiKey: '{{ old('api_key') }}' }">
+                                <label for="api_key" class="block text-sm font-medium text-gray-700 mb-2">
+                                    API Key
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="text" 
+                                           name="api_key" 
+                                           id="api_key" 
+                                           x-model="apiKey"
+                                           placeholder="Leave empty to auto-generate"
+                                           class="flex-1 block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                    <button type="button" 
+                                            @click="apiKey = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('')"
+                                            class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-sync mr-2"></i>Generate
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">64-character API key. Will be auto-generated if left empty.</p>
+                                @error('api_key')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status <span class="text-red-500">*</span>
+                                </label>
+                                <select name="status" 
+                                        id="status" 
+                                        required
+                                        class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ old('status', 'inactive') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                                <p class="mt-1 text-xs text-gray-500">Set domain status (Active = operational, Inactive = disabled)</p>
+                                @error('status')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 md:px-8 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg flex justify-end">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
+                            <i class="fas fa-save mr-2"></i>
+                            Create Share Domain
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-primary-600 mr-2"></i>Help
+                    </h3>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-1">Domain Name</h4>
+                            <p class="text-gray-600">Enter domain without protocol (http/https).</p>
+                            <p class="text-xs text-gray-500 mt-1">
+                                ✅ example.com<br>
+                                ✅ subdomain.example.com<br>
+                                ❌ https://example.com
+                            </p>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                            <select class="form-select @error('status') is-invalid @enderror" 
-                                    id="status" 
-                                    name="status" 
-                                    required>
-                                <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', 'inactive') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Set domain status</small>
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-1">Webhook URL</h4>
+                            <p class="text-gray-600">Complete URL endpoint for webhook notifications.</p>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Example:<br>
+                                https://kangwendra.com/api/webhook
+                            </p>
                         </div>
 
-                        <hr>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.share-domains.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Create Share Domain
-                            </button>
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-1">API Key</h4>
+                            <p class="text-gray-600">Secure key for authentication. Click "Generate" for random key.</p>
+                            <p class="text-xs text-gray-500 mt-1">Auto-generated if left empty</p>
                         </div>
-                    </form>
+
+                        <div>
+                            <h4 class="font-semibold text-gray-700 mb-1">Status</h4>
+                            <p class="text-gray-600">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mb-1">Active</span> - Domain is operational<br>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Inactive</span> - Domain is disabled
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </form>
 
-        <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Help</h6>
-                </div>
-                <div class="card-body">
-                    <h6 class="font-weight-bold">Domain Name</h6>
-                    <p class="small text-muted">Enter the domain without protocol (http/https). Example: example.com or subdomain.example.com</p>
-
-                    <h6 class="font-weight-bold mt-3">Webhook URL</h6>
-                    <p class="small text-muted">The complete URL endpoint that will receive webhook notifications from this domain.</p>
-
-                    <h6 class="font-weight-bold mt-3">API Key</h6>
-                    <p class="small text-muted">A secure key used for authentication. Click "Generate" to create a random 64-character key, or leave empty for auto-generation.</p>
-
-                    <h6 class="font-weight-bold mt-3">Status</h6>
-                    <p class="small text-muted">
-                        <strong>Active:</strong> Domain is operational<br>
-                        <strong>Inactive:</strong> Domain is disabled
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-function generateApiKey() {
-    // Generate a random 64-character hex string
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    const apiKey = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-    
-    document.getElementById('api_key').value = apiKey;
-}
-</script>
-@endpush
 @endsection

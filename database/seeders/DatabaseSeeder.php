@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             EnrollmentSeeder::class,
             LessonSeeder::class,
             SettingsSeeder::class,
+            ShareDomainPermissionSeeder::class,
         ]);
     }
 }

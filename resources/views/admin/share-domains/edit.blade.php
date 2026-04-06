@@ -1,178 +1,184 @@
 @extends('layouts.admin')
 
+@section('title', 'Edit Share Domain')
+
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Edit Share Domain</h1>
-        <a href="{{ route('admin.share-domains.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
-        </a>
-    </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            @if(session('new_api_key'))
-                <hr>
-                <strong>New API Key:</strong>
-                <div class="input-group mt-2">
-                    <input type="text" class="form-control" value="{{ session('new_api_key') }}" id="apiKeyDisplay" readonly>
-                    <button class="btn btn-outline-secondary" type="button" onclick="copyApiKey()">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                </div>
-                <small class="text-muted">Please save this API key now. You won't be able to see it again!</small>
-            @endif
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Domain Information</h6>
-                    <div>
-                        @if($shareDomain->isActive())
-                            <form action="{{ route('admin.share-domains.deactivate', $shareDomain->id) }}" 
-                                  method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-pause"></i> Deactivate
-                                </button>
-                            </form>
-                        @else
-                            <form action="{{ route('admin.share-domains.activate', $shareDomain->id) }}" 
-                                  method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="fas fa-play"></i> Activate
-                                </button>
-                            </form>
-                        @endif
-                    </div>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.share-domains.update', $shareDomain->id) }}" method="POST">
+    <form action="{{ route('admin.share-domains.update', $shareDomain->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+        
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
+            <div>
+                <a href="{{ route('admin.share-domains.index') }}"
+                    class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-arrow-left w-5 h-5 mr-2 text-sm"></i>
+                    Back to Share Domains
+                </a>
+            </div>
+            <div class="mt-4 sm:mt-0 flex gap-2">
+                @if($shareDomain->status === 'active')
+                    <form action="{{ route('admin.share-domains.deactivate', $shareDomain->id) }}" method="POST" class="inline">
                         @csrf
-                        @method('PUT')
+                        @method('PATCH')
+                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-yellow-600 text-white font-semibold text-sm rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-pause mr-2"></i>Deactivate
+                        </button>
+                    </form>
+                @else
+                    <form action="{{ route('admin.share-domains.activate', $shareDomain->id) }}" method="POST" class="inline">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-green-600 text-white font-semibold text-sm rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-play mr-2"></i>Activate
+                        </button>
+                    </form>
+                @endif
+                
+                <button type="submit"
+                    class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
+                    <i class="fas fa-save mr-2"></i>
+                    Update Domain
+                </button>
+            </div>
+        </div>
 
-                        <div class="mb-3">
-                            <label for="domain_name" class="form-label">Domain Name <span class="text-danger">*</span></label>
-                            <input type="text" 
-                                   class="form-control @error('domain_name') is-invalid @enderror" 
-                                   id="domain_name" 
-                                   name="domain_name" 
-                                   value="{{ old('domain_name', $shareDomain->domain_name) }}" 
-                                   placeholder="e.g., example.com"
-                                   required>
-                            @error('domain_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Enter the domain name without http:// or https://</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="webhook_url" class="form-label">Webhook URL <span class="text-danger">*</span></label>
-                            <input type="url" 
-                                   class="form-control @error('webhook_url') is-invalid @enderror" 
-                                   id="webhook_url" 
-                                   name="webhook_url" 
-                                   value="{{ old('webhook_url', $shareDomain->webhook_url) }}" 
-                                   placeholder="https://example.com/webhook"
-                                   required>
-                            @error('webhook_url')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Full URL where webhooks will be sent</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="api_key" class="form-label">API Key</label>
-                            <div class="input-group">
-                                <input type="text" 
-                                       class="form-control @error('api_key') is-invalid @enderror" 
-                                       id="api_key" 
-                                       name="api_key" 
-                                       value="{{ old('api_key', $shareDomain->api_key) }}" 
-                                       placeholder="API Key">
-                                <button class="btn btn-outline-secondary" type="button" onclick="generateApiKey()">
-                                    <i class="fas fa-sync"></i> Generate New
-                                </button>
-                            </div>
-                            @error('api_key')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">64-character API key for authentication</small>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> 
-                            <strong>Alternative:</strong> You can also regenerate the API key using the button below without changing other fields.
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                            <select class="form-select @error('status') is-invalid @enderror" 
-                                    id="status" 
-                                    name="status" 
-                                    required>
-                                <option value="active" {{ old('status', $shareDomain->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', $shareDomain->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Set domain status</small>
-                        </div>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.share-domains.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Update Share Domain
+        @if (session('success'))
+            <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">
+                {{ session('success') }}
+                @if(session('new_api_key'))
+                    <div class="mt-3 p-3 bg-white rounded border border-green-300">
+                        <p class="font-semibold mb-2">New API Key (Save this now!):</p>
+                        <div class="flex gap-2">
+                            <code class="flex-1 px-3 py-2 bg-gray-50 rounded text-xs break-all">{{ session('new_api_key') }}</code>
+                            <button type="button" onclick="copyToClipboard('{{ session('new_api_key') }}')" 
+                                    class="px-3 py-2 bg-primary-600 text-white rounded text-xs hover:bg-primary-700">
+                                <i class="fas fa-copy"></i> Copy
                             </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                @endif
             </div>
+        @endif
 
-            <!-- Regenerate API Key Section -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 bg-warning">
-                    <h6 class="m-0 font-weight-bold text-white">Regenerate API Key</h6>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Form -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-lg shadow-sm">
+                    <div class="p-6 md:p-8">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-6">Domain Information</h2>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label for="domain_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Domain Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="domain_name" 
+                                       id="domain_name" 
+                                       value="{{ old('domain_name', $shareDomain->domain_name) }}" 
+                                       placeholder="e.g., kangwendra.com"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">Enter domain without http:// or https://</p>
+                                @error('domain_name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="webhook_url" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Webhook URL <span class="text-red-500">*</span>
+                                </label>
+                                <input type="url" 
+                                       name="webhook_url" 
+                                       id="webhook_url" 
+                                       value="{{ old('webhook_url', $shareDomain->webhook_url) }}" 
+                                       placeholder="https://kangwendra.com/api/webhook"
+                                       required
+                                       class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">Full URL endpoint for webhook notifications</p>
+                                @error('webhook_url')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div x-data="{ apiKey: '{{ old('api_key', $shareDomain->api_key) }}' }">
+                                <label for="api_key" class="block text-sm font-medium text-gray-700 mb-2">
+                                    API Key
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="text" 
+                                           name="api_key" 
+                                           id="api_key" 
+                                           x-model="apiKey"
+                                           placeholder="API Key"
+                                           class="flex-1 block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                    <button type="button" 
+                                            @click="apiKey = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2, '0')).join('')"
+                                            class="px-4 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-sync mr-2"></i>Generate New
+                                    </button>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">64-character API key for authentication</p>
+                                @error('api_key')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Status <span class="text-red-500">*</span>
+                                </label>
+                                <select name="status" 
+                                        id="status" 
+                                        required
+                                        class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                    <option value="active" {{ old('status', $shareDomain->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ old('status', $shareDomain->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+                                @error('status')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-6 md:px-8 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg flex justify-end">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
+                            <i class="fas fa-save mr-2"></i>
+                            Update Domain
+                        </button>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">
-                        <i class="fas fa-exclamation-triangle text-warning"></i> 
+
+                <!-- Regenerate API Key Section -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-yellow-900 mb-3">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>Regenerate API Key
+                    </h3>
+                    <p class="text-sm text-yellow-800 mb-4">
                         This will generate a completely new API key and invalidate the current one. 
                         Make sure to update any applications using the old key.
                     </p>
                     <form action="{{ route('admin.share-domains.regenerate-api-key', $shareDomain->id) }}" 
                           method="POST" 
-                          onsubmit="return confirm('Are you sure you want to regenerate the API key? The current key will stop working immediately.')">
+                          onsubmit="return confirm('Are you sure? The current API key will stop working immediately.')">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-key"></i> Regenerate API Key
+                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-yellow-600 text-white font-semibold text-sm rounded-lg hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-key mr-2"></i>Regenerate API Key
                         </button>
                     </form>
                 </div>
-            </div>
 
-            <!-- Danger Zone -->
-            <div class="card shadow mb-4 border-danger">
-                <div class="card-header py-3 bg-danger">
-                    <h6 class="m-0 font-weight-bold text-white">Danger Zone</h6>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted">
-                        <i class="fas fa-exclamation-circle text-danger"></i> 
+                <!-- Danger Zone -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-red-900 mb-3">
+                        <i class="fas fa-exclamation-circle mr-2"></i>Danger Zone
+                    </h3>
+                    <p class="text-sm text-red-800 mb-4">
                         Once you delete this share domain, there is no going back. Please be certain.
                     </p>
                     <form action="{{ route('admin.share-domains.destroy', $shareDomain->id) }}" 
@@ -180,93 +186,64 @@
                           onsubmit="return confirm('Are you absolutely sure? This action cannot be undone!')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Delete This Share Domain
+                        <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-red-600 text-white font-semibold text-sm rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Delete This Domain
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Domain Details</h6>
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Domain Details</h3>
+                    <dl class="space-y-3 text-sm">
+                        <div>
+                            <dt class="text-gray-500">ID</dt>
+                            <dd class="font-medium text-gray-900">{{ $shareDomain->id }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Status</dt>
+                            <dd>
+                                @if($shareDomain->status === 'active')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Active</span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
+                                @endif
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Created</dt>
+                            <dd class="font-medium text-gray-900">{{ $shareDomain->created_at->format('d M Y H:i') }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-500">Last Updated</dt>
+                            <dd class="font-medium text-gray-900">{{ $shareDomain->updated_at->format('d M Y H:i') }}</dd>
+                        </div>
+                    </dl>
                 </div>
-                <div class="card-body">
-                    <table class="table table-sm">
-                        <tr>
-                            <th width="40%">ID:</th>
-                            <td>{{ $shareDomain->id }}</td>
-                        </tr>
-                        <tr>
-                            <th>Status:</th>
-                            <td>{!! $shareDomain->status_badge !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Created:</th>
-                            <td>{{ $shareDomain->created_at->format('M d, Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Updated:</th>
-                            <td>{{ $shareDomain->updated_at->format('M d, Y H:i') }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
-                </div>
-                <div class="card-body">
-                    <a href="{{ route('admin.share-domains.show', $shareDomain->id) }}" class="btn btn-info btn-block w-100 mb-2">
-                        <i class="fas fa-eye"></i> View Details
-                    </a>
-                    
-                    @if($shareDomain->isActive())
-                        <form action="{{ route('admin.share-domains.deactivate', $shareDomain->id) }}" 
-                              method="POST" class="mb-2">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-warning btn-block w-100">
-                                <i class="fas fa-pause"></i> Deactivate Domain
-                            </button>
-                        </form>
-                    @else
-                        <form action="{{ route('admin.share-domains.activate', $shareDomain->id) }}" 
-                              method="POST" class="mb-2">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-success btn-block w-100">
-                                <i class="fas fa-play"></i> Activate Domain
-                            </button>
-                        </form>
-                    @endif
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <a href="{{ route('admin.share-domains.show', $shareDomain->id) }}" 
+                           class="block w-full text-center px-4 py-2.5 bg-gray-100 text-gray-700 font-medium text-sm rounded-lg hover:bg-gray-200 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </form>
+
+@endsection
 
 @push('scripts')
 <script>
-function generateApiKey() {
-    // Generate a random 64-character hex string
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    const apiKey = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-    
-    document.getElementById('api_key').value = apiKey;
-}
-
-function copyApiKey() {
-    const apiKeyInput = document.getElementById('apiKeyDisplay');
-    apiKeyInput.select();
-    document.execCommand('copy');
-    
-    alert('API Key copied to clipboard!');
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('API Key copied to clipboard!');
+    });
 }
 </script>
 @endpush
-@endsection
