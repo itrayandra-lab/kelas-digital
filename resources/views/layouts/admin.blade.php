@@ -107,7 +107,7 @@
                     <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-14">
                 </a>
             </div>
-            <nav class="flex-1 px-4 py-4 space-y-6">
+            <nav class="flex-1 px-4 py-4 space-y-6 overflow-y-auto">
                 <!-- Dashboard -->
                 <div>
                     <a href="{{ route('admin.dashboard') }}"
@@ -126,8 +126,8 @@
                     </a>
                 </div>
 
-                <!-- Course Management Group - Hidden for Content Manager -->
-                @unless(auth()->user()->hasRole('content-manager'))
+                <!-- Course Management Group - Only for users with course permissions -->
+                @can('view courses')
                 <div x-data="{ 
                     open: localStorage.getItem('course-group-open') !== 'false' 
                 }">
@@ -140,27 +140,35 @@
                     <div x-show="open" 
                          x-collapse
                          class="space-y-1 mt-2">
+                        @can('view courses')
                         <a href="{{ route('admin.courses.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.courses.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-book-open mr-3 text-base"></i>
                             Manage Courses
                         </a>
+                        @endcan
+                        
+                        @can('view course categories')
                         <a href="{{ route('admin.course-categories.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.course-categories.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-sitemap mr-3 text-base"></i>
                             Course Categories
                         </a>
+                        @endcan
+                        
+                        @can('view lessons')
                         <a href="{{ route('admin.lessons.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.lessons.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-list mr-3 text-base"></i>
                             Manage Lessons
                         </a>
+                        @endcan
                     </div>
                 </div>
-                @endunless
+                @endcan
 
-                <!-- Content Management Group - Hidden for Instructor -->
-                @unless(auth()->user()->hasRole('instructor'))
+                <!-- Content Management Group - Only for users with article permissions -->
+                @can('view articles')
                 <div x-data="{ 
                     open: localStorage.getItem('content-group-open') !== 'false' 
                 }">
@@ -173,26 +181,36 @@
                     <div x-show="open" 
                          x-collapse
                          class="space-y-1 mt-2">
+                        @can('view articles')
                         <a href="{{ route('admin.articles.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-file-alt mr-3 text-base"></i>
                             Manage Articles
                         </a>
+                        
                         <a href="{{ route('admin.hero-slider.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.hero-slider.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-images mr-3 text-base"></i>
                             Hero Slider
                         </a>
+                        @endcan
+                        
+                        @can('view article categories')
                         <a href="{{ route('admin.article-categories.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.article-categories.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-folder-open mr-3 text-base"></i>
                             Article Categories
                         </a>
+                        @endcan
+                        
+                        @can('view tags')
                         <a href="{{ route('admin.tags.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.tags.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-tags mr-3 text-base"></i>
                             Tags
                         </a>
+                        @endcan
+                        
                         @can('manage site settings')
                         <a href="{{ route('admin.site-settings.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.site-settings.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -202,10 +220,10 @@
                         @endcan
                     </div>
                 </div>
-                @endunless
+                @endcan
 
-                <!-- System Management Group - Hidden for Instructor and Content Manager -->
-                @unless(auth()->user()->hasRole(['instructor', 'content-manager']))
+                <!-- System Management Group - Only show if user has at least one system permission -->
+                @if(auth()->user()->can('view users') || auth()->user()->can('manage roles and permissions') || auth()->user()->can('manage enrollments') || auth()->user()->can('view share domains'))
                 <div x-data="{ 
                     open: localStorage.getItem('system-group-open') !== 'false' 
                 }">
@@ -218,11 +236,14 @@
                     <div x-show="open"
                          x-collapse
                          class="space-y-1 mt-2">
+                        @can('view users')
                         <a href="{{ route('admin.users.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-users mr-3 text-base"></i>
                             Manage Users
                         </a>
+                        @endcan
+                        
                         @can('manage roles and permissions')
                         <a href="{{ route('admin.roles.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.roles.*') || request()->routeIs('admin.activity-log.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -230,14 +251,25 @@
                             Roles & Permissions
                         </a>
                         @endcan
+                        
+                        @can('manage enrollments')
                         <a href="{{ route('admin.payments.index') }}"
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.payments.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-credit-card mr-3 text-base"></i>
                             Manage Payments
                         </a>
+                        @endcan
+                        
+                        @can('view share domains')
+                        <a href="{{ route('admin.share-domains.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.share-domains.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-network-wired mr-3 text-base"></i>
+                            Share Domains
+                        </a>
+                        @endcan
                     </div>
                 </div>
-                @endunless
+                @endif
             </nav>
         </aside>
 

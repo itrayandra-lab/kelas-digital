@@ -304,22 +304,6 @@
                                 Pelajari ilmu kecantikan yang benar dan aman.
                             </p>
                         </div>
-                        
-                        <!-- Newsletter Subscription -->
-                        <div class="mt-6">
-                            <h4 class="text-sm font-semibold mb-3 uppercase tracking-wider">Update Kecantikan</h4>
-                            <form class="space-y-3" action="#" method="POST">
-                                @csrf
-                                <input type="email" 
-                                       placeholder="Email untuk update" 
-                                       class="w-full px-4 py-2.5 md:py-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-70 focus:border-white transition-all duration-200"
-                                       required>
-                                <button type="submit" 
-                                        class="w-full bg-white text-gray-800 px-4 py-2.5 md:py-3 text-sm font-semibold rounded-lg hover:bg-gray-50 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 flex items-center justify-center">
-                                    <i class="fas fa-paper-plane mr-2"></i>Daftar Update
-                                </button>
-                            </form>
-                        </div>
                     </div>
 
                     <!-- Quick Links -->

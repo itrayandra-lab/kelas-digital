@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\ShareDomainController; // ADD THIS LINE
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -125,6 +126,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         // Tag management
         Route::middleware('can:view tags')->group(function () {
             Route::resource('tags', AdminTagController::class)->except(['show']);
+        });
         
         // Site settings management
         Route::middleware('can:manage site settings')->group(function () {
@@ -132,11 +134,25 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::put('site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
         });
 
+        // Share Domains Management - ADD THIS SECTION
+        Route::middleware('can:view share domains')->group(function () {
+            Route::resource('share-domains', ShareDomainController::class);
+            
+            // Additional Share Domain Routes
+            Route::patch('share-domains/{id}/activate', [ShareDomainController::class, 'activate'])
+                ->name('share-domains.activate');
+            
+            Route::patch('share-domains/{id}/deactivate', [ShareDomainController::class, 'deactivate'])
+                ->name('share-domains.deactivate');
+            
+            Route::patch('share-domains/{id}/regenerate-api-key', [ShareDomainController::class, 'regenerateApiKey'])
+                ->name('share-domains.regenerate-api-key');
+        });
+
         // Role and permission management
         Route::middleware('can:manage roles and permissions')->group(function () {
             Route::resource('roles', RoleController::class)->except(['show']);
             Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
-        });
         });
     });
 });
