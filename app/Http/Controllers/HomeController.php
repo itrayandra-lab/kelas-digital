@@ -8,7 +8,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // 1. Hero Slider - Hybrid approach (manual + fallback)
+        // 1. Hero Slider - course-platform focused (max 5 slides)
         $heroArticles = \App\Models\Article::published()
             ->inHeroSlider()
             ->with('categories', 'tags')
@@ -31,32 +31,11 @@ class HomeController extends Controller
             $heroArticles = $heroArticles->merge($fallbackArticles);
         }
 
-        // 2. Latest Article - 6 most recent published articles
-        $latestArticles = \App\Models\Article::published()
-            ->with('categories', 'tags')
-            ->orderBy('published_at', 'desc')
-            ->limit(6)
-            ->get();
-
-        // 3. Terpopuler (Popular) - 4 most-viewed articles (all-time)
-        $popularArticles = \App\Models\Article::published()
-            ->with('categories', 'tags')
-            ->popular()
-            ->limit(4)
-            ->get();
-
-        // 4. Recommendation - 4 manually curated articles
-        $recommendedArticles = \App\Models\Article::published()
-            ->with('categories', 'tags')
-            ->recommended()
-            ->limit(4)
-            ->get();
-
-        // 4.5. Featured Courses - 4 manually curated courses (fallback to latest if empty)
+        // 2. Featured Courses - main section (up to 8 courses)
         $featuredCourses = \App\Models\Course::featured()
             ->with(['category', 'enrollments'])
             ->withCount('enrollments')
-            ->limit(4)
+            ->limit(8)
             ->get();
 
         // Fallback to latest courses if no featured courses
@@ -64,66 +43,54 @@ class HomeController extends Controller
             $featuredCourses = \App\Models\Course::latest()
                 ->with(['category', 'enrollments'])
                 ->withCount('enrollments')
-                ->limit(4)
+                ->limit(8)
                 ->get();
             $isFeaturedFallback = true;
         } else {
             $isFeaturedFallback = false;
         }
 
-        // 5. Trending - 6 articles from last 30 days by views
-        $trendingArticles = \App\Models\Article::published()
-            ->with('categories', 'tags')
-            ->trending()
-            ->limit(6)
+        // 3. Course Categories - for filter tabs
+        $courseCategories = \App\Models\CourseCategory::whereHas('courses')
+            ->withCount('courses')
+            ->orderBy('courses_count', 'desc')
             ->get();
 
-        // 6. Featured Category - 3 articles from featured category
-        $featuredCategory = \App\Models\ArticleCategory::featured()->first();
-        $featuredCategoryArticles = collect();
+        // Course model has no published() scope — query directly
+        $instructorCourses = \App\Models\Course::with('category')
+            ->whereNotNull('instructor')
+            ->whereNotNull('thumbnail')
+            ->inRandomOrder()
+            ->limit(10) // fetch more to ensure 5 unique instructors after dedup
+            ->get()
+            ->unique('instructor')
+            ->take(5);
 
-        if ($featuredCategory) {
-            $featuredCategoryArticles = \App\Models\Article::published()
-                ->with('categories', 'tags')
-                ->whereHas('categories', function ($query) use ($featuredCategory) {
-                    $query->where('article_categories.id', $featuredCategory->id);
-                })
-                ->popular()
-                ->limit(3)
-                ->get();
-        }
-
-        // 7. More Articles - 3 articles excluding all previously shown
-        $shownIds = collect()
-            ->merge($heroArticles->pluck('id'))
-            ->merge($latestArticles->pluck('id'))
-            ->merge($popularArticles->pluck('id'))
-            ->merge($recommendedArticles->pluck('id'))
-            ->merge($trendingArticles->pluck('id'))
-            ->merge($featuredCategoryArticles->pluck('id'))
-            ->unique();
-
-        $moreArticles = \App\Models\Article::published()
+        // 5. Latest Articles - ONE section only (4 articles)
+        $latestArticles = \App\Models\Article::published()
             ->with('categories', 'tags')
-            ->whereNotIn('id', $shownIds)
             ->orderBy('published_at', 'desc')
-            ->limit(3)
+            ->limit(4)
             ->get();
+
+        // 6. Site stats
+        $stats = [
+            'total_courses'  => \App\Models\Course::count(),
+            'total_students' => \App\Models\User::count(),
+            'total_articles' => \App\Models\Article::published()->count(),
+        ];
 
         return view('home', compact(
             'heroArticles',
-            'latestArticles',
-            'popularArticles',
-            'recommendedArticles',
             'featuredCourses',
             'isFeaturedFallback',
-            'trendingArticles',
-            'featuredCategory',
-            'featuredCategoryArticles',
-            'moreArticles'
+            'courseCategories',
+            'instructorCourses',
+            'latestArticles',
+            'stats'
         ));
     }
-    
+
     public function showArticle(Request $request, string $slug)
     {
         $article = \App\Models\Article::published()

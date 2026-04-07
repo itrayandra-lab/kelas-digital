@@ -26,6 +26,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-rich-text::styles theme="richtextlaravel" />
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased bg-gray-50 text-gray-800" x-data="{ mobileMenuOpen: false }">
@@ -355,7 +356,7 @@
                                 <i class="fas fa-envelope text-sm mt-1 flex-shrink-0"></i>
                                 <div class="min-w-0">
                                     <p class="text-sm opacity-90">Email</p>
-                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_email'] ?? 'info@kelasdigital.com' }}</p>
+                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_email'] ?? '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef86818980af848a838e9c8b8688869b8e83c18c8082">[email&#160;protected]</a>' }}</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
@@ -439,12 +440,13 @@
                             <p class="text-xs md:text-sm opacity-90">
                                 Copyright © {{ date('Y') }}, Ray Academy. All Rights Reserved.
                             </p>
-                        </div>
+                      
                     </div>
                 </div>
             </div>
         </footer>
+
+        @stack('scripts')
     </div>
 </body>
-
 </html>
