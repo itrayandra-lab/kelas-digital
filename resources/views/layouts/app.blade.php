@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
 
@@ -18,435 +15,460 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Font Awesome for social icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-rich-text::styles theme="richtextlaravel" />
+
+    <style>
+        :root {
+            --blue:    #1474bc;
+            --blue-d:  #0d5a96;
+            --blue-xl: #e8f4fd;
+            --ink:     #0a1628;
+            --ink-2:   #2d3a4e;
+            --muted:   #6b7a92;
+            --border:  #e4eaf2;
+            --surf:    #f7f9fc;
+            --white:   #ffffff;
+            --accent:  #10b981;   /* emerald */
+            --acc-bg:  #ecfdf5;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; color: var(--ink); background: #fff; -webkit-font-smoothing: antialiased; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Sora', sans-serif; }
+
+        /* ── NAVBAR ── */
+        .site-nav {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(255,255,255,.88);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            transition: box-shadow .3s;
+        }
+        .site-nav.scrolled { box-shadow: 0 4px 28px rgba(10,22,40,.08); }
+
+        .nav-inner {
+            max-width: 1280px; margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex; align-items: center; gap: 2rem;
+            height: 68px;
+        }
+        .nav-logo img { height: 44px; display: block; }
+        .nav-logo span {
+            font-family: 'Sora', sans-serif;
+            font-weight: 800; font-size: 1.25rem; color: var(--ink);
+            letter-spacing: -.02em;
+        }
+        .nav-logo span em { color: var(--blue); font-style: normal; }
+
+        .nav-links {
+            display: flex; align-items: center; gap: .25rem;
+            margin: 0 auto; list-style: none; padding: 0;
+        }
+        .nav-links a, .nav-links button {
+            font-family: 'DM Sans', sans-serif;
+            font-size: .875rem; font-weight: 500; color: var(--ink-2);
+            text-decoration: none; padding: .5rem .85rem; border-radius: 8px;
+            border: none; background: transparent; cursor: pointer;
+            transition: background .18s, color .18s;
+            display: flex; align-items: center; gap: .35rem;
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links button:hover { background: var(--surf); color: var(--blue); }
+        .nav-links a.active { color: var(--blue); font-weight: 600; }
+
+        .nav-dropdown {
+            position: relative;
+        }
+        .nav-dropdown-menu {
+            position: absolute; top: calc(100% + .5rem); left: 0;
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 14px; padding: .5rem;
+            min-width: 200px;
+            box-shadow: 0 16px 48px rgba(10,22,40,.12);
+            z-index: 9999;
+        }
+        .nav-dropdown-menu a {
+            display: block; padding: .6rem .9rem;
+            font-size: .83rem; border-radius: 8px;
+            color: var(--ink-2);
+        }
+        .nav-dropdown-menu a:hover { background: var(--surf); color: var(--blue); }
+
+        .nav-right { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+
+        .nav-search {
+            display: flex; align-items: center;
+            background: var(--surf); border: 1.5px solid var(--border);
+            border-radius: 10px; padding: .45rem .85rem; gap: .45rem;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .nav-search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,116,188,.12); }
+        .nav-search input {
+            border: none; background: transparent; outline: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .83rem; color: var(--ink); width: 130px;
+        }
+        .nav-search input::placeholder { color: var(--muted); }
+        .nav-search svg { color: var(--muted); flex-shrink: 0; }
+
+        .btn-nav-login {
+            font-family: 'DM Sans', sans-serif;
+            font-size: .875rem; font-weight: 600; color: var(--ink-2);
+            text-decoration: none; padding: .5rem 1.1rem;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            transition: all .2s; background: transparent;
+        }
+        .btn-nav-login:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-xl); }
+
+        .btn-nav-cta {
+            font-family: 'DM Sans', sans-serif;
+            font-size: .875rem; font-weight: 700; color: #fff;
+            text-decoration: none; padding: .55rem 1.3rem;
+            background: var(--blue); border-radius: 10px;
+            border: 1.5px solid var(--blue);
+            transition: all .2s; display: flex; align-items: center; gap: .4rem;
+        }
+        .btn-nav-cta:hover { background: var(--blue-d); border-color: var(--blue-d); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(20,116,188,.3); }
+
+        /* Avatar */
+        .nav-avatar {
+            display: flex; align-items: center; gap: .65rem;
+            text-decoration: none; color: var(--ink-2);
+            padding: .4rem .75rem; border-radius: 10px;
+            transition: background .18s;
+        }
+        .nav-avatar:hover { background: var(--surf); }
+        .nav-avatar img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+        .nav-avatar span { font-size: .83rem; font-weight: 600; }
+
+        /* Mobile toggle */
+        .nav-mobile-btn {
+            display: none; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 9px;
+            border: 1.5px solid var(--border); background: transparent; cursor: pointer;
+            color: var(--ink); transition: background .18s;
+            margin-left: auto;
+        }
+        .nav-mobile-btn:hover { background: var(--surf); }
+
+        /* Mobile menu */
+        .nav-mobile-panel {
+            display: none; position: fixed; inset: 0; z-index: 999;
+            background: #fff; padding: 1.25rem 1.5rem 2rem;
+            flex-direction: column; gap: .25rem;
+            overflow-y: auto;
+        }
+        .nav-mobile-panel.open { display: flex; }
+        .nav-mobile-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .nav-mobile-close { width: 40px; height: 40px; border-radius: 9px; border: 1.5px solid var(--border); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .nav-mobile-link {
+            display: block; padding: .85rem 1rem; border-radius: 10px;
+            font-size: 1rem; font-weight: 500; color: var(--ink-2);
+            text-decoration: none; transition: background .18s;
+        }
+        .nav-mobile-link:hover { background: var(--surf); color: var(--blue); }
+        .nav-mobile-divider { height: 1px; background: var(--border); margin: .5rem 0; }
+        .nav-mobile-cta {
+            display: block; padding: 1rem; text-align: center;
+            background: var(--blue); color: #fff; font-weight: 700;
+            border-radius: 12px; text-decoration: none; margin-top: auto; font-size: .9rem;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links, .nav-search { display: none; }
+            .nav-mobile-btn { display: flex; }
+        }
+        @media (max-width: 640px) {
+            .btn-nav-login { display: none; }
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--ink);
+            color: rgba(255,255,255,.75);
+            padding: 4rem 0 0;
+        }
+        .footer-inner {
+            max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+        }
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.4fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        @media (max-width: 900px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 560px) {
+            .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+        }
+        .footer-brand p { font-size: .875rem; line-height: 1.75; margin-top: .85rem; max-width: 300px; }
+        .footer-brand-logo { height: 40px; display: block; filter: brightness(0) invert(1); }
+        .footer-brand-name { font-family: 'Sora', sans-serif; font-size: 1.2rem; font-weight: 800; color: #fff; }
+        .footer-brand-name em { color: var(--accent); font-style: normal; }
+
+        .footer-social { display: flex; gap: .6rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .footer-social a {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,.7); font-size: .8rem;
+            text-decoration: none; transition: all .2s;
+        }
+        .footer-social a:hover { background: var(--blue); border-color: var(--blue); color: #fff; transform: translateY(-2px); }
+
+        .footer-col h4 { font-family: 'Sora', sans-serif; font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #fff; margin-bottom: 1.25rem; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .7rem; }
+        .footer-col a { font-size: .875rem; color: rgba(255,255,255,.65); text-decoration: none; transition: color .2s; }
+        .footer-col a:hover { color: #fff; }
+
+        .footer-contact-item { display: flex; gap: .75rem; align-items: flex-start; }
+        .footer-contact-item .icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.07); display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .footer-contact-item .icon i { font-size: .75rem; color: rgba(255,255,255,.6); }
+        .footer-contact-item p { font-size: .8rem; color: rgba(255,255,255,.42); margin: 0; }
+        .footer-contact-item span { font-size: .875rem; color: rgba(255,255,255,.8); display: block; }
+        .footer-contact-list { display: flex; flex-direction: column; gap: .9rem; }
+
+        .footer-bottom {
+            padding: 1.5rem 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .8rem; color: rgba(255,255,255,.35);
+        }
+    </style>
+
     @stack('styles')
 </head>
+<body x-data="{ mobileMenuOpen: false }">
 
-<body class="font-sans antialiased bg-gray-50 text-gray-800" x-data="{ mobileMenuOpen: false }">
-    <div class="min-h-screen flex flex-col">
+{{-- ═══════════════ NAVBAR ═══════════════ --}}
+<nav class="site-nav" id="site-nav">
+    <div class="nav-inner">
 
-        <header>
-            <!-- Top Bar -->
-            <div class="bg-gray-800 text-white text-sm">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-2">
-                    <div>
-                        <i class="fas fa-map-marker-alt mr-2"></i>
-                        <span>{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</span>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        @if(!empty($settings['social_facebook']))
-                            <a href="{{ $settings['social_facebook'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        @endif
-                        @if(!empty($settings['social_twitter']))
-                            <a href="{{ $settings['social_twitter'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-twitter"></i></a>
-                        @endif
-                        @if(!empty($settings['social_instagram']))
-                            <a href="{{ $settings['social_instagram'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-instagram"></i></a>
-                        @endif
-                        @if(!empty($settings['social_youtube']))
-                            <a href="{{ $settings['social_youtube'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-youtube"></i></a>
-                        @endif
-                        @if(!empty($settings['social_tiktok']))
-                            <a href="{{ $settings['social_tiktok'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-tiktok"></i></a>
-                        @endif
-                        @if(!empty($settings['social_whatsapp']))
-                            <a href="{{ $settings['social_whatsapp'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                        @endif
-                        @if(!empty($settings['social_linkedin']))
-                            <a href="{{ $settings['social_linkedin'] }}" class="hover:text-primary-400 transition" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                        @endif
-                    </div>
-                </div>
-            </div>
+        {{-- Logo --}}
+        <a href="{{ route('home') }}" class="nav-logo" style="display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0;">
+            <img src="{{ asset('logo.png') }}" alt="Ray Academy" onerror="this.style.display='none'">
+            <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.15rem;color:var(--ink);letter-spacing:-.02em;"><em style="color:var(--blue);"></em></span>
+        </a>
 
-            <!-- Main Header with Navigation -->
-            <div class="bg-white border-b border-gray-200 relative">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <!-- Combined Header: Logo Center, Menu Left-Right -->
-                    <div class="relative flex items-center justify-center py-3" style="min-height: 60px;">
-                        <!-- Logo (Center) -->
-                        <a href="{{ route('home') }}" class="z-10">
-                            <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-12 md:h-14">
-                        </a>
-
-                        <!-- Left Navigation (Desktop) -->
-                        <div class="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 items-center space-x-8" style="z-index: 100;">
-                            <a href="{{ route('home') }}"
-                                class="nav-link text-gray-700 text-sm font-semibold uppercase tracking-wider hover:text-primary-600 transition">
-                                Beranda
-                            </a>
-                            
-                            @if (isset($articleCategories) && $articleCategories->count() > 0)
-                            <!-- Article Categories Dropdown -->
-                            <div class="relative" x-data="{ open: false }">
-                                <button @mouseenter="open = true" 
-                                        @mouseleave="open = false"
-                                        class="flex items-center space-x-1 text-gray-700 text-sm font-semibold uppercase tracking-wider hover:text-primary-600 transition">
-                                    <span>Kategori</span>
-                                    <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
-                                </button>
-                                
-                                <div x-show="open" 
-                                     @mouseenter="open = true"
-                                     @mouseleave="open = false"
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 scale-95"
-                                     x-transition:enter-end="opacity-100 scale-100"
-                                     x-transition:leave="transition ease-in duration-75"
-                                     x-transition:leave-start="opacity-100 scale-100"
-                                     x-transition:leave-end="opacity-0 scale-95"
-                                     class="absolute top-full left-0 mt-2 w-56 bg-white rounded-md shadow-xl py-2 border border-gray-200"
-                                     style="z-index: 9999;">
-                                    @foreach ($articleCategories as $category)
-                                        <a href="{{ route('article.category', $category->slug) }}"
-                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                            {{ $category->name }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-
-                        <!-- Right Navigation (Desktop) -->
-                        <div class="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 items-center space-x-4" style="z-index: 100;">
-                            <form action="{{ route('search') }}" method="GET" class="flex items-center bg-gray-100 rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500">
-                                <label for="header-search" class="sr-only">Cari</label>
-                                <input
-                                    type="search"
-                                    id="header-search"
-                                    name="q"
-                                    class="bg-transparent focus:outline-none text-sm text-gray-600 placeholder-gray-400 w-40"
-                                    placeholder="Cari artikel"
-                                >
-                                <button type="submit" class="text-gray-500 hover:text-primary-600 transition">
-                                    <i class="fas fa-search h-4 w-4"></i>
-                                </button>
-                            </form>
-                            @auth
-                            <!-- User Dropdown Menu -->
-                                <div class="relative" x-data="{ open: false }">
-                                    <button @click="open = !open" class="flex items-center space-x-1 text-gray-700 text-sm font-medium hover:text-primary-600 transition">
-                                        <span class="hidden lg:inline">{{ Auth::user()->name }}</span>
-                                        <i class="fas fa-user-circle ml-2"></i>
-                                        <i class="fas fa-chevron-down ml-1" :class="{ 'rotate-180': open }"></i>
-                                    </button>
-                                    
-                                    <div x-show="open" 
-                                         @click.away="open = false"
-                                         x-transition:enter="transition ease-out duration-200"
-                                         x-transition:enter-start="opacity-0 scale-95"
-                                         x-transition:enter-end="opacity-100 scale-100"
-                                         x-transition:leave="transition ease-in duration-75"
-                                         x-transition:leave-start="opacity-100 scale-100"
-                                         x-transition:leave-end="opacity-0 scale-95"
-                                         class="absolute top-full right-0 mt-2 w-48 bg-white rounded-md shadow-xl py-2 border border-gray-200"
-                                         style="z-index: 9999;">
-                                        <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <i class="fas fa-user mr-2"></i>My Profile
-                                        </a>
-                                        
-                                        <a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" 
-                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                           title="{{ Auth::user()->hasRole('student') ? 'Student Dashboard' : 'Admin Panel' }}">
-                                            <i class="{{ Auth::user()->hasRole('student') ? 'fas fa-th-large' : 'fas fa-cog' }} mr-2"></i>
-                                            {{ Auth::user()->hasRole('student') ? 'Dashboard' : 'Admin Panel' }}
-                                        </a>
-                                        <div class="border-t border-gray-100"></div>
-                                        <form method="POST" action="{{ route('logout') }}" class="block">
-                                            @csrf
-                                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="auth-link text-gray-700 text-sm font-medium hover:text-primary-600 transition">Log
-                                    in</a>
-                            @endauth
-                        </div>
-
-                        <!-- Mobile Menu Button -->
-                        <div class="lg:hidden absolute left-0 top-1/2 -translate-y-1/2">
-                            <button @click="mobileMenuOpen = true" class="text-gray-600 p-2 rounded-md">
-                                <i class="fas fa-bars h-6 w-6"></i>
-                            </button>
-                        </div>
-
-                        <!-- Mobile Search & User -->
-                        <div class="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-2">
-                            <a href="{{ route('search') }}" class="text-gray-600 hover:text-primary-600">
-                                <i class="fas fa-search h-5 w-5"></i>
-                            </a>
-                            @auth
-                                <a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" 
-                                   class="text-gray-700 hover:text-primary-600 transition"
-                                   title="{{ Auth::user()->hasRole('student') ? 'Student Dashboard' : 'Admin Panel' }}">
-                                    <i class="{{ Auth::user()->hasRole('student') ? 'fas fa-th-large' : 'fas fa-cog' }} h-5 w-5"></i>
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}" class="inline">
-                                    @csrf
-                                    <button type="submit" class="text-gray-700 hover:text-primary-600 transition">
-                                        <i class="fas fa-sign-out-alt h-5 w-5"></i>
-                                    </button>
-                                </form>
-                            @endauth
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sticky Navigation Placeholder (for scroll behavior) -->
-            <nav id="main-header" class="hidden">
-        </header>
-
-        <!-- Mobile Menu Overlay -->
-        <div x-cloak
-             x-show="mobileMenuOpen" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-white z-50 p-4">
-            <div class="flex justify-between items-center mb-8">
-                <a href="{{ route('home') }}">
-                    <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-14 md:h-16">
-                </a>
-                <button @click="mobileMenuOpen = false" class="text-gray-800">
-                    <i class="fas fa-times h-6 w-6"></i>
+        {{-- Desktop Links --}}
+        <ul class="nav-links">
+            <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a></li>
+            <li><a href="{{ route('course.index') }}" class="{{ request()->routeIs('course.*') ? 'active' : '' }}">Kursus</a></li>
+            @if(isset($articleCategories) && $articleCategories->count() > 0)
+            <li class="nav-dropdown" x-data="{ open: false }">
+                <button @mouseenter="open=true" @mouseleave="open=false" :class="open ? 'active' : ''">
+                    Artikel
+                    <svg style="width:13px;height:13px;transition:transform .2s;" :style="open ? 'transform:rotate(180deg)' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-            </div>
-            <form action="{{ route('search') }}" method="GET" class="mb-6">
-                <label for="mobile-search" class="sr-only">Cari</label>
-                <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
-                    <i class="fas fa-search text-gray-400"></i>
-                    <input
-                        type="search"
-                        id="mobile-search"
-                        name="q"
-                        class="flex-1 focus:outline-none text-sm text-gray-700 placeholder-gray-400"
-                        placeholder="Cari kelas atau artikel..."
-                    >
+                <div class="nav-dropdown-menu" x-show="open" @mouseenter="open=true" @mouseleave="open=false"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 translate-y-1"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <a href="{{ route('article.index') }}" style="font-weight:600;color:var(--blue);">Semua Artikel</a>
+                    @foreach($articleCategories->take(8) as $cat)
+                        <a href="{{ route('article.category', $cat->slug) }}">{{ $cat->name }}</a>
+                    @endforeach
                 </div>
+            </li>
+            @else
+            <li><a href="{{ route('article.index') }}" class="{{ request()->routeIs('article.*') ? 'active' : '' }}">Artikel</a></li>
+            @endif
+        </ul>
+
+        {{-- Search + CTA --}}
+        <div class="nav-right">
+            <form action="{{ route('search') }}" method="GET" class="nav-search" style="display:flex;">
+                <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input type="search" name="q" placeholder="Cari kursus..." value="{{ request('q') }}">
             </form>
-            <nav class="flex flex-col space-y-4">
-                @auth
-                    <div class="border-b border-gray-200 pb-4 mb-4">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <i class="fas fa-user-circle text-2xl text-gray-600"></i>
-                            <div>
-                                <p class="font-semibold text-gray-800">{{ Auth::user()->name }}</p>
-                                <p class="text-sm text-gray-600">{{ Auth::user()->username ?? Auth::user()->email }}</p>
-                            </div>
+
+            @auth
+                <a href="{{ route('dashboard') }}" class="nav-avatar">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}">
+                    @else
+                        <div style="width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
-                        <div class="flex flex-col space-y-2">
-                            <a href="{{ route('profile.index') }}" class="text-gray-700 hover:text-primary-600 transition flex items-center">
-                                <i class="fas fa-user mr-2"></i>My Profile
-                            </a>
-                            <a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" 
-                               class="text-gray-700 hover:text-primary-600 transition flex items-center"
-                               title="{{ Auth::user()->hasRole('student') ? 'Student Dashboard' : 'Admin Panel' }}">
-                                <i class="{{ Auth::user()->hasRole('student') ? 'fas fa-th-large' : 'fas fa-cog' }} mr-2"></i>
-                                {{ Auth::user()->hasRole('student') ? 'Dashboard' : 'Admin Panel' }}
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="text-gray-700 hover:text-primary-600 transition flex items-center w-full text-left">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @endauth
-                
-                @if (isset($articleCategories))
-                    <div class="border-b border-gray-200 pb-4">
-                        <h3 class="text-gray-600 text-sm font-semibold uppercase tracking-wider mb-3">Kategori</h3>
-                        <div class="space-y-2">
-                            @foreach ($articleCategories as $category)
-                                <a href="{{ route('article.category', $category->slug) }}"
-                                    class="block text-gray-700 hover:text-primary-600 transition pl-4">{{ $category->name }}</a>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </nav>
+                    @endif
+                    <span>{{ explode(' ', auth()->user()->name)[0] }}</span>
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="btn-nav-login">Masuk</a>
+                <a href="{{ route('register') }}" class="btn-nav-cta">
+                    Daftar Gratis
+                    <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            @endauth
         </div>
 
-        <main class="flex-grow">
-            @yield('content')
-        </main>
+        {{-- Mobile button --}}
+        <button class="nav-mobile-btn" onclick="document.getElementById('mobileNav').classList.toggle('open')" aria-label="Menu">
+            <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+    </div>
+</nav>
 
-        <footer style="background-color: #1474bc;" class="text-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-                <!-- Main Footer Content -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 mb-8 md:mb-12">
-                    
-                    <!-- Brand & About Section -->
-                    <div class="lg:col-span-1">
-                        <div class="mb-6">
-                            <a href="{{ route('home') }}" class="inline-block mb-4">
-                                <img src="{{ asset('logo-white.png') }}" alt="Ray Academy" class="h-12 md:h-16 w-auto">
-                            </a>
-                            <h3 class="text-lg md:text-xl font-bold mb-3">Ray Academy</h3>
-                            <p class="text-sm opacity-90 leading-relaxed">
-                                Empowering Minds for a Lifetime of Growth. Platform pembelajaran untuk pengembangan diri, bisnis, dan teknologi. 
-                                Pelajari ilmu kecantikan yang benar dan aman.
-                            </p>
-                        </div>
-                    </div>
+{{-- Mobile Nav Panel --}}
+<div class="nav-mobile-panel" id="mobileNav">
+    <div class="nav-mobile-top">
+        <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.1rem;color:var(--ink);">Ray<em style="color:var(--blue);font-style:normal;">Academy</em></span>
+        <button class="nav-mobile-close" onclick="document.getElementById('mobileNav').classList.remove('open')" aria-label="Tutup">
+            <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
 
-                    <!-- Quick Links -->
-                    <div>
-                        <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Navigasi</h4>
-                        <ul class="space-y-2.5 md:space-y-3">
-                            <li><a href="{{ route('home') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Beranda</a></li>
-                            <li><a href="{{ route('search') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Pencarian</a></li>
-                            {{-- kalo masih guest, hidden aja --}}
-                            @auth
-                            <li><a href="{{ Auth::user()->hasRole('student') ? route('dashboard') : route('admin.dashboard') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Dashboard</a></li>
-                            @else
-                                <li><a href="{{ route('login') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Masuk</a></li>
-                                <li><a href="{{ route('register') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Daftar</a></li>
-                            @endauth
-                            @auth
-                                <li><a href="{{ route('profile.index') }}" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Profil Saya</a></li>
-                            @endauth
-                        </ul>
-                    </div>
+    <form action="{{ route('search') }}" method="GET" style="display:flex;align-items:center;background:var(--surf);border:1.5px solid var(--border);border-radius:10px;padding:.6rem 1rem;gap:.5rem;margin-bottom:.75rem;">
+        <svg style="width:15px;height:15px;color:var(--muted);flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+        <input type="search" name="q" placeholder="Cari kursus..." style="border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif;font-size:.9rem;width:100%;color:var(--ink);">
+    </form>
 
-                    <!-- Article Categories -->
-                    <div>
-                        <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Kategori Artikel</h4>
-                        <ul class="space-y-2.5 md:space-y-3">
-                            @if (isset($articleCategories))
-                                @foreach ($articleCategories->take(6) as $category)
-                                    <li>
-                                        <a href="{{ route('article.category', $category->slug) }}" 
-                                           class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">
-                                            {{ $category->name }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            @else
-                                <li><a href="#" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Skincare</a></li>
-                                <li><a href="#" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Haircare</a></li>
-                                <li><a href="#" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Makeup</a></li>
-                                <li><a href="#" class="text-sm opacity-90 hover:opacity-100 hover:text-white transition">Personal Care</a></li>
-                            @endif
-                        </ul>
-                    </div>
+    <a href="{{ route('home') }}" class="nav-mobile-link">Beranda</a>
+    <a href="{{ route('course.index') }}" class="nav-mobile-link">Kursus</a>
+    <a href="{{ route('article.index') }}" class="nav-mobile-link">Artikel</a>
 
-                    <!-- Contact & Social -->
-                    <div>
-                        <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider">Kontak & Sosial</h4>
-                        <div class="space-y-3 md:space-y-4">
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-envelope text-sm mt-1 flex-shrink-0"></i>
-                                <div class="min-w-0">
-                                    <p class="text-sm opacity-90">Email</p>
-                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_email'] ?? '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef86818980af848a838e9c8b8688869b8e83c18c8082">[email&#160;protected]</a>' }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-phone text-sm mt-1 flex-shrink-0"></i>
-                                <div class="min-w-0">
-                                    <p class="text-sm opacity-90">Telepon</p>
-                                    <p class="text-xs opacity-75 break-words">{{ $settings['contact_phone'] ?? '+62 123 456 7890' }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-3">
-                                <i class="fas fa-map-marker-alt text-sm mt-1 flex-shrink-0"></i>
-                                <div class="min-w-0">
-                                    <p class="text-sm opacity-90">Alamat</p>
-                                    <p class="text-xs opacity-75">{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Social Media -->
-                        <div class="mt-6">
-                            <h5 class="text-sm font-semibold mb-3 uppercase tracking-wider">Ikuti Kami</h5>
-                            <div class="flex flex-wrap gap-3 md:gap-4">
-                                @if(!empty($settings['social_facebook']))
-                                    <a href="{{ $settings['social_facebook'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="Facebook">
-                                        <i class="fab fa-facebook-f text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_twitter']))
-                                    <a href="{{ $settings['social_twitter'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="Twitter">
-                                        <i class="fab fa-twitter text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_instagram']))
-                                    <a href="{{ $settings['social_instagram'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="Instagram">
-                                        <i class="fab fa-instagram text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_youtube']))
-                                    <a href="{{ $settings['social_youtube'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="YouTube">
-                                        <i class="fab fa-youtube text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_tiktok']))
-                                    <a href="{{ $settings['social_tiktok'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="TikTok">
-                                        <i class="fab fa-tiktok text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_whatsapp']))
-                                    <a href="{{ $settings['social_whatsapp'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="WhatsApp">
-                                        <i class="fab fa-whatsapp text-lg"></i>
-                                    </a>
-                                @endif
-                                @if(!empty($settings['social_linkedin']))
-                                    <a href="{{ $settings['social_linkedin'] }}" target="_blank"
-                                       class="text-white hover:text-gray-200 transition-colors duration-200"
-                                       aria-label="LinkedIn">
-                                        <i class="fab fa-linkedin-in text-lg"></i>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+    @if(isset($articleCategories) && $articleCategories->count() > 0)
+    <div class="nav-mobile-divider"></div>
+    <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.25rem 1rem .1rem;">Kategori Artikel</p>
+    @foreach($articleCategories->take(5) as $cat)
+        <a href="{{ route('article.category', $cat->slug) }}" class="nav-mobile-link" style="font-size:.875rem;padding:.6rem 1rem;">{{ $cat->name }}</a>
+    @endforeach
+    @endif
+
+    <div class="nav-mobile-divider" style="margin-top:auto;"></div>
+    @auth
+        <a href="{{ route('dashboard') }}" class="nav-mobile-cta">Dashboard Saya</a>
+    @else
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem;">
+            <a href="{{ route('login') }}" style="display:block;padding:.9rem;text-align:center;border:1.5px solid var(--border);border-radius:12px;font-weight:600;font-size:.9rem;color:var(--ink-2);text-decoration:none;">Masuk</a>
+            <a href="{{ route('register') }}" class="nav-mobile-cta" style="margin-top:0;">Daftar Gratis</a>
+        </div>
+    @endauth
+</div>
+
+{{-- ═══════════════ CONTENT ═══════════════ --}}
+<main>
+    @yield('content')
+</main>
+
+{{-- ═══════════════ FOOTER ═══════════════ --}}
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-top">
+
+            {{-- Brand --}}
+            <div class="footer-brand">
+                <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="footer-brand-logo" onerror="this.style.display='none';document.getElementById('footer-brand-text').style.display='block'">
+                <span id="footer-brand-text" style="display:none;" class="footer-brand-name">Ray<em>Academy</em></span>
+                <p>Platform belajar online terpercaya dengan ratusan kursus dari instruktur berpengalaman. Belajar kapan saja, di mana saja.</p>
+                <div class="footer-social">
+                    @if(!empty($settings['social_facebook']))
+                        <a href="{{ $settings['social_facebook'] }}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    @endif
+                    @if(!empty($settings['social_instagram']))
+                        <a href="{{ $settings['social_instagram'] }}" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if(!empty($settings['social_youtube']))
+                        <a href="{{ $settings['social_youtube'] }}" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    @endif
+                    @if(!empty($settings['social_tiktok']))
+                        <a href="{{ $settings['social_tiktok'] }}" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    @endif
+                    @if(!empty($settings['social_whatsapp']))
+                        <a href="{{ $settings['social_whatsapp'] }}" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    @endif
+                    @if(!empty($settings['social_linkedin']))
+                        <a href="{{ $settings['social_linkedin'] }}" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    @endif
+                    @if(!empty($settings['social_twitter']))
+                        <a href="{{ $settings['social_twitter'] }}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    @endif
                 </div>
+            </div>
 
-                <!-- Bottom Footer -->
-                <div class="border-t border-white border-opacity-20 pt-6 md:pt-8">
-                    <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0">
-                        <div class="text-center">
-                            <p class="text-xs md:text-sm opacity-90">
-                                Copyright © {{ date('Y') }}, Ray Academy. All Rights Reserved.
-                            </p>
-                      
+            {{-- Navigasi --}}
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="{{ route('home') }}">Beranda</a></li>
+                    <li><a href="{{ route('course.index') }}">Semua Kursus</a></li>
+                    <li><a href="{{ route('article.index') }}">Artikel & Tips</a></li>
+                    @guest
+                    <li><a href="{{ route('register') }}">Daftar Gratis</a></li>
+                    <li><a href="{{ route('login') }}">Masuk</a></li>
+                    @endguest
+                    @auth
+                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                    @endauth
+                </ul>
+            </div>
+
+            {{-- Kategori Artikel --}}
+            <div class="footer-col">
+                <h4>Kategori</h4>
+                <ul>
+                    @if(isset($articleCategories))
+                        @foreach($articleCategories->take(6) as $category)
+                            <li><a href="{{ route('article.category', $category->slug) }}">{{ $category->name }}</a></li>
+                        @endforeach
+                    @endif
+                </ul>
+            </div>
+
+            {{-- Kontak --}}
+            <div class="footer-col">
+                <h4>Kontak Kami</h4>
+                <div class="footer-contact-list">
+                    @if(!empty($settings['contact_email']))
+                    <div class="footer-contact-item">
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div><p>Email</p><span>{{ $settings['contact_email'] }}</span></div>
+                    </div>
+                    @endif
+                    @if(!empty($settings['contact_phone']))
+                    <div class="footer-contact-item">
+                        <div class="icon"><i class="fas fa-phone"></i></div>
+                        <div><p>Telepon</p><span>{{ $settings['contact_phone'] }}</span></div>
+                    </div>
+                    @endif
+                    <div class="footer-contact-item">
+                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div><p>Alamat</p><span>{{ $settings['contact_address'] ?? 'Bandung, Jawa Barat, Indonesia' }}</span></div>
                     </div>
                 </div>
             </div>
-        </footer>
+        </div>
 
-        @stack('scripts')
+        <div class="footer-bottom">
+            <p>Copyright &copy; {{ date('Y') }} Ray Academy. All Rights Reserved.</p>
+        </div>
     </div>
+</footer>
+
+<script>
+    // Navbar scroll effect
+    const nav = document.getElementById('site-nav');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-mobile-link, .nav-mobile-cta').forEach(el => {
+        el.addEventListener('click', () => {
+            document.getElementById('mobileNav').classList.remove('open');
+        });
+    });
+</script>
+
+@stack('scripts')
 </body>
 </html>
