@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ArticleController; // Add import for ArticleController
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\TagController;
@@ -23,7 +23,7 @@ use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ActivityLogController;
-use App\Http\Controllers\Admin\ShareDomainController; // ADD THIS LINE
+use App\Http\Controllers\Admin\ShareDomainController;
 use App\Http\Controllers\ProfileController;
 
 // Public routes
@@ -38,15 +38,23 @@ Route::get('/courses', [CourseController::class, 'index'])->name('course.index')
 Route::get('/course/{slug}', [CourseController::class, 'show'])->name('course.show');
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->name('course.enroll');
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
-Route::get('/articles', [ArticleController::class, 'index'])->name('article.index'); // Add route for articles index page
-Route::get('/articles/load-more', [ArticleController::class, 'loadMore'])->name('article.load-more'); // Add route for loading more articles
-Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category'); // Add route for articles by category
+Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
+Route::get('/articles/load-more', [ArticleController::class, 'loadMore'])->name('article.load-more');
+Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category');
 Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 // Tag browsing routes
 Route::get('/articles/tags', [TagController::class, 'index'])->name('tag.index');
 Route::get('/articles/tag/{tag:slug}', [TagController::class, 'show'])->name('tag.show');
+
+Route::get('/about', function () {
+    return view('about.index');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact.index');
+})->name('contact');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
@@ -72,12 +80,17 @@ Route::middleware('auth')->group(function () {
     })->name('attachments.store');
 });
 
-// Admin routes
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+// ═══════════════════════════════════════════════════════════════
+// ADMIN ROUTES - HANYA UNTUK ADMIN & SUPER-ADMIN
+// ═══════════════════════════════════════════════════════════════
+Route::prefix('admin')
+    ->middleware(['auth', 'admin']) // PROTEKSI ADMIN
+    ->name('admin.')
+    ->group(function () {
+        
+        // Admin Dashboard
+        Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // Routes that require admin panel access
-    Route::middleware('can:access admin panel')->name('admin.')->group(function () {
         // Course management routes
         Route::middleware('can:view courses')->group(function () {
             Route::resource('courses', AdminCourseController::class);
@@ -93,7 +106,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::resource('lessons', AdminLessonController::class);
         });
         
-        // User management - only for admins
+        // User management
         Route::middleware('can:view users')->group(function () {
             Route::resource('users', AdminUserController::class);
         });
@@ -134,11 +147,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::put('site-settings', [SiteSettingsController::class, 'update'])->name('site-settings.update');
         });
 
-        // Share Domains Management - ADD THIS SECTION
+        // Share Domains Management
         Route::middleware('can:view share domains')->group(function () {
             Route::resource('share-domains', ShareDomainController::class);
             
-            // Additional Share Domain Routes
             Route::patch('share-domains/{id}/activate', [ShareDomainController::class, 'activate'])
                 ->name('share-domains.activate');
             
@@ -155,4 +167,3 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
             Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
         });
     });
-});

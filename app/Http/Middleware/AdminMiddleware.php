@@ -9,14 +9,33 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
+        // Check if user is logged in
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Please login to access this page.');
+            return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu untuk mengakses halaman ini.');
         }
 
-        if (!Auth::user()->hasAnyRole(['admin', 'Super-Admin'])) {
-            return redirect()->route('home')->with('error', 'You do not have permission to access this area.');
+        $user = Auth::user();
+
+        // Check if user has admin or super-admin role
+        if (!$user->hasAnyRole(['admin', 'Super-Admin'])) {
+            // Log unauthorized access attempt (optional)
+            \Log::warning('Unauthorized admin access attempt', [
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'ip' => $request->ip(),
+                'url' => $request->fullUrl(),
+                'time' => now()
+            ]);
+
+            // Return 403 Forbidden for better security
+            abort(403, 'Akses ditolak. Anda tidak memiliki izin untuk mengakses area admin.');
         }
 
         return $next($request);

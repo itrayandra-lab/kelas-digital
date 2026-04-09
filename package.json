@@ -19,6 +19,6 @@
     "dependencies": {
         "@alpinejs/collapse": "^3.15.0",
         "@splidejs/splide": "^4.1.4",
-        "alpinejs": "^3.15.0"
+        "alpinejs": "^3.15.11"
     }
 }

@@ -633,39 +633,6 @@
     }
 }
 
-/* MOBILE: Stats HORIZONTAL (tidak vertikal) */
-@media (max-width: 640px) {
-    .hero-btns {
-        flex-direction: column;
-        width: 100%;
-    }
-    .btn-hero-primary,
-    .btn-hero-ghost {
-        width: 100%;
-        justify-content: center;
-    }
-    /* Stats tetap HORIZONTAL di mobile */
-    .hero-stats {
-        display: flex;
-        flex-direction: row; /* HORIZONTAL */
-        gap: 1.5rem;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-    }
-    .hero-stats > div {
-        flex-shrink: 0;
-        min-width: 80px;
-    }
-    .hero-stat-sep {
-        display: block; /* Tetap tampil sebagai separator */
-    }
-    .hero-stat-num {
-        font-size: 1.5rem;
-    }
-    .hero-stat-label {
-        font-size: 0.65rem;
-    }
-}
 .hero-float-card:nth-child(3) { bottom: 22%; animation-delay: -1.5s; }
 @keyframes float-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .hf-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -773,7 +740,12 @@
 .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
 @media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; gap: 3rem; } }
 
-.why-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.why-stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1rem; 
+}
+
 .why-stat-card {
     background: var(--surf); border: 1.5px solid var(--border);
     border-radius: 16px; padding: 1.5rem;
@@ -798,6 +770,30 @@
     margin-bottom: .85rem;
 }
 .why-stat-card.featured .why-stat-icon { background: rgba(255,255,255,.15); }
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .why-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .why-stat-card {
+        padding: 1.25rem;
+    }
+    .why-stat-card.featured {
+        grid-column: span 1;
+        padding: 1.5rem;
+    }
+    .why-stat-num {
+        font-size: 1.8rem;
+    }
+    .why-stat-card.featured .why-stat-num { 
+        font-size: 2.2rem; 
+    }
+    .why-stat-label {
+        font-size: .75rem;
+    }
+}
 
 .benefit-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
 .benefit-item { display: flex; gap: 1rem; align-items: flex-start; }
@@ -1264,6 +1260,178 @@
 
 /* Shared max-width wrapper */
 .wrap { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
+
+@media (max-width: 640px) {
+    .wrap {
+        padding: 0 1rem;
+    }
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE FIX - CRITICAL
+   ═══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+    /* Prevent horizontal scroll - ABSOLUTE PRIORITY */
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+    }
+    
+    /* All sections max-width constraint */
+    section, .hero, .why-section, .courses-section, 
+    .trending-section, .articles-section, .cta-section, .faq-section {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Container padding fix */
+    .wrap,
+    .nav-inner,
+    .footer-inner,
+    .hero-inner {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        max-width: 100% !important;
+    }
+    
+    /* Hero badges - smaller size */
+    .hero-badge {
+        font-size: 0.65rem !important;
+        padding: 0.35rem 0.7rem !important;
+    }
+    
+    .section-tag,
+    .section-tag-white {
+        font-size: 0.65rem !important;
+        padding: 0.3rem 0.7rem !important;
+    }
+    
+    /* Hero title smaller */
+    .hero-title {
+        font-size: 1.95rem !important;
+        line-height: 1.15 !important;
+    }
+    
+    /* Hero description */
+    .hero-desc {
+        font-size: 0.92rem !important;
+        line-height: 1.65 !important;
+    }
+    
+    /* Hero stats - 2 column grid */
+    .hero-stats {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    .hero-stat-sep {
+        display: none !important;
+    }
+    
+    .hero-stat-num {
+        font-size: 1.4rem !important;
+    }
+    
+    .hero-stat-label {
+        font-size: 0.68rem !important;
+    }
+    
+    /* Hero buttons */
+    .hero-btns {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0.75rem !important;
+    }
+    
+    .btn-hero-primary,
+    .btn-hero-ghost {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 0.8rem 1.5rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* WHY STATS GRID - FORCE SINGLE COLUMN */
+    .why-stats-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    .why-stat-card {
+        padding: 1.25rem !important;
+    }
+    
+    .why-stat-card.featured {
+        grid-column: span 1 !important;
+        padding: 1.5rem !important;
+    }
+    
+    .why-stat-num {
+        font-size: 1.75rem !important;
+    }
+    
+    .why-stat-card.featured .why-stat-num {
+        font-size: 2.1rem !important;
+    }
+    
+    .why-stat-label {
+        font-size: 0.74rem !important;
+    }
+    
+    .why-stat-icon {
+        width: 36px !important;
+        height: 36px !important;
+        margin-bottom: 0.7rem !important;
+    }
+    
+    .why-stat-icon svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+    
+    /* Header CTA button */
+    .btn-nav-cta {
+        padding: 0.48rem 0.95rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .btn-nav-cta svg {
+        width: 12px !important;
+        height: 12px !important;
+    }
+    
+    /* Nav gap smaller */
+    .nav-inner {
+        gap: 0.65rem !important;
+    }
+    
+    /* Course grid */
+    .course-grid,
+    .trending-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Article grid */
+    .articles-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* FAQ grid */
+    .faq-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Section headers */
+    .section-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+}
+
 </style>
 @endpush
 @section('content')
@@ -1864,8 +2032,8 @@
 
 @push('scripts')
 {{-- Splide slider --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide-core.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+<link rel="stylesheet" href="{{ asset('vendor/splide/css/splide-core.min.css') }}">
+<script src="{{ asset('vendor/splide/js/splide.min.js') }}"></script>
 
 <style>
     /* Splide pagination dots */

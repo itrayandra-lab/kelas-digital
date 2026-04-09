@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-rich-text::styles theme="richtextlaravel" />
@@ -36,18 +36,26 @@
             --acc-bg:  #ecfdf5;
         }
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; color: var(--ink); background: #fff; -webkit-font-smoothing: antialiased; }
+        body { 
+            font-family: 'DM Sans', sans-serif; 
+            color: var(--ink); 
+            background: #fff; 
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
         h1,h2,h3,h4,h5,h6 { font-family: 'Sora', sans-serif; }
 
         /* ── NAVBAR ── */
         .site-nav {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(255,255,255,.88);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border-bottom: 1px solid var(--border);
-            transition: box-shadow .3s;
-        }
+    position: sticky; top: 0; z-index: 1000;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow .3s;
+    max-width: 100vw;
+}
         .site-nav.scrolled { box-shadow: 0 4px 28px rgba(10,22,40,.08); }
 
         .nav-inner {
@@ -70,15 +78,15 @@
         }
         .nav-links a, .nav-links button {
             font-family: 'DM Sans', sans-serif;
-            font-size: .875rem; font-weight: 500; color: var(--ink-2);
-            text-decoration: none; padding: .5rem .85rem; border-radius: 8px;
+            font-size: .9375rem; font-weight: 600; color: var(--ink-2);
+            text-decoration: none; padding: .6rem 1rem; border-radius: 8px;
             border: none; background: transparent; cursor: pointer;
             transition: background .18s, color .18s;
             display: flex; align-items: center; gap: .35rem;
             white-space: nowrap;
         }
         .nav-links a:hover, .nav-links button:hover { background: var(--surf); color: var(--blue); }
-        .nav-links a.active { color: var(--blue); font-weight: 600; }
+        .nav-links a.active { color: var(--blue); font-weight: 700; }
 
         .nav-dropdown {
             position: relative;
@@ -105,12 +113,15 @@
             background: var(--surf); border: 1.5px solid var(--border);
             border-radius: 10px; padding: .45rem .85rem; gap: .45rem;
             transition: border-color .2s, box-shadow .2s;
+            max-width: 180px;
         }
         .nav-search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,116,188,.12); }
         .nav-search input {
             border: none; background: transparent; outline: none;
             font-family: 'DM Sans', sans-serif;
-            font-size: .83rem; color: var(--ink); width: 130px;
+            font-size: .83rem; color: var(--ink); 
+            width: 100%;
+            min-width: 0;
         }
         .nav-search input::placeholder { color: var(--muted); }
         .nav-search svg { color: var(--muted); flex-shrink: 0; }
@@ -133,6 +144,13 @@
             transition: all .2s; display: flex; align-items: center; gap: .4rem;
         }
         .btn-nav-cta:hover { background: var(--blue-d); border-color: var(--blue-d); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(20,116,188,.3); }
+        
+        @media (max-width: 640px) {
+            .btn-nav-cta {
+                padding: .5rem 1rem;
+                font-size: .8125rem;
+            }
+        }
 
         /* Avatar */
         .nav-avatar {
@@ -179,11 +197,28 @@
         }
 
         @media (max-width: 1024px) {
-            .nav-links, .nav-search { display: none; }
-            .nav-mobile-btn { display: flex; }
+            .nav-links { display: none !important; }
+            .nav-search { display: none !important; }
+            .nav-mobile-btn { display: flex !important; }
         }
+        
         @media (max-width: 640px) {
-            .btn-nav-login { display: none; }
+            .btn-nav-login,
+            .btn-nav-cta { 
+                display: none !important; 
+            }
+            .nav-logo img {
+                height: 32px !important;
+            }
+            .nav-inner {
+                height: 56px !important;
+                padding: 0 0.75rem !important;
+                gap: 0.5rem !important;
+            }
+            .nav-mobile-btn {
+                width: 36px !important;
+                height: 36px !important;
+            }
         }
 
         /* ── FOOTER ── */
@@ -194,6 +229,12 @@
         }
         .footer-inner {
             max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+        }
+        
+        @media (max-width: 640px) {
+            .footer-inner {
+                padding: 0 1rem;
+            }
         }
         .footer-top {
             display: grid;
@@ -257,16 +298,19 @@
         </a>
 
         {{-- Desktop Links --}}
+        {{-- Desktop Links --}}
         <ul class="nav-links">
             <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a></li>
             <li><a href="{{ route('course.index') }}" class="{{ request()->routeIs('course.*') ? 'active' : '' }}">Kursus</a></li>
+            
             @if(isset($articleCategories) && $articleCategories->count() > 0)
-            <li class="nav-dropdown" x-data="{ open: false }">
-                <button @mouseenter="open=true" @mouseleave="open=false" :class="open ? 'active' : ''">
+            <li class="nav-dropdown" x-data="{ open: false }" style="position: relative;">
+                <button @click="open = !open" @click.outside="open = false" :class="open ? 'active' : ''" style="border:none; background:transparent; font-family:'DM Sans', sans-serif;">
                     Artikel
                     <svg style="width:13px;height:13px;transition:transform .2s;" :style="open ? 'transform:rotate(180deg)' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div class="nav-dropdown-menu" x-show="open" @mouseenter="open=true" @mouseleave="open=false"
+                
+                <div class="nav-dropdown-menu" x-show="open" style="display: none; position: absolute; top: calc(100% + 0.5rem); left: 0;"
                      x-transition:enter="transition ease-out duration-150"
                      x-transition:enter-start="opacity-0 translate-y-1"
                      x-transition:enter-end="opacity-100 translate-y-0"
@@ -282,26 +326,54 @@
             @else
             <li><a href="{{ route('article.index') }}" class="{{ request()->routeIs('article.*') ? 'active' : '' }}">Artikel</a></li>
             @endif
+            
+            <li><a href="{{ url('/about.index') }}" class="{{ request()->is('about') ? 'active' : '' }}">Tentang</a></li>
+            <li><a href="{{ url('/contact.index') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Kontak</a></li>
         </ul>
 
         {{-- Search + CTA --}}
         <div class="nav-right">
-            <form action="{{ route('search') }}" method="GET" class="nav-search" style="display:flex;">
+            <form action="{{ route('search') }}" method="GET" class="nav-search">
                 <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
                 <input type="search" name="q" placeholder="Cari kursus..." value="{{ request('q') }}">
             </form>
 
             @auth
-                <a href="{{ route('dashboard') }}" class="nav-avatar">
-                    @if(auth()->user()->avatar)
-                        <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}">
-                    @else
-                        <div style="width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                    @endif
-                    <span>{{ explode(' ', auth()->user()->name)[0] }}</span>
-                </a>
+                <div class="nav-dropdown" x-data="{ openProfile: false }" style="position: relative;">
+                    <button @click="openProfile = !openProfile" @click.outside="openProfile = false" class="nav-avatar" style="border:none; background:transparent; cursor:pointer; font-family:'DM Sans', sans-serif;">
+                        @if(auth()->user()->avatar)
+                            <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}">
+                        @else
+                            <div style="width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem; flex-shrink: 0;">
+    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+</div>
+                        @endif
+                        <span>{{ explode(' ', auth()->user()->name)[0] }}</span>
+                        <svg style="width:13px;height:13px;transition:transform .2s;" :style="openProfile ? 'transform:rotate(180deg)' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <div class="nav-dropdown-menu" x-show="openProfile" style="display: none; right: 0; left: auto; min-width: 180px;"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        
+                        <a href="{{ route('dashboard') }}" style="display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-chart-line"></i> Dashboard Saya
+                        </a>
+                        
+                        <hr style="border:none; border-top:1px solid var(--border); margin: .5rem 0;">
+                        
+                        <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            @csrf
+                            <button type="submit" style="width:100%; text-align:left; background:transparent; border:none; padding:.6rem .9rem; font-size:.83rem; border-radius:8px; color:#ef4444; cursor:pointer; display:flex; align-items:center; gap:8px; font-family:'DM Sans', sans-serif; font-weight: 600;" onmouseover="this.style.backgroundColor='var(--surf)';" onmouseout="this.style.backgroundColor='transparent';">
+                                <i class="fas fa-sign-out-alt"></i> Keluar
+                            </button>
+                        </form>
+                    </div>
+                </div>
             @else
                 <a href="{{ route('login') }}" class="btn-nav-login">Masuk</a>
                 <a href="{{ route('register') }}" class="btn-nav-cta">
@@ -335,6 +407,8 @@
     <a href="{{ route('home') }}" class="nav-mobile-link">Beranda</a>
     <a href="{{ route('course.index') }}" class="nav-mobile-link">Kursus</a>
     <a href="{{ route('article.index') }}" class="nav-mobile-link">Artikel</a>
+    <a href="{{ url('/about.index') }}" class="nav-mobile-link">Tentang</a>
+    <a href="{{ url('/contact.index') }}" class="nav-mobile-link">Kontak</a>
 
     @if(isset($articleCategories) && $articleCategories->count() > 0)
     <div class="nav-mobile-divider"></div>
@@ -370,6 +444,7 @@
                 <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="footer-brand-logo" onerror="this.style.display='none';document.getElementById('footer-brand-text').style.display='block'">
                 <span id="footer-brand-text" style="display:none;" class="footer-brand-name">Ray<em>Academy</em></span>
                 <p>Platform belajar online terpercaya dengan ratusan kursus dari instruktur berpengalaman. Belajar kapan saja, di mana saja.</p>
+                @if(!empty($settings['social_facebook']) || !empty($settings['social_instagram']) || !empty($settings['social_youtube']) || !empty($settings['social_tiktok']) || !empty($settings['social_whatsapp']) || !empty($settings['social_linkedin']) || !empty($settings['social_twitter']))
                 <div class="footer-social">
                     @if(!empty($settings['social_facebook']))
                         <a href="{{ $settings['social_facebook'] }}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -393,6 +468,7 @@
                         <a href="{{ $settings['social_twitter'] }}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
                     @endif
                 </div>
+                @endif
             </div>
 
             {{-- Navigasi --}}
@@ -468,6 +544,7 @@
         });
     });
 </script>
+
 
 @stack('scripts')
 </body>
