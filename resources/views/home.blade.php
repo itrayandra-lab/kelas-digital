@@ -1796,41 +1796,65 @@
 {{-- ══════════════════════════════════════════════
      4. JELAJAHI KATEGORI (Explore Categories)
 ══════════════════════════════════════════════ --}}
-<section style="background:#fff;padding:4rem 0;">
+<section style="background:var(--surf);padding:5rem 0;">
     <div class="wrap">
-        <div style="text-align:center;margin-bottom:3rem;">
-            <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.2rem);font-weight:800;color:var(--ink);margin-bottom:.75rem;">
-                Jelajahi Kategori
-            </h2>
-            <p style="color:var(--muted);font-size:.95rem;max-width:500px;margin:0 auto;">
-                Temukan kursus sesuai minat dan tujuan karir Anda
-            </p>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem;">
+            <div>
+                <span class="section-tag">Kategori Kursus</span>
+                <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.2rem);font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:.5rem;">
+                    Jelajahi Kategori
+                </h2>
+                <p style="color:var(--muted);font-size:.95rem;margin-top:.5rem;max-width:460px;line-height:1.7;">
+                    Temukan kursus sesuai minat dan tujuan karir Anda
+                </p>
+            </div>
+            <a href="{{ route('course.index') }}" class="btn-see-all">
+                Semua Kursus
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
         </div>
+
         {{-- Category Grid --}}
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;">
-            @php
-            $categories = [
-                ['icon'=>'💼','name'=>'Bisnis','slug'=>'bisnis','color'=>'#ef4444'],
-                ['icon'=>'📊','name'=>'Ilmu Data','slug'=>'data','color'=>'#3b82f6'],
-                ['icon'=>'💻','name'=>'Ilmu Komputer','slug'=>'komputer','color'=>'#8b5cf6'],
-                ['icon'=>'🖥️','name'=>'Teknologi Informasi','slug'=>'it','color'=>'#06b6d4'],
-                ['icon'=>'🚀','name'=>'Pengembangan Pribadi','slug'=>'personal','color'=>'#10b981'],
-                ['icon'=>'🏥','name'=>'Layanan Kesehatan','slug'=>'kesehatan','color'=>'#f59e0b'],
-                ['icon'=>'🌐','name'=>'Belajar Bahasa','slug'=>'bahasa','color'=>'#ec4899'],
-                ['icon'=>'🧮','name'=>'Matematika','slug'=>'matematika','color'=>'#6366f1'],
-            ];
-            @endphp
-            @foreach($categories as $cat)
-            <a href="{{ route('course.index') }}?category={{ $cat['slug'] }}" 
-               style="background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:1.5rem 1rem;text-align:center;text-decoration:none;color:inherit;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:.75rem;"
-               onmouseover="this.style.borderColor='{{ $cat['color'] }}';this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.08)'"
-               onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                <div style="font-size:2.5rem;line-height:1;">{{ $cat['icon'] }}</div>
-                <div style="font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:var(--ink);">
-                    {{ $cat['name'] }}
+        @php
+        $catPalette = [
+            ['from'=>'#1474bc','to'=>'#38bdf8'],
+            ['from'=>'#7c3aed','to'=>'#a78bfa'],
+            ['from'=>'#059669','to'=>'#34d399'],
+            ['from'=>'#dc2626','to'=>'#f87171'],
+            ['from'=>'#d97706','to'=>'#fbbf24'],
+            ['from'=>'#db2777','to'=>'#f472b6'],
+            ['from'=>'#0891b2','to'=>'#22d3ee'],
+            ['from'=>'#4f46e5','to'=>'#818cf8'],
+            ['from'=>'#16a34a','to'=>'#4ade80'],
+            ['from'=>'#9333ea','to'=>'#c084fc'],
+            ['from'=>'#ea580c','to'=>'#fb923c'],
+            ['from'=>'#0284c7','to'=>'#38bdf8'],
+        ];
+        @endphp
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+            @forelse($courseCategories as $index => $cat)
+            @php $palette = $catPalette[$index % count($catPalette)]; @endphp
+            <a href="{{ route('course.index') }}?category={{ $cat->slug }}"
+               style="position:relative;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.4rem 1.5rem;text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;gap:1rem;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;"
+               onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.09)';this.style.borderColor='{{ $palette['from'] }}'"
+               onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';this.style.borderColor='var(--border)'">
+                {{-- Accent bar kiri --}}
+                <span style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(180deg,{{ $palette['from'] }},{{ $palette['to'] }});"></span>
+                <div style="padding-left:.25rem;flex:1;min-width:0;">
+                    <div style="font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        {{ $cat->name }}
+                    </div>
+                    <div style="font-size:.75rem;color:var(--muted);margin-top:.25rem;font-weight:500;">
+                        {{ $cat->courses_count }} kursus
+                    </div>
+                </div>
+                <div style="flex-shrink:0;width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,{{ $palette['from'] }},{{ $palette['to'] }});display:flex;align-items:center;justify-content:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </div>
             </a>
-            @endforeach
+            @empty
+            <p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:2rem 0;">Belum ada kategori tersedia.</p>
+            @endforelse
         </div>
     </div>
 </section>

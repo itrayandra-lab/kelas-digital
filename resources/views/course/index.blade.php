@@ -100,6 +100,8 @@
     transition: all 0.18s;
     white-space: nowrap;
     flex-shrink: 0;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .f-tab:hover {
@@ -357,8 +359,8 @@
 <section class="page-hero">
     <div class="page-hero-inner">
         <span class="page-hero-label">Kursus Online</span>
-        <h1>Semua Kursus</h1>
-        <p>Temukan kursus yang tepat dan mulai perjalanan belajarmu hari ini.</p>
+        <h1>{{ $activeCategory ? $activeCategory->name : 'Semua Kursus' }}</h1>
+        <p>{{ $activeCategory ? 'Kursus dalam kategori ' . $activeCategory->name : 'Temukan kursus yang tepat dan mulai perjalanan belajarmu hari ini.' }}</p>
     </div>
 </section>
 
@@ -367,9 +369,12 @@
 <div class="f-wrap">
     <div class="f-inner">
         <div class="f-tabs">
-            <button class="f-tab active" onclick="filterCourse(this,'all')">Semua Kursus</button>
+            <a href="{{ route('course.index') }}" class="f-tab {{ !$categorySlug ? 'active' : '' }}">Semua Kursus</a>
             @foreach($courseCategories as $cat)
-                <button class="f-tab" onclick="filterCourse(this,'{{ $cat->slug }}')">{{ $cat->name }}</button>
+                <a href="{{ route('course.index', ['category' => $cat->slug]) }}"
+                   class="f-tab {{ $categorySlug === $cat->slug ? 'active' : '' }}">
+                    {{ $cat->name }}
+                </a>
             @endforeach
         </div>
     </div>
@@ -465,15 +470,6 @@
 
 @push('scripts')
 <script>
-// Filter courses
-window.filterCourse = function(btn, cat) {
-    document.querySelectorAll('.f-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.crs-card').forEach(card => {
-        card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
-    });
-};
-
 // Scroll reveal
 const obs = new IntersectionObserver(e => {
     e.forEach(x => {

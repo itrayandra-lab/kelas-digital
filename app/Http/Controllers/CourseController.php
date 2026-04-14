@@ -8,14 +8,30 @@ use App\Models\Enrollment;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $courses = \App\Models\Course::with(['category'])
-            ->withCount('enrollments')
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        $categorySlug = $request->query('category');
 
-        return view('course.index', compact('courses'));
+        $query = \App\Models\Course::with(['category'])
+            ->withCount('enrollments')
+            ->orderBy('created_at', 'desc');
+
+        if ($categorySlug) {
+            $query->whereHas('category', fn($q) => $q->where('slug', $categorySlug));
+        }
+
+        $courses = $query->paginate(12)->withQueryString();
+
+        $courseCategories = \App\Models\CourseCategory::whereHas('courses')
+            ->withCount('courses')
+            ->orderBy('name')
+            ->get();
+
+        $activeCategory = $categorySlug
+            ? $courseCategories->firstWhere('slug', $categorySlug)
+            : null;
+
+        return view('course.index', compact('courses', 'courseCategories', 'activeCategory', 'categorySlug'));
     }
 
     public function show($slug)

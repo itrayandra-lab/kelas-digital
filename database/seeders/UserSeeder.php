@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
                 'name' => 'Student User',
                 'username' => 'student',
                 'email' => 'student@example.com',
-                'password' => bcrypt('password'), // Default password: password
+                'password' => bcrypt('  '), // Default password: password
                 'last_login' => null,
             ]
         );
