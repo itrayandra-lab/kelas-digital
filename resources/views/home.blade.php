@@ -1,2141 +1,886 @@
 @extends('layouts.app')
-
 @section('title', config('app.name') . ' — Platform Belajar Online Terpercaya')
 
 @push('styles')
 <style>
-/* ══════════════════════════════════════
-   HOME PAGE — Ray Academy Redesign
-   Font: Sora (heading) + DM Sans (body)
-   ══════════════════════════════════════ */
-
-/* ── Scroll Reveal ── */
-.rv { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
-.rv.in { opacity: 1; transform: translateY(0); }
-.rv-d1 { transition-delay: .08s; }
-.rv-d2 { transition-delay: .16s; }
-.rv-d3 { transition-delay: .24s; }
-.rv-d4 { transition-delay: .32s; }
-
-/* ── Section label ── */
-.section-tag {
-    display: inline-flex; align-items: center; gap: .5rem;
-    font-size: .72rem; font-weight: 700; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--blue);
-    background: var(--blue-xl); border: 1px solid rgba(20,116,188,.18);
-    padding: .35rem .85rem; border-radius: 999px;
-    margin-bottom: 1rem;
-}
-.section-tag-white {
-    display: inline-flex; align-items: center; gap: .5rem;
-    font-size: .72rem; font-weight: 700; letter-spacing: .1em;
-    text-transform: uppercase; color: rgba(255,255,255,.8);
-    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-    padding: .35rem .85rem; border-radius: 999px;
-    margin-bottom: 1rem;
-}
-
-/* ══════ 1. HERO - HI-TECH REDESIGN V2 ══════ */
-.hero {
-    background: var(--ink);
-    position: relative;
-    overflow: hidden;
-    padding: 6rem 0 4rem;
-    min-height: 85vh;
-    display: flex;
-    align-items: center;
-}
-
-/* Animated gradient background */
-.hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(ellipse 80% 60% at 70% 0%, rgba(20,116,188,.35) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 50% at 10% 80%, rgba(16,185,129,.15) 0%, transparent 60%);
-    pointer-events: none;
-    animation: gradientShift 20s ease-in-out infinite;
-}
-
-@keyframes gradientShift {
-    0%, 100% { opacity: 1; transform: translateX(0); }
-    50% { opacity: 0.8; transform: translateX(20px); }
-}
-
-/* Animated dot grid */
-.hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events: none;
-    animation: dotMove 40s linear infinite;
-}
-
-@keyframes dotMove {
-    0% { background-position: 0 0; }
-    100% { background-position: 32px 32px; }
-}
-
-.hero-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-}
-
-/* Left Content */
-.hero-left {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hero-left.in {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Badge with pulse animation */
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.15);
-    backdrop-filter: blur(8px);
-    border-radius: 999px;
-    padding: .4rem 1rem;
-    font-size: .78rem;
-    font-weight: 600;
-    color: rgba(255,255,255,.9);
-    margin-bottom: 1.75rem;
-    animation: badgeFloat 3s ease-in-out infinite;
-}
-
-@keyframes badgeFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-.hero-badge-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4ade80;
-    animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.5); opacity: .6; }
-}
-
-.hero-title {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2.4rem, 5vw, 3.8rem);
-    font-weight: 800;
-    color: #fff;
-    line-height: 1.1;
-    letter-spacing: -.03em;
-    margin-bottom: 1.5rem;
-}
-
-.hero-title em {
-    font-style: normal;
-    color: #38bdf8;
-}
-
-/* Kelap-kelip effect untuk "Para Ahli" - TANPA BORDER */
-.hero-title mark {
-    background: transparent;
-    color: var(--accent);
-    position: relative;
-    padding: 0;
-    animation: blink-text 2s ease-in-out infinite;
-    text-shadow: 0 0 20px rgba(16,185,129,.5);
-}
-
-@keyframes blink-text {
-    0%, 100% { 
-        opacity: 1;
-        text-shadow: 0 0 20px rgba(16,185,129,.5);
-    }
-    50% { 
-        opacity: 0.7;
-        text-shadow: 0 0 30px rgba(16,185,129,.8);
-    }
-}
-
-.hero-desc {
-    font-size: 1.05rem;
-    color: rgba(255,255,255,.65);
-    line-height: 1.8;
-    max-width: 460px;
-    margin-bottom: 2.5rem;
-}
-
-/* Stats - HORIZONTAL DI MOBILE */
-.hero-stats {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 2.5rem;
-    flex-wrap: wrap;
-}
-
-.hero-stat-num {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.85rem;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1;
-}
-
-.hero-stat-num em {
-    color: #38bdf8;
-    font-style: normal;
-}
-
-.hero-stat-label {
-    font-size: .72rem;
-    color: rgba(255,255,255,.5);
-    font-weight: 500;
-    margin-top: .25rem;
-}
-
-.hero-stat-sep {
-    width: 1px;
-    background: rgba(255,255,255,.12);
-    align-self: stretch;
-}
-
-/* Buttons */
-.hero-btns {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.btn-hero-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    background: var(--blue);
-    color: #fff;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .9375rem;
-    padding: .875rem 1.75rem;
-    border-radius: 12px;
-    text-decoration: none;
-    border: 1.5px solid var(--blue);
-    transition: all .22s;
-    box-shadow: 0 6px 20px rgba(20,116,188,.4);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-hero-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent, rgba(255,255,255,.2), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-}
-
-.btn-hero-primary:hover::before {
-    transform: translateX(100%);
-}
-
-.btn-hero-primary:hover {
-    background: #1a8ad6;
-    border-color: #1a8ad6;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(20,116,188,.5);
-}
-
-.btn-hero-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    background: rgba(255,255,255,.08);
-    color: rgba(255,255,255,.9);
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    font-size: .9375rem;
-    padding: .875rem 1.75rem;
-    border-radius: 12px;
-    text-decoration: none;
-    border: 1.5px solid rgba(255,255,255,.18);
-    transition: all .22s;
-}
-
-.btn-hero-ghost:hover {
-    background: rgba(255,255,255,.14);
-    border-color: rgba(255,255,255,.3);
-    transform: translateY(-2px);
-}
-
-/* Right Visual - DIGESER KE KANAN */
-.hero-right {
-    position: relative;
-    opacity: 0;
-    transform: translateX(60px); /* Lebih ke kanan dari 40px */
-    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-left: 2rem; /* Tambahan padding kiri */
-}
-
-.hero-right.in {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.hero-visual-container {
-    position: relative;
-    width: 100%;
-    height: 500px;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-}
-
-.hero-illustration {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Floating elements */
-.floating-element {
-    position: absolute;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.15);
-    backdrop-filter: blur(12px);
-    border-radius: 18px;
-    padding: 1.5rem;
-    box-shadow: 0 24px 60px rgba(0,0,0,.3);
-    transition: transform 0.3s ease;
-}
-
-.floating-element:hover {
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 30px 80px rgba(0,0,0,.4);
-}
-
-/* Video player element - GESER KE KANAN */
-.element-video {
-    width: 320px;
-    height: 200px;
-    top: 20%;
-    left: 55%; /* Dari 50% jadi 55% */
-    transform: translateX(-50%);
-    animation: float-1 6s ease-in-out infinite;
-}
-
-@keyframes float-1 {
-    0%, 100% { transform: translateX(-50%) translateY(0) rotateY(0deg); }
-    50% { transform: translateX(-50%) translateY(-20px) rotateY(5deg); }
-}
-
-.video-header {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.video-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.3);
-}
-
-.video-screen {
-    width: 100%;
-    height: 120px;
-    background: linear-gradient(135deg, #1474bc 0%, #0891b2 100%);
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-}
-
-.video-play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    background: rgba(255,255,255,.9);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.video-play:hover {
-    transform: translate(-50%, -50%) scale(1.1);
-    background: #fff;
-}
-
-.video-play::after {
-    content: '';
-    width: 0;
-    height: 0;
-    border-left: 12px solid var(--blue);
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    margin-left: 3px;
-}
-
-.video-progress {
-    width: 100%;
-    height: 4px;
-    background: rgba(255,255,255,.2);
-    border-radius: 2px;
-    margin-top: 10px;
-    overflow: hidden;
-}
-
-.video-progress-bar {
-    width: 60%;
-    height: 100%;
-    background: #38bdf8;
-    border-radius: 2px;
-    animation: progress 3s ease-in-out infinite;
-}
-
-@keyframes progress {
-    0%, 100% { width: 40%; }
-    50% { width: 80%; }
-}
-
-/* Stats card - GESER KE KANAN */
-.element-stats {
-    width: 200px;
-    top: 55%;
-    right: 5%; /* Dari 10% jadi 5% */
-    animation: float-2 7s ease-in-out infinite;
-}
-
-@keyframes float-2 {
-    0%, 100% { transform: translateY(0) rotateZ(0deg); }
-    50% { transform: translateY(-15px) rotateZ(-3deg); }
-}
-
-.stat-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.stat-item:last-child {
-    margin-bottom: 0;
-}
-
-.stat-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.stat-icon svg {
-    width: 20px;
-    height: 20px;
-    color: #fff;
-}
-
-.stat-info h4 {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1;
-    margin: 0;
-}
-
-.stat-info p {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,.5);
-    margin: 2px 0 0;
-}
-
-/* Certificate badge - GESER KE KANAN */
-.element-cert {
-    width: 180px;
-    top: 10%;
-    left: 10%; /* Dari 5% jadi 10% */
-    animation: float-3 8s ease-in-out infinite;
-}
-
-@keyframes float-3 {
-    0%, 100% { transform: translateY(0) rotateZ(0deg); }
-    50% { transform: translateY(-10px) rotateZ(5deg); }
-}
-
-.cert-icon {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 12px;
-}
-
-.cert-icon svg {
-    width: 28px;
-    height: 28px;
-    color: #fff;
-}
-
-.cert-text {
-    text-align: center;
-}
-
-.cert-text h4 {
-    font-family: 'Sora', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 4px;
-}
-
-.cert-text p {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,.6);
-    margin: 0;
-}
-
-/* Active users - GESER KE KANAN */
-.element-users {
-    width: 160px;
-    bottom: 15%;
-    left: 12%; /* Dari 8% jadi 12% */
-    animation: float-4 6.5s ease-in-out infinite;
-}
-
-@keyframes float-4 {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-}
-
-.users-avatars {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,.15);
-    margin-right: -12px;
-}
-
-.user-avatar:nth-child(1) { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
-.user-avatar:nth-child(2) { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
-.user-avatar:nth-child(3) { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-.user-avatar:last-child {
-    background: rgba(255,255,255,.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #fff;
+/* ═══════════════════════════════════════════
+   RAY ACADEMY — HOME PAGE (Hi-Tech Redesign)
+   Palette: #0056D2 blue · #0F1114 dark · #F5F5F4 cream
+   ═══════════════════════════════════════════ */
+
+/* Scroll Reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}.rv-d4{transition-delay:.32s}
+
+/* Wrapper */
+.wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+@media(max-width:640px){.wrap{padding:0 1rem}}
+
+/* Shared section tag */
+.sec-tag{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:#0056D2;background:#EEF4FF;border:1px solid rgba(0,86,210,.15);
+    padding:.3rem .85rem;border-radius:999px;margin-bottom:.85rem;
+}
+.sec-tag-white{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:rgba(255,255,255,.85);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+    padding:.3rem .85rem;border-radius:999px;margin-bottom:.85rem;
+}
+
+/* ═══ 1. HERO ═══ */
+.hero-ra{
+    background:#F5F5F4;
+    position:relative;
+    overflow:hidden;
+    min-height:600px;
+    padding:4rem 0 2rem;
+}
+/* subtle grid lines */
+.hero-ra::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+        linear-gradient(rgba(0,86,210,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,86,210,.04) 1px,transparent 1px);
+    background-size:48px 48px;
+    pointer-events:none;
+}
+/* inner: left is normal flow, right is relative for photo */
+.hero-ra-inner{
+    max-width:1280px;margin:0 auto;padding:0 1.5rem;
+    display:block;
+    position:relative;z-index:1;
+    min-height:520px;
+}
+.hero-ra-left{
+    padding-bottom:3.5rem;
+    padding-top:1.5rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    max-width:52%;
+}
+
+
+.hero-ra-badge{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:#fff;border:1px solid rgba(0,86,210,.18);
+    border-radius:999px;padding:.35rem 1rem .35rem .5rem;
+    margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(0,86,210,.08);
+}
+.hero-ra-badge-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse-g 2s infinite;}
+@keyframes pulse-g{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+.hero-ra-badge span{font-size:.72rem;font-weight:600;color:#0F1114;}
+
+.hero-ra-left h1{
+    font-family:'Sora',sans-serif;
+    font-size:clamp(2rem,4.5vw,3.2rem);
+    font-weight:600;color:#0F1114;
+    line-height:1.15;letter-spacing:-.03em;
+    margin-bottom:1rem;
+}
+.hero-ra-left h1 strong{
+    color:#0056D2;font-weight:600;
+    background:linear-gradient(135deg,#0056D2,#3b82f6);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-ra-left p{font-size:.95rem;color:#4B5563;line-height:1.7;margin-bottom:2rem;max-width:460px;}
+.hero-btns-row{display:flex;gap:.85rem;flex-wrap:wrap;align-items:center;}
+
+.btn-primary-ra{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:#0056D2;color:#fff;font-family:'Sora',sans-serif;
+    font-weight:600;font-size:.875rem;padding:.8rem 1.75rem;
+    border-radius:8px;text-decoration:none;border:none;
+    transition:all .22s;box-shadow:0 4px 16px rgba(0,86,210,.35);
+}
+.btn-primary-ra:hover{background:#0048B0;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,86,210,.4);color:#fff;}
+.btn-ghost-ra{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:transparent;color:#0F1114;font-weight:600;font-size:.875rem;
+    padding:.8rem 1.5rem;border-radius:8px;text-decoration:none;
+    border:1.5px solid rgba(15,17,20,.15);transition:all .22s;
+}
+.btn-ghost-ra:hover{border-color:#0056D2;color:#0056D2;background:#EEF4FF;}
+
+/* hero stats row */
+.hero-stats-row{
+    display:flex;gap:2rem;margin-top:2rem;flex-wrap:wrap;
+    padding-top:2rem;border-top:1px solid rgba(15,17,20,.08);
+}
+.hero-stat-item{}
+.hero-stat-num{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:#0F1114;line-height:1;}
+.hero-stat-label{font-size:.72rem;color:#6B7280;margin-top:.2rem;}
+
+/* hero right image */
+.hero-ra-right{
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:46%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-end;
+    z-index:2;
+}
+.hero-ra-right img{
+    display:block;
+    width:100%;
+    height:auto;
+    object-fit:contain;
+    object-position:bottom center;
+    /* naikkan foto supaya kaki tidak terpotong */
+    transform:translateY(-100px);
+    filter:drop-shadow(0 4px 24px rgba(0,86,210,.08));
+}
+
+/* ═══ 2. PROMO CARDS ═══ */
+.promo-section{background:#fff;padding:2rem 0;position:relative;z-index:2;}
+.promo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+.promo-card{
+    border-radius:20px;overflow:hidden;display:flex;align-items:stretch;
+    min-height:160px;text-decoration:none;
+    transition:transform .25s,box-shadow .25s;position:relative;
+}
+.promo-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12);}
+.promo-card-content{
+    flex:1;padding:1.5rem;
+    display:flex;flex-direction:column;justify-content:space-between;
+    z-index:1;min-width:0;
+}
+.promo-logo-txt{font-family:'Sora',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.1em;color:#0F1114;margin-bottom:.6rem;}
+.promo-title{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:600;color:#0F1114;line-height:1.4;flex:1;}
+.promo-link-txt{
+    display:inline-flex;align-items:center;gap:.3rem;
+    font-size:.75rem;font-weight:600;color:#0F1114;
+    margin-top:.8rem;text-decoration:none;
+}
+.promo-link-txt:hover{opacity:.7;}
+.promo-card-img{width:180px;flex-shrink:0;object-fit:cover;object-position:center;}
+
+/* ═══ 3. FREE COURSE BANNER — FIXED ═══ */
+.free-banner{background:#fff;padding:3.5rem 0;border-top:1px solid #F1F5F9;}
+.free-banner-inner{
+    display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+    align-items:center;
+}
+.free-banner-text h2{
+    font-family:'Sora',sans-serif;
+    font-size:clamp(1.6rem,3.2vw,2.2rem);
+    font-weight:600;color:#0F1114;
+    line-height:1.3;margin-bottom:1.75rem;
+}
+.btn-outline-blue{
+    display:inline-flex;align-items:center;gap:.4rem;
+    padding:.75rem 1.5rem;border:1.5px solid #0056D2;border-radius:8px;
+    font-weight:600;font-size:.875rem;color:#0056D2;text-decoration:none;
+    transition:all .2s;background:#fff;
+}
+.btn-outline-blue:hover{background:#0056D2;color:#fff;}
+
+/* IMAGE FIXED — no crop */
+.free-banner-img-wrap{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    min-height:280px;
+}
+.free-banner-img-wrap img{
+    width:100%;height:auto;
+    max-height:360px;
+    object-fit:contain;object-position:center;
+    display:block;
+    position:relative;z-index:1;
+}
+/* decorative background for image */
+.free-banner-img-wrap::before{
+    content:'';position:absolute;
+    right:0;top:10%;bottom:10%;width:75%;
+    background:linear-gradient(135deg,#EEF4FF 0%,#DBEAFE 100%);
+    border-radius:20px;
+}
+
+/* ═══ 4. FEATURED COURSES ═══ */
+.featured-section{background:#F8FAFF;padding:3rem 0;}
+.featured-wrap{
+    background:linear-gradient(89deg,#0056D2 0%,#1a6bdb 35%,#5B8BD8 75%,#7CA4E4 100%);
+    border-radius:20px;padding:1.75rem;display:flex;gap:2rem;align-items:stretch;
+    position:relative;overflow:hidden;
+}
+.featured-wrap::before{
+    content:'';position:absolute;right:-40px;top:-40px;
+    width:250px;height:250px;border-radius:50%;
+    background:rgba(255,255,255,.05);pointer-events:none;
+}
+.featured-label{flex-shrink:0;width:200px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;}
+.featured-label h3{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:1.1rem;line-height:1.35;}
+.btn-white-sm{
+    display:inline-flex;align-items:center;gap:.35rem;
+    background:#fff;color:#0056D2;font-weight:600;font-size:.78rem;
+    padding:.5rem 1rem;border-radius:8px;text-decoration:none;
+    transition:opacity .2s;width:fit-content;
+}
+.btn-white-sm:hover{opacity:.88;color:#0056D2;}
+.featured-scroll{
+    flex:1;display:flex;gap:.75rem;overflow-x:auto;
+    padding-bottom:.5rem;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;position:relative;z-index:1;
+}
+.featured-scroll::-webkit-scrollbar{height:3px;}
+.featured-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:2px;}
+.feat-card{
+    flex:0 0 195px;background:#fff;border:1px solid #E2E8F0;
+    border-radius:10px;overflow:hidden;scroll-snap-align:start;
+    text-decoration:none;color:inherit;
+    transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;
+}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
+.feat-card-thumb{aspect-ratio:16/9;overflow:hidden;background:#dbeafe;position:relative;}
+.feat-card-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.feat-card:hover .feat-card-thumb img{transform:scale(1.05);}
+.feat-card-body{padding:.75rem;flex:1;display:flex;flex-direction:column;}
+.feat-card-cat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;margin-bottom:.25rem;}
+.feat-card-title{font-family:'Sora',sans-serif;font-size:.75rem;font-weight:600;color:#0F1114;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.feat-card-meta{font-size:.63rem;color:#6B7280;margin-top:.3rem;}
+.feat-card-badge{font-size:.6rem;font-weight:700;color:#16a34a;margin-top:.25rem;}
+
+/* ═══ 5. SEARCH ═══ */
+.search-section{background:#fff;padding:3rem 0;text-align:center;border-top:1px solid #F1F5F9;}
+.search-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:600;color:#0F1114;margin-bottom:1.5rem;}
+.search-box-ra{
+    display:flex;align-items:center;background:#fff;
+    border:1.5px solid #CBD5E1;border-radius:10px;overflow:hidden;
+    max-width:680px;margin:0 auto;
+    box-shadow:0 4px 16px rgba(0,0,0,.06);
+    transition:border-color .2s,box-shadow .2s;
+}
+.search-box-ra:focus-within{border-color:#0056D2;box-shadow:0 4px 16px rgba(0,86,210,.15);}
+.search-box-ra input{flex:1;border:none;outline:none;padding:.9rem 1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;color:#0F1114;background:transparent;}
+.search-box-ra input::placeholder{color:#94A3B8;}
+.search-box-ra button{background:#0056D2;border:none;padding:.9rem 1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.search-box-ra button:hover{background:#0048B0;}
+.search-box-ra button svg{width:18px;height:18px;color:#fff;}
+.chip-row{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:1rem;align-items:center;}
+.chip-label{font-size:.72rem;font-weight:600;color:#374151;}
+.search-chip{
+    display:inline-flex;align-items:center;
+    background:#F1F5FF;color:#0048B0;font-size:.73rem;font-weight:500;
+    padding:.3rem .9rem;border-radius:999px;text-decoration:none;
+    border:1px solid rgba(0,86,210,.12);transition:all .15s;
+}
+.search-chip:hover{background:#0056D2;color:#fff;border-color:#0056D2;}
+
+/* ═══ 6. INSTRUCTORS (Belajar dari Ahli) ═══ */
+.ins-section{
+    padding:4rem 0;background:#0F1114;
+    position:relative;overflow:hidden;
+}
+.ins-section::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 70% at 85% 50%,rgba(0,86,210,.18),transparent 65%);
+    pointer-events:none;
+}
+.ins-header{text-align:center;margin-bottom:3rem;}
+.ins-header h2{font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);font-weight:700;color:#fff;letter-spacing:-.02em;margin-top:.5rem;}
+.ins-header p{color:rgba(255,255,255,.5);margin-top:.6rem;font-size:.9rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7;}
+
+/* Staggered grid */
+.ins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;align-items:end;}
+.ins-row2{grid-column:1/-1;display:flex;justify-content:center;margin-top:.5rem;}
+
+.ins-card{
+    border-radius:18px;overflow:hidden;position:relative;
+    transition:transform .3s,box-shadow .3s;cursor:default;
+    display:flex;flex-direction:column;
+}
+.ins-card:hover{transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.4);}
+/* stagger heights */
+.ins-card:nth-child(1){margin-top:2.5rem;}
+.ins-card:nth-child(2){margin-top:0;}
+.ins-card:nth-child(3){margin-top:2rem;}
+.ins-card:nth-child(4){margin-top:0;}
+
+.ins-card-inner{padding:1.4rem 1.4rem 0;position:relative;z-index:1;flex:1;}
+.ins-card-logo{height:38px;object-fit:contain;margin-bottom:.8rem;display:block;}
+.ins-card-name{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:700;color:#fff;line-height:1.3;}
+.ins-card-tag{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.2rem;}
+.ins-card-btn{
+    display:inline-block;margin-top:.9rem;padding:.45rem 1.1rem;
+    background:rgba(255,255,255,.92);border-radius:999px;
+    font-weight:700;font-size:.72rem;text-decoration:none;
+    transition:opacity .2s,transform .15s;border:none;
+}
+.ins-card-btn:hover{opacity:.85;transform:translateX(3px);}
+.ins-card-photo{display:block;height:185px;width:100%;object-fit:contain;object-position:bottom;margin-top:1rem;}
+.ins-card-solo{width:255px;}
+.ins-card-solo .ins-card-photo{height:185px;}
+
+/* ═══ 7. ARTICLES — FIXED kategori lainnya ═══ */
+.articles-section{background:#fff;padding:3rem 0;}
+.articles-section h2{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:#0F1114;margin-bottom:1.25rem;}
+.art-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.art-col{background:#EEF4FF;border-radius:12px;padding:1.1rem;display:flex;flex-direction:column;}
+.art-col-head{
+    display:flex;align-items:center;gap:.35rem;
+    font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;
+    color:#0F1114;margin-bottom:1rem;text-decoration:none;
+}
+.art-col-head:hover{color:#0056D2;}
+.art-col-head svg{width:13px;height:13px;flex-shrink:0;}
+
+.art-item{
+    background:#fff;border-radius:10px;padding:.65rem;
+    display:flex;gap:.65rem;align-items:flex-start;
+    margin-bottom:.6rem;text-decoration:none;color:inherit;
+    transition:box-shadow .2s,transform .2s;
+}
+.art-item:last-child{margin-bottom:0;}
+.art-item:hover{box-shadow:0 6px 20px rgba(0,0,0,.08);transform:translateX(3px);}
+.art-thumb{width:54px;height:54px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#dbeafe;}
+.art-thumb img{width:100%;height:100%;object-fit:cover;}
+.art-body{flex:1;min-width:0;}
+.art-cat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;}
+.art-title{font-family:'Sora',sans-serif;font-size:.73rem;font-weight:600;color:#0F1114;line-height:1.35;margin-top:.15rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.art-date{font-size:.61rem;color:#9CA3AF;margin-top:.2rem;}
+
+/* Placeholder saat artikel kosong */
+.art-placeholder{
+    background:#fff;border-radius:10px;padding:1.5rem;
+    text-align:center;flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:.75rem;
+    border:1.5px dashed rgba(0,86,210,.2);
+}
+.art-placeholder-icon{
+    width:40px;height:40px;border-radius:10px;
+    background:#EEF4FF;display:flex;align-items:center;justify-content:center;
+}
+.art-placeholder p{font-size:.75rem;color:#9CA3AF;line-height:1.5;margin:0;}
+.art-placeholder a{font-size:.72rem;font-weight:600;color:#0056D2;text-decoration:none;}
+.art-placeholder a:hover{text-decoration:underline;}
+
+/* ═══ 8. TESTIMONIALS ═══ */
+.testi-section{background:#F8FAFF;padding:3rem 0;}
+.testi-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.75rem);font-weight:700;color:#0F1114;margin-bottom:1.5rem;}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.testi-card{
+    background:#fff;border:1px solid #E2E8F0;border-radius:12px;
+    padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;
+    transition:border-color .2s,box-shadow .2s;
+}
+.testi-card:hover{border-color:#BFDBFE;box-shadow:0 8px 24px rgba(0,86,210,.08);}
+.testi-stars{display:flex;gap:2px;}
+.testi-stars svg{width:14px;height:14px;color:#FBBF24;fill:#FBBF24;}
+.testi-user{display:flex;align-items:center;gap:.75rem;}
+.testi-avatar{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,#DBEAFE,#93C5FD);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;color:#0056D2;
+}
+.testi-name{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;color:#0F1114;}
+.testi-text{font-size:.8rem;color:#6B7280;line-height:1.65;flex:1;}
+
+/* ═══ 9. FAQ ═══ */
+.faq-section{background:#fff;padding:3rem 0;border-top:1px solid #F1F5F9;}
+.faq-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.75rem);font-weight:700;color:#0F1114;margin-bottom:1.5rem;}
+.faq-box{border:1.5px solid #E2E8F0;border-radius:12px;overflow:hidden;}
+.faq-item{border-bottom:1px solid #F1F5F9;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1rem 1.25rem;cursor:pointer;user-select:none;gap:.75rem;
+    transition:background .15s;
+}
+.faq-q:hover{background:#F8FAFF;}
+.faq-q h3{font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:600;color:#0F1114;margin:0;flex:1;}
+.faq-chevron{
+    width:24px;height:24px;border-radius:50%;background:#F1F5F9;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    transition:transform .3s,background .2s;
+}
+.faq-item.open .faq-chevron{transform:rotate(180deg);background:#0056D2;}
+.faq-chevron svg{width:13px;height:13px;color:#6B7280;}
+.faq-item.open .faq-chevron svg{color:#fff;}
+.faq-ans{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.faq-item.open .faq-ans{max-height:400px;}
+.faq-ans p{padding:.25rem 1.25rem 1.1rem;font-size:.82rem;color:#6B7280;line-height:1.7;margin:0;}
+
+/* ═══ 10. PARTNERS ═══ */
+.partners-section{background:#F8FAFF;padding:2.5rem 0;}
+.partners-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:600;color:#0F1114;margin-bottom:1.5rem;}
+.partners-logos{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
+.partners-logos img{height:56px;object-fit:contain;filter:grayscale(20%);opacity:.85;transition:all .2s;}
+.partners-logos img:hover{filter:grayscale(0);opacity:1;}
+
+/* ═══ 11. CTA BOTTOM ═══ */
+.cta-section{background:#EEF4FF;padding:3.5rem 0;}
+.cta-inner{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1rem;}
+.cta-logo-img{height:28px;object-fit:contain;}
+.cta-inner p{font-size:.9rem;color:#374151;max-width:400px;margin:0;}
+.cta-subtext{font-size:.75rem;color:#9CA3AF;margin:0!important;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+    .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .art-grid{grid-template-columns:repeat(2,1fr);}
+    .ins-grid{grid-template-columns:repeat(2,1fr);}
+    .ins-card:nth-child(1),.ins-card:nth-child(2),.ins-card:nth-child(3),.ins-card:nth-child(4){margin-top:0;}
+    .ins-row2{justify-content:flex-start;}
+    .ins-card-solo{width:100%;}
+}
+@media(max-width:768px){
+    .hero-ra-inner{grid-template-columns:1fr;min-height:auto;}
+    .hero-ra-right{display:none;}
+    .hero-ra-left{padding-bottom:3rem;max-width:100%;}
+    .free-banner-inner{grid-template-columns:1fr;}
+    .free-banner-img-wrap{min-height:220px;}
+    .free-banner-img-wrap::before{width:100%;top:0;bottom:0;right:0;}
+    .featured-wrap{flex-direction:column;}
+    .featured-label{width:100%;}
+    .promo-card-img{width:130px;}
+}
+@media(max-width:640px){
+    html,body{overflow-x:hidden!important;max-width:100vw!important;}
+    .promo-grid{grid-template-columns:1fr;}
+    .promo-card-img{width:120px;}
+    .testi-grid{grid-template-columns:1fr;}
+    .art-grid{grid-template-columns:1fr;}
+    .ins-grid{grid-template-columns:1fr;}
+    .ins-row2{justify-content:center;}
+    .feat-card{flex:0 0 175px;}
+    .hero-stats-row{gap:1.25rem;}
+    .hero-stat-num{font-size:1.25rem;}
 }
-
-.users-text {
-    text-align: left;
-    padding-left: 4px;
-}
-
-.users-text h4 {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
-    margin: 0 0 2px;
-}
-
-.users-text p {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,.5);
-    margin: 0;
-}
-
-/* Particles */
-.particles {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(56,189,248,.4);
-    border-radius: 50%;
-}
-
-.particle:nth-child(1) { top: 20%; left: 10%; animation: particle-float 8s ease-in-out infinite; }
-.particle:nth-child(2) { top: 60%; left: 80%; animation: particle-float 10s ease-in-out infinite 2s; }
-.particle:nth-child(3) { top: 80%; left: 20%; animation: particle-float 12s ease-in-out infinite 4s; }
-.particle:nth-child(4) { top: 40%; left: 70%; animation: particle-float 9s ease-in-out infinite 1s; }
-.particle:nth-child(5) { top: 10%; left: 90%; animation: particle-float 11s ease-in-out infinite 3s; }
-
-@keyframes particle-float {
-    0%, 100% {
-        transform: translateY(0) translateX(0);
-        opacity: 0;
-    }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    50% {
-        transform: translateY(-80px) translateX(40px);
-    }
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .hero {
-        min-height: auto;
-        padding: 4rem 0 3rem;
-    }
-    .hero-inner {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-    .hero-right {
-        display: none;
-    }
-}
-
-.hero-float-card:nth-child(3) { bottom: 22%; animation-delay: -1.5s; }
-@keyframes float-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.hf-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.hf-label { font-size: .72rem; color: var(--muted); }
-.hf-num { font-family: 'Sora', sans-serif; font-weight: 800; font-size: .95rem; color: var(--ink); }
-
-/* ══════ 2. TRUST BAR ══════ */
-.trust-bar {
-    background: #fff; border-bottom: 1px solid var(--border);
-    padding: 1.75rem 0;
-}
-.trust-bar-inner {
-    max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
-    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center;
-}
-.trust-bar-label { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; white-space: nowrap; flex-shrink: 0; }
-.trust-bar-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
-.trust-logos { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
-.trust-logos span { font-family: 'Sora', sans-serif; font-size: .95rem; font-weight: 700; color: var(--muted); opacity: .6; }
-
-/* ══════ 3. COURSES ══════ */
-.courses-section {
-    background: var(--surf);
-    padding: 6rem 0;
-}
-.section-header {
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem;
-    margin-bottom: 2.5rem;
-    flex-wrap: wrap;
-}
-.section-header-left h2 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(1.65rem, 3vw, 2.4rem);
-    font-weight: 800; color: var(--ink);
-    line-height: 1.2; letter-spacing: -.02em;
-}
-.section-header-left p { font-size: .95rem; color: var(--muted); margin-top: .5rem; line-height: 1.7; }
-.btn-see-all {
-    display: inline-flex; align-items: center; gap: .4rem;
-    font-size: .875rem; font-weight: 700; color: var(--blue);
-    text-decoration: none; padding: .6rem 1.25rem;
-    border: 1.5px solid rgba(20,116,188,.25); border-radius: 10px;
-    background: rgba(20,116,188,.05); transition: all .2s; flex-shrink: 0; white-space: nowrap;
-}
-.btn-see-all:hover { background: rgba(20,116,188,.1); border-color: var(--blue); transform: translateX(3px); }
-
-/* Filter tabs */
-.filter-bar {
-    display: flex; gap: .5rem; flex-wrap: wrap;
-    margin-bottom: 2rem;
-}
-.f-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: .83rem; font-weight: 600; cursor: pointer;
-    padding: .5rem 1.1rem; border-radius: 9px; border: 1.5px solid var(--border);
-    background: #fff; color: var(--ink-2); transition: all .18s;
-}
-.f-btn:hover { border-color: var(--blue); color: var(--blue); }
-.f-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 4px 14px rgba(20,116,188,.28); }
-
-/* Course Grid */
-.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.25rem; }
-
-.crs-card {
-    background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
-    overflow: hidden; display: flex; flex-direction: column;
-    text-decoration: none; color: inherit;
-    transition: transform .3s ease, box-shadow .3s ease, border-color .25s;
-}
-.crs-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(10,22,40,.1); border-color: #93c5fd; }
-
-.crs-thumb {
-    position: relative; overflow: hidden;
-    aspect-ratio: 16/9; background: linear-gradient(135deg, #dbeafe, #eff6ff);
-}
-.crs-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .45s ease; }
-.crs-card:hover .crs-thumb img { transform: scale(1.07); }
-.crs-thumb-placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
-}
-.crs-badge {
-    position: absolute; top: .75rem; left: .75rem;
-    font-size: .65rem; font-weight: 700; padding: .3rem .7rem;
-    border-radius: 6px; text-transform: uppercase; letter-spacing: .06em;
-}
-.badge-free { background: #dcfce7; color: #15803d; }
-.badge-paid { background: #dbeafe; color: #1d4ed8; }
-
-.crs-body { padding: 1.1rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
-.crs-cat { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--blue); margin-bottom: .4rem; }
-.crs-title { font-family: 'Sora', sans-serif; font-size: .925rem; font-weight: 700; color: var(--ink); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.crs-meta { display: flex; align-items: center; gap: .5rem; margin-top: auto; padding-top: .85rem; border-top: 1px solid var(--border); margin-top: .85rem; }
-.crs-avatar { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: var(--blue-xl); flex-shrink: 0; }
-.crs-instructor { font-size: .72rem; font-weight: 500; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.crs-price { font-family: 'Sora', sans-serif; font-size: .9rem; font-weight: 800; color: var(--ink); flex-shrink: 0; }
-.crs-price-free { color: var(--accent); }
-.crs-stars { display: flex; align-items: center; gap: 2px; margin-top: .45rem; }
-.crs-stars svg { width: 12px; height: 12px; }
-.crs-stars span { font-size: .72rem; font-weight: 600; color: var(--muted); margin-left: .25rem; }
-
-/* ══════ 4. WHY US ══════ */
-.why-section { background: #fff; padding: 6rem 0; }
-.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-@media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; gap: 3rem; } }
-
-.why-stats-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 1rem; 
-}
-
-.why-stat-card {
-    background: var(--surf); border: 1.5px solid var(--border);
-    border-radius: 16px; padding: 1.5rem;
-    transition: border-color .2s, transform .2s;
-}
-.why-stat-card:hover { border-color: var(--blue); transform: translateY(-3px); }
-.why-stat-card.featured {
-    background: linear-gradient(135deg, var(--blue-d), var(--blue));
-    border-color: transparent; grid-column: span 2;
-    color: #fff; padding: 1.75rem;
-}
-.why-stat-num {
-    font-family: 'Sora', sans-serif;
-    font-size: 2.4rem; font-weight: 800; color: var(--ink); line-height: 1;
-}
-.why-stat-card.featured .why-stat-num { color: #fff; font-size: 2.8rem; }
-.why-stat-label { font-size: .78rem; color: var(--muted); margin-top: .35rem; font-weight: 500; }
-.why-stat-card.featured .why-stat-label { color: rgba(255,255,255,.65); }
-.why-stat-icon {
-    width: 40px; height: 40px; border-radius: 11px;
-    background: var(--blue-xl); display: flex; align-items: center; justify-content: center;
-    margin-bottom: .85rem;
-}
-.why-stat-card.featured .why-stat-icon { background: rgba(255,255,255,.15); }
-
-/* Mobile Responsive */
-@media (max-width: 640px) {
-    .why-stats-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    .why-stat-card {
-        padding: 1.25rem;
-    }
-    .why-stat-card.featured {
-        grid-column: span 1;
-        padding: 1.5rem;
-    }
-    .why-stat-num {
-        font-size: 1.8rem;
-    }
-    .why-stat-card.featured .why-stat-num { 
-        font-size: 2.2rem; 
-    }
-    .why-stat-label {
-        font-size: .75rem;
-    }
-}
-
-.benefit-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
-.benefit-item { display: flex; gap: 1rem; align-items: flex-start; }
-.benefit-icon-wrap {
-    flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px;
-    background: var(--blue-xl); display: flex; align-items: center; justify-content: center;
-    transition: background .2s;
-}
-.benefit-item:hover .benefit-icon-wrap { background: #bfdbfe; }
-.benefit-icon-wrap svg { color: var(--blue); width: 20px; height: 20px; }
-.benefit-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: .9375rem; color: var(--ink); }
-.benefit-desc { font-size: .825rem; color: var(--muted); line-height: 1.65; margin-top: .25rem; }
-
-/* ══════ 5. INSTRUCTORS ══════ */
-.instructors-section {
-    padding: 6rem 0;
-    background: var(--ink);
-    position: relative; overflow: hidden;
-}
-.instructors-section::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(20,116,188,.2), transparent 65%);
-    pointer-events: none;
-}
-.instructors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem; }
-
-.ins-card {
-    border-radius: 20px; overflow: hidden; position: relative;
-    transition: transform .3s ease, box-shadow .3s ease;
-    cursor: default;
-}
-.ins-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.35); }
-.ins-card-inner { padding: 1.5rem 1.5rem 0; position: relative; z-index: 1; }
-.ins-card-logo { height: 42px; object-fit: contain; margin-bottom: .9rem; display: block; }
-.ins-card-name { font-family: 'Sora', sans-serif; font-size: .95rem; font-weight: 700; color: #fff; line-height: 1.3; }
-.ins-card-tag { font-size: .75rem; color: rgba(255,255,255,.55); margin-top: .2rem; }
-.ins-card-btn {
-    display: inline-block; margin-top: .9rem; padding: .5rem 1.25rem;
-    background: rgba(255,255,255,.92); border-radius: 999px;
-    font-weight: 700; font-size: .775rem; text-decoration: none;
-    transition: opacity .2s; border: none;
-}
-.ins-card-btn:hover { opacity: .85; }
-.ins-card-photo {
-    display: block; height: 200px; width: 100%; object-fit: contain; object-position: bottom;
-}
-
-/* ══════ 6. ARTICLES ══════ */
-.articles-section { background: var(--surf); padding: 6rem 0; }
-.articles-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; }
-@media (max-width: 900px) { .articles-grid { grid-template-columns: 1fr; } }
-
-.art-featured {
-    position: relative; border-radius: 20px; overflow: hidden;
-    min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end;
-    background: var(--ink); text-decoration: none; cursor: pointer;
-}
-.art-featured-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s; opacity: .75; }
-.art-featured:hover .art-featured-img { transform: scale(1.04); opacity: .65; }
-.art-featured-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.2) 55%, transparent 100%);
-}
-.art-featured-body { position: relative; padding: 2rem; color: #fff; }
-.art-featured-cat { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #fde047; margin-bottom: .5rem; }
-.art-featured-title { font-family: 'Sora', sans-serif; font-size: 1.25rem; font-weight: 800; line-height: 1.3; max-width: 480px; }
-.art-featured-excerpt { font-size: .825rem; color: rgba(255,255,255,.6); margin-top: .5rem; line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.art-featured-date { font-size: .7rem; color: rgba(255,255,255,.4); margin-top: .6rem; }
-
-.art-sidebar { display: flex; flex-direction: column; gap: 1rem; }
-.art-small {
-    display: flex; gap: 1rem; align-items: center;
-    background: #fff; border: 1.5px solid var(--border); border-radius: 14px;
-    overflow: hidden; text-decoration: none; color: inherit;
-    transition: all .22s; flex: 1;
-}
-.art-small:hover { box-shadow: 0 8px 28px rgba(10,22,40,.08); border-color: #93c5fd; transform: translateX(4px); }
-.art-small-thumb {
-    flex-shrink: 0; width: 100px; height: 80px; overflow: hidden;
-    background: linear-gradient(135deg, #dbeafe, #eff6ff);
-}
-.art-small-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
-.art-small:hover .art-small-thumb img { transform: scale(1.08); }
-.art-small-body { flex: 1; padding: .75rem 1rem .75rem 0; min-width: 0; }
-.art-small-cat { font-size: .63rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--blue); }
-.art-small-title { font-family: 'Sora', sans-serif; font-size: .825rem; font-weight: 700; color: var(--ink); margin-top: .2rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.art-small-date { font-size: .67rem; color: var(--muted); margin-top: .3rem; }
-
-/* ══════ 7. CTA ══════ */
-.cta-section {
-    background: linear-gradient(135deg, #0a1628 0%, #0d3b72 50%, #1474bc 100%);
-    padding: 6rem 0; position: relative; overflow: hidden;
-}
-.cta-section::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
-    background-size: 24px 24px;
-    pointer-events: none;
-}
-.cta-section::after {
-    content: '';
-    position: absolute; top: -100px; right: -100px;
-    width: 400px; height: 400px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,.07), transparent 65%);
-    pointer-events: none;
-}
-.cta-inner { position: relative; z-index: 1; text-align: center; color: #fff; max-width: 620px; margin: 0 auto; padding: 0 1.5rem; }
-.cta-inner h2 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; letter-spacing: -.03em;
-    margin-bottom: 1.25rem;
-}
-.cta-inner p { font-size: 1.05rem; color: rgba(255,255,255,.65); line-height: 1.75; margin-bottom: 2.5rem; max-width: 460px; margin-left: auto; margin-right: auto; }
-.cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-.btn-cta-primary {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: #fff; color: var(--blue); font-weight: 800;
-    font-family: 'DM Sans', sans-serif; font-size: .9375rem;
-    padding: .9rem 2rem; border-radius: 12px; text-decoration: none;
-    transition: all .22s; box-shadow: 0 6px 24px rgba(0,0,0,.2);
-}
-.btn-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,0,0,.3); }
-.btn-cta-ghost {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: rgba(255,255,255,.1); color: #fff; font-weight: 600;
-    font-family: 'DM Sans', sans-serif; font-size: .9375rem;
-    padding: .9rem 2rem; border-radius: 12px; text-decoration: none;
-    border: 1.5px solid rgba(255,255,255,.22); transition: all .22s;
-}
-.btn-cta-ghost:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
-
-/* ══════ TRENDING COURSES & FAQ SECTIONS ══════ */
-
-/* Trending Courses Section */
-.trending-section {
-    background: #fff;
-    padding: 6rem 0;
-}
-
-.trending-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
-}
-
-.trending-header h2 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 0.75rem;
-}
-
-.trending-header p {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* Trending Tabs */
-.trending-tabs {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-}
-
-.trending-tab {
-    padding: 0.75rem 1.75rem;
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    border: 2px solid var(--border);
-    background: #fff;
-    color: var(--ink-2);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.trending-tab:hover {
-    border-color: var(--blue);
-    color: var(--blue);
-}
-
-.trending-tab.active {
-    background: var(--blue);
-    border-color: var(--blue);
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(20,116,188,.25);
-}
-
-/* Trending Course Grid */
-.trending-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-}
-
-@media (max-width: 900px) {
-    .trending-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 640px) {
-    .trending-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.trending-card {
-    background: #fff;
-    border: 2px solid var(--border);
-    border-radius: 18px;
-    overflow: hidden;
-    transition: all 0.3s;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-}
-
-.trending-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(10,22,40,.12);
-    border-color: var(--blue);
-}
-
-.trending-card-image {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: linear-gradient(135deg, #dbeafe, #eff6ff);
-    overflow: hidden;
-}
-
-.trending-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-}
-
-.trending-card:hover .trending-card-image img {
-    transform: scale(1.08);
-}
-
-.trending-badge {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    padding: 0.4rem 0.9rem;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    background: rgba(255,255,255,0.95);
-    color: var(--blue);
-    backdrop-filter: blur(8px);
-}
-
-.trending-badge.hot {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-    color: #fff;
-}
-
-.trending-card-body {
-    padding: 1.5rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.trending-category {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--blue);
-    margin-bottom: 0.6rem;
-}
-
-.trending-title {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.4;
-    margin-bottom: 0.75rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.trending-instructor {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-}
-
-.trending-instructor-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--blue-xl);
-    object-fit: cover;
-}
-
-.trending-instructor-name {
-    font-size: 0.8125rem;
-    color: var(--muted);
-    font-weight: 500;
-}
-
-.trending-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-}
-
-.trending-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--ink);
-}
-
-.trending-rating svg {
-    width: 14px;
-    height: 14px;
-    color: #fbbf24;
-    fill: #fbbf24;
-}
-
-.trending-students {
-    font-size: 0.75rem;
-    color: var(--muted);
-}
-
-/* FAQ Section */
-.faq-section {
-    background: var(--surf);
-    padding: 6rem 0;
-}
-
-.faq-header {
-    text-align: center;
-    margin-bottom: 3.5rem;
-}
-
-.faq-header h2 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 0.75rem;
-}
-
-.faq-header p {
-    font-size: 1rem;
-    color: var(--muted);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.faq-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.faq-item {
-    background: #fff;
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    transition: all 0.2s;
-}
-
-.faq-item:hover {
-    border-color: #93c5fd;
-}
-
-.faq-item.active {
-    border-color: var(--blue);
-    box-shadow: 0 8px 24px rgba(20,116,188,.1);
-}
-
-.faq-question {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    cursor: pointer;
-    user-select: none;
-    gap: 1rem;
-}
-
-.faq-question h3 {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--ink);
-    margin: 0;
-    flex: 1;
-}
-
-.faq-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--surf);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.3s;
-}
-
-.faq-item.active .faq-icon {
-    background: var(--blue);
-    transform: rotate(180deg);
-}
-
-.faq-icon svg {
-    width: 14px;
-    height: 14px;
-    color: var(--muted);
-    transition: color 0.3s;
-}
-
-.faq-item.active .faq-icon svg {
-    color: #fff;
-}
-
-.faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-}
-
-.faq-item.active .faq-answer {
-    max-height: 500px;
-    padding: 0 1.5rem 1.25rem;
-}
-
-.faq-answer p {
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.7;
-    margin: 0;
-}
-
-/* Shared max-width wrapper */
-.wrap { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-
-@media (max-width: 640px) {
-    .wrap {
-        padding: 0 1rem;
-    }
-}
-
-/* ═══════════════════════════════════════════════
-   MOBILE RESPONSIVE FIX - CRITICAL
-   ═══════════════════════════════════════════════ */
-@media (max-width: 640px) {
-    /* Prevent horizontal scroll - ABSOLUTE PRIORITY */
-    html, body {
-        overflow-x: hidden !important;
-        max-width: 100vw !important;
-        width: 100% !important;
-    }
-    
-    /* All sections max-width constraint */
-    section, .hero, .why-section, .courses-section, 
-    .trending-section, .articles-section, .cta-section, .faq-section {
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-    }
-    
-    /* Container padding fix */
-    .wrap,
-    .nav-inner,
-    .footer-inner,
-    .hero-inner {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-        max-width: 100% !important;
-    }
-    
-    /* Hero badges - smaller size */
-    .hero-badge {
-        font-size: 0.65rem !important;
-        padding: 0.35rem 0.7rem !important;
-    }
-    
-    .section-tag,
-    .section-tag-white {
-        font-size: 0.65rem !important;
-        padding: 0.3rem 0.7rem !important;
-    }
-    
-    /* Hero title smaller */
-    .hero-title {
-        font-size: 1.95rem !important;
-        line-height: 1.15 !important;
-    }
-    
-    /* Hero description */
-    .hero-desc {
-        font-size: 0.92rem !important;
-        line-height: 1.65 !important;
-    }
-    
-    /* Hero stats - 2 column grid */
-    .hero-stats {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1rem !important;
-    }
-    
-    .hero-stat-sep {
-        display: none !important;
-    }
-    
-    .hero-stat-num {
-        font-size: 1.4rem !important;
-    }
-    
-    .hero-stat-label {
-        font-size: 0.68rem !important;
-    }
-    
-    /* Hero buttons */
-    .hero-btns {
-        flex-direction: column !important;
-        width: 100% !important;
-        gap: 0.75rem !important;
-    }
-    
-    .btn-hero-primary,
-    .btn-hero-ghost {
-        width: 100% !important;
-        justify-content: center !important;
-        padding: 0.8rem 1.5rem !important;
-        font-size: 0.875rem !important;
-    }
-    
-    /* WHY STATS GRID - FORCE SINGLE COLUMN */
-    .why-stats-grid {
-        display: grid !important;
-        grid-template-columns: 1fr !important;
-        gap: 1rem !important;
-    }
-    
-    .why-stat-card {
-        padding: 1.25rem !important;
-    }
-    
-    .why-stat-card.featured {
-        grid-column: span 1 !important;
-        padding: 1.5rem !important;
-    }
-    
-    .why-stat-num {
-        font-size: 1.75rem !important;
-    }
-    
-    .why-stat-card.featured .why-stat-num {
-        font-size: 2.1rem !important;
-    }
-    
-    .why-stat-label {
-        font-size: 0.74rem !important;
-    }
-    
-    .why-stat-icon {
-        width: 36px !important;
-        height: 36px !important;
-        margin-bottom: 0.7rem !important;
-    }
-    
-    .why-stat-icon svg {
-        width: 18px !important;
-        height: 18px !important;
-    }
-    
-    /* Header CTA button */
-    .btn-nav-cta {
-        padding: 0.48rem 0.95rem !important;
-        font-size: 0.8rem !important;
-    }
-    
-    .btn-nav-cta svg {
-        width: 12px !important;
-        height: 12px !important;
-    }
-    
-    /* Nav gap smaller */
-    .nav-inner {
-        gap: 0.65rem !important;
-    }
-    
-    /* Course grid */
-    .course-grid,
-    .trending-grid {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* Article grid */
-    .articles-grid {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* FAQ grid */
-    .faq-grid {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* Section headers */
-    .section-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 1rem !important;
-    }
-}
-
 </style>
 @endpush
+
 @section('content')
-{{-- ══════════════════════════════════════════════
-     1. HERO - HI-TECH REDESIGN V2
-══════════════════════════════════════════════ --}}
-<section class="hero" id="hero">
-    <div class="hero-inner">
-        {{-- LEFT CONTENT --}}
-        <div class="hero-left" id="hero-left">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Platform Belajar Online Terpercaya
+
+{{-- ═══════════════════════════════
+     1. HERO
+═══════════════════════════════ --}}
+<section class="hero-ra">
+    <div class="hero-ra-inner">
+        <div class="hero-ra-left rv" id="hero-left">
+            <h1>Raih tujuan karier Anda dengan <strong>{{ config('app.name', 'Rayacademy') }}</strong></h1>
+            <p>membangun keterampilan yang siap kerja dari instruktur berpengalaman. Belajar kapan saja, di mana saja.</p>
+            <div class="hero-btns-row">
+                <a href="{{ route('course.index') }}" class="btn-primary-ra">
+                    Mulai Kursus Gratis
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Katalog</a>
             </div>
-
-            <h1 class="hero-title">
-                Kembangkan<br>
-                <em>Skill-mu</em><br>
-                <mark>Bersama Para Ahli</mark>
-            </h1>
-
-            <p class="hero-desc">
-                Akses ratusan kursus berkualitas tinggi dari instruktur berpengalaman.
-                Belajar kapan saja, di mana saja — dan raih karir impianmu.
-            </p>
-
-            <div class="hero-stats">
-                <div>
-                    <div class="hero-stat-num">{{ number_format($stats['total_courses']) }}<em>+</em></div>
-                    <div class="hero-stat-label">Kursus Tersedia</div>
-                </div>
-                <div class="hero-stat-sep"></div>
-                <div>
-                    <div class="hero-stat-num">{{ number_format($stats['total_students']) }}<em>+</em></div>
+            <div class="hero-stats-row">
+                <div class="hero-stat-item">
+                    <div class="hero-stat-num">{{ number_format($stats['total_students']) }}+</div>
                     <div class="hero-stat-label">Pelajar Aktif</div>
                 </div>
-                <div class="hero-stat-sep"></div>
-                <div>
-                    <div class="hero-stat-num">{{ number_format($stats['total_articles']) }}<em>+</em></div>
-                    <div class="hero-stat-label">Artikel & Tips</div>
+                <div class="hero-stat-item">
+                    <div class="hero-stat-num">{{ number_format($stats['total_courses']) }}+</div>
+                    <div class="hero-stat-label">Kursus Tersedia</div>
                 </div>
-            </div>
-            <div class="hero-btns">
-                <a href="{{ route('course.index') }}" class="btn-hero-primary">
-                    <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    Mulai Belajar
-                </a>
-                <a href="{{ route('article.index') }}" class="btn-hero-ghost">
-                    Jelajahi Artikel
-                </a>
+                <div class="hero-stat-item">
+                    <div class="hero-stat-num">Lifetime</div>
+                    <div class="hero-stat-label">Akses Materi</div>
+                </div>
             </div>
         </div>
-        {{-- RIGHT VISUAL - 3D ANIMATED (GESER KE KANAN) --}}
-        <div class="hero-right" id="hero-right">
-            <div class="hero-visual-container">
-                <div class="hero-illustration">
-                    {{-- Particles --}}
-                    <div class="particles">
-                        <div class="particle"></div>
-                        <div class="particle"></div>
-                        <div class="particle"></div>
-                        <div class="particle"></div>
-                        <div class="particle"></div>
-                    </div>
-
-                    {{-- Video Player Element --}}
-                    <div class="floating-element element-video">
-                        <div class="video-header">
-                            <div class="video-dot" style="background:#ff5f56;"></div>
-                            <div class="video-dot" style="background:#ffbd2e;"></div>
-                            <div class="video-dot" style="background:#27c93f;"></div>
-                        </div>
-                        <div class="video-screen">
-                            <div class="video-play"></div>
-                        </div>
-                        <div class="video-progress">
-                            <div class="video-progress-bar"></div>
-                        </div>
-                    </div>
-
-                    {{-- Stats Card --}}
-                    <div class="floating-element element-stats">
-                        <div class="stat-item">
-                            <div class="stat-icon">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h4>98%</h4>
-                                <p>Tingkat Puas</p>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-icon" style="background:linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div class="stat-info">
-                                <h4>24/7</h4>
-                                <p>Akses Materi</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Certificate Badge --}}
-                    <div class="floating-element element-cert">
-                        <div class="cert-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                            </svg>
-                        </div>
-                        <div class="cert-text">
-                            <h4>Sertifikat Resmi</h4>
-                            <p>Terverifikasi</p>
-                        </div>
-                    </div>
-
-                    {{-- Active Users --}}
-                    <div class="floating-element element-users">
-                        <div class="users-avatars">
-                            <div class="user-avatar"></div>
-                            <div class="user-avatar"></div>
-                            <div class="user-avatar"></div>
-                            <div class="user-avatar">+5</div>
-                        </div>
-                        <div class="users-text">
-                            <h4>{{ number_format($stats['total_students']) }}+</h4>
-                            <p>Pelajar Aktif</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="hero-ra-right" id="hero-right">
+            <!-- decorative circles (like Figma) -->
+            <svg style="position:absolute;bottom:0;right:0;width:55%;opacity:.18;z-index:0;pointer-events:none;" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="200" cy="200" r="190" stroke="#0056D2" stroke-width="1.5"/>
+                <circle cx="200" cy="200" r="145" stroke="#0056D2" stroke-width="1.5"/>
+                <circle cx="200" cy="200" r="100" stroke="#0056D2" stroke-width="1.5"/>
+                <circle cx="200" cy="200" r="55"  stroke="#0056D2" stroke-width="1.5"/>
+            </svg>
+            <img src="{{ asset('img/hero.png') }}" alt="Belajar di Ray Academy"
+                 style="position:relative;z-index:1;"
+                 onerror="this.style.display='none'">
         </div>
     </div>
 </section>
-{{-- ══════════════════════════════════════════════
-     2. WHY US
-══════════════════════════════════════════════ --}}
-<section class="why-section" id="kenapa-kami">
-    <div class="wrap">
-        <div class="why-grid">
 
-            {{-- Stats grid --}}
-            <div class="why-stats-grid rv">
-                <div class="why-stat-card featured">
-                    <div class="why-stat-icon">
-                        <svg style="width:20px;height:20px;color:#fff;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
-                    </div>
-                    <div class="why-stat-num">{{ number_format($stats['total_students']) }}+</div>
-                    <div class="why-stat-label">Pelajar aktif yang sudah bergabung bersama kami</div>
-                </div>
-                <div class="why-stat-card">
-                    <div class="why-stat-icon" style="background:#fef3c7;">
-                        <svg style="width:20px;height:20px;color:#d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    <div class="why-stat-num" style="color:var(--ink);">{{ number_format($stats['total_courses']) }}+</div>
-                    <div class="why-stat-label">Kursus berkualitas tersedia</div>
-                </div>
-                <div class="why-stat-card">
-                    <div class="why-stat-icon" style="background:#f0fdf4;">
-                        <svg style="width:20px;height:20px;color:#16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div class="why-stat-num" style="color:var(--ink);">Lifetime</div>
-                    <div class="why-stat-label">Akses materi seumur hidup</div>
-                </div>
-                <div class="why-stat-card">
-                    <div class="why-stat-icon" style="background:#fdf4ff;">
-                        <svg style="width:20px;height:20px;color:#9333ea;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
-                    </div>
-                    <div class="why-stat-num" style="color:var(--ink);">{{ number_format($stats['total_articles']) }}+</div>
-                    <div class="why-stat-label">Artikel & tips eksklusif</div>
-                </div>
-            </div>
-            {{-- Benefits --}}
-            <div class="rv rv-d2">
-                <span class="section-tag">Kenapa Ray Academy?</span>
-                <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.65rem,3vw,2.4rem);font-weight:800;color:var(--ink);line-height:1.2;letter-spacing:-.02em;margin-top:.5rem;margin-bottom:0;">
-                    Pengalaman Belajar<br>yang Berbeda dari Biasanya
-                </h2>
-
-                <div class="benefit-list">
-                    @foreach([
-                        ['p'=>'M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', 't'=>'Video HD Berkualitas Tinggi', 'd'=>'Setiap materi disajikan dalam video resolusi tinggi agar mudah dipahami dan diingat.'],
-                        ['p'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 't'=>'Sertifikat Resmi Terverifikasi', 'd'=>'Dapatkan sertifikat yang diakui dan bisa langsung kamu cantumkan di portofolio.'],
-                        ['p'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0', 't'=>'Komunitas Belajar Aktif', 'd'=>'Bergabung dengan ribuan pelajar dan berdiskusi langsung bersama instruktur.'],
-                        ['p'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 't'=>'Belajar Kapan Saja & Di Mana Saja', 'd'=>'Akses semua materi kapan saja dan di mana saja tanpa batasan waktu.'],
-                    ] as $b)
-                    <div class="benefit-item">
-                        <div class="benefit-icon-wrap">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $b['p'] }}"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="benefit-title">{{ $b['t'] }}</div>
-                            <div class="benefit-desc">{{ $b['d'] }}</div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-{{-- ══════════════════════════════════════════════
-     3. KURSUS POPULER (Coursera Style)
-══════════════════════════════════════════════ --}}
-<section style="background:#fff;padding:4rem 0 3rem;">
+{{-- ═══════════════════════════════
+     2. PROMO CARDS
+═══════════════════════════════ --}}
+<section class="promo-section">
     <div class="wrap">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
-            <div>
-                <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.2rem);font-weight:800;color:var(--ink);margin-bottom:.5rem;">
-                    Kursus Paling Populer
-                </h2>
-                <p style="color:var(--muted);font-size:.95rem;">Dipilih oleh ribuan pelajar di seluruh Indonesia</p>
-            </div>
-            <a href="{{ route('course.index') }}" style="color:var(--blue);font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.35rem;font-size:.9rem;transition:gap .2s;">
-                Lihat Semua
-                <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+        <div class="promo-grid">
+            <a href="{{ route('course.index') }}" class="promo-card" style="background:#CCDDF6;">
+                <div class="promo-card-content">
+                    <div>
+                        <div class="promo-logo-txt">RAYACADEMY</div>
+                        <div class="promo-title">Buka akses ke 10.000+ kursus dengan berlangganan</div>
+                    </div>
+                    <span class="promo-link-txt">Berkembang bersama kami <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </div>
+                <img src="{{ asset('img/content-course1.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
+            </a>
+            <a href="{{ route('course.index') }}" class="promo-card" style="background:#CEFFCC;">
+                <div class="promo-card-content">
+                    <div>
+                        <div class="promo-logo-txt">RAYACADEMY</div>
+                        <div class="promo-title">Memajukan bisnis Anda dan memberdayakan tim Anda</div>
+                    </div>
+                    <span class="promo-link-txt">Coba Rayacademy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </div>
+                <img src="{{ asset('img/content-course2.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
+            </a>
+            <a href="{{ route('course.index') }}" class="promo-card" style="background:#FFCDCD;">
+                <div class="promo-card-content">
+                    <div>
+                        <div class="promo-logo-txt">RAYACADEMY</div>
+                        <div class="promo-title">Buka akses ke 10.000+ kursus dengan berlangganan</div>
+                    </div>
+                    <span class="promo-link-txt">Berkembang bersama kami <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </div>
+                <img src="{{ asset('img/content-course3.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
+            </a>
+            <a href="{{ route('course.index') }}" class="promo-card" style="background:#FFF9CC;">
+                <div class="promo-card-content">
+                    <div>
+                        <div class="promo-logo-txt">RAYACADEMY</div>
+                        <div class="promo-title">Memajukan bisnis Anda dan memberdayakan tim Anda</div>
+                    </div>
+                    <span class="promo-link-txt">Coba Rayacademy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                </div>
+                <img src="{{ asset('img/content-course4.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
         </div>
-        {{-- Horizontal Scroll Cards (Coursera Style) --}}
-        <div style="display:flex;gap:1.25rem;overflow-x:auto;padding-bottom:1rem;scroll-snap-type:x mandatory;">
-            @forelse($featuredCourses->take(6) ?? [] as $course)
-            <a href="{{ route('course.show', $course->slug) }}" 
-               style="flex:0 0 280px;background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;transition:all .3s;scroll-snap-align:start;"
-               onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(10,22,40,.12)'"
-               onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                
-                {{-- Thumbnail --}}
-                <div style="position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#dbeafe,#eff6ff);overflow:hidden;">
-                    @if($course->thumbnail)
-                        <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}" 
-                             style="width:100%;height:100%;object-fit:cover;"
-                             onerror="this.style.display='none'">
-                    @else
-                        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <svg style="width:32px;height:32px;color:var(--blue);opacity:.3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        </div>
-                    @endif
-                    <span style="position:absolute;top:.75rem;left:.75rem;font-size:.68rem;font-weight:700;padding:.3rem .7rem;border-radius:6px;text-transform:uppercase;letter-spacing:.06em;{{ ($course->price ?? 0) > 0 ? 'background:#dbeafe;color:#1d4ed8;' : 'background:#dcfce7;color:#15803d;' }}">
-                        {{ ($course->price ?? 0) > 0 ? 'Premium' : 'Gratis' }}
-                    </span>
-                </div>
+    </div>
+</section>
 
-                {{-- Content --}}
-                <div style="padding:1rem;">
-                    @if($course->category)
-                    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:.4rem;">
-                        {{ $course->category->name }}
-                    </div>
-                    @endif
-                    
-                    <h3 style="font-family:'Sora',sans-serif;font-size:.88rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:.6rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-                        {{ $course->title }}
-                    </h3>
+{{-- ═══════════════════════════════
+     3. FREE COURSE BANNER — FIXED
+═══════════════════════════════ --}}
+<section class="free-banner">
+    <div class="wrap">
+        <div class="free-banner-inner rv">
+            <div class="free-banner-text">
+                <h2>Bingung harus mulai dari mana? Mulai aja dulu kursus gratis di Ray Academy. Akses materi berkualitas tanpa biaya dan temukan jalur suksesmu hari ini.</h2>
+                <a href="{{ route('course.index') }}" class="btn-outline-blue">Mulai Kursus Gratis</a>
+            </div>
+            <div class="free-banner-img-wrap">
+                <img src="{{ asset('img/content-ray.png') }}" alt="Mulai Belajar Gratis"
+                     onerror="this.style.opacity='.3'">
+            </div>
+        </div>
+    </div>
+</section>
 
-                    {{-- Rating --}}
-                    @if(isset($course->rating))
-                    <div style="display:flex;align-items:center;gap:.35rem;margin-top:.5rem;">
-                        <div style="display:flex;gap:2px;">
-                            @for($i = 0; $i < 5; $i++)
-                            <svg style="width:12px;height:12px;{{ $i < floor($course->rating) ? 'color:#fbbf24;fill:#fbbf24;' : 'color:#e5e7eb;fill:#e5e7eb;' }}" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            @endfor
-                        </div>
-                        <span style="font-size:.72rem;font-weight:600;color:var(--muted);">{{ number_format($course->rating, 1) }}</span>
-                        @if(isset($course->students_count))
-                        <span style="font-size:.72rem;color:var(--muted);">({{ number_format($course->students_count) }})</span>
+{{-- ═══════════════════════════════
+     4. FEATURED COURSES
+═══════════════════════════════ --}}
+<section class="featured-section">
+    <div class="wrap">
+        <div class="featured-wrap rv">
+            <div class="featured-label">
+                <h3>Rilis baru yang hangat</h3>
+                <a href="{{ route('course.index') }}" class="btn-white-sm">
+                    Jelajahi kursus
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="featured-scroll">
+                @forelse($featuredCourses->take(7) as $course)
+                <a href="{{ route('course.show', $course->slug) }}" class="feat-card">
+                    <div class="feat-card-thumb">
+                        @if($course->thumbnail)
+                            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}">
+                        @else
+                            <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:1.5rem;color:#0056D2;opacity:.35;"></i></div>
                         @endif
                     </div>
-                    @endif
+                    <div class="feat-card-body">
+                        @if($course->category)<div class="feat-card-cat">{{ $course->category->name }}</div>@endif
+                        <div class="feat-card-title">{{ $course->title }}</div>
+                        @if($course->instructor)<div class="feat-card-meta">{{ $course->instructor }}</div>@endif
+                        <div class="feat-card-badge">{{ (!$course->price || $course->price == 0) ? 'Gratis' : 'Spesialisasi' }}</div>
+                    </div>
+                </a>
+                @empty
+                @for($i=0;$i<4;$i++)
+                <div class="feat-card" style="pointer-events:none;">
+                    <div class="feat-card-thumb" style="background:#E2E8F0;"></div>
+                    <div class="feat-card-body"><div style="height:8px;background:#E2E8F0;border-radius:3px;width:45%;margin-bottom:.5rem;"></div><div style="height:10px;background:#E2E8F0;border-radius:3px;"></div></div>
                 </div>
-            </a>
-            @empty
-            @for($i = 0; $i < 4; $i++)
-            <div style="flex:0 0 280px;background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;">
-                <div style="aspect-ratio:16/9;background:var(--border);"></div>
-                <div style="padding:1rem;">
-                    <div style="height:8px;background:var(--border);border-radius:4px;width:40%;margin-bottom:.5rem;"></div>
-                    <div style="height:12px;background:var(--border);border-radius:4px;margin-bottom:.3rem;"></div>
-                    <div style="height:12px;background:var(--border);border-radius:4px;width:70%;"></div>
-                </div>
+                @endfor
+                @endforelse
             </div>
-            @endfor
-            @endforelse
         </div>
     </div>
 </section>
-{{-- ══════════════════════════════════════════════
-     3. KURSUS SEDANG TREN (Trending)
-══════════════════════════════════════════════ --}}
-<section style="background:var(--surf);padding:4rem 0;">
-    <div class="wrap">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
-            <div>
-                <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.2rem);font-weight:800;color:var(--ink);margin-bottom:.5rem;">
-                    🔥 Kursus Sedang Tren
-                </h2>
-                <p style="color:var(--muted);font-size:.95rem;">Kursus yang paling banyak dipelajari minggu ini</p>
-            </div>
-            <a href="{{ route('course.index') }}" style="color:var(--blue);font-weight:700;text-decoration:none;display:flex;align-items:center;gap:.35rem;font-size:.9rem;">
-                Lihat Semua
-                <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-            </a>
-        </div>
-        {{-- Grid Cards --}}
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;">
-            @forelse($featuredCourses->take(3) ?? [] as $course)
-            <a href="{{ route('course.show', $course->slug) }}" 
-               style="background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:all .3s;position:relative;"
-               onmouseover="this.style.borderColor='#93c5fd';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(10,22,40,.12)'"
-               onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
-                
-                {{-- Trending Badge --}}
-                <div style="position:absolute;top:.75rem;right:.75rem;z-index:2;background:rgba(251,191,36,.95);backdrop-filter:blur(8px);color:#fff;font-size:.68rem;font-weight:700;padding:.35rem .75rem;border-radius:999px;display:flex;align-items:center;gap:.3rem;">
-                    🔥 Trending
-                </div>
 
-                {{-- Thumbnail --}}
-                <div style="position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#dbeafe,#eff6ff);overflow:hidden;">
-                    @if($course->thumbnail)
-                        <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}" style="width:100%;height:100%;object-fit:cover;">
-                    @else
-                        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <svg style="width:36px;height:36px;color:var(--blue);opacity:.3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Content --}}
-                <div style="padding:1.1rem 1.25rem;">
-                    @if($course->category)
-                    <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:.4rem;">
-                        {{ $course->category->name }}
-                    </div>
-                    @endif
-                    
-                    <h3 style="font-family:'Sora',sans-serif;font-size:.925rem;font-weight:700;color:var(--ink);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
-                        {{ $course->title }}
-                    </h3>
-                </div>
-            </a>
-            @empty
-            @for($i = 0; $i < 3; $i++)
-            <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;">
-                <div style="aspect-ratio:16/9;background:var(--border);"></div>
-                <div style="padding:1.1rem 1.25rem;">
-                    <div style="height:10px;background:var(--border);border-radius:4px;width:40%;margin-bottom:.5rem;"></div>
-                    <div style="height:14px;background:var(--border);border-radius:4px;margin-bottom:.3rem;"></div>
-                    <div style="height:14px;background:var(--border);border-radius:4px;width:70%;"></div>
-                </div>
+{{-- ═══════════════════════════════
+     5. SEARCH
+═══════════════════════════════ --}}
+<section class="search-section">
+    <div class="wrap rv">
+        <h2>Cari 10,000+ program pembelajaran</h2>
+        <form action="{{ route('search') }}" method="GET">
+            <div class="search-box-ra">
+                <svg style="width:18px;height:18px;color:#94A3B8;margin-left:.85rem;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                <input type="search" name="q" placeholder="misalnya Pembelajaran Mesin" autocomplete="off">
+                <button type="submit" aria-label="Cari">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
+                </button>
             </div>
-            @endfor
-            @endforelse
+        </form>
+        <div class="chip-row">
+            <span class="chip-label">Populer:</span>
+            @if($courseCategories->isNotEmpty())
+                @foreach($courseCategories->take(6) as $cat)
+                <a href="{{ route('course.index') }}?category={{ $cat->slug }}" class="search-chip">{{ $cat->name }}</a>
+                @endforeach
+            @else
+                <a href="{{ route('course.index') }}" class="search-chip">Bisnis</a>
+                <a href="{{ route('course.index') }}" class="search-chip">Teknologi</a>
+                <a href="{{ route('course.index') }}" class="search-chip">Kosmetik</a>
+                <a href="{{ route('course.index') }}" class="search-chip">Kesehatan</a>
+                <a href="{{ route('course.index') }}" class="search-chip">AI</a>
+            @endif
         </div>
     </div>
 </section>
-{{-- ══════════════════════════════════════════════
-     4. JELAJAHI KATEGORI (Explore Categories)
-══════════════════════════════════════════════ --}}
-<section style="background:var(--surf);padding:5rem 0;">
-    <div class="wrap">
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem;">
-            <div>
-                <span class="section-tag">Kategori Kursus</span>
-                <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.2rem);font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:.5rem;">
-                    Jelajahi Kategori
-                </h2>
-                <p style="color:var(--muted);font-size:.95rem;margin-top:.5rem;max-width:460px;line-height:1.7;">
-                    Temukan kursus sesuai minat dan tujuan karir Anda
-                </p>
-            </div>
-            <a href="{{ route('course.index') }}" class="btn-see-all">
-                Semua Kursus
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-        </div>
 
-        {{-- Category Grid --}}
-        @php
-        $catPalette = [
-            ['from'=>'#1474bc','to'=>'#38bdf8'],
-            ['from'=>'#7c3aed','to'=>'#a78bfa'],
-            ['from'=>'#059669','to'=>'#34d399'],
-            ['from'=>'#dc2626','to'=>'#f87171'],
-            ['from'=>'#d97706','to'=>'#fbbf24'],
-            ['from'=>'#db2777','to'=>'#f472b6'],
-            ['from'=>'#0891b2','to'=>'#22d3ee'],
-            ['from'=>'#4f46e5','to'=>'#818cf8'],
-            ['from'=>'#16a34a','to'=>'#4ade80'],
-            ['from'=>'#9333ea','to'=>'#c084fc'],
-            ['from'=>'#ea580c','to'=>'#fb923c'],
-            ['from'=>'#0284c7','to'=>'#38bdf8'],
-        ];
-        @endphp
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
-            @forelse($courseCategories as $index => $cat)
-            @php $palette = $catPalette[$index % count($catPalette)]; @endphp
-            <a href="{{ route('course.index') }}?category={{ $cat->slug }}"
-               style="position:relative;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:1.4rem 1.5rem;text-decoration:none;color:inherit;display:flex;align-items:center;justify-content:space-between;gap:1rem;overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;"
-               onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.09)';this.style.borderColor='{{ $palette['from'] }}'"
-               onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none';this.style.borderColor='var(--border)'">
-                {{-- Accent bar kiri --}}
-                <span style="position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px;background:linear-gradient(180deg,{{ $palette['from'] }},{{ $palette['to'] }});"></span>
-                <div style="padding-left:.25rem;flex:1;min-width:0;">
-                    <div style="font-family:'Sora',sans-serif;font-size:.9rem;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        {{ $cat->name }}
-                    </div>
-                    <div style="font-size:.75rem;color:var(--muted);margin-top:.25rem;font-weight:500;">
-                        {{ $cat->courses_count }} kursus
-                    </div>
-                </div>
-                <div style="flex-shrink:0;width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,{{ $palette['from'] }},{{ $palette['to'] }});display:flex;align-items:center;justify-content:center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </div>
-            </a>
-            @empty
-            <p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:2rem 0;">Belum ada kategori tersedia.</p>
-            @endforelse
-        </div>
-    </div>
-</section>
-{{-- ══════════════════════════════════════════════
-     5. INSTRUCTORS
-══════════════════════════════════════════════ --}}
-<section class="instructors-section" id="instruktur">
+{{-- ═══════════════════════════════
+     6. INSTRUCTORS (Belajar dari Ahli)
+═══════════════════════════════ --}}
+<section class="ins-section" id="instruktur">
     <div class="wrap" style="position:relative;z-index:1;">
-
-        <div style="text-align:center;margin-bottom:3.5rem;" class="rv">
-            <span class="section-tag-white">Instruktur Kami</span>
-            <h2 style="font-family:'Sora',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;color:#fff;letter-spacing:-.02em;margin-top:.5rem;">Belajar dari Para Ahli</h2>
-            <p style="color:rgba(255,255,255,.55);margin-top:.6rem;font-size:.95rem;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.75;">
-                Instruktur berpengalaman yang siap membimbing perjalanan pembelajaran Anda
-            </p>
+        <div class="ins-header rv">
+            <span class="sec-tag-white">
+                <i class="fas fa-chalkboard-teacher" style="font-size:.65rem;"></i>
+                Instruktur Kami
+            </span>
+            <h2>Belajar dari Para Ahli</h2>
+            <p>Instruktur berpengalaman yang siap membimbing perjalanan pembelajaran Anda</p>
         </div>
 
-        <div class="instructors-grid">
+        <div class="ins-grid">
             @foreach([
-                ['bg'=>'linear-gradient(135deg,#ff5733,#c0392b)','logo'=>'assets/logo-do better class.png','photo'=>'assets/s-ria.png','name'=>'Ria R. Christiana SE, MBA.','tag'=>'Business & Branding','link'=>'#!','c'=>'#c0392b'],
-                ['bg'=>'linear-gradient(135deg,#7c3aed,#5b21b6)','logo'=>'assets/logo-psikologi bisnis.png','photo'=>'assets/s-sukmayanti.png','name'=>'Sukmayanti Ranadireksa, M.Psi.','tag'=>'Psikologi & Komunikasi','link'=>'#!','c'=>'#7c3aed'],
-                ['bg'=>'linear-gradient(135deg,#db2777,#9d174d)','logo'=>'assets/logo-ski.png','photo'=>'assets/s-cahya.png','name'=>'Apt. Cahya Khairani K., M.Farm','tag'=>'Kosmetik & Kecantikan','link'=>'#!','c'=>'#be185d'],
-                ['bg'=>'linear-gradient(135deg,#1d4ed8,#1e3a8a)','logo'=>'assets/logo-amaizing.png','photo'=>'assets/s-wendra.png','name'=>'Wendra Wilendra M.MT.','tag'=>'Teknologi & AI','link'=>'#!','c'=>'#1d4ed8'],
-                ['bg'=>'linear-gradient(135deg,#0891b2,#0e7490)','logo'=>'assets/logo-sobat-anak.png','photo'=>'assets/s-fricil-1.png','name'=>'dr. Frecillia Regina, Sp.A','tag'=>'Kesehatan Anak','link'=>'https://rayacademy.id/sobat-anak/','c'=>'#0891b2'],
+                ['bg'=>'linear-gradient(135deg,#ff5733,#c0392b)','logo'=>'assets/logo-do better class.png','photo'=>'assets/s-ria.png','name'=>'Ria R. Christiana SE, MBA.','tag'=>'Business & Branding','link'=>route('course.index'),'c'=>'#c0392b'],
+                ['bg'=>'linear-gradient(135deg,#7c3aed,#5b21b6)','logo'=>'assets/logo-psikologi bisnis.png','photo'=>'assets/s-sukmayanti.png','name'=>'Sukmayanti Ranadireksa, M.Psi.','tag'=>'Psikologi & Komunikasi','link'=>route('course.index'),'c'=>'#7c3aed'],
+                ['bg'=>'linear-gradient(135deg,#db2777,#9d174d)','logo'=>'assets/logo-ski.png','photo'=>'assets/s-cahya.png','name'=>'Apt. Cahya Khairani K., M.Farm','tag'=>'Kosmetik & Kecantikan','link'=>route('course.index'),'c'=>'#be185d'],
+                ['bg'=>'linear-gradient(135deg,#1d4ed8,#1e3a8a)','logo'=>'assets/logo-amaizing.png','photo'=>'assets/s-wendra.png','name'=>'Wendra Wilendra M.MT.','tag'=>'Teknologi & AI','link'=>route('course.index'),'c'=>'#1d4ed8'],
             ] as $idx => $ins)
             <div class="ins-card rv rv-d{{ min($idx+1,4) }}" style="background:{{ $ins['bg'] }};">
                 <div class="ins-card-inner">
-                    <img src="{{ asset($ins['logo']) }}" alt="{{ $ins['name'] }}" class="ins-card-logo"
-                         onerror="this.style.display='none'">
+                    <img src="{{ asset($ins['logo']) }}" alt="{{ $ins['name'] }}" class="ins-card-logo" onerror="this.style.display='none'">
                     <h3 class="ins-card-name">{{ $ins['name'] }}</h3>
                     <p class="ins-card-tag">{{ $ins['tag'] }}</p>
                     <a href="{{ $ins['link'] }}" class="ins-card-btn" style="color:{{ $ins['c'] }};">
-                        Mulai Belajar →
+                        Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
                     </a>
                 </div>
-                <img src="{{ asset($ins['photo']) }}" alt="{{ $ins['name'] }}"
-                     class="ins-card-photo"
-                     onerror="this.style.display='none'">
+                <img src="{{ asset($ins['photo']) }}" alt="{{ $ins['name'] }}" class="ins-card-photo" onerror="this.style.display='none'">
             </div>
             @endforeach
-        </div>
-    </div>
-</section>
-{{-- ══════════════════════════════════════════════
-     6. ARTICLES
-══════════════════════════════════════════════ --}}
-@if($latestArticles->isNotEmpty())
-<section class="articles-section" id="artikel">
-    <div class="wrap">
 
-        <div class="section-header rv">
-            <div class="section-header-left">
-                <span class="section-tag">Tips & Wawasan</span>
-                <h2>Artikel & Tips Terbaru</h2>
-                <p>Tingkatkan pengetahuanmu dengan konten berkualitas dari para ahli.</p>
-            </div>
-            <a href="{{ route('article.index') }}" class="btn-see-all">
-                Lihat Semua
-                <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-        </div>
-        <div class="articles-grid">
-            @php $featured = $latestArticles->first(); @endphp
-
-            {{-- Featured article --}}
-            <a href="{{ route('article.show', $featured->slug) }}" class="art-featured rv">
-                @if($featured->thumbnail ?? $featured->cover_image ?? null)
-                    <img src="{{ $featured->thumbnail ?? $featured->cover_image }}" alt="{{ $featured->title }}" class="art-featured-img">
-                @else
-                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0a1628,#1474bc);"></div>
-                @endif
-                <div class="art-featured-overlay"></div>
-                <div class="art-featured-body">
-                    @if($featured->categories->first())
-                        <div class="art-featured-cat">{{ $featured->categories->first()->name }}</div>
-                    @endif
-                    <h3 class="art-featured-title">{{ $featured->title }}</h3>
-                    @if($featured->excerpt ?? $featured->description ?? null)
-                        <p class="art-featured-excerpt">{{ $featured->excerpt ?? $featured->description }}</p>
-                    @endif
-                    <p class="art-featured-date">
-                        @if($featured->published_at) {{ $featured->published_at->isoFormat('D MMM YYYY') }} @endif
-                        @if($featured->views_count ?? null) · {{ number_format($featured->views_count) }} views @endif
-                    </p>
+            {{-- Row 2: 1 card centered --}}
+            <div class="ins-row2">
+                <div class="ins-card ins-card-solo rv" style="background:linear-gradient(135deg,#0891b2,#0e7490);">
+                    <div class="ins-card-inner">
+                        <img src="{{ asset('assets/logo-sobat-anak.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-logo" onerror="this.style.display='none'">
+                        <h3 class="ins-card-name">dr. Frecillia Regina, Sp.A</h3>
+                        <p class="ins-card-tag">Kesehatan Anak</p>
+                        <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#0891b2;">
+                            Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+                        </a>
+                    </div>
+                    <img src="{{ asset('assets/s-fricil-1.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-photo" onerror="this.style.display='none'">
                 </div>
-            </a>
-            {{-- Sidebar articles --}}
-            <div class="art-sidebar">
-                @foreach($latestArticles->skip(1)->take(3) as $article)
-                <a href="{{ route('article.show', $article->slug) }}" class="art-small rv rv-d{{ $loop->index + 1 }}">
-                    <div class="art-small-thumb">
-                        @if($article->thumbnail ?? $article->cover_image ?? null)
-                            <img src="{{ $article->thumbnail ?? $article->cover_image }}" alt="{{ $article->title }}">
-                        @else
-                            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-                                <svg style="width:20px;height:20px;color:var(--blue);opacity:.3;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="art-small-body">
-                        @if($article->categories->first())
-                            <span class="art-small-cat">{{ $article->categories->first()->name }}</span>
-                        @endif
-                        <h3 class="art-small-title">{{ $article->title }}</h3>
-                        @if($article->published_at)
-                            <p class="art-small-date">{{ $article->published_at->isoFormat('D MMM YYYY') }}</p>
-                        @endif
-                    </div>
-                </a>
-                @endforeach
             </div>
         </div>
     </div>
 </section>
-@endif
-{{-- ══════════════════════════════════════════════
-     4.6. FAQ (PERTANYAAN YANG SERING DIAJUKAN)
-══════════════════════════════════════════════ --}}
-<section class="faq-section">
-    <div class="wrap">
-        <div class="faq-header rv">
-            <span class="section-tag">💬 FAQ</span>
-            <h2>Pertanyaan yang Sering Diajukan</h2>
-            <p>Temukan jawaban untuk pertanyaan umum seputar Ray Academy</p>
-        </div>
 
-        <div class="faq-grid rv">
+{{-- ═══════════════════════════════
+     7. ARTIKEL — FIXED kosong
+═══════════════════════════════ --}}
+<section class="articles-section">
+    <div class="wrap">
+        <h2>Artikel</h2>
+        <div class="art-grid">
             @php
-            $faqs = [
-                [
-                    'q' => 'Apakah Ray Academy menyediakan sertifikat resmi?',
-                    'a' => 'Ya! Setiap kursus yang Anda selesaikan di Ray Academy akan mendapatkan sertifikat resmi yang terverifikasi. Sertifikat ini dapat langsung Anda cantumkan di CV atau portofolio LinkedIn untuk meningkatkan kredibilitas profesional Anda.'
-                ],
-                [
-                    'q' => 'Berapa lama akses kursus yang saya beli?',
-                    'a' => 'Anda mendapatkan akses LIFETIME (selamanya) untuk semua kursus yang Anda beli. Tidak ada batasan waktu, sehingga Anda bisa belajar dengan tempo Anda sendiri dan mengulang materi kapanpun Anda mau.'
-                ],
-                [
-                    'q' => 'Apakah ada kursus gratis di Ray Academy?',
-                    'a' => 'Tentu! Kami menyediakan beberapa kursus gratis yang berkualitas untuk membantu Anda memulai perjalanan belajar. Anda bisa langsung mengakses kursus gratis tanpa perlu melakukan pembayaran.'
-                ],
-                [
-                    'q' => 'Bagaimana cara mendapatkan bantuan jika saya kesulitan dalam belajar?',
-                    'a' => 'Kami punya komunitas belajar yang aktif! Anda bisa bertanya langsung di forum diskusi setiap kursus, atau menghubungi instruktur melalui fitur Q&A. Tim support kami juga siap membantu Anda melalui email atau live chat.'
-                ],
-                [
-                    'q' => 'Apakah materi kursus selalu diupdate?',
-                    'a' => 'Ya, instruktur kami secara berkala mengupdate materi kursus untuk memastikan konten tetap relevan dengan perkembangan industri terkini. Semua update materi dapat Anda akses secara gratis.'
-                ],
-                [
-                    'q' => 'Bisakah saya belajar dari smartphone?',
-                    'a' => 'Absolutely! Platform Ray Academy 100% mobile-friendly. Anda bisa belajar dari smartphone, tablet, atau laptop. Semua video dan materi telah dioptimalkan untuk berbagai perangkat.'
-                ],
-                [
-                    'q' => 'Apakah ada garansi uang kembali?',
-                    'a' => 'Ya, kami memberikan garansi uang kembali 30 hari untuk kursus premium. Jika Anda tidak puas dengan kursus yang dibeli, Anda bisa mengajukan refund dalam 30 hari pertama setelah pembelian.'
-                ],
-            ];
+                /* Ambil semua artikel, bagi ke 3 kolom */
+                $allArts  = $latestArticles ?? collect();
+                $perCol   = max(1, (int) ceil($allArts->count() / 3));
+                $chunks   = $allArts->chunk($perCol);
+
+                $colDefs = [
+                    ['label'=>'Tentang Kosmetik', 'route'=> route('article.index')],
+                    ['label'=>'Tentang Bisnis',   'route'=> route('article.index')],
+                    ['label'=>'Kategori Lainnya', 'route'=> route('article.index')],
+                ];
+
+                /* Konten fallback untuk kolom kosong */
+                $fallbacks = [
+                    ['title'=>'Tips Memilih Bahan Kosmetik yang Aman','cat'=>'KOSMETIK','date'=>'Apr'],
+                    ['title'=>'Strategi Membangun Bisnis Digital di 2025','cat'=>'BISNIS','date'=>'Apr'],
+                    ['title'=>'Cara Belajar Efektif dengan Metode Spaced Repetition','cat'=>'TIPS BELAJAR','date'=>'Apr'],
+                ];
             @endphp
 
-            @foreach($faqs as $idx => $faq)
-            <div class="faq-item" onclick="toggleFAQ(this)">
-                <div class="faq-question">
-                    <h3>{{ $faq['q'] }}</h3>
-                    <div class="faq-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+            @foreach($colDefs as $ci => $col)
+            @php $colArts = $chunks->get($ci, collect()); @endphp
+            <div class="art-col rv rv-d{{ $ci + 1 }}">
+                <a href="{{ $col['route'] }}" class="art-col-head">
+                    {{ $col['label'] }}
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+
+                @if($colArts->isNotEmpty())
+                    {{-- Real articles --}}
+                    @foreach($colArts->take(3) as $art)
+                    <a href="{{ route('article.show', $art->slug) }}" class="art-item">
+                        <div class="art-thumb">
+                            @if($art->thumbnail ?? $art->cover_image ?? null)
+                                <img src="{{ $art->thumbnail ?? $art->cover_image }}" alt="{{ $art->title }}">
+                            @else
+                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-file-alt" style="font-size:.9rem;color:#0056D2;opacity:.35;"></i></div>
+                            @endif
+                        </div>
+                        <div class="art-body">
+                            @if($art->categories->first())<div class="art-cat">{{ $art->categories->first()->name }}</div>@endif
+                            <div class="art-title">{{ $art->title }}</div>
+                            <div class="art-date">@if($art->published_at){{ $art->published_at->isoFormat('D MMM') }}@endif</div>
+                        </div>
+                    </a>
+                    @endforeach
+                @else
+                    {{-- Placeholder — jangan kosong --}}
+                    <div class="art-placeholder">
+                        <div class="art-placeholder-icon">
+                            <i class="fas fa-newspaper" style="font-size:1rem;color:#0056D2;opacity:.6;"></i>
+                        </div>
+                        <p>Konten artikel untuk kategori ini segera hadir. Yuk, jelajahi artikel lainnya!</p>
+                        <a href="{{ route('article.index') }}">Lihat semua artikel &rarr;</a>
                     </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ═══════════════════════════════
+     8. TESTIMONIALS
+═══════════════════════════════ --}}
+<section class="testi-section">
+    <div class="wrap">
+        <h2>Apa kata mereka</h2>
+        <div class="testi-grid">
+            @php
+            $testis=[
+                ['i'=>'A','n'=>'Abigail P.','t'=>'Saya memiliki pekerjaan penuh waktu dan 3 orang anak. Ray Academy memberi fleksibilitas yang saya butuhkan. Langganannya memotivasi saya untuk terus belajar.'],
+                ['i'=>'S','n'=>'Shi Jie F.','t'=>'Platform yang sangat membantu! Dengan setiap kursus saya mendapat nilai lebih. Saya bisa mengakses hampir semua konten dengan satu berlangganan.'],
+                ['i'=>'I','n'=>'Ines K.','t'=>'Saya sangat menghargai fleksibilitas yang ditawarkan. Bisa mencoba kursus apa saja tanpa biaya tambahan memotivasi saya belajar lebih banyak!'],
+            ];
+            @endphp
+            @foreach($testis as $t)
+            <div class="testi-card rv rv-d{{ $loop->index+1 }}">
+                <div class="testi-stars">
+                    @for($s=0;$s<5;$s++)<svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>@endfor
                 </div>
-                <div class="faq-answer">
-                    <p>{{ $faq['a'] }}</p>
+                <p class="testi-text">"{{ $t['t'] }}"</p>
+                <div class="testi-user">
+                    <div class="testi-avatar">{{ $t['i'] }}</div>
+                    <div class="testi-name">{{ $t['n'] }}</div>
                 </div>
             </div>
             @endforeach
         </div>
-        {{-- Masih Punya Pertanyaan? --}}
-        <div style="text-align:center;margin-top:3.5rem;padding:2.5rem;background:#fff;border-radius:18px;border:2px dashed var(--border);" class="rv">
-            <h3 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:700;color:var(--ink);margin-bottom:0.75rem;">
-                Masih Punya Pertanyaan Lain?
-            </h3>
-            <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.95rem;">
-                Tim support kami siap membantu Anda 24/7
-            </p>
-            <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-                <a href="mailto:support@rayacademy.id" style="display:inline-flex;align-items:center;gap:.5rem;padding:0.75rem 1.5rem;background:var(--blue);color:#fff;font-weight:600;border-radius:10px;text-decoration:none;transition:all .2s;">
-                    <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    Email Kami
-                </a>
-                <a href="https://wa.me/6281234567890" target="_blank" style="display:inline-flex;align-items:center;gap:.5rem;padding:0.75rem 1.5rem;background:rgba(37,211,102,.1);color:#25d366;font-weight:600;border-radius:10px;text-decoration:none;border:1.5px solid rgba(37,211,102,.3);transition:all .2s;">
-                    <svg style="width:18px;height:18px;" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-                    WhatsApp
-                </a>
+    </div>
+</section>
+
+{{-- ═══════════════════════════════
+     9. FAQ
+═══════════════════════════════ --}}
+<section class="faq-section">
+    <div class="wrap">
+        <h2>Pertanyaan yang sering diajukan</h2>
+        <div class="faq-box rv">
+            @php
+            $faqs=[
+                ['q'=>'Apakah Ray Academy menyediakan sertifikat resmi?','a'=>'Ya! Setiap kursus yang diselesaikan mendapatkan sertifikat resmi terverifikasi yang dapat dicantumkan di CV atau portofolio LinkedIn Anda.'],
+                ['q'=>'Apa saja yang termasuk dalam paket berlangganan?','a'=>'Paket berlangganan mencakup akses tak terbatas ke semua kursus, video HD, forum diskusi, dan sertifikat resmi untuk setiap kursus yang diselesaikan.'],
+                ['q'=>'Apakah saya akan menghemat dengan berlangganan?','a'=>'Sangat! Dengan berlangganan Anda mendapat akses ke semua kursus dengan harga jauh lebih hemat dibanding membeli satu per satu.'],
+                ['q'=>'Berapa lama akses kursus yang saya beli?','a'=>'Anda mendapat akses LIFETIME untuk semua kursus yang dibeli. Tidak ada batasan waktu — belajar kapan saja sesuai kecepatan Anda sendiri.'],
+                ['q'=>'Bisakah saya belajar dari smartphone?','a'=>'Tentu saja! Platform Ray Academy 100% mobile-friendly. Belajar dari smartphone, tablet, atau laptop dengan pengalaman optimal di semua perangkat.'],
+                ['q'=>'Apakah ada garansi uang kembali?','a'=>'Ya, kami memberikan garansi uang kembali 30 hari untuk kursus premium jika Anda tidak puas dengan konten yang didapatkan.'],
+            ];
+            @endphp
+            @foreach($faqs as $faq)
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-q">
+                    <h3>{{ $faq['q'] }}</h3>
+                    <div class="faq-chevron"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                </div>
+                <div class="faq-ans"><p>{{ $faq['a'] }}</p></div>
             </div>
+            @endforeach
         </div>
     </div>
 </section>
+
+{{-- ═══════════════════════════════
+     10. PARTNERS
+═══════════════════════════════ --}}
+<section class="partners-section">
+    <div class="wrap rv">
+        <h2>Bekerjasama dengan Universitas dan Lembaga Pelatihan</h2>
+        <div class="partners-logos">
+            <img src="{{ asset('img/logo-unpad.png') }}" alt="Universitas Padjadjaran" onerror="this.style.display='none'">
+            <img src="{{ asset('img/logo-farmasi-unpad.jpg') }}" alt="Farmasi Unpad" onerror="this.style.display='none'">
+            <img src="{{ asset('img/logo-labcos.png') }}" alt="Labcos" onerror="this.style.display='none'">
+        </div>
+    </div>
+</section>
+
+{{-- ═══════════════════════════════
+     11. CTA BOTTOM
+═══════════════════════════════ --}}
+<section class="cta-section">
+    <div class="wrap">
+        <div class="cta-inner rv">
+            <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="cta-logo-img" onerror="this.style.display='none'">
+            <p>Raih tujuan karier Anda dengan {{ config('app.name', 'Rayacademy') }}</p>
+            @guest
+            <a href="{{ route('register') }}" class="btn-primary-ra">Mulai 7 hari Masa Percobaan Gratis</a>
+            <p class="cta-subtext">Daftar gratis &middot; Batalkan kapan saja</p>
+            @else
+            <a href="{{ route('dashboard') }}" class="btn-primary-ra">Dashboard Saya</a>
+            @endguest
+        </div>
+    </div>
+</section>
+
 @endsection
 
 @push('scripts')
-{{-- Splide slider --}}
-<link rel="stylesheet" href="{{ asset('vendor/splide/css/splide-core.min.css') }}">
-<script src="{{ asset('vendor/splide/js/splide.min.js') }}"></script>
-
-<style>
-    /* Splide pagination dots */
-    .splide__pagination__page { background: rgba(255,255,255,.35) !important; }
-    .splide__pagination__page.is-active { background: #fff !important; transform: scale(1.4) !important; }
-    .splide__pagination { bottom: -1.75rem !important; }
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
-    /* ── Scroll reveal ── */
-    const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
-        });
-    }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+    /* Scroll reveal */
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} });
+    }, { threshold:0.06, rootMargin:'0px 0px -40px 0px' });
     document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
     /* Trigger hero immediately */
     setTimeout(() => {
         document.getElementById('hero-left')?.classList.add('in');
-        setTimeout(() => document.getElementById('hero-right')?.classList.add('in'), 200);
-    }, 60);
+        setTimeout(() => document.getElementById('hero-right')?.classList.add('in'), 150);
+    }, 50);
 
-    /* ── Splide hero slider ── */
-    const sliderEl = document.getElementById('hero-slider');
-    if (sliderEl && typeof Splide !== 'undefined') {
-        new Splide(sliderEl, {
-            type: 'loop', perPage: 1, autoplay: true,
-            interval: 4500, pauseOnHover: true,
-            arrows: false, pagination: true, speed: 700, gap: 0,
-        }).mount();
-    }
-
-    /* ── Course filter ── */
-    window.filterCourses = function(btn, cat) {
-        document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.querySelectorAll('.crs-card').forEach(card => {
-            const show = cat === 'all' || (card.dataset.cat === cat);
-            card.style.display = show ? '' : 'none';
-        });
-    };
-
-    /* ── Trending filter ── */
-    window.filterTrending = function(btn, type) {
-        document.querySelectorAll('.trending-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.querySelectorAll('.trending-card').forEach(card => {
-            if (type === 'popular') {
-                card.style.display = '';
-            } else {
-                const show = card.dataset.type === type;
-                card.style.display = show ? '' : 'none';
-            }
-        });
-    };
-
-    /* ── FAQ Toggle ── */
+    /* FAQ */
     window.toggleFAQ = function(item) {
-        const isActive = item.classList.contains('active');
-        
-        // Close all other FAQs
-        document.querySelectorAll('.faq-item').forEach(faq => {
-            if (faq !== item) {
-                faq.classList.remove('active');
-            }
-        });
-
-        // Toggle current FAQ
-        if (isActive) {
-            item.classList.remove('active');
-        } else {
-            item.classList.add('active');
-        }
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+        if(!isOpen) item.classList.add('open');
     };
 });
 </script>
