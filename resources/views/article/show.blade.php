@@ -140,6 +140,14 @@
 {{-- Article Hero --}}
 <section class="art-hero">
     <div class="art-hero-inner">
+        {{-- Breadcrumb di hero --}}
+        <nav style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:center;font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:1.25rem;">
+            <a href="{{ route('home') }}" style="color:rgba(255,255,255,.55);text-decoration:none;transition:color .18s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Beranda</a>
+            <svg style="width:12px;height:12px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <a href="{{ route('article.index') }}" style="color:rgba(255,255,255,.55);text-decoration:none;transition:color .18s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">Artikel</a>
+            <svg style="width:12px;height:12px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span style="color:rgba(255,255,255,.75);">{{ Str::limit($article->title, 45) }}</span>
+        </nav>
         @if($article->categories->isNotEmpty())
         <div class="art-hero-cats">
             @foreach($article->categories as $cat)
@@ -175,19 +183,13 @@
 
             {{-- Main Content --}}
             <article>
-                {{-- Breadcrumb --}}
-                <nav class="breadcrumb" style="margin-top:2rem;">
-                    <a href="{{ route('home') }}">Beranda</a>
-                    <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <a href="{{ route('article.index') }}">Artikel</a>
-                    <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span>{{ Str::limit($article->title, 40) }}</span>
-                </nav>
 
                 {{-- Thumbnail --}}
                 @if($article->thumbnail)
-                    <div class="art-thumb-wrap">
-                        <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}">
+                    <div class="art-thumb-wrap" style="margin-top:2rem;">
+                        <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                             alt="{{ $article->title }}"
+                             onerror="this.parentElement.style.display='none'">
                     </div>
                 @endif
 
