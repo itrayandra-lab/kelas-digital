@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Middleware\Middleware;
 
 class CourseController extends Controller
 {
@@ -24,6 +23,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with('category')->latest()->paginate(10);
+
         return view('admin.courses.index', compact('courses'));
     }
 
@@ -48,11 +48,17 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'instructor' => 'required|string|max:255',
             'description' => 'required',
-            'price' => 'required|integer|min:0',
+            'course_type' => 'required|in:paid,free',
+            'price' => 'nullable|integer|min:0',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'trailer_video_id' => 'required|string',
+            'trailer_video_id' => 'nullable|string',
             'course_category_id' => 'required|exists:course_categories,id',
             'level' => 'required|in:Beginner,Intermediate,Advanced',
+            'benefits' => 'nullable|string',
+            'topics_preview' => 'nullable|string',
+            'schedule_start' => 'nullable|date',
+            'schedule_end' => 'nullable|date|after_or_equal:schedule_start',
+            'meeting_platform' => 'nullable|string|max:100',
         ]);
 
         $thumbnail = 'default-course.jpg';
@@ -64,11 +70,17 @@ class CourseController extends Controller
             'title' => $data['title'],
             'instructor' => $data['instructor'],
             'description' => $data['description'],
-            'price' => $data['price'],
+            'course_type' => $data['course_type'],
+            'price' => $data['course_type'] === 'free' ? 0 : ($data['price'] ?? 0),
             'thumbnail' => $thumbnail,
-            'trailer_video_id' => $data['trailer_video_id'],
+            'trailer_video_id' => $data['trailer_video_id'] ?? '',
             'course_category_id' => $data['course_category_id'],
             'level' => $data['level'],
+            'benefits' => $data['benefits'] ?? null,
+            'topics_preview' => $data['topics_preview'] ?? null,
+            'schedule_start' => $data['schedule_start'] ?? null,
+            'schedule_end' => $data['schedule_end'] ?? null,
+            'meeting_platform' => $data['meeting_platform'] ?? null,
         ]);
 
         return redirect()->route('admin.courses.index')->with('success', 'Course created successfully.');
@@ -80,6 +92,7 @@ class CourseController extends Controller
     public function show(string $id)
     {
         $course = Course::with('category')->findOrFail($id);
+
         return view('admin.courses.show', compact('course'));
     }
 
@@ -102,27 +115,38 @@ class CourseController extends Controller
     {
         $this->authorize('edit courses');
         $course = Course::findOrFail($id);
-        
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'instructor' => 'required|string|max:255',
             'description' => 'required',
-            'price' => 'required|integer|min:0',
+            'course_type' => 'required|in:paid,free',
+            'price' => 'nullable|integer|min:0',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'trailer_video_id' => 'required|string',
+            'trailer_video_id' => 'nullable|string',
             'course_category_id' => 'required|exists:course_categories,id',
             'level' => 'required|in:Beginner,Intermediate,Advanced',
+            'benefits' => 'nullable|string',
+            'topics_preview' => 'nullable|string',
+            'schedule_start' => 'nullable|date',
+            'schedule_end' => 'nullable|date|after_or_equal:schedule_start',
+            'meeting_platform' => 'nullable|string|max:100',
         ]);
 
         $payload = [
             'title' => $data['title'],
-            'slug' => $data['slug'] ?? null,
             'instructor' => $data['instructor'],
             'description' => $data['description'],
-            'price' => $data['price'],
-            'trailer_video_id' => $data['trailer_video_id'],
+            'course_type' => $data['course_type'],
+            'price' => $data['course_type'] === 'free' ? 0 : ($data['price'] ?? $course->price),
+            'trailer_video_id' => $data['trailer_video_id'] ?? $course->trailer_video_id,
             'course_category_id' => $data['course_category_id'],
             'level' => $data['level'],
+            'benefits' => $data['benefits'] ?? null,
+            'topics_preview' => $data['topics_preview'] ?? null,
+            'schedule_start' => $data['schedule_start'] ?? null,
+            'schedule_end' => $data['schedule_end'] ?? null,
+            'meeting_platform' => $data['meeting_platform'] ?? null,
         ];
 
         if ($request->hasFile('thumbnail')) {

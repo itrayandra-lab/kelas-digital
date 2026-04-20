@@ -41,8 +41,10 @@
             color: var(--ink); 
             background: #fff; 
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
             max-width: 100vw;
+        }
+        main {
+            overflow-x: clip;
         }
         h1,h2,h3,h4,h5,h6 { font-family: 'Sora', sans-serif; }
 

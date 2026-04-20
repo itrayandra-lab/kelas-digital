@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
+use RalphJSmit\Laravel\SEO\Support\SEOData;
 
 class Course extends Model
 {
@@ -26,17 +26,38 @@ class Course extends Model
         'level',
         'is_featured',
         'featured_at',
+        'course_type',
+        'benefits',
+        'topics_preview',
+        'schedule_start',
+        'schedule_end',
+        'meeting_platform',
     ];
 
     protected $casts = [
-        // Removed full_video_ids cast as it's no longer needed
         'featured_at' => 'datetime',
+        'schedule_start' => 'datetime',
+        'schedule_end' => 'datetime',
     ];
 
     /**
+     * Check if this is a free class
+     */
+    public function isFreeClass(): bool
+    {
+        return $this->course_type === 'free';
+    }
+
+    /**
+     * Check if this is a paid course
+     */
+    public function isPaidCourse(): bool
+    {
+        return $this->course_type === 'paid';
+    }
+
+    /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
@@ -48,7 +69,7 @@ class Course extends Model
                 'separator' => '-',
                 'maxLength' => 100,
                 'maxLengthKeepWords' => true,
-            ]
+            ],
         ];
     }
 
@@ -58,7 +79,7 @@ class Course extends Model
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true)
-                     ->orderBy('featured_at', 'desc');
+            ->orderBy('featured_at', 'desc');
     }
 
     /**
@@ -66,9 +87,9 @@ class Course extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'enrollments')
-                    ->withPivot('payment_status', 'status', 'enrolled_at', 'payment_method', 'payment_proof')
-                    ->withTimestamps();
+        return $this->belongsToMany(User::class, 'enrollments')
+            ->withPivot('payment_status', 'status', 'enrolled_at', 'payment_method', 'payment_proof')
+            ->withTimestamps();
     }
 
     /**
@@ -76,7 +97,7 @@ class Course extends Model
      */
     public function enrollments()
     {
-        return $this->hasMany(\App\Models\Enrollment::class);
+        return $this->hasMany(Enrollment::class);
     }
 
     /**
@@ -95,9 +116,9 @@ class Course extends Model
     /**
      * Get dynamic SEO data for this course
      */
-    public function getDynamicSEOData(): \RalphJSmit\Laravel\SEO\Support\SEOData
+    public function getDynamicSEOData(): SEOData
     {
-        return new \RalphJSmit\Laravel\SEO\Support\SEOData(
+        return new SEOData(
             title: $this->title,
             description: $this->description ?: 'Kursus online berkualitas tinggi di Kelas Digital. Pelajari dengan instruktur berpengalaman dan dapatkan sertifikat setelah menyelesaikan kursus.',
             author: $this->instructor ?: 'Kelas Digital Team',
