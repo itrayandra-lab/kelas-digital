@@ -434,10 +434,8 @@
                             <span class="crs-instructor">
                                 {{ is_string($course->instructor ?? null) ? $course->instructor : ($course->instructor->name ?? 'Ray Academy') }}
                             </span>
-                            <span class="crs-price {{ $course->course_type === 'free' || ($course->price ?? 0) == 0 ? 'crs-price-free' : '' }}">
-                                @if($course->course_type === 'free')
-                                    Gratis!
-                                @elseif(($course->price ?? 0) == 0)
+                            <span class="crs-price {{ ($course->price ?? 0) == 0 ? 'crs-price-free' : '' }}">
+                                @if(($course->price ?? 0) == 0)
                                     Gratis
                                 @else
                                     Rp {{ number_format($course->price, 0, ',', '.') }}

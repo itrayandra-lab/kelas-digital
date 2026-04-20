@@ -328,9 +328,6 @@
             @else
             <li><a href="{{ route('article.index') }}" class="{{ request()->routeIs('article.*') ? 'active' : '' }}">Artikel</a></li>
             @endif
-            
-            <li><a href="{{ url('/about.index') }}" class="{{ request()->is('about') ? 'active' : '' }}">Tentang</a></li>
-            <li><a href="{{ url('/contact.index') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Kontak</a></li>
         </ul>
 
         {{-- Search + CTA --}}
@@ -409,8 +406,6 @@
     <a href="{{ route('home') }}" class="nav-mobile-link">Beranda</a>
     <a href="{{ route('course.index') }}" class="nav-mobile-link">Kursus</a>
     <a href="{{ route('article.index') }}" class="nav-mobile-link">Artikel</a>
-    <a href="{{ url('/about.index') }}" class="nav-mobile-link">Tentang</a>
-    <a href="{{ url('/contact.index') }}" class="nav-mobile-link">Kontak</a>
 
     @if(isset($articleCategories) && $articleCategories->count() > 0)
     <div class="nav-mobile-divider"></div>

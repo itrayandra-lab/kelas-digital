@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ArticleCategory;
 
 class HomeController extends Controller
 {
@@ -105,6 +106,11 @@ class HomeController extends Controller
         // Load related articles
         $relatedArticles = $article->getRelatedArticles();
 
-        return view('article.show', compact('article', 'relatedArticles'));
+        // Article categories for sidebar
+        $articleCategories = \App\Models\ArticleCategory::withCount('articles')
+            ->orderBy('articles_count', 'desc')
+            ->get();
+
+        return view('article.show', compact('article', 'relatedArticles', 'articleCategories'));
     }
 }

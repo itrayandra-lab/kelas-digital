@@ -48,14 +48,6 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/articles/tags', [TagController::class, 'index'])->name('tag.index');
 Route::get('/articles/tag/{tag:slug}', [TagController::class, 'show'])->name('tag.show');
 
-Route::get('/about', function () {
-    return view('about.index');
-})->name('about');
-
-Route::get('/contact', function () {
-    return view('contact.index');
-})->name('contact');
-
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
