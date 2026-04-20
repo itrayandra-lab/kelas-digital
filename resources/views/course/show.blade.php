@@ -199,15 +199,20 @@
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: 3rem;
-    align-items: start;
     position: relative;
 }
+.course-body > div:first-child {
+    min-width: 0;
+}
 .course-body-sidebar {
+    position: sticky;
+    top: 96px;
     align-self: start;
+    height: fit-content;
 }
 @media (max-width: 1024px) {
     .course-body { grid-template-columns: 1fr; }
-    .course-body-sidebar { display: none; }
+    .course-body-sidebar { display: none; position: static; }
 }
 
 /* ── SECTION BLOCKS ── */
@@ -714,49 +719,30 @@
         </div>
     </div>
 
+    {{-- PREVIEW MODAL (di luar course-body agar fixed benar-benar full screen) --}}
+    <div id="preview-modal"
+         style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.9);align-items:center;justify-content:center;padding:1.5rem;"
+         onclick="if(event.target===this)closePreviewModal()">
+        <div style="width:100%;max-width:900px;position:relative;">
+            <button onclick="closePreviewModal()"
+                    style="position:absolute;top:-2.75rem;right:0;background:none;border:none;color:#fff;font-size:1.75rem;cursor:pointer;line-height:1;padding:.25rem;"
+                    aria-label="Tutup">
+                <i class="fas fa-times"></i>
+            </button>
+            <div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;" id="preview-iframe-wrap">
+            </div>
+            <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.78rem;margin-top:.75rem;">
+                Video preview — berbeda dengan konten kelas penuh
+            </p>
+        </div>
+    </div>
+
     {{-- MAIN BODY --}}
     <div class="course-body" x-data="{
         currentVideoId: '{{ $initialVideoId }}',
         descExpanded: false,
-        previewOpen: false,
-        previewVideoId: '{{ $course->trailer_video_id }}',
-        switchVideo(videoId) { this.currentVideoId = videoId; document.getElementById('main-video').scrollIntoView({behavior:'smooth'}); },
-        openPreview() { this.previewOpen = true; document.body.style.overflow = 'hidden'; },
-        closePreview() { this.previewOpen = false; document.body.style.overflow = ''; }
+        switchVideo(videoId) { this.currentVideoId = videoId; document.getElementById('main-video').scrollIntoView({behavior:'smooth'}); }
     }">
-
-        {{-- PREVIEW MODAL --}}
-        <div x-show="previewOpen"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:1.5rem;"
-             @click.self="closePreview()"
-             x-cloak>
-            <div style="width:100%;max-width:900px;position:relative;">
-                <button @click="closePreview()"
-                        style="position:absolute;top:-2.5rem;right:0;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;opacity:.8;line-height:1;"
-                        aria-label="Tutup">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;">
-                    <template x-if="previewOpen">
-                        <iframe :src="`https://www.youtube.com/embed/${previewVideoId}?autoplay=1`"
-                                width="100%" height="100%"
-                                title="Preview Kelas" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen
-                                style="width:100%;height:100%;display:block;"></iframe>
-                    </template>
-                </div>
-                <p style="text-align:center;color:rgba(255,255,255,.6);font-size:.8rem;margin-top:.75rem;">
-                    Ini adalah video preview — berbeda dengan konten kelas penuh
-                </p>
-            </div>
-        </div>
 
         {{-- LEFT COLUMN --}}
         <div>
@@ -889,63 +875,63 @@
 
         {{-- RIGHT COLUMN (sticky sidebar, desktop) --}}
         <div class="course-body-sidebar">
-            <div class="course-sidebar-card" style="position:sticky;top:88px;">
-                    <div class="course-sidebar-preview" @click="openPreview()" style="cursor:pointer;">
-                        @if($course->thumbnail && $course->thumbnail !== 'default-course.jpg')
-                            <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
-                        @else
-                            <div style="width:100%;height:100%;background:linear-gradient(135deg,#1e3a5f,#1474bc);"></div>
-                        @endif
-                        <div class="course-sidebar-play">
-                            <div class="play-btn"><i class="fas fa-play" style="margin-left:3px;font-size:1.1rem;"></i></div>
-                            <span>Preview Kelas</span>
-                        </div>
-                    </div>
-                    <div class="course-sidebar-body">
-                        <div class="course-sidebar-price">
-                            Rp{{ number_format($course->price, 0, ',', '.') }}
-                            <span class="original">Rp{{ number_format($course->price * 1.2, 0, ',', '.') }}</span>
-                        </div>
-
-                        @if(auth()->check())
-                            @if($userHasAccess)
-                                <a href="#main-video" class="btn-enroll btn-enroll-success">
-                                    <i class="fas fa-play mr-2"></i> Mulai Belajar
-                                </a>
-                                <p class="text-center text-sm text-green-600 font-semibold mt-1">✓ Anda sudah terdaftar</p>
-                            @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
-                                <div class="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                                    <p class="font-semibold text-yellow-800">Menunggu Verifikasi Pembayaran</p>
-                                    <p class="text-yellow-600 text-xs mt-1">Pembayaran sedang diverifikasi admin.</p>
-                                </div>
-                            @else
-                                <form method="post" action="{{ route('course.enroll', $course->slug) }}">
-                                    @csrf
-                                    <button type="submit" class="btn-enroll">Gabung Kelas Ini</button>
-                                </form>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="btn-enroll">Login untuk Gabung</a>
-                        @endif
-
-                        @if(session('message'))
-                            <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm text-center">
-                                {{ session('message') }}
-                            </div>
-                        @endif
-
-                        <div class="course-sidebar-includes">
-                            <h4>Termasuk dalam kelas ini</h4>
-                            <ul>
-                                <li><i class="fas fa-infinity"></i> Akses seumur hidup</li>
-                                <li><i class="fas fa-play-circle"></i> {{ $totalVideos }} video pembelajaran</li>
-                                <li><i class="fas fa-mobile-alt"></i> Akses di semua perangkat</li>
-                                <li><i class="fas fa-certificate"></i> Sertifikat penyelesaian</li>
-                                <li><i class="fas fa-comments"></i> Konsultasi dengan instruktur</li>
-                            </ul>
-                        </div>
+            <div class="course-sidebar-card">
+                <div class="course-sidebar-preview" onclick="openPreviewModal('{{ $course->trailer_video_id }}')" style="cursor:pointer;">
+                    @if($course->thumbnail && $course->thumbnail !== 'default-course.jpg')
+                        <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
+                    @else
+                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1e3a5f,#1474bc);"></div>
+                    @endif
+                    <div class="course-sidebar-play">
+                        <div class="play-btn"><i class="fas fa-play" style="margin-left:3px;font-size:1.1rem;"></i></div>
+                        <span>Preview Kelas</span>
                     </div>
                 </div>
+                <div class="course-sidebar-body">
+                    <div class="course-sidebar-price">
+                        Rp{{ number_format($course->price, 0, ',', '.') }}
+                        <span class="original">Rp{{ number_format($course->price * 1.2, 0, ',', '.') }}</span>
+                    </div>
+
+                    @if(auth()->check())
+                        @if($userHasAccess)
+                            <a href="#main-video" class="btn-enroll btn-enroll-success">
+                                <i class="fas fa-play mr-2"></i> Mulai Belajar
+                            </a>
+                            <p class="text-center text-sm text-green-600 font-semibold mt-1">✓ Anda sudah terdaftar</p>
+                        @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
+                            <div class="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
+                                <p class="font-semibold text-yellow-800">Menunggu Verifikasi Pembayaran</p>
+                                <p class="text-yellow-600 text-xs mt-1">Pembayaran sedang diverifikasi admin.</p>
+                            </div>
+                        @else
+                            <form method="post" action="{{ route('course.enroll', $course->slug) }}">
+                                @csrf
+                                <button type="submit" class="btn-enroll">Gabung Kelas Ini</button>
+                            </form>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="btn-enroll">Login untuk Gabung</a>
+                    @endif
+
+                    @if(session('message'))
+                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm text-center">
+                            {{ session('message') }}
+                        </div>
+                    @endif
+
+                    <div class="course-sidebar-includes">
+                        <h4>Termasuk dalam kelas ini</h4>
+                        <ul>
+                            <li><i class="fas fa-infinity"></i> Akses seumur hidup</li>
+                            <li><i class="fas fa-play-circle"></i> {{ $totalVideos }} video pembelajaran</li>
+                            <li><i class="fas fa-mobile-alt"></i> Akses di semua perangkat</li>
+                            <li><i class="fas fa-certificate"></i> Sertifikat penyelesaian</li>
+                            <li><i class="fas fa-comments"></i> Konsultasi dengan instruktur</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -977,3 +963,26 @@
     @endif
 
 @endsection
+
+@push('scripts')
+<script>
+function openPreviewModal(videoId) {
+    if (!videoId) return;
+    const modal = document.getElementById('preview-modal');
+    const wrap = document.getElementById('preview-iframe-wrap');
+    wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;display:block;"></iframe>';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closePreviewModal() {
+    const modal = document.getElementById('preview-modal');
+    const wrap = document.getElementById('preview-iframe-wrap');
+    wrap.innerHTML = '';
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closePreviewModal();
+});
+</script>
+@endpush
