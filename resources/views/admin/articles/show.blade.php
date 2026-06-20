@@ -22,7 +22,7 @@
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         @if ($article->thumbnail && $article->thumbnail != 'default-article.jpg')
-            <img src="{{ asset($article->thumbnail) }}" alt="{{ $article->title }}"
+            <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
                 class="w-full h-72 object-cover">
         @endif
 

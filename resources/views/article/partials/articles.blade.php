@@ -7,7 +7,7 @@
     {{-- Thumbnail --}}
     <div class="art-card-thumb-wrap">
         @if($article->thumbnail ?? $article->cover_image ?? null)
-            <img src="{{ asset($article->thumbnail ?? $article->cover_image) }}"
+            <img src="{{ asset('storage/' . ($article->thumbnail ?? $article->cover_image)) }}"
                  alt="{{ $article->title }}"
                  class="art-card-thumb-img"
                  loading="lazy"
