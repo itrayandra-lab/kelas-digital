@@ -739,7 +739,7 @@
                     <a href="{{ route('article.show', $art->slug) }}" class="art-item">
                         <div class="art-thumb">
                             @if($art->thumbnail ?? $art->cover_image ?? null)
-                                <img src="{{ $art->thumbnail ?? $art->cover_image }}" alt="{{ $art->title }}">
+                                <img src="{{ asset('storage/' . ($art->thumbnail ?? $art->cover_image)) }}" alt="{{ $art->title }}">
                             @else
                                 <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-file-alt" style="font-size:.9rem;color:#0056D2;opacity:.35;"></i></div>
                             @endif
