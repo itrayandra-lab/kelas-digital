@@ -513,7 +513,7 @@
                     <a href="{{ route('article.show', $article->slug) }}" class="sp-art-card">
                         <div class="sp-art-thumb">
                             @if($article->thumbnail ?? $article->cover_image ?? null)
-                                <img src="{{ asset('storage/'.($article->thumbnail ?? $article->cover_image)) }}"
+                                <img src="{{ asset($article->thumbnail ?? $article->cover_image) }}"
                                      alt="{{ $article->title }}" loading="lazy"
                                      onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
                             @else
@@ -731,7 +731,7 @@
                     <a href="{{ route('article.show', $article->slug) }}" class="sp-art-card">
                         <div class="sp-art-thumb">
                             @if($article->thumbnail ?? $article->cover_image ?? null)
-                                <img src="{{ asset('storage/'.($article->thumbnail ?? $article->cover_image)) }}"
+                                <img src="{{ asset($article->thumbnail ?? $article->cover_image) }}"
                                      alt="{{ $article->title }}" loading="lazy"
                                      onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\' style=\'width:22px;height:22px;color:#0056D2;opacity:.35\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
                             @else

@@ -236,7 +236,7 @@
                             @if ($article->thumbnail)
                                 <div>
                                     <p class="text-xs text-gray-500 mb-1">Current Thumbnail:</p>
-                                    <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="Current Thumbnail"
+                                    <img src="{{ asset($article->thumbnail) }}" alt="Current Thumbnail"
                                         class="h-24 w-24 object-cover rounded-lg border border-gray-200">
                                 </div>
                             @endif

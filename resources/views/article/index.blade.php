@@ -446,6 +446,7 @@ function articleLoader(categorySlug = null) {
                 const response = await axios.get('{{ route("article.load-more") }}', { params });
                 const data = response.data;
                 document.getElementById('articles-container').insertAdjacentHTML('beforeend', data.articles_html);
+                document.querySelectorAll('#articles-container .rv:not(.in)').forEach(el => obs.observe(el));
                 if (data.has_more) {
                     this.page++;
                 } else {

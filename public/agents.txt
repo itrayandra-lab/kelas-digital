@@ -1,0 +1,45 @@
+# agents.txt — Ray Academy
+# Standard: https://agents-txt.com
+# JSON: https://rayacademy.id/agents.json
+# Description: Ray Academy adalah platform edukasi online yang menyediakan kursus bisnis, pemasaran, AI, kosmetik, dan pengembangan diri.
+
+## Identity
+Name: Ray Academy
+URL: https://rayacademy.id
+Description: Platform edukasi online dengan kursus dan artikel berkualitas di bidang bisnis, pemasaran, kecerdasan buatan (AI), industri kosmetik, parenting, dan pengembangan diri. Menyediakan kelas berbayar dan gratis dengan materi video, artikel insights, dan bimbingan instruktur ahli.
+Language: id
+Topics: Bisnis, Marketing & Sales, Kecerdasan Buatan (AI), Kosmetik, Parenting, Psikologi, Pengembangan Diri
+
+## Content
+Article-Categories: Am-AI-Zing, Do Better Class, Psikologi Bisnis, Marketing & Sales, Sekolah Kosmetik Indonesia, Sobat Anak
+Course-Types: Paid (Video Kurikulum), Free (Video Pembelajaran)
+Content-Formats: Artikel Insights, Video Kursus, Studi Kasus, Panduan Praktis
+
+## Agent Capabilities Required
+Capability: HTTP requests (GET)
+Capability: JSON parsing
+Capability: Markdown parsing
+Capability: Indonesian language comprehension (Bahasa Indonesia)
+
+## Endpoints
+GET  /articles                              # Daftar semua artikel
+GET  /articles/category/{slug}              # Artikel berdasarkan kategori
+GET  /articles/load-more                    # Load more articles (pagination)
+GET  /article/{slug}                        # Detail artikel
+GET  /courses                               # Daftar semua kursus
+GET  /course/{slug}                         # Detail kursus
+GET  /course/{slug}/lesson/{id}             # Detail pelajaran
+GET  /search?q={query}                      # Pencarian konten
+GET  /tags/{slug}                           # Artikel berdasarkan tag
+GET  /sitemap.xml                           # Sitemap (Layer 2)
+GET  /llms.txt                              # LLM content briefing (Layer 3)
+
+## Sitemap
+Sitemap: https://rayacademy.id/sitemap.xml
+
+## LLM
+LLM: https://rayacademy.id/llms.txt
+LLM-Full: https://rayacademy.id/llms-full.txt
+
+## Robots
+Robots: https://rayacademy.id/robots.txt

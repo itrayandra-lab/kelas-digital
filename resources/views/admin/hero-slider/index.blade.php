@@ -40,7 +40,7 @@
                                 {{ $article->hero_slider_order }}
                             </div>
 
-                            <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/100' }}"
+                            <img src="{{ $article->thumbnail ? asset($article->thumbnail) : 'https://via.placeholder.com/100' }}"
                                  alt="{{ $article->title }}"
                                  class="w-20 h-20 object-cover rounded">
 

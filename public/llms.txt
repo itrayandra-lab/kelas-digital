@@ -1,0 +1,28 @@
+# Ray Academy
+> Platform edukasi online dengan kursus dan artikel berkualitas di bidang bisnis, pemasaran, kecerdasan buatan (AI), industri kosmetik, parenting, dan pengembangan diri.
+> URL: https://rayacademy.id
+> Language: id (Bahasa Indonesia)
+
+## Navigasi Utama
+- [Beranda](https://rayacademy.id/)
+- [Artikel](https://rayacademy.id/articles) — Insights, tips, dan panduan
+- [Kursus](https://rayacademy.id/courses) — Kelas online berbayar & gratis
+- [Rekomendasi](https://rayacademy.id/recommendations) — Rekomendasi konten
+
+## Kategori Artikel
+- [Am-AI-Zing](https://rayacademy.id/articles/category/am-ai-zing) — Kecerdasan Buatan (AI)
+- [Do Better Class](https://rayacademy.id/articles/category/do-better-class) — Pengembangan diri
+- [Psikologi Bisnis](https://rayacademy.id/articles/category/psikologi-bisnis) — Psikologi dalam bisnis
+- [Marketing & Sales](https://rayacademy.id/articles/category/marketing-sales) — Pemasaran dan penjualan
+- [Sekolah Kosmetik Indonesia](https://rayacademy.id/articles/category/sekolah-kosmetik-indonesia) — Industri kosmetik
+- [Sobat Anak](https://rayacademy.id/articles/category/sobat-anak) — Parenting
+
+## Informasi Tambahan
+- [Tentang](https://rayacademy.id/about)
+- [Kebijakan Privasi](https://rayacademy.id/privacy-policy)
+
+## File Terkait
+- [Sitemap](https://rayacademy.id/sitemap.xml)
+- [Robots](https://rayacademy.id/robots.txt)
+- [Agents](https://rayacademy.id/agents.txt)
+- [Full Content](https://rayacademy.id/llms-full.txt)

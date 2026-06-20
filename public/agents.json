@@ -1,0 +1,52 @@
+{
+  "name": "Ray Academy",
+  "url": "https://rayacademy.id",
+  "description": "Platform edukasi online dengan kursus dan artikel berkualitas di bidang bisnis, pemasaran, kecerdasan buatan (AI), industri kosmetik, parenting, dan pengembangan diri.",
+  "language": "id",
+  "topics": ["Bisnis", "Marketing & Sales", "Kecerdasan Buatan (AI)", "Kosmetik", "Parenting", "Psikologi", "Pengembangan Diri"],
+  "content": {
+    "article_categories": ["Am-AI-Zing", "Do Better Class", "Psikologi Bisnis", "Marketing & Sales", "Sekolah Kosmetik Indonesia", "Sobat Anak"],
+    "course_types": ["Paid (Video Kurikulum)", "Free (Video Pembelajaran)"],
+    "content_formats": ["Artikel Insights", "Video Kursus", "Studi Kasus", "Panduan Praktis"]
+  },
+  "mcp": {},
+  "authorization": {
+    "required": false,
+    "public_content": true,
+    "payment_required_for": ["paid_courses"]
+  },
+  "endpoints": [
+    { "path": "/articles", "method": "GET", "description": "Daftar semua artikel" },
+    { "path": "/articles/category/{slug}", "method": "GET", "description": "Artikel berdasarkan kategori" },
+    { "path": "/articles/load-more", "method": "GET", "description": "Load more articles (pagination)" },
+    { "path": "/article/{slug}", "method": "GET", "description": "Detail artikel" },
+    { "path": "/courses", "method": "GET", "description": "Daftar semua kursus" },
+    { "path": "/course/{slug}", "method": "GET", "description": "Detail kursus" },
+    { "path": "/course/{slug}/lesson/{id}", "method": "GET", "description": "Detail pelajaran" },
+    { "path": "/search", "method": "GET", "description": "Pencarian konten (q parameter)" },
+    { "path": "/tags/{slug}", "method": "GET", "description": "Artikel berdasarkan tag" }
+  ],
+  "sitemap": {
+    "url": "https://rayacademy.id/sitemap.xml"
+  },
+  "llm": {
+    "url": "https://rayacademy.id/llms.txt",
+    "full": "https://rayacademy.id/llms-full.txt"
+  },
+  "skills": [
+    {
+      "id": "search-content",
+      "label": "Pencarian konten Ray Academy",
+      "description": "Cari artikel dan kursus berdasarkan kata kunci",
+      "url": "https://rayacademy.id/search",
+      "method": "GET",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "q": { "type": "string", "description": "Kata kunci pencarian" }
+        },
+        "required": ["q"]
+      }
+    }
+  ]
+}

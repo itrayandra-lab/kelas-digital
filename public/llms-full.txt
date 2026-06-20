@@ -1,0 +1,76 @@
+# Ray Academy — Full Content Brief
+> URL: https://rayacademy.id
+> Language: id (Bahasa Indonesia)
+> Platform edukasi online — kursus dan artikel di bidang bisnis, pemasaran, AI, kosmetik, parenting, dan pengembangan diri.
+
+## Tentang Ray Academy
+
+Ray Academy adalah platform edukasi online yang menyediakan konten pembelajaran berkualitas dalam bentuk artikel insights dan kursus video. Dibangun untuk membantu pengguna mengembangkan keterampilan di berbagai bidang termasuk bisnis, pemasaran, kecerdasan buatan, kosmetik, parenting, dan psikologi.
+
+Fitur utama:
+- Artikel insights oleh instruktur ahli
+- Kursus video berbayar dengan kurikulum terstruktur
+- Kursus video gratis untuk pembelajaran dasar
+- Rekomendasi konten personal
+- Sistem pembayaran Midtrans (kartu kredit, transfer bank, QRIS, dll.)
+
+## Struktur URL
+
+### Halaman Utama
+- https://rayacademy.id/ — Beranda
+- https://rayacademy.id/about — Tentang
+- https://rayacademy.id/privacy-policy — Kebijakan Privasi
+
+### Artikel
+- https://rayacademy.id/articles — Daftar artikel (dengan load more pagination)
+- https://rayacademy.id/article/{slug} — Detail artikel
+- https://rayacademy.id/articles/category/{slug} — Artikel per kategori
+- https://rayacademy.id/tags/{slug} — Artikel per tag
+
+### Kategori Artikel
+- **Am-AI-Zing** (/articles/category/am-ai-zing) — Artikel tentang kecerdasan buatan (AI), machine learning, ChatGPT, prompt engineering, AI tools, dan dampak AI di berbagai industri.
+- **Do Better Class** (/articles/category/do-better-class) — Artikel pengembangan diri, produktivitas, manajemen waktu, kebiasaan positif, dan soft skills.
+- **Psikologi Bisnis** (/articles/category/psikologi-bisnis) — Psikologi dalam konteks bisnis, perilaku konsumen, neuromarketing, dan decision making.
+- **Marketing & Sales** (/articles/category/marketing-sales) — Strategi pemasaran, teknik penjualan, digital marketing, copywriting, social media marketing, SEO, dan branding.
+- **Sekolah Kosmetik Indonesia** (/articles/category/sekolah-kosmetik-indonesia) — Industri kosmetik, skincare, beauty business, regulasi kosmetik, dan tren kecantikan.
+- **Sobat Anak** (/articles/category/sobat-anak) — Parenting, pendidikan anak, tumbuh kembang anak, dan psikologi anak.
+
+### Kursus
+- https://rayacademy.id/courses — Daftar kursus
+- https://rayacademy.id/course/{slug} — Detail kursus (termasuk daftar pelajaran)
+- https://rayacademy.id/course/{slug}/lesson/{id} — Halaman pelajaran (video + materi)
+
+Tipe kursus:
+- **Berbayar** — Akses penuh ke semua video kurikulum setelah pembayaran melalui Midtrans
+- **Gratis** — Akses langsung ke video pembelajaran tanpa pembayaran
+
+### Pencarian
+- https://rayacademy.id/search?q={query} — Pencarian artikel dan konten
+
+### Akun & Auth
+- https://rayacademy.id/login — Login
+- https://rayacademy.id/register — Registrasi
+- https://rayacademy.id/dashboard — Dashboard user (riwayat enrollmen, course progress)
+- https://rayacademy.id/recommendations — Rekomendasi konten personal
+
+## Topik Utama
+
+1. **Bisnis & Kewirausahaan** — Strategi bisnis, manajemen, inovasi, studi kasus UKM, scale-up bisnis, business model canvas.
+2. **Marketing & Sales** — Digital marketing, content marketing, copywriting, iklan, branding, social media strategy, email marketing, CRM.
+3. **Kecerdasan Buatan (AI)** — Penggunaan AI dalam bisnis, ChatGPT, prompt engineering, otomatisasi AI, tools AI, etika AI.
+4. **Kosmetik & Beauty Business** — Ilmu kosmetik, tren skincare, regulasi BPOM, bisnis kosmetik, bahan aktif, formulasi.
+5. **Parenting** — Pola asuh anak, pendidikan anak usia dini, psikologi perkembangan anak, komunikasi orang tua-anak.
+6. **Psikologi** — Psikologi bisnis, psikologi konsumen, kesehatan mental, growth mindset, emotional intelligence.
+7. **Pengembangan Diri** — Produktivitas, manajemen waktu, public speaking, leadership, goal setting, habit building.
+
+## Teknologi & Framework
+- **Backend**: Laravel 12 (PHP 8.4), MySQL
+- **Frontend**: Tailwind CSS 4, Alpine.js 3
+- **Payment**: Midtrans (Snap) — sandbox & production
+- **Storage**: Local filesystem (storage/app/public)
+
+## File Terkait
+- Sitemap: https://rayacademy.id/sitemap.xml
+- Robots: https://rayacademy.id/robots.txt
+- Agents: https://rayacademy.id/agents.txt
+- LLMS: https://rayacademy.id/llms.txt

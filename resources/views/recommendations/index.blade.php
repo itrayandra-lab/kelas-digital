@@ -29,7 +29,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($articles as $article)
                         <div class="bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-lg transition">
-                            <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/600x400' }}"
+                            <img src="{{ $article->thumbnail ? asset($article->thumbnail) : 'https://via.placeholder.com/600x400' }}"
                                  alt="{{ $article->title }}"
                                  class="w-full h-48 object-cover">
                             <div class="p-6">
