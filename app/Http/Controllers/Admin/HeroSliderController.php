@@ -48,7 +48,7 @@ class HeroSliderController extends Controller
             // Set new orders
             foreach ($validated['articles'] as $articleData) {
                 Article::find($articleData['id'])->update([
-                    'hero_slider_order' => $articleData['order']
+                    'hero_slider_order' => $articleData['order'],
                 ]);
             }
         });

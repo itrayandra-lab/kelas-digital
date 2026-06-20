@@ -22,4 +22,3 @@ return new class extends Migration
         Schema::dropIfExists('course_categories');
     }
 };
-

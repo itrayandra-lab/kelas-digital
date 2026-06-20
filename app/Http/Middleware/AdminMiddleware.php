@@ -12,26 +12,26 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         // Check if user is logged in
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu untuk mengakses halaman ini.');
         }
 
         $user = Auth::user();
 
         // Check if user has admin or super-admin role
-        if (!$user->hasAnyRole(['admin', 'Super-Admin'])) {
+        if (! $user->hasAnyRole(['admin', 'Super-Admin'])) {
             // Log unauthorized access attempt (optional)
             \Log::warning('Unauthorized admin access attempt', [
                 'user_id' => $user->id,
                 'user_email' => $user->email,
                 'ip' => $request->ip(),
                 'url' => $request->fullUrl(),
-                'time' => now()
+                'time' => now(),
             ]);
 
             // Return 403 Forbidden for better security

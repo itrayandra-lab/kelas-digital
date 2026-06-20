@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('domain_name', 255);
             $table->string('webhook_url', 255);
             $table->string('api_key', 255);
-            $table->string('status', 255)->default('inactive'); 
+            $table->string('status', 255)->default('inactive');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 

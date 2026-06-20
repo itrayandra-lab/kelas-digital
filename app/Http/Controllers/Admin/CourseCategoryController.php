@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CourseCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class CourseCategoryController extends Controller
 {
@@ -43,7 +42,7 @@ class CourseCategoryController extends Controller
     public function update(Request $request, CourseCategory $courseCategory)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:course_categories,name,' . $courseCategory->id,
+            'name' => 'required|string|max:255|unique:course_categories,name,'.$courseCategory->id,
             'description' => 'nullable|string',
         ]);
 
@@ -59,4 +58,3 @@ class CourseCategoryController extends Controller
         return redirect()->route('admin.course-categories.index')->with('success', 'Course category deleted successfully.');
     }
 }
-

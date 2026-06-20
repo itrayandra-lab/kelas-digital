@@ -4,12 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MigrateWordPressAttachments extends Command
 {
     protected $signature = 'migrate:wordpress-attachments';
+
     protected $description = 'Migrate media attachments from WordPress to Laravel storage';
 
     public function handle()
@@ -38,7 +38,7 @@ class MigrateWordPressAttachments extends Command
             AND p.post_status = 'inherit'
         ");
 
-        $this->info("Found " . count($wp_attachments) . " attachments to migrate");
+        $this->info('Found '.count($wp_attachments).' attachments to migrate');
 
         foreach ($wp_attachments as $wp_attachment) {
             // Download and save the attachment
@@ -51,7 +51,7 @@ class MigrateWordPressAttachments extends Command
             }
         }
 
-        $this->info("All attachments migrated successfully!");
+        $this->info('All attachments migrated successfully!');
     }
 
     private function downloadAndSaveAttachment($url)
@@ -61,26 +61,26 @@ class MigrateWordPressAttachments extends Command
             $filename = basename(parse_url($url, PHP_URL_PATH));
             $extension = pathinfo($filename, PATHINFO_EXTENSION);
             $basename = pathinfo($filename, PATHINFO_FILENAME);
-            
+
             // Create a unique filename
-            $new_filename = Str::slug($basename) . '_' . time() . '.' . $extension;
+            $new_filename = Str::slug($basename).'_'.time().'.'.$extension;
 
             // Create directory if it doesn't exist
             $full_directory = storage_path('app/public/attachments');
-            if (!file_exists($full_directory)) {
+            if (! file_exists($full_directory)) {
                 mkdir($full_directory, 0755, true);
             }
 
             // Download the file
             $file_content = file_get_contents($url);
             if ($file_content !== false) {
-                $path = $full_directory . '/' . $new_filename;
+                $path = $full_directory.'/'.$new_filename;
                 file_put_contents($path, $file_content);
 
-                return 'attachments/' . $new_filename;
+                return 'attachments/'.$new_filename;
             }
         } catch (\Exception $e) {
-            $this->error("Failed to download attachment: {$url} - " . $e->getMessage());
+            $this->error("Failed to download attachment: {$url} - ".$e->getMessage());
         }
 
         return null;

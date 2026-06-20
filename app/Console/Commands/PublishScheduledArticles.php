@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Article;
+use Illuminate\Console\Command;
 
 class PublishScheduledArticles extends Command
 {
@@ -33,6 +33,7 @@ class PublishScheduledArticles extends Command
 
         if ($scheduledArticles->isEmpty()) {
             $this->info('No scheduled articles ready to be published.');
+
             return 0;
         }
 
@@ -52,9 +53,9 @@ class PublishScheduledArticles extends Command
             }
         }
 
-        $this->info("Publishing completed!");
+        $this->info('Publishing completed!');
         $this->info("Successfully published: {$publishedCount} article(s)");
-        
+
         if ($failedCount > 0) {
             $this->warn("Failed to publish: {$failedCount} article(s)");
         }

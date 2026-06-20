@@ -17,11 +17,12 @@ class UserController extends Controller
     {
         // Exclude Super Admin users from the list
         $users = User::with('roles')
-            ->whereDoesntHave('roles', function($query) {
+            ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'Super-Admin');
             })
             ->latest()
             ->paginate(20);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -31,6 +32,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::whereIn('name', ['student', 'instructor', 'content-manager', 'admin'])->get();
+
         return view('admin.users.create', compact('roles'));
     }
 
@@ -66,6 +68,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::with('roles')->findOrFail($id);
+
         return view('admin.users.show', compact('user'));
     }
 
@@ -75,13 +78,14 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::with('roles')->findOrFail($id);
-        
+
         // Prevent editing Super Admin users
         if ($user->hasRole('Super-Admin')) {
             return redirect()->route('admin.users.index')->with('error', 'Super Admin users cannot be edited.');
         }
-        
+
         $roles = Role::whereIn('name', ['student', 'instructor', 'content-manager', 'admin'])->get();
+
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
@@ -99,8 +103,8 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:20|unique:users,username,' . $user->id . '|regex:/^[a-zA-Z0-9_-]+$/',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'username' => 'required|string|max:20|unique:users,username,'.$user->id.'|regex:/^[a-zA-Z0-9_-]+$/',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|exists:roles,name',
             'password' => 'nullable|string|min:8|confirmed',
         ]);

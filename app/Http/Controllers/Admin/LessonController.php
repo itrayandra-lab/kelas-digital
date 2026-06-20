@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Lesson;
 use App\Models\Course;
+use App\Models\Lesson;
+use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
     public function index(Request $request)
     {
         $query = Lesson::with('course');
-        
+
         if ($request->has('course_id')) {
             $query->where('course_id', $request->course_id);
         }
-        
+
         $lessons = $query->latest()->paginate(10);
         $courses = Course::all();
-        
+
         return view('admin.lessons.index', compact('lessons', 'courses'));
     }
 
     public function create()
     {
         $courses = Course::all();
+
         return view('admin.lessons.create', compact('courses'));
     }
 
@@ -54,6 +55,7 @@ class LessonController extends Controller
     public function edit(Lesson $lesson)
     {
         $courses = Course::all();
+
         return view('admin.lessons.edit', compact('lesson', 'courses'));
     }
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ArticleCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class ArticleCategoryController extends Controller
 {
@@ -43,7 +42,7 @@ class ArticleCategoryController extends Controller
     public function update(Request $request, ArticleCategory $articleCategory)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:article_categories,name,' . $articleCategory->id,
+            'name' => 'required|string|max:255|unique:article_categories,name,'.$articleCategory->id,
             'description' => 'nullable|string',
         ]);
 
@@ -59,4 +58,3 @@ class ArticleCategoryController extends Controller
         return redirect()->route('admin.article-categories.index')->with('success', 'Article category deleted successfully.');
     }
 }
-

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Course;
+use App\Models\CourseCategory;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
         // 1. Hero Slider - course-platform focused (max 5 slides)
-        $heroArticles = \App\Models\Article::published()
+        $heroArticles = Article::published()
             ->inHeroSlider()
             ->with('categories', 'tags')
             ->limit(5)
@@ -21,7 +25,7 @@ class HomeController extends Controller
             $needed = 5 - $heroArticles->count();
             $excludedIds = $heroArticles->pluck('id');
 
-            $fallbackArticles = \App\Models\Article::published()
+            $fallbackArticles = Article::published()
                 ->whereNull('hero_slider_order')
                 ->whereNotIn('id', $excludedIds)
                 ->with('categories', 'tags')
@@ -33,7 +37,7 @@ class HomeController extends Controller
         }
 
         // 2. Featured Courses - main section (up to 8 courses)
-        $featuredCourses = \App\Models\Course::featured()
+        $featuredCourses = Course::featured()
             ->with(['category', 'enrollments'])
             ->withCount('enrollments')
             ->limit(8)
@@ -41,7 +45,7 @@ class HomeController extends Controller
 
         // Fallback to latest courses if no featured courses
         if ($featuredCourses->isEmpty()) {
-            $featuredCourses = \App\Models\Course::latest()
+            $featuredCourses = Course::latest()
                 ->with(['category', 'enrollments'])
                 ->withCount('enrollments')
                 ->limit(8)
@@ -52,13 +56,13 @@ class HomeController extends Controller
         }
 
         // 3. Course Categories - for filter tabs
-        $courseCategories = \App\Models\CourseCategory::whereHas('courses')
+        $courseCategories = CourseCategory::whereHas('courses')
             ->withCount('courses')
             ->orderBy('courses_count', 'desc')
             ->get();
 
         // Course model has no published() scope — query directly
-        $instructorCourses = \App\Models\Course::with('category')
+        $instructorCourses = Course::with('category')
             ->whereNotNull('instructor')
             ->whereNotNull('thumbnail')
             ->inRandomOrder()
@@ -68,7 +72,7 @@ class HomeController extends Controller
             ->take(5);
 
         // 5. Latest Articles - ONE section only (4 articles)
-        $latestArticles = \App\Models\Article::published()
+        $latestArticles = Article::published()
             ->with('categories', 'tags')
             ->orderBy('published_at', 'desc')
             ->limit(4)
@@ -76,9 +80,9 @@ class HomeController extends Controller
 
         // 6. Site stats
         $stats = [
-            'total_courses'  => \App\Models\Course::count(),
-            'total_students' => \App\Models\User::count(),
-            'total_articles' => \App\Models\Article::published()->count(),
+            'total_courses' => Course::count(),
+            'total_students' => User::count(),
+            'total_articles' => Article::published()->count(),
         ];
 
         return view('home', compact(
@@ -94,7 +98,7 @@ class HomeController extends Controller
 
     public function showArticle(Request $request, string $slug)
     {
-        $article = \App\Models\Article::published()
+        $article = Article::published()
             ->with('categories', 'tags')
             ->withRichText('body')
             ->where('slug', $slug)
@@ -107,7 +111,7 @@ class HomeController extends Controller
         $relatedArticles = $article->getRelatedArticles();
 
         // Article categories for sidebar
-        $articleCategories = \App\Models\ArticleCategory::withCount('articles')
+        $articleCategories = ArticleCategory::withCount('articles')
             ->orderBy('articles_count', 'desc')
             ->get();
 

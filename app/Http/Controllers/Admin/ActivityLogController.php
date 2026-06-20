@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
-
     /**
      * Display activity log with filters.
      */
@@ -34,13 +34,13 @@ class ActivityLogController extends Controller
 
         // Filter by description keyword
         if ($request->filled('description')) {
-            $query->where('description', 'like', '%' . $request->description . '%');
+            $query->where('description', 'like', '%'.$request->description.'%');
         }
 
         $activities = $query->paginate(20);
 
         // Get unique causers for filter dropdown
-        $causers = \App\Models\User::whereHas('actions')->get();
+        $causers = User::whereHas('actions')->get();
 
         return view('admin.activity-log.index', compact('activities', 'causers'));
     }

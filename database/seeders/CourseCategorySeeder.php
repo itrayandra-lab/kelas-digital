@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CourseCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -19,7 +20,7 @@ class CourseCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $name) {
-            \App\Models\CourseCategory::updateOrCreate(
+            CourseCategory::updateOrCreate(
                 ['slug' => Str::slug($name)],
                 [
                     'name' => $name,
@@ -29,4 +30,3 @@ class CourseCategorySeeder extends Seeder
         }
     }
 }
-

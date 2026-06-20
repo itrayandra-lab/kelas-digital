@@ -72,8 +72,14 @@
                         <div
                             class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 flex flex-col">
                             <a href="{{ route('course.show', $course->slug) }}">
-                                <img src="https://via.placeholder.com/600x400.png/1474bc/ffffff?text={{ urlencode($course->title) }}"
-                                    alt="{{ $course->title }}" class="w-full h-48 object-cover">
+                                @if($course->thumbnail)
+                                    <img src="{{ asset('storage/' . $course->thumbnail) }}"
+                                        alt="{{ $course->title }}" class="w-full h-48 object-cover">
+                                @else
+                                    <div class="w-full h-48 flex items-center justify-center" style="background:linear-gradient(135deg, #DBEAFE, #EFF6FF);">
+                                        <i class="fas fa-play-circle" style="font-size:2.5rem; color:#0056D2; opacity:.35;"></i>
+                                    </div>
+                                @endif
                             </a>
                             <div class="p-6 flex-grow flex flex-col">
                                 <h3 class="text-xl font-bold text-gray-800 mb-2">{{ $course->title }}</h3>

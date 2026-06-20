@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -12,15 +13,15 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $pendingEnrollments = \App\Models\Enrollment::where('payment_status', 'pending')
+        $pendingEnrollments = Enrollment::where('payment_status', 'pending')
             ->with(['user', 'course'])
             ->latest()
             ->get();
-            
-        $allEnrollments = \App\Models\Enrollment::with(['user', 'course'])
+
+        $allEnrollments = Enrollment::with(['user', 'course'])
             ->latest()
             ->paginate(20);
-            
+
         return view('admin.payments.index', compact('pendingEnrollments', 'allEnrollments'));
     }
 
@@ -71,19 +72,19 @@ class PaymentController extends Controller
     {
         //
     }
-    
+
     /**
      * Approve a payment
      */
     public function approve(Request $request, string $id)
     {
-        $enrollment = \App\Models\Enrollment::findOrFail($id);
-        
+        $enrollment = Enrollment::findOrFail($id);
+
         $enrollment->update([
             'payment_status' => 'completed',
             'status' => 'active',
         ]);
-        
+
         return redirect()->back()->with('success', 'Payment approved successfully.');
     }
 }

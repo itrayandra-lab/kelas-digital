@@ -26,13 +26,13 @@ class RolePermissionSeeder extends Seeder
             'delete courses',
             'publish courses',
             'unpublish courses',
-            
+
             // Lesson Management
             'view lessons',
             'create lessons',
             'edit lessons',
             'delete lessons',
-            
+
             // Article Management
             'view articles',
             'create articles',
@@ -40,44 +40,44 @@ class RolePermissionSeeder extends Seeder
             'delete articles',
             'publish articles',
             'unpublish articles',
-            
+
             // User Management
             'view users',
             'create users',
             'edit users',
             'delete users',
             'assign roles',
-            
+
             // Enrollment Management
             'view enrollments',
             'manage enrollments',
             'approve enrollments',
             'reject enrollments',
-            
+
             // Article Category Management
             'view article categories',
             'create article categories',
             'edit article categories',
             'delete article categories',
-            
+
             // Course Category Management
             'view course categories',
             'create course categories',
             'edit course categories',
             'delete course categories',
-            
+
             // Tag Management
             'view tags',
             'create tags',
             'edit tags',
             'delete tags',
-            
+
             // Admin Panel Access
             'access admin panel',
             'view dashboard',
             'manage site settings',
             'view reports',
-            
+
             // System Management (Super-Admin only)
             'manage roles',
             'manage permissions',
@@ -89,7 +89,7 @@ class RolePermissionSeeder extends Seeder
             'view enrolled courses',
             'access course content',
             'complete lessons',
-            
+
             // Site Settings Management
             'manage site settings',
         ];
@@ -99,7 +99,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         // Create roles and assign permissions
-        
+
         // Student role
         $studentRole = Role::updateOrCreate(['name' => 'student']);
         $studentRole->syncPermissions([
@@ -110,7 +110,7 @@ class RolePermissionSeeder extends Seeder
             'view enrolled courses',
             'access course content',
             'complete lessons',
-            
+
             // Site Settings Management
             'manage site settings',
         ]);
@@ -223,4 +223,3 @@ class RolePermissionSeeder extends Seeder
         $this->command->info('Roles and permissions created successfully!');
     }
 }
-

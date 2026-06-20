@@ -91,8 +91,8 @@ class RoleController extends Controller
         $newPermissions = $validated['permissions'] ?? [];
         $validation = $this->roleService->validatePermissionUpdate($role, $newPermissions);
 
-        if (!$validation['valid']) {
-            return back()->with('error', 'Cannot revoke critical permissions: ' . implode(', ', $validation['missing']));
+        if (! $validation['valid']) {
+            return back()->with('error', 'Cannot revoke critical permissions: '.implode(', ', $validation['missing']));
         }
 
         // Update role details
@@ -110,7 +110,7 @@ class RoleController extends Controller
         $removed = array_diff($oldPermissions, $newPermissionsActual);
 
         // Log activity
-        if (!empty($added) || !empty($removed)) {
+        if (! empty($added) || ! empty($removed)) {
             activity()
                 ->causedBy(auth()->user())
                 ->performedOn($role)
@@ -140,6 +140,7 @@ class RoleController extends Controller
         // Check if role has active users
         if ($role->users()->exists()) {
             $count = $role->users()->count();
+
             return back()->with('error', "Cannot delete role with {$count} active user(s). Please reassign users first.");
         }
 

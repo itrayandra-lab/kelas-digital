@@ -2,24 +2,24 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\CausesActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, CausesActivity;
+    /** @use HasFactory<UserFactory> */
+    use CausesActivity, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
-    protected $fillable = [ 
+    protected $fillable = [
         'name',
         'username',
         'email',
@@ -51,13 +51,12 @@ class User extends Authenticatable
         ];
     }
 
-
     /**
      * Get user's enrolled courses
      */
     public function enrollments()
     {
-        return $this->hasMany(\App\Models\Enrollment::class);
+        return $this->hasMany(Enrollment::class);
     }
 
     /**
@@ -65,8 +64,8 @@ class User extends Authenticatable
      */
     public function enrolledCourses()
     {
-        return $this->belongsToMany(\App\Models\Course::class, 'enrollments')
-                    ->wherePivot('payment_status', 'completed');
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->wherePivot('payment_status', 'completed');
     }
 
     /**
@@ -131,8 +130,8 @@ class User extends Authenticatable
     public static function findByUsernameOrEmail($login)
     {
         return static::where('username', $login)
-                    ->orWhere('email', $login)
-                    ->first();
+            ->orWhere('email', $login)
+            ->first();
     }
 
     /**
@@ -141,7 +140,7 @@ class User extends Authenticatable
     public static function getUsernameRules()
     {
         return [
-            'username' => ['required', 'string', 'min:3', 'max:20', 'unique:users', 'regex:/^[a-zA-Z0-9_-]+$/']
+            'username' => ['required', 'string', 'min:3', 'max:20', 'unique:users', 'regex:/^[a-zA-Z0-9_-]+$/'],
         ];
     }
 }

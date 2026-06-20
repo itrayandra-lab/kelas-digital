@@ -16,6 +16,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $user->load('enrolledCourses'); // Load enrolled courses relationship
+
         return view('profile.index', compact('user'));
     }
 
@@ -25,6 +26,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $user = Auth::user();
+
         return view('profile.edit', compact('user'));
     }
 
@@ -38,19 +40,19 @@ class ProfileController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => [
-                'required', 
-                'string', 
-                'min:3', 
-                'max:20', 
+                'required',
+                'string',
+                'min:3',
+                'max:20',
                 'regex:/^[a-zA-Z0-9_-]+$/',
-                Rule::unique('users')->ignore($user->id)
+                Rule::unique('users')->ignore($user->id),
             ],
             'email' => [
-                'required', 
-                'string', 
-                'email', 
+                'required',
+                'string',
+                'email',
                 'max:255',
-                Rule::unique('users')->ignore($user->id)
+                Rule::unique('users')->ignore($user->id),
             ],
         ]);
 

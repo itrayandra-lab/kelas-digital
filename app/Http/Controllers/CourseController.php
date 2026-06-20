@@ -114,16 +114,16 @@ class CourseController extends Controller
             return redirect()->back()->with('message', 'Pendaftaran berhasil! Anda sudah terdaftar di kelas ini.');
         }
 
-        Enrollment::create([
+        $enrollment = Enrollment::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
             'status' => 'pending',
             'enrolled_at' => now(),
             'payment_status' => 'pending',
-            'payment_method' => 'manual_transfer',
+            'payment_method' => 'midtrans',
             'payment_proof' => null,
         ]);
 
-        return redirect()->back()->with('message', 'Pendaftaran kelas berhasil! Silakan lakukan pembayaran sesuai instruksi yang akan dikirimkan.');
+        return redirect()->back()->with('message', 'Pendaftaran berhasil! Silakan lakukan pembayaran.');
     }
 }

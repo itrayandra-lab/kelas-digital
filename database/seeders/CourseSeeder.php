@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Course;
+use App\Models\CourseCategory;
 use Illuminate\Database\Seeder;
 
 class CourseSeeder extends Seeder
@@ -12,10 +13,10 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        $categoryIds = \App\Models\CourseCategory::pluck('id', 'slug');
+        $categoryIds = CourseCategory::pluck('id', 'slug');
 
         // Create Ray Academy courses
-        \App\Models\Course::updateOrCreate(
+        Course::updateOrCreate(
             ['slug' => 'personal-branding-fundamentals'],
             [
                 'title' => 'Personal Branding Fundamentals: Build Your Authentic Identity',
@@ -29,8 +30,8 @@ class CourseSeeder extends Seeder
                 'is_featured' => true,
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'digital-marketing-strategy-data-driven'],
             [
                 'title' => 'Digital Marketing Strategy: From Data to Action',
@@ -44,8 +45,8 @@ class CourseSeeder extends Seeder
                 'is_featured' => true,
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'psikologi-komunikasi-bisnis'],
             [
                 'title' => 'Psikologi Komunikasi untuk Profesional dan Leader',
@@ -59,8 +60,8 @@ class CourseSeeder extends Seeder
                 'is_featured' => true,
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'brand-identity-design-thinking'],
             [
                 'title' => 'Brand Identity Design: From Concept to Execution',
@@ -73,8 +74,8 @@ class CourseSeeder extends Seeder
                 'level' => 'Advanced',
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'content-strategy-social-media'],
             [
                 'title' => 'Content Strategy & Social Media Management Mastery',
@@ -88,8 +89,8 @@ class CourseSeeder extends Seeder
                 'is_featured' => true,
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'leadership-team-management'],
             [
                 'title' => 'Leadership Excellence: Building High-Performance Teams',
@@ -102,8 +103,8 @@ class CourseSeeder extends Seeder
                 'level' => 'Advanced',
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'ai-for-business-productivity'],
             [
                 'title' => 'AI for Business: Boost Productivity & Innovation',
@@ -116,8 +117,8 @@ class CourseSeeder extends Seeder
                 'level' => 'Beginner',
             ]
         );
-        
-        \App\Models\Course::updateOrCreate(
+
+        Course::updateOrCreate(
             ['slug' => 'parenting-digital-era'],
             [
                 'title' => 'Smart Parenting di Era Digital: Panduan Lengkap',

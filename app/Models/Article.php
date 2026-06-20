@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
-use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
-use RalphJSmit\Laravel\SEO\Support\HasSEO;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use RalphJSmit\Laravel\SEO\Support\HasSEO;
+use RalphJSmit\Laravel\SEO\Support\SEOData;
+use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
 
 class Article extends Model
 {
@@ -51,8 +51,6 @@ class Article extends Model
 
     /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
@@ -64,7 +62,7 @@ class Article extends Model
                 'separator' => '-',
                 'maxLength' => 100,
                 'maxLengthKeepWords' => true,
-            ]
+            ],
         ];
     }
 
@@ -119,10 +117,10 @@ class Article extends Model
         $content = preg_replace('/<!--\s*wp:heading\s*\{\"level\":4[^\}]*\}\s*-->\s*/', '<h4 class="text-lg font-bold text-gray-900 mt-5 mb-2">', $content);
         $content = preg_replace('/<!--\s*wp:heading\s*\{\"level\":5[^\}]*\}\s*-->\s*/', '<h5 class="text-base font-bold text-gray-900 mt-4 mb-2">', $content);
         $content = preg_replace('/<!--\s*wp:heading\s*\{\"level\":6[^\}]*\}\s*-->\s*/', '<h6 class="text-sm font-bold text-gray-900 mt-3 mb-2">', $content);
-        
+
         // Handle heading without level (default to h2)
         $content = preg_replace('/<!--\s*wp:heading\s*-->\s*/', '<h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">', $content);
-        
+
         // Replace closing tags individually for each level
         $content = preg_replace('/<!--\s*\/wp:heading\s*-->\s*<\/h1>/', '</h1>', $content);
         $content = preg_replace('/<!--\s*\/wp:heading\s*-->\s*<\/h2>/', '</h2>', $content);
@@ -169,10 +167,11 @@ class Article extends Model
             function ($matches) {
                 $classes = $matches[2];
                 // Only add if primary classes not already present
-                if (!str_contains($classes, 'text-primary')) {
+                if (! str_contains($classes, 'text-primary')) {
                     $classes .= ' text-primary-600 hover:text-primary-800 hover:underline transition-colors duration-300';
                 }
-                return '<a ' . $matches[1] . 'class="' . trim($classes) . '"';
+
+                return '<a '.$matches[1].'class="'.trim($classes).'"';
             },
             $content
         );
@@ -199,9 +198,9 @@ class Article extends Model
     /**
      * Get dynamic SEO data for this article
      */
-    public function getDynamicSEOData(): \RalphJSmit\Laravel\SEO\Support\SEOData
+    public function getDynamicSEOData(): SEOData
     {
-        return new \RalphJSmit\Laravel\SEO\Support\SEOData(
+        return new SEOData(
             title: $this->title,
             description: $this->excerpt ?: \Str::limit(strip_tags($this->content ?? ''), 160),
             author: $this->author ?: 'Kelas Digital Team',
@@ -222,10 +221,10 @@ class Article extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-                    ->where(function ($q) {
-                        $q->whereNull('scheduled_at')
-                          ->orWhere('scheduled_at', '<=', now());
-                    });
+            ->where(function ($q) {
+                $q->whereNull('scheduled_at')
+                    ->orWhere('scheduled_at', '<=', now());
+            });
     }
 
     /**
@@ -234,7 +233,7 @@ class Article extends Model
     public function scopeScheduled($query)
     {
         return $query->where('status', 'scheduled')
-                    ->where('scheduled_at', '>', now());
+            ->where('scheduled_at', '>', now());
     }
 
     /**
@@ -251,7 +250,7 @@ class Article extends Model
     public function scopeReadyToPublish($query)
     {
         return $query->where('status', 'scheduled')
-                    ->where('scheduled_at', '<=', now());
+            ->where('scheduled_at', '<=', now());
     }
 
     /**
@@ -259,7 +258,7 @@ class Article extends Model
      */
     public function isPublished(): bool
     {
-        return $this->status === 'published' && 
+        return $this->status === 'published' &&
                ($this->scheduled_at === null || $this->scheduled_at <= now());
     }
 
@@ -268,7 +267,7 @@ class Article extends Model
      */
     public function isScheduled(): bool
     {
-        return $this->status === 'scheduled' && 
+        return $this->status === 'scheduled' &&
                $this->scheduled_at > now();
     }
 
@@ -329,7 +328,7 @@ class Article extends Model
     public function scopeRecommended($query)
     {
         return $query->where('is_recommended', true)
-                    ->orderBy('recommended_at', 'desc');
+            ->orderBy('recommended_at', 'desc');
     }
 
     /**
@@ -346,7 +345,7 @@ class Article extends Model
     public function scopeTrending($query)
     {
         return $query->where('published_at', '>=', now()->subDays(30))
-                    ->orderBy('views_count', 'desc');
+            ->orderBy('views_count', 'desc');
     }
 
     /**
@@ -367,7 +366,7 @@ class Article extends Model
      */
     public function incrementViewsWithProtection(string $ipAddress): bool
     {
-        $cacheKey = "article_view:{$this->id}:" . md5($ipAddress);
+        $cacheKey = "article_view:{$this->id}:".md5($ipAddress);
 
         // Already viewed within cooldown period? Skip.
         if (Cache::has($cacheKey)) {
@@ -396,11 +395,13 @@ class Article extends Model
 
         if ($count < 1000000) {
             $formatted = $count / 1000;
-            return rtrim(rtrim(number_format($formatted, 1), '0'), '.') . 'k';
+
+            return rtrim(rtrim(number_format($formatted, 1), '0'), '.').'k';
         }
 
         $formatted = $count / 1000000;
-        return rtrim(rtrim(number_format($formatted, 1), '0'), '.') . 'M';
+
+        return rtrim(rtrim(number_format($formatted, 1), '0'), '.').'M';
     }
 
     // ==================== RELATED ARTICLES FUNCTIONALITY ====================
@@ -421,7 +422,7 @@ class Article extends Model
         $categoryIds = $this->categories()->pluck('article_categories.id')->toArray();
 
         // Find articles with shared tags (tag-based matching)
-        if (!empty($tagIds)) {
+        if (! empty($tagIds)) {
             $relatedByTags = Article::published()
                 ->where('articles.id', '!=', $this->id)
                 ->selectRaw('articles.id, COUNT(DISTINCT article_tag.tag_id) as shared_tags_count')
@@ -434,7 +435,7 @@ class Article extends Model
                 ->toArray();
 
             // Now fetch the full articles with relationships
-            if (!empty($relatedByTags)) {
+            if (! empty($relatedByTags)) {
                 $relatedByTags = Article::whereIn('id', $relatedByTags)
                     ->with('categories', 'tags')
                     ->get()
@@ -460,7 +461,7 @@ class Article extends Model
 
         // Fill remaining slots with articles from same categories
         $remaining = $limit - $relatedByTags->count();
-        if (!empty($categoryIds)) {
+        if (! empty($categoryIds)) {
             $relatedByCategories = Article::published()
                 ->whereNotIn('articles.id', $excludeIds)
                 ->with('categories', 'tags')
@@ -485,7 +486,7 @@ class Article extends Model
     public function scopeInHeroSlider($query)
     {
         return $query->whereNotNull('hero_slider_order')
-                     ->orderBy('hero_slider_order', 'asc');
+            ->orderBy('hero_slider_order', 'asc');
     }
 
     /**

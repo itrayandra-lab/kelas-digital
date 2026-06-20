@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class ArticleCategory extends Model
 {
@@ -26,8 +26,6 @@ class ArticleCategory extends Model
 
     /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
@@ -36,7 +34,7 @@ class ArticleCategory extends Model
                 'source' => 'name',
                 'onUpdate' => false,
                 'maxLength' => 100,
-            ]
+            ],
         ];
     }
 
@@ -77,4 +75,3 @@ class ArticleCategory extends Model
         return $query->where('is_featured_section', true);
     }
 }
-

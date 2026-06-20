@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\RolePermissionMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,11 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'role.permission' => \App\Http\Middleware\RolePermissionMiddleware::class,
+            'admin' => AdminMiddleware::class,
+            'role.permission' => RolePermissionMiddleware::class,
         ]);
 
         $middleware->trustProxies(at: '*');
+
+        $middleware->validateCsrfTokens(except: [
+            'payment/notification',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

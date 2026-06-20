@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -28,7 +29,7 @@ class TagSeeder extends Seeder
         ];
 
         foreach ($tags as $name) {
-            \App\Models\Tag::updateOrCreate(
+            Tag::updateOrCreate(
                 ['slug' => Str::slug($name)],
                 [
                     'name' => Str::title(str_replace('-', ' ', $name)),
@@ -38,4 +39,3 @@ class TagSeeder extends Seeder
         }
     }
 }
-

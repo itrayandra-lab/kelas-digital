@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Tag;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MigrateWordPressArticles extends Command
 {
     protected $signature = 'migrate:wordpress-articles';
+
     protected $description = 'Migrate articles from WordPress to Laravel';
 
     public function handle()
@@ -40,8 +40,8 @@ class MigrateWordPressArticles extends Command
             WHERE p.post_type = 'post'
             AND p.post_status IN ('publish', 'draft')
         ");
-        
-        $this->info("Found " . count($wp_articles) . " articles to migrate");
+
+        $this->info('Found '.count($wp_articles).' articles to migrate');
 
         foreach ($wp_articles as $wp_content) {
             // Process content to handle inline images
@@ -74,6 +74,7 @@ class MigrateWordPressArticles extends Command
             $categoryIds = collect($categories)
                 ->map(function ($name) {
                     $slug = Str::slug($name);
+
                     return ArticleCategory::firstOrCreate([
                         'slug' => $slug,
                     ], [
@@ -86,6 +87,7 @@ class MigrateWordPressArticles extends Command
             $tagIds = collect($tags)
                 ->map(function ($name) {
                     $slug = Str::slug($name);
+
                     return Tag::firstOrCreate([
                         'slug' => $slug,
                     ], [
@@ -101,7 +103,7 @@ class MigrateWordPressArticles extends Command
             $this->info("Migrated {$wp_content->post_type}: {$wp_content->title}");
         }
 
-        $this->info("All articles migrated successfully!");
+        $this->info('All articles migrated successfully!');
     }
 
     private function processArticleContent($content, $wp_connection)
@@ -109,7 +111,7 @@ class MigrateWordPressArticles extends Command
         // Find all image tags in the content
         $pattern = '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i';
 
-        $content = preg_replace_callback($pattern, function($matches) use ($wp_connection) {
+        $content = preg_replace_callback($pattern, function ($matches) {
             $original_src = $matches[1];
 
             // Download and save the image
@@ -117,7 +119,8 @@ class MigrateWordPressArticles extends Command
 
             if ($new_image_path) {
                 // Replace the image source with the new path
-                $new_img_tag = str_replace($original_src, asset('storage/' . $new_image_path), $matches[0]);
+                $new_img_tag = str_replace($original_src, asset('storage/'.$new_image_path), $matches[0]);
+
                 return $new_img_tag;
             }
 
@@ -138,17 +141,17 @@ class MigrateWordPressArticles extends Command
 
         if ($meta) {
             // Get the image URL from the attachment post
-            $image_post = $wp_connection->selectOne("
+            $image_post = $wp_connection->selectOne('
                 SELECT guid, post_title
                 FROM wp_posts
                 WHERE ID = ?
-            ", [$meta->image_id]);
+            ', [$meta->image_id]);
 
             if ($image_post) {
                 // Download and save the featured image
                 $filename = basename($image_post->guid);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $new_filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)) . '_' . time() . '.' . $extension;
+                $new_filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)).'_'.time().'.'.$extension;
 
                 return $this->downloadAndSaveImage($image_post->guid, $new_filename, 'articles');
             }
@@ -161,28 +164,28 @@ class MigrateWordPressArticles extends Command
     {
         try {
             // Generate filename if not provided
-            if (!$filename) {
+            if (! $filename) {
                 $filename = basename($url);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)) . '_' . time() . '.' . $extension;
+                $filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)).'_'.time().'.'.$extension;
             }
 
             // Create directory if it doesn't exist
-            $full_directory = storage_path('app/public/' . $directory);
-            if (!file_exists($full_directory)) {
+            $full_directory = storage_path('app/public/'.$directory);
+            if (! file_exists($full_directory)) {
                 mkdir($full_directory, 0755, true);
             }
 
             // Download the image
             $image_content = file_get_contents($url);
             if ($image_content !== false) {
-                $path = $full_directory . '/' . $filename;
+                $path = $full_directory.'/'.$filename;
                 file_put_contents($path, $image_content);
 
-                return $directory . '/' . $filename;
+                return $directory.'/'.$filename;
             }
         } catch (\Exception $e) {
-            $this->error("Failed to download image: {$url} - " . $e->getMessage());
+            $this->error("Failed to download image: {$url} - ".$e->getMessage());
         }
 
         return null;
@@ -199,11 +202,11 @@ class MigrateWordPressArticles extends Command
 
         $categories = [];
         foreach ($category_ids as $cat_id) {
-            $term = $wp_connection->selectOne("
+            $term = $wp_connection->selectOne('
                 SELECT name
                 FROM wp_terms
                 WHERE term_id = ?
-            ", [$cat_id->term_taxonomy_id]);
+            ', [$cat_id->term_taxonomy_id]);
 
             if ($term) {
                 $categories[] = $term->name;
@@ -224,11 +227,11 @@ class MigrateWordPressArticles extends Command
 
         $tags = [];
         foreach ($tag_ids as $tag_id) {
-            $term = $wp_connection->selectOne("
+            $term = $wp_connection->selectOne('
                 SELECT name
                 FROM wp_terms
                 WHERE term_id = ?
-            ", [$tag_id->term_taxonomy_id]);
+            ', [$tag_id->term_taxonomy_id]);
 
             if ($term) {
                 $tags[] = $term->name;

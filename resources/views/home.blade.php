@@ -589,7 +589,7 @@
                 <a href="{{ route('course.show', $course->slug) }}" class="feat-card">
                     <div class="feat-card-thumb">
                         @if($course->thumbnail)
-                            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}">
+                            <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
                         @else
                             <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:1.5rem;color:#0056D2;opacity:.35;"></i></div>
                         @endif

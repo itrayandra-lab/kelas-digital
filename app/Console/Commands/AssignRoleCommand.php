@@ -33,23 +33,26 @@ class AssignRoleCommand extends Command
         // Find user by email
         $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             $this->error("User with email '{$email}' not found.");
+
             return 1;
         }
 
         // Check if role exists
         $role = Role::where('name', $roleName)->first();
 
-        if (!$role) {
+        if (! $role) {
             $this->error("Role '{$roleName}' not found.");
-            $this->info('Available roles: ' . Role::all()->pluck('name')->implode(', '));
+            $this->info('Available roles: '.Role::all()->pluck('name')->implode(', '));
+
             return 1;
         }
 
         // Check if user already has the role
         if ($user->hasRole($roleName)) {
             $this->info("User '{$email}' already has the role '{$roleName}'.");
+
             return 0;
         }
 
@@ -57,9 +60,9 @@ class AssignRoleCommand extends Command
         $user->assignRole($roleName);
 
         $this->info("Successfully assigned role '{$roleName}' to user '{$email}'.");
-        
+
         // Show user's current roles
-        $this->info('User current roles: ' . $user->getRoleNames()->implode(', '));
+        $this->info('User current roles: '.$user->getRoleNames()->implode(', '));
 
         return 0;
     }

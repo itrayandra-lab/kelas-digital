@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\Course;
 use App\Models\ArticleCategory;
+use App\Models\Course;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 
@@ -30,8 +30,8 @@ class SearchController extends Controller
             $courses = Course::with('category')
                 ->where(function ($q) use ($keyword) {
                     $q->where('title', 'like', "%{$keyword}%")
-                      ->orWhere('description', 'like', "%{$keyword}%")
-                      ->orWhere('instructor', 'like', "%{$keyword}%");
+                        ->orWhere('description', 'like', "%{$keyword}%")
+                        ->orWhere('instructor', 'like', "%{$keyword}%");
                 })
                 ->orderByDesc('created_at')
                 ->limit(12)
@@ -41,22 +41,24 @@ class SearchController extends Controller
                 ->with('categories', 'tags')
                 ->where(function ($q) use ($keyword) {
                     $q->where('title', 'like', "%{$keyword}%")
-                      ->orWhere('excerpt', 'like', "%{$keyword}%")
-                      ->orWhere('content', 'like', "%{$keyword}%")
-                      ->orWhere('author', 'like', "%{$keyword}%");
+                        ->orWhere('excerpt', 'like', "%{$keyword}%")
+                        ->orWhere('content', 'like', "%{$keyword}%")
+                        ->orWhere('author', 'like', "%{$keyword}%");
                 });
 
             if ($categoryId) {
-                $articleQuery->whereHas('categories', fn($q) =>
-                    $q->where('article_categories.id', $categoryId));
+                $articleQuery->whereHas('categories', fn ($q) => $q->where('article_categories.id', $categoryId));
             }
-            if (!empty($tagIds)) {
+            if (! empty($tagIds)) {
                 $tagIds = is_array($tagIds) ? $tagIds : [$tagIds];
-                $articleQuery->whereHas('tags', fn($q) =>
-                    $q->whereIn('tags.id', $tagIds));
+                $articleQuery->whereHas('tags', fn ($q) => $q->whereIn('tags.id', $tagIds));
             }
-            if ($dateFrom) $articleQuery->where('published_at', '>=', $dateFrom);
-            if ($dateTo)   $articleQuery->where('published_at', '<=', $dateTo);
+            if ($dateFrom) {
+                $articleQuery->where('published_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $articleQuery->where('published_at', '<=', $dateTo);
+            }
 
             $articles = $articleQuery->orderByDesc('published_at')->paginate(12);
 
@@ -92,27 +94,33 @@ class SearchController extends Controller
 
         $categories = ArticleCategory::withCount('articles')->where('id', '>', 0)->get();
         $tags = Tag::withCount('articles')
-            ->whereHas('articles', fn($q) => $q->published())
+            ->whereHas('articles', fn ($q) => $q->published())
             ->orderBy('articles_count', 'desc')
             ->limit(15)
             ->get();
 
         $activeFilters = [];
-        if ($categoryId) $activeFilters['category'] = ArticleCategory::find($categoryId);
-        if (!empty($tagIds)) $activeFilters['tags'] = Tag::whereIn('id', $tagIds)->get();
-        if ($dateFrom || $dateTo) $activeFilters['dates'] = ['from' => $dateFrom, 'to' => $dateTo];
+        if ($categoryId) {
+            $activeFilters['category'] = ArticleCategory::find($categoryId);
+        }
+        if (! empty($tagIds)) {
+            $activeFilters['tags'] = Tag::whereIn('id', $tagIds)->get();
+        }
+        if ($dateFrom || $dateTo) {
+            $activeFilters['dates'] = ['from' => $dateFrom, 'to' => $dateTo];
+        }
 
         return view('search.index', compact(
             'keyword', 'courses', 'articles',
             'categories', 'tags',
             'activeFilters',
             'popularCourses', 'popularArticles', 'popularCategories',
-            'categoryId' , 'tagIds', 'dateFrom', 'dateTo'
+            'categoryId', 'tagIds', 'dateFrom', 'dateTo'
         ) + [
             'selectedCategoryId' => $categoryId,
-            'selectedTagIds'     => $tagIds,
-            'selectedDateFrom'   => $dateFrom,
-            'selectedDateTo'     => $dateTo,
+            'selectedTagIds' => $tagIds,
+            'selectedDateFrom' => $dateFrom,
+            'selectedDateTo' => $dateTo,
         ]);
     }
 }

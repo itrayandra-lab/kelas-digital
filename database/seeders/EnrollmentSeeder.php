@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Course;
+use App\Models\Enrollment;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class EnrollmentSeeder extends Seeder
@@ -13,11 +15,11 @@ class EnrollmentSeeder extends Seeder
     public function run(): void
     {
         // Create sample enrollments
-        $user = \App\Models\User::where('email', 'student@example.com')->first();
-        $course = \App\Models\Course::where('title', 'Introduction to Web Development')->first();
-        
+        $user = User::where('email', 'student@example.com')->first();
+        $course = Course::where('title', 'Introduction to Web Development')->first();
+
         if ($user && $course) {
-            \App\Models\Enrollment::updateOrCreate(
+            Enrollment::updateOrCreate(
                 [
                     'user_id' => $user->id,
                     'course_id' => $course->id,
@@ -31,13 +33,13 @@ class EnrollmentSeeder extends Seeder
                 ]
             );
         }
-        
+
         // Create another enrollment with pending payment
-        $admin = \App\Models\User::where('email', 'admin@example.com')->first();
-        $course2 = \App\Models\Course::where('title', 'Advanced Laravel Techniques')->first();
-        
+        $admin = User::where('email', 'admin@example.com')->first();
+        $course2 = Course::where('title', 'Advanced Laravel Techniques')->first();
+
         if ($admin && $course2) {
-            \App\Models\Enrollment::updateOrCreate(
+            Enrollment::updateOrCreate(
                 [
                     'user_id' => $admin->id,
                     'course_id' => $course2->id,

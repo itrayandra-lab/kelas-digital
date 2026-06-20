@@ -140,13 +140,13 @@
 .course-sidebar-body { padding: 1.5rem; }
 .course-sidebar-price {
     font-family: 'Sora', sans-serif;
-    font-size: 2rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--ink);
-    margin-bottom: 1rem;
+    margin-bottom: .75rem;
 }
 .course-sidebar-price .original {
-    font-size: .95rem;
+    font-size: .85rem;
     font-weight: 400;
     color: var(--muted);
     text-decoration: line-through;
@@ -458,7 +458,7 @@
     box-shadow: 0 -4px 20px rgba(10,22,40,.08);
 }
 @media (max-width: 1024px) { .mobile-buy-bar { display: flex; } }
-.mobile-buy-price { font-family: 'Sora', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--ink); }
+.mobile-buy-price { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 800; color: var(--ink); }
 .mobile-buy-btn {
     padding: .75rem 1.75rem;
     background: var(--blue);
@@ -585,6 +585,7 @@
                         ['fc-materi',    'Yang Akan Kamu Pelajari'],
                         ['fc-benefit',   'Benefit Kelas'],
                         ['fc-jadwal',    'Jadwal & Platform'],
+                        ['fc-video',     'Video Pembelajaran'],
                         ['fc-instruktur','Instruktur'],
                     ] as [$id, $label])
                     <a href="#{{ $id }}" style="display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;font-size:.85rem;color:var(--ink-2);text-decoration:none;transition:background .15s;border-left:3px solid transparent;"
@@ -656,6 +657,36 @@
                         <div style="font-size:.82rem;color:var(--muted);">Instruktur {{ $course->category?->name ?? 'Kelas Digital' }}</div>
                     </div>
                 </div>
+            </div>
+
+            {{-- FREE: VIDEO PLAYER --}}
+            <div id="fc-video" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
+                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Video Pembelajaran</h2>
+                @if($course->lessons->count() > 0)
+                    <div style="border:1.5px solid var(--border);border-radius:12px;overflow:hidden;">
+                        @foreach($course->lessons as $lesson)
+                            <a href="{{ route('course.lesson', [$course->slug, $lesson]) }}"
+                               style="display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;text-decoration:none;border-bottom:1px solid var(--border);transition:background .15s;"
+                               onmouseover="this.style.background='var(--surf)'"
+                               onmouseout="this.style.background=''">
+                                <div style="width:34px;height:34px;border-radius:50%;background:var(--blue-xl);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="fas fa-play" style="color:var(--blue);font-size:.75rem;margin-left:2px;"></i>
+                                </div>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="font-size:.875rem;font-weight:500;color:var(--ink);">{{ $lesson->title }}</div>
+                                    @if($lesson->duration)
+                                        <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">{{ $lesson->duration }}</div>
+                                    @endif
+                                </div>
+                                <i class="fas fa-chevron-right" style="color:var(--muted);font-size:.8rem;"></i>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.9rem;background:var(--surf);border-radius:10px;border:1.5px dashed var(--border);">
+                        Materi video akan segera ditambahkan.
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -901,14 +932,16 @@
                             <p class="text-center text-sm text-green-600 font-semibold mt-1">✓ Anda sudah terdaftar</p>
                         @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
                             <div class="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                                <p class="font-semibold text-yellow-800">Menunggu Verifikasi Pembayaran</p>
-                                <p class="text-yellow-600 text-xs mt-1">Pembayaran sedang diverifikasi admin.</p>
+                                <p class="font-semibold text-yellow-800">Menunggu Pembayaran</p>
+                                <p class="text-yellow-600 text-xs mt-1">Selesaikan pembayaran untuk mengakses kelas.</p>
+                                <button type="button" class="btn-enroll mt-2 btn-pay" data-slug="{{ $course->slug }}" style="font-size:.85rem;padding:.6rem 1rem;">
+                                    <i class="fas fa-credit-card mr-1"></i> Bayar Sekarang
+                                </button>
                             </div>
                         @else
-                            <form method="post" action="{{ route('course.enroll', $course->slug) }}">
-                                @csrf
-                                <button type="submit" class="btn-enroll">Gabung Kelas Ini</button>
-                            </form>
+                            <button type="button" class="btn-enroll btn-pay" data-slug="{{ $course->slug }}">
+                                Gabung Kelas Ini
+                            </button>
                         @endif
                     @else
                         <a href="{{ route('login') }}" class="btn-enroll">Login untuk Gabung</a>
@@ -948,12 +981,11 @@
             @if($userHasAccess)
                 <a href="#main-video" class="mobile-buy-btn" style="background:#10b981;">Mulai Belajar</a>
             @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
-                <span class="mobile-buy-btn" style="background:#f59e0b;cursor:default;">Menunggu Verifikasi</span>
+                <button type="button" class="mobile-buy-btn btn-pay" data-slug="{{ $course->slug }}" style="background:#f59e0b;border:none;cursor:pointer;">
+                    <i class="fas fa-credit-card mr-1"></i> Bayar
+                </button>
             @else
-                <form method="post" action="{{ route('course.enroll', $course->slug) }}" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="mobile-buy-btn">Gabung Kelas</button>
-                </form>
+                <button type="button" class="mobile-buy-btn btn-pay" data-slug="{{ $course->slug }}">Gabung Kelas</button>
             @endif
         @else
             <a href="{{ route('login') }}" class="mobile-buy-btn">Login untuk Gabung</a>
@@ -984,5 +1016,118 @@ function closePreviewModal() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closePreviewModal();
 });
+
+// Midtrans Snap
+const snapClientKey = '{{ config('midtrans.client_key') }}';
+const snapUrl = '{{ config('midtrans.snap_url') }}';
+let snapScriptLoaded = false;
+
+function loadSnapScript(callback) {
+    if (window.snap) { callback(); return; }
+    if (snapScriptLoaded) { setTimeout(() => loadSnapScript(callback), 100); return; }
+    snapScriptLoaded = true;
+    const script = document.createElement('script');
+    script.src = snapUrl + '?client_key=' + snapClientKey;
+    script.onload = callback;
+    document.head.appendChild(script);
+}
+
+function setLoading(btn, loading) {
+    if (!btn) return;
+    if (loading) {
+        btn._origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class=\"fas fa-spinner fa-spin mr-1\"></i> Memproses...';
+    } else {
+        btn.disabled = false;
+        btn.innerHTML = btn._origHtml || 'Gabung Kelas Ini';
+    }
+}
+
+function checkoutAndPay(slug, btn) {
+    setLoading(btn, true);
+
+    fetch('{{ url('/payment/checkout') }}/' + slug, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+        },
+    })
+    .then(r => {
+        if (r.status === 401) {
+            window.location.href = '{{ route('login') }}';
+            return;
+        }
+        return r.json();
+    })
+    .then(data => {
+        setLoading(btn, false);
+        if (!data) return;
+        if (data.error === 'already_enrolled') {
+            window.location.reload();
+            return;
+        }
+        if (data.error === 'free_course') {
+            window.location.reload();
+            return;
+        }
+        if (data.snap_token) {
+            loadSnapScript(function () {
+                window.snap.pay(data.snap_token, {
+                    onSuccess: function (result) {
+                        // Mark payment completed immediately via AJAX
+                        fetch('{{ url('/payment/complete') }}/' + data.enrollment_id, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                            },
+                        })
+                        .then(() => {
+                            window.location.href = '{{ route('course.show', $course->slug) }}?payment=success';
+                        })
+                        .catch(() => {
+                            window.location.href = '{{ route('course.show', $course->slug) }}?payment=success';
+                        });
+                    },
+                    onPending: function () {
+                        window.location.reload();
+                    },
+                    onError: function () {
+                        window.location.reload();
+                    },
+                    onClose: function () {
+                        window.location.reload();
+                    }
+                });
+            });
+        } else {
+            alert('Gagal: ' + (data.message || 'Terjadi kesalahan'));
+        }
+    })
+    .catch(e => {
+        setLoading(btn, false);
+        alert('Terjadi kesalahan: ' + e.message);
+    });
+}
+
+document.querySelectorAll('.btn-pay').forEach(btn => {
+    btn.addEventListener('click', function () {
+        checkoutAndPay(this.dataset.slug, this);
+    });
+});
+
+// Handle ?payment=success query param
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('payment') === 'success') {
+    const alertBox = document.createElement('div');
+    alertBox.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:9999;background:#059669;color:#fff;padding:1rem 1.5rem;border-radius:12px;font-weight:600;box-shadow:0 8px 32px rgba(5,150,105,.35);animation:fadeIn .3s ease;';
+    alertBox.innerHTML = '<i class=\"fas fa-check-circle mr-2\"></i> Pembayaran berhasil! Selamat belajar.';
+    document.body.appendChild(alertBox);
+    setTimeout(() => { alertBox.style.opacity = '0'; alertBox.style.transition = 'opacity .3s'; setTimeout(() => alertBox.remove(), 400); }, 5000);
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+}
 </script>
 @endpush

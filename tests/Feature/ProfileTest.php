@@ -14,7 +14,7 @@ class ProfileTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create a test user
         $this->user = User::factory()->create([
             'name' => 'Test User',
@@ -116,7 +116,7 @@ class ProfileTest extends TestCase
     {
         $otherUser = User::factory()->create([
             'email' => 'existing@example.com',
-            'username' => 'existinguser'
+            'username' => 'existinguser',
         ]);
 
         $updateData = [

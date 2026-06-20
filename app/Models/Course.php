@@ -10,6 +10,10 @@ use RalphJSmit\Laravel\SEO\Support\SEOData;
 
 class Course extends Model
 {
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
     use HasFactory;
     use HasSEO;
     use Sluggable;

@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ArticleController extends Controller
 {
     /**
      * Display a listing of the articles.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -26,11 +28,10 @@ class ArticleController extends Controller
     /**
      * Load more articles via AJAX.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function loadMore(Request $request)
-    { 
+    {
         $page = $request->input('page', 1);
         $categorySlug = $request->input('category_slug');
 
@@ -58,8 +59,8 @@ class ArticleController extends Controller
     /**
      * Display articles filtered by category slug.
      *
-     * @param  string $slug
-     * @return \Illuminate\View\View
+     * @param  string  $slug
+     * @return View
      */
     public function showByCategory($slug)
     {

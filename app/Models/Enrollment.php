@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
 {
@@ -16,11 +16,15 @@ class Enrollment extends Model
         'payment_status',
         'payment_method',
         'payment_proof',
+        'snap_token',
+        'transaction_id',
+        'midtrans_response',
         'enrolled_at',
     ];
 
     protected $casts = [
         'enrolled_at' => 'datetime',
+        'midtrans_response' => 'array',
     ];
 
     /**
@@ -28,7 +32,7 @@ class Enrollment extends Model
      */
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -36,6 +40,6 @@ class Enrollment extends Model
      */
     public function course()
     {
-        return $this->belongsTo(\App\Models\Course::class);
+        return $this->belongsTo(Course::class);
     }
 }

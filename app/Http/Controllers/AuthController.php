@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -61,7 +61,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:3', 'max:20', 'unique:users', 'regex:/^[a-zA-Z0-9_-]+$/'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'indisposable'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -74,6 +74,14 @@ class AuthController extends Controller
 
         // Assign student role
         $user->assignRole('student');
+
+        // Kirim welcome email (cek apakah email aktif)
+        try {
+            $user->notify(new WelcomeNotification($user));
+        } catch (\Throwable $e) {
+            // Jika gagal, log saja, akun tetap terdaftar
+            logger('Gagal kirim email ke '.$user->email.': '.$e->getMessage());
+        }
 
         Auth::login($user);
 

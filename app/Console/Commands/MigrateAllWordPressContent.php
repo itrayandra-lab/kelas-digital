@@ -2,40 +2,40 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Tag;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MigrateAllWordPressContent extends Command
 {
     protected $signature = 'migrate:all-wordpress-content {--type=all : Type of content to migrate: all, posts, attachments}';
+
     protected $description = 'Migrate all WordPress content including posts, drafts, and attachments to Laravel (excluding revisions)';
 
     public function handle()
     {
         $type = $this->option('type');
-        
+
         $this->info('Starting WordPress to Laravel comprehensive content migration...');
-        
+
         if ($type === 'all' || $type === 'posts') {
             $this->migratePostsAndRevisions();
         }
-        
+
         if ($type === 'all' || $type === 'attachments') {
             $this->migrateAttachments();
         }
-        
-        $this->info("All requested content migrated successfully!");
+
+        $this->info('All requested content migrated successfully!');
     }
 
     private function migratePostsAndRevisions()
     {
         $this->info('Migrating posts (excluding ebooks, events, and revisions), drafts...');
-        
+
         // Connect to WordPress database
         $wp_connection = DB::connection('wordpress');
 
@@ -57,20 +57,20 @@ class MigrateAllWordPressContent extends Command
             WHERE p.post_type = 'post'
             AND p.post_status IN ('publish', 'draft')
         ");
-        
-        $this->info("Found " . count($wp_articles) . " articles to migrate");
+
+        $this->info('Found '.count($wp_articles).' articles to migrate');
 
         foreach ($wp_articles as $wp_content) {
             $this->processAndSaveContent($wp_content, $wp_connection);
         }
-        
-        $this->info("Posts and drafts migration completed!");
+
+        $this->info('Posts and drafts migration completed!');
     }
-    
+
     private function migrateAttachments()
     {
         $this->info('Migrating attachments...');
-        
+
         // Connect to WordPress database
         $wp_connection = DB::connection('wordpress');
 
@@ -93,7 +93,7 @@ class MigrateAllWordPressContent extends Command
             AND p.post_status = 'inherit'
         ");
 
-        $this->info("Found " . count($wp_attachments) . " attachments to migrate");
+        $this->info('Found '.count($wp_attachments).' attachments to migrate');
 
         foreach ($wp_attachments as $wp_attachment) {
             // Download and save the attachment
@@ -105,8 +105,8 @@ class MigrateAllWordPressContent extends Command
                 $this->error("Failed to migrate attachment: {$wp_attachment->title}");
             }
         }
-        
-        $this->info("Attachments migration completed!");
+
+        $this->info('Attachments migration completed!');
     }
 
     private function processAndSaveContent($wp_content, $wp_connection)
@@ -132,7 +132,7 @@ class MigrateAllWordPressContent extends Command
         // For revisions, include parent_id in the title to make it unique
         $title = $wp_content->title;
         if ($wp_content->post_type === 'revision') {
-            $title = $title . ' [REVISION-' . $wp_content->wp_id . ']';
+            $title = $title.' [REVISION-'.$wp_content->wp_id.']';
         }
 
         $article = Article::updateOrCreate(
@@ -155,6 +155,7 @@ class MigrateAllWordPressContent extends Command
             $categoryIds = collect($categories)
                 ->map(function ($name) {
                     $slug = Str::slug($name);
+
                     return ArticleCategory::firstOrCreate([
                         'slug' => $slug,
                     ], [
@@ -167,6 +168,7 @@ class MigrateAllWordPressContent extends Command
             $tagIds = collect($tags)
                 ->map(function ($name) {
                     $slug = Str::slug($name);
+
                     return Tag::firstOrCreate([
                         'slug' => $slug,
                     ], [
@@ -191,7 +193,7 @@ class MigrateAllWordPressContent extends Command
             return $base;
         }
 
-        return Str::slug($fallbackTitle) ?: 'article-' . $wp_content->wp_id;
+        return Str::slug($fallbackTitle) ?: 'article-'.$wp_content->wp_id;
     }
 
     private function processArticleContent($content, $wp_connection)
@@ -199,7 +201,7 @@ class MigrateAllWordPressContent extends Command
         // Find all image tags in the content
         $pattern = '/<img[^>]+src=[\'"]([^\'"]+)[\'"][^>]*>/i';
 
-        $content = preg_replace_callback($pattern, function($matches) use ($wp_connection) {
+        $content = preg_replace_callback($pattern, function ($matches) {
             $original_src = $matches[1];
 
             // Download and save the image
@@ -207,7 +209,8 @@ class MigrateAllWordPressContent extends Command
 
             if ($new_image_path) {
                 // Replace the image source with the new path
-                $new_img_tag = str_replace($original_src, asset('storage/' . $new_image_path), $matches[0]);
+                $new_img_tag = str_replace($original_src, asset('storage/'.$new_image_path), $matches[0]);
+
                 return $new_img_tag;
             }
 
@@ -228,17 +231,17 @@ class MigrateAllWordPressContent extends Command
 
         if ($meta) {
             // Get the image URL from the attachment post
-            $image_post = $wp_connection->selectOne("
+            $image_post = $wp_connection->selectOne('
                 SELECT guid, post_title
                 FROM wp_posts
                 WHERE ID = ?
-            ", [$meta->image_id]);
+            ', [$meta->image_id]);
 
             if ($image_post) {
                 // Download and save the featured image
                 $filename = basename($image_post->guid);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $new_filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)) . '_' . time() . '.' . $extension;
+                $new_filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)).'_'.time().'.'.$extension;
 
                 return $this->downloadAndSaveImage($image_post->guid, $new_filename, 'articles');
             }
@@ -251,28 +254,28 @@ class MigrateAllWordPressContent extends Command
     {
         try {
             // Generate filename if not provided
-            if (!$filename) {
+            if (! $filename) {
                 $filename = basename($url);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)) . '_' . time() . '.' . $extension;
+                $filename = Str::slug(pathinfo($filename, PATHINFO_FILENAME)).'_'.time().'.'.$extension;
             }
 
             // Create directory if it doesn't exist
-            $full_directory = storage_path('app/public/' . $directory);
-            if (!file_exists($full_directory)) {
+            $full_directory = storage_path('app/public/'.$directory);
+            if (! file_exists($full_directory)) {
                 mkdir($full_directory, 0755, true);
             }
 
             // Download the image
             $image_content = file_get_contents($url);
             if ($image_content !== false) {
-                $path = $full_directory . '/' . $filename;
+                $path = $full_directory.'/'.$filename;
                 file_put_contents($path, $image_content);
 
-                return $directory . '/' . $filename;
+                return $directory.'/'.$filename;
             }
         } catch (\Exception $e) {
-            $this->error("Failed to download image: {$url} - " . $e->getMessage());
+            $this->error("Failed to download image: {$url} - ".$e->getMessage());
         }
 
         return null;
@@ -285,26 +288,26 @@ class MigrateAllWordPressContent extends Command
             $filename = basename(parse_url($url, PHP_URL_PATH));
             $extension = pathinfo($filename, PATHINFO_EXTENSION);
             $basename = pathinfo($filename, PATHINFO_FILENAME);
-            
+
             // Create a unique filename
-            $new_filename = Str::slug($basename) . '_' . time() . '.' . $extension;
+            $new_filename = Str::slug($basename).'_'.time().'.'.$extension;
 
             // Create directory if it doesn't exist
             $full_directory = storage_path('app/public/attachments');
-            if (!file_exists($full_directory)) {
+            if (! file_exists($full_directory)) {
                 mkdir($full_directory, 075, true);
             }
 
             // Download the file
             $file_content = file_get_contents($url);
             if ($file_content !== false) {
-                $path = $full_directory . '/' . $new_filename;
+                $path = $full_directory.'/'.$new_filename;
                 file_put_contents($path, $file_content);
 
-                return 'attachments/' . $new_filename;
+                return 'attachments/'.$new_filename;
             }
         } catch (\Exception $e) {
-            $this->error("Failed to download attachment: {$url} - " . $e->getMessage());
+            $this->error("Failed to download attachment: {$url} - ".$e->getMessage());
         }
 
         return null;
@@ -321,11 +324,11 @@ class MigrateAllWordPressContent extends Command
 
         $categories = [];
         foreach ($category_ids as $cat_id) {
-            $term = $wp_connection->selectOne("
+            $term = $wp_connection->selectOne('
                 SELECT name
                 FROM wp_terms
                 WHERE term_id = ?
-            ", [$cat_id->term_taxonomy_id]);
+            ', [$cat_id->term_taxonomy_id]);
 
             if ($term) {
                 $categories[] = $term->name;
@@ -346,11 +349,11 @@ class MigrateAllWordPressContent extends Command
 
         $tags = [];
         foreach ($tag_ids as $tag_id) {
-            $term = $wp_connection->selectOne("
+            $term = $wp_connection->selectOne('
                 SELECT name
                 FROM wp_terms
                 WHERE term_id = ?
-            ", [$tag_id->term_taxonomy_id]);
+            ', [$tag_id->term_taxonomy_id]);
 
             if ($term) {
                 $tags[] = $term->name;

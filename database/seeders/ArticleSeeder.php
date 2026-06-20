@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Article;
+use App\Models\ArticleCategory;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class ArticleSeeder extends Seeder
@@ -116,14 +118,14 @@ class ArticleSeeder extends Seeder
         ];
 
         foreach ($articles as $data) {
-            $article = \App\Models\Article::updateOrCreate(
+            $article = Article::updateOrCreate(
                 ['title' => $data['title']],
                 [
                     'title' => $data['title'],
                     'author' => $data['author'],
                     'excerpt' => $data['excerpt'],
                     'content_format' => 'html',
-                    'content' => '<p>' . $data['content'] . '</p>',
+                    'content' => '<p>'.$data['content'].'</p>',
                     'thumbnail' => $data['thumbnail'],
                     'post_type' => 'post',
                     'status' => 'published',
@@ -134,8 +136,8 @@ class ArticleSeeder extends Seeder
                 ]
             );
 
-            $categoryIds = \App\Models\ArticleCategory::whereIn('slug', $data['categories'])->pluck('id');
-            $tagIds = \App\Models\Tag::whereIn('slug', $data['tags'])->pluck('id');
+            $categoryIds = ArticleCategory::whereIn('slug', $data['categories'])->pluck('id');
+            $tagIds = Tag::whereIn('slug', $data['tags'])->pluck('id');
 
             $article->categories()->sync($categoryIds);
             $article->tags()->sync($tagIds);

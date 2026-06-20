@@ -93,7 +93,7 @@
                         <div class="avatar-circle">{{ strtoupper(substr($user->name, 0, 1)) }}</div>
                     @endif
                     <div class="avatar-name">{{ $user->name }}</div>
-                    <div class="avatar-username">@{{ $user->username ?? '' }}</div>
+                    <div class="avatar-username">{{ $user->username ?? '' }}</div>
                     <span class="avatar-role role-{{ strtolower($user->getRoleNames()->first() ?? 'student') }}">
                         @if($user->isAdmin()) Administrator
                         @elseif($user->isInstructor()) Instructor
@@ -142,7 +142,7 @@
                             </div>
                             <div class="info-field">
                                 <dt>Username</dt>
-                                <dd>@{{ $user->username ?? '-' }}</dd>
+                                <dd>{{ $user->username ?? '-' }}</dd>
                             </div>
                             <div class="info-field">
                                 <dt>Email</dt>

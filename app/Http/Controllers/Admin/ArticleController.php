@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Tag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -184,7 +185,7 @@ class ArticleController extends Controller
         // Compare datetime values properly to avoid format mismatch (form uses 'Y-m-d\TH:i', DB uses 'Y-m-d H:i:s')
         if ($request->filled('scheduled_at')) {
             $originalScheduledAt = $article->scheduled_at ? $article->scheduled_at->format('Y-m-d H:i') : null;
-            $requestScheduledAt = \Carbon\Carbon::parse($request->scheduled_at)->format('Y-m-d H:i');
+            $requestScheduledAt = Carbon::parse($request->scheduled_at)->format('Y-m-d H:i');
 
             if ($requestScheduledAt !== $originalScheduledAt) {
                 $scheduledAtRules[] = 'after_or_equal:now';
@@ -277,18 +278,18 @@ class ArticleController extends Controller
                 'size' => $request->file('thumbnail')->getSize(),
                 'mime' => $request->file('thumbnail')->getMimeType(),
             ]);
-            
+
             $payload['thumbnail'] = $request->file('thumbnail')->store('articles', 'public');
-            
+
             \Log::info('Thumbnail stored', ['path' => $payload['thumbnail']]);
-            
-            session()->flash('thumbnail_info', 'Thumbnail uploaded: ' . $request->file('thumbnail')->getClientOriginalName());
+
+            session()->flash('thumbnail_info', 'Thumbnail uploaded: '.$request->file('thumbnail')->getClientOriginalName());
         } else {
             \Log::info('No thumbnail file in request', [
                 'has_file' => $request->hasFile('thumbnail'),
                 'all_files' => $request->allFiles(),
             ]);
-            
+
             session()->flash('thumbnail_info', 'No thumbnail file detected in request');
         }
 

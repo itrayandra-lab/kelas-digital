@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create a default admin user
-        $adminUser = \App\Models\User::updateOrCreate(
+        $adminUser = User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin User',
@@ -23,9 +23,9 @@ class UserSeeder extends Seeder
                 'last_login' => null,
             ]
         );
-        
+
         // Create a default student user
-        $studentUser = \App\Models\User::updateOrCreate(
+        $studentUser = User::updateOrCreate(
             ['email' => 'student@example.com'],
             [
                 'name' => 'Student User',
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         );
 
         // Create a super admin user
-        $superAdminUser = \App\Models\User::updateOrCreate(
+        $superAdminUser = User::updateOrCreate(
             ['email' => 'superadmin@example.com'],
             [
                 'name' => 'Super Admin User',
@@ -49,20 +49,20 @@ class UserSeeder extends Seeder
         );
 
         // Assign roles to users
-        if (!$adminUser->hasRole('admin')) {
+        if (! $adminUser->hasRole('admin')) {
             $adminUser->assignRole('admin');
         }
 
-        if (!$studentUser->hasRole('student')) {
+        if (! $studentUser->hasRole('student')) {
             $studentUser->assignRole('student');
         }
 
-        if (!$superAdminUser->hasRole('Super-Admin')) {
+        if (! $superAdminUser->hasRole('Super-Admin')) {
             $superAdminUser->assignRole('Super-Admin');
         }
 
         // Create additional test users
-        $instructorUser = \App\Models\User::updateOrCreate(
+        $instructorUser = User::updateOrCreate(
             ['email' => 'instructor@example.com'],
             [
                 'name' => 'Instructor User',
@@ -73,12 +73,12 @@ class UserSeeder extends Seeder
             ]
         );
 
-        if (!$instructorUser->hasRole('instructor')) {
+        if (! $instructorUser->hasRole('instructor')) {
             $instructorUser->assignRole('instructor');
         }
 
         // Create a content manager user
-        $contentManagerUser = \App\Models\User::updateOrCreate(
+        $contentManagerUser = User::updateOrCreate(
             ['email' => 'content@example.com'],
             [
                 'name' => 'Content Manager User',
@@ -89,7 +89,7 @@ class UserSeeder extends Seeder
             ]
         );
 
-        if (!$contentManagerUser->hasRole('content-manager')) {
+        if (! $contentManagerUser->hasRole('content-manager')) {
             $contentManagerUser->assignRole('content-manager');
         }
     }

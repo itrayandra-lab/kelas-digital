@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ArticleCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -21,7 +22,7 @@ class ArticleCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $name) {
-            \App\Models\ArticleCategory::updateOrCreate(
+            ArticleCategory::updateOrCreate(
                 ['slug' => Str::slug($name)],
                 [
                     'name' => $name,
@@ -31,4 +32,3 @@ class ArticleCategorySeeder extends Seeder
         }
     }
 }
-

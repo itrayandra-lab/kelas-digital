@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class TagController extends Controller
 {
@@ -40,7 +39,7 @@ class TagController extends Controller
     public function update(Request $request, Tag $tag)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
+            'name' => 'required|string|max:255|unique:tags,name,'.$tag->id,
         ]);
 
         $tag->update($data);
@@ -55,4 +54,3 @@ class TagController extends Controller
         return redirect()->route('admin.tags.index')->with('success', 'Tag deleted successfully.');
     }
 }
-
