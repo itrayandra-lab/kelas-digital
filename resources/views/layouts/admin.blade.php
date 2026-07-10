@@ -18,85 +18,9 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
     
-    <!-- Select2 CSS -->
-    <link href="{{ asset('vendor/select2/css/select2.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('vendor/select2/css/select2-bootstrap-5-theme.min.css') }}" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-rich-text::styles theme="richtextlaravel" />
-    
-    <!-- Custom Select2 Styling -->
-    <style>
-        .select2-container--bootstrap-5 .select2-selection {
-            min-height: 42px !important;
-            border: 1px solid #d1d5db !important;
-            border-radius: 0.5rem !important;
-            padding: 0.625rem 1rem !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection:focus {
-            border-color: #1474bc !important;
-            box-shadow: 0 0 0 3px rgba(20, 116, 188, 0.1) !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
-            background-color: #1991eb !important;
-            border: 1px solid #1991eb !important;
-            color: #1f2937 !important;
-            border-radius: 0.375rem !important;
-            padding: 0.25rem 0.5rem !important;
-            margin: 0.125rem !important;
-            font-size: 0.875rem !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
-            color: #6b7280 !important;
-            margin-right: 0.25rem !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove:hover {
-            color: #ef4444 !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-dropdown {
-            border: 1px solid #d1d5db !important;
-            border-radius: 0.5rem !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background-color: #1991eb !important;
-            color: #1f2937 !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #f3f4f6 !important;
-            color: #6b7280 !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
-            border: 1px solid #d1d5db !important;
-            border-radius: 0.375rem !important;
-            padding: 0.5rem 0.75rem !important;
-            font-size: 0.875rem !important;
-        }
-        
-        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
-            border-color: #1474bc !important;
-            box-shadow: 0 0 0 3px rgba(20, 116, 188, 0.1) !important;
-            outline: none !important;
-        }
-        
-        .select2-container .select2-selection--single .select2-selection__rendered {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-        
-        .select2-container .select2-selection--multiple .select2-selection__rendered {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-    </style>
 </head>
 
 <body class="h-full font-sans">
@@ -326,69 +250,8 @@
         </div>
     </div>
 
-    <!-- jQuery and Select2 JavaScript -->
-    <script src="{{ asset('vendor/jquery/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-    
     <!-- Alpine.js -->
     <script defer src="{{ asset('vendor/alpinejs/alpine.min.js') }}"></script>
-    
-    <!-- Custom Select2 initialization -->
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2 for categories
-            $('#categories').select2({
-                placeholder: 'Pilih kategori...',
-                allowClear: true,
-                width: '100%',
-                closeOnSelect: false,
-                tags: false,
-                theme: 'bootstrap-5',
-                language: {
-                    noResults: function() {
-                        return "Tidak ada kategori ditemukan";
-                    }
-                }
-            });
-            
-            // Initialize Select2 for tags with tag creation enabled
-            $('#tags').select2({
-                placeholder: 'Pilih tag atau ketik untuk membuat tag baru...',
-                allowClear: true,
-                width: '100%',
-                closeOnSelect: false,
-                tags: true,
-                tokenSeparators: [','],
-                createTag: function (params) {
-                    var term = $.trim(params.term);
-                    if (term === '') {
-                        return null;
-                    }
-                    return {
-                        id: term,
-                        text: term,
-                        newTag: true
-                    };
-                },
-                theme: 'bootstrap-5',
-                language: {
-                    noResults: function() {
-                        return "Tidak ada tag ditemukan. Ketik untuk membuat tag baru.";
-                    }
-                }
-            });
-
-            // Handle clearing input after new tag creation via Enter
-            $('#tags').on('select2:select', function (e) {
-                var data = e.params.data;
-                // Check if it's a newly created tag
-                if (data.newTag) {
-                    // Clear the search input field for this specific Select2 instance
-                    $(this).data('select2').$container.find('.select2-search__field').val('');
-                }
-            });
-        });
-    </script>
 
 </body>
 
