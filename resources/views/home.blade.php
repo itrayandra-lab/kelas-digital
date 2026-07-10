@@ -126,15 +126,49 @@
     justify-content:flex-end;
     z-index:2;
 }
+.hero-ra-img-wrap{
+    position:relative;
+    width:100%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-end;
+}
+/* soft blob — warna nyambung ke #F5F5F4 hero bg */
+.hero-ra-img-wrap::before{
+    content:'';
+    position:absolute;
+    bottom:70px;
+    right:16px;
+    width:88%;
+    height:80%;
+    background:linear-gradient(145deg,#e8f0fb 0%,#d4e5f9 40%,#eaf4ff 100%);
+    border-radius:36px;
+    z-index:0;
+    box-shadow:0 12px 56px rgba(0,86,210,.13),inset 0 1px 0 rgba(255,255,255,.7);
+}
+/* fade tepi foto nyatu ke background #F5F5F4 */
+.hero-ra-img-wrap::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:28px;
+    background:
+        linear-gradient(to right,#F5F5F4 0%,transparent 18%),
+        linear-gradient(to top,#F5F5F4 0%,transparent 14%);
+    z-index:3;
+    pointer-events:none;
+}
 .hero-ra-right img{
     display:block;
     width:100%;
     height:auto;
     object-fit:contain;
     object-position:bottom center;
-    /* naikkan foto supaya kaki tidak terpotong */
-    transform:translateY(-100px);
-    filter:drop-shadow(0 4px 24px rgba(0,86,210,.08));
+    transform:translateY(-80px);
+    border-radius:28px;
+    position:relative;
+    z-index:2;
+    filter:drop-shadow(0 8px 32px rgba(0,86,210,.14)) drop-shadow(0 2px 8px rgba(0,0,0,.07));
 }
 
 /* ═══ 2. PROMO CARDS ═══ */
@@ -464,14 +498,14 @@
 <section class="hero-ra">
     <div class="hero-ra-inner">
         <div class="hero-ra-left rv" id="hero-left">
-            <h1>Raih tujuan karier Anda dengan <strong>{{ config('app.name', 'Rayacademy') }}</strong></h1>
-            <p>membangun keterampilan yang siap kerja dari instruktur berpengalaman. Belajar kapan saja, di mana saja.</p>
+            <h1>Wujudkan karier impian Anda bersama <strong>{{ config('app.name', 'Ray Academy') }}</strong></h1>
+            <p>Tingkatkan kompetensi dan Kuasai keterampilan yang dibutuhkan industri dengan dukungan praktisi dan ahli berpengalaman. Belajar fleksibel, kapan saja, di mana saja.</p>
             <div class="hero-btns-row">
                 <a href="{{ route('course.index') }}" class="btn-primary-ra">
-                    Mulai Kursus Gratis
+                    Mulai Gratis
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Katalog</a>
+                <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Kelas</a>
             </div>
             <div class="hero-stats-row">
                 <div class="hero-stat-item">
@@ -490,15 +524,16 @@
         </div>
         <div class="hero-ra-right" id="hero-right">
             <!-- decorative circles (like Figma) -->
-            <svg style="position:absolute;bottom:0;right:0;width:55%;opacity:.18;z-index:0;pointer-events:none;" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg style="position:absolute;bottom:0;right:0;width:55%;opacity:.12;z-index:0;pointer-events:none;" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="200" cy="200" r="190" stroke="#0056D2" stroke-width="1.5"/>
                 <circle cx="200" cy="200" r="145" stroke="#0056D2" stroke-width="1.5"/>
                 <circle cx="200" cy="200" r="100" stroke="#0056D2" stroke-width="1.5"/>
                 <circle cx="200" cy="200" r="55"  stroke="#0056D2" stroke-width="1.5"/>
             </svg>
-            <img src="{{ asset('img/hero.png') }}" alt="Belajar di Ray Academy"
-                 style="position:relative;z-index:1;"
-                 onerror="this.style.display='none'">
+            <div class="hero-ra-img-wrap">
+                <img src="{{ asset('img/hero.png') }}" alt="Belajar di Ray Academy"
+                     onerror="this.style.display='none'">
+            </div>
         </div>
     </div>
 </section>
@@ -560,7 +595,7 @@
     <div class="wrap">
         <div class="free-banner-inner rv">
             <div class="free-banner-text">
-                <h2>Bingung harus mulai dari mana? Mulai aja dulu kursus gratis di Ray Academy. Akses materi berkualitas tanpa biaya dan temukan jalur suksesmu hari ini.</h2>
+                <h2>Bingung harus mulai dari mana? Mulailah dengan kursus gratis di Ray Academy hari ini. Akses materi berkualitas dan kembangkan keterampilan yang membuka lebih banyak peluang karier.</h2>
                 <a href="{{ route('course.index') }}" class="btn-outline-blue">Mulai Kursus Gratis</a>
             </div>
             <div class="free-banner-img-wrap">
@@ -654,10 +689,10 @@
         <div class="ins-header rv">
             <span class="sec-tag-white">
                 <i class="fas fa-chalkboard-teacher" style="font-size:.65rem;"></i>
-                Instruktur Kami
+                Pengajar dari Praktisi dan Ahli Industri
             </span>
-            <h2>Belajar dari Para Ahli</h2>
-            <p>Instruktur berpengalaman yang siap membimbing perjalanan pembelajaran Anda</p>
+            <h2>Belajar Langsung dari Para Ahli</h2>
+            <p>Tingkatkan wawasan, pengalaman, dan kompetensi Anda bersama para profesional berpengalaman di bidangnya.</p>
         </div>
 
         <div class="ins-grid">
@@ -848,7 +883,7 @@
     <div class="wrap">
         <div class="cta-inner rv">
             <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="cta-logo-img" onerror="this.style.display='none'">
-            <p>Raih tujuan karier Anda dengan {{ config('app.name', 'Rayacademy') }}</p>
+            <p>Wujudkan karier impian Anda bersama Ray Academy</p>
             @guest
             <a href="{{ route('register') }}" class="btn-primary-ra">Mulai 7 hari Masa Percobaan Gratis</a>
             <p class="cta-subtext">Daftar gratis &middot; Batalkan kapan saja</p>
