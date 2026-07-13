@@ -11,13 +11,14 @@
 
         init() {
             // Parse data from data attributes
-            const selectedData = this.$el.closest('[data-selected]').dataset.selected;
-            const optionsData = this.$el.closest('[data-options]').dataset.options;
-            const nameData = this.$el.closest('[data-name]').dataset.name;
-            const placeholderData = this.$el.closest('[data-placeholder]').dataset.placeholder;
-            const requiredData = this.$el.closest('[data-required]').dataset.required;
-            const allowCreateData = this.$el.closest('[data-allow-create]').dataset.allowCreate;
-            const newTagPlaceholderData = this.$el.closest('[data-new-tag-placeholder]').dataset.newTagPlaceholder;
+            const rootEl = this.$el;
+            const selectedData = rootEl.dataset.selected;
+            const optionsData = rootEl.dataset.options;
+            const nameData = rootEl.dataset.name;
+            const placeholderData = rootEl.dataset.placeholder;
+            const requiredData = rootEl.dataset.required;
+            const allowCreateData = rootEl.dataset.allowCreate;
+            const newTagPlaceholderData = rootEl.dataset.newTagPlaceholder;
 
             if (selectedData) {
                 try { this.selected = JSON.parse(selectedData); } catch(e) { this.selected = []; }
@@ -30,17 +31,21 @@
             this.required = requiredData === '1';
             this.allowCreate = allowCreateData === '1';
             this.newTagPlaceholder = newTagPlaceholderData || 'Ketik untuk membuat...';
+
+            // Close dropdown on outside click
+            document.addEventListener('click', (e) => {
+                if (!rootEl.contains(e.target) && this.open) {
+                    this.closeDropdown();
+                }
+            });
         },
 
         get filteredOptions() {
-            if (!this.search) {
-                return this.options.filter(opt => !this.selected.includes(opt.id) && !this.selected.includes(String(opt.id)));
-            }
-            const searchLower = this.search.toLowerCase();
+            // Show all options that are not selected, filtered by search
             return this.options.filter(opt =>
-                opt.name.toLowerCase().includes(searchLower) &&
                 !this.selected.includes(opt.id) &&
-                !this.selected.includes(String(opt.id))
+                !this.selected.includes(String(opt.id)) &&
+                (!this.search || opt.name.toLowerCase().includes(this.search.toLowerCase()))
             );
         },
 
@@ -116,11 +121,11 @@
     </label>
 
     <!-- Multi-select trigger -->
-    <div
+    <button
+        type="button"
         @click="open = !open"
-        @click.away="closeDropdown()"
         :class="open ? 'ring-2 ring-primary-500 border-primary-500' : 'border-gray-300 hover:border-gray-400'"
-        class="w-full min-h-[52px] px-3 py-2.5 bg-white border rounded-lg cursor-pointer transition-all duration-200 flex flex-wrap gap-2 items-center"
+        class="w-full min-h-[52px] px-3 py-2.5 bg-white border rounded-lg cursor-pointer transition-all duration-200 text-left flex flex-wrap gap-2 items-center"
     >
         <!-- Selected chips -->
         <template x-if="hasSelection">
@@ -155,7 +160,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </div>
-    </div>
+    </button>
 
     <!-- Dropdown -->
     <div
@@ -203,7 +208,7 @@
             </template>
 
             <!-- Empty state -->
-            <template x-if="filteredOptions.length === 0 && filteredOptions.length === 0">
+            <template x-if="filteredOptions.length === 0 && !allowCreate">
                 <div class="px-4 py-8 text-center">
                     <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
