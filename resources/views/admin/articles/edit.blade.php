@@ -95,7 +95,7 @@
 
                     @php
                         $selectedCategories = old('categories', $article->categories->pluck('id')->toArray());
-                        $selectedTags = old('tags', $article->tags->pluck('id')->toArray());
+                        $selectedTags = old('tags', $article->tags->pluck('name')->toArray());
                         $currentFormat = old('content_format', $article->content_format);
                     @endphp
 
@@ -118,7 +118,7 @@
                             name="tags"
                             label="Tags"
                             placeholder="Pilih atau buat tag..."
-                            :options="$tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name])->toArray()"
+                            :options="$tags->map(fn($tag) => ['id' => $tag->name, 'name' => $tag->name])->toArray()"
                             :selected="$selectedTags"
                             :allow-create="true"
                             new-tag-placeholder="Ketik untuk membuat tag baru..."

@@ -28,7 +28,19 @@ class ArticleController extends Controller
 
         foreach ($tags as $tag) {
             $tagName = trim($tag);
+
+            // Skip empty tags
             if (empty($tagName)) {
+                continue;
+            }
+
+            // Skip purely numeric tags (these are invalid - likely bugs from ID confusion)
+            if (is_numeric($tagName)) {
+                continue;
+            }
+
+            // Skip very short tags (less than 2 characters after trim)
+            if (strlen($tagName) < 2) {
                 continue;
             }
 

@@ -76,7 +76,7 @@
                             name="tags"
                             label="Tags"
                             placeholder="Pilih atau buat tag..."
-                            :options="$tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name])->toArray()"
+                            :options="$tags->map(fn($tag) => ['id' => $tag->name, 'name' => $tag->name])->toArray()"
                             :selected="old('tags', [])"
                             :allow-create="true"
                             new-tag-placeholder="Ketik untuk membuat tag baru..."

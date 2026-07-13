@@ -1,13 +1,36 @@
 <div x-data="{
         open: false,
         search: '',
-        selected: {{ Js::encode($selected ?? []) }},
-        options: {{ Js::encode($options ?? []) }},
-        name: '{{ $name }}',
-        placeholder: '{{ $placeholder ?? 'Pilih...' }}',
-        required: {{ $required ?? false ? 'true' : 'false' }},
-        allowCreate: {{ $allowCreate ?? false ? 'true' : 'false' }},
-        newTagPlaceholder: '{{ $newTagPlaceholder ?? 'Ketik untuk membuat...' }}',
+        selected: [],
+        options: [],
+        name: '',
+        placeholder: 'Pilih...',
+        required: false,
+        allowCreate: false,
+        newTagPlaceholder: 'Ketik untuk membuat...',
+
+        init() {
+            // Parse data from data attributes
+            const selectedData = this.$el.closest('[data-selected]').dataset.selected;
+            const optionsData = this.$el.closest('[data-options]').dataset.options;
+            const nameData = this.$el.closest('[data-name]').dataset.name;
+            const placeholderData = this.$el.closest('[data-placeholder]').dataset.placeholder;
+            const requiredData = this.$el.closest('[data-required]').dataset.required;
+            const allowCreateData = this.$el.closest('[data-allow-create]').dataset.allowCreate;
+            const newTagPlaceholderData = this.$el.closest('[data-new-tag-placeholder]').dataset.newTagPlaceholder;
+
+            if (selectedData) {
+                try { this.selected = JSON.parse(selectedData); } catch(e) { this.selected = []; }
+            }
+            if (optionsData) {
+                try { this.options = JSON.parse(optionsData); } catch(e) { this.options = []; }
+            }
+            this.name = nameData || '';
+            this.placeholder = placeholderData || 'Pilih...';
+            this.required = requiredData === '1';
+            this.allowCreate = allowCreateData === '1';
+            this.newTagPlaceholder = newTagPlaceholderData || 'Ketik untuk membuat...';
+        },
 
         get filteredOptions() {
             if (!this.search) {
@@ -72,11 +95,18 @@
     }"
     @keydown.escape="closeDropdown()"
     class="relative"
+    data-selected="{{ json_encode($selected ?? []) }}"
+    data-options="{{ json_encode($options ?? []) }}"
+    data-name="{{ $name }}"
+    data-placeholder="{{ $placeholder ?? 'Pilih...' }}"
+    data-required="{{ $required ?? false ? '1' : '0' }}"
+    data-allow-create="{{ $allowCreate ?? false ? '1' : '0' }}"
+    data-new-tag-placeholder="{{ $newTagPlaceholder ?? 'Ketik untuk membuat...' }}"
 >
 
     <!-- Hidden inputs for form submission -->
     <template x-for="(item, index) in selected" :key="index">
-        <input type="hidden" :name=\"name + '[]'\" :value=\"item\">
+        <input type="hidden" :name="name + '[]'" :value="item">
     </template>
 
     <!-- Label -->
