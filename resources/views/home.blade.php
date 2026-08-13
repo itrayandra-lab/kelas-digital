@@ -705,7 +705,7 @@
                         Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
                     </a>
                 </div>
-                <img src="{{ asset('assets/ria.png') }}" alt="Ria R. Christiana SE, MBA." class="ins-card-photo" style="object-position:bottom left;" onerror="this.style.display='none'">
+                <img src="{{ asset('assets/ria.png') }}" alt="Ria R. Christiana SE, MBA." class="ins-card-photo" style="object-position:bottom ;" onerror="this.style.display='none'">
             </div>
 
             <div class="ins-card rv rv-d2" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
