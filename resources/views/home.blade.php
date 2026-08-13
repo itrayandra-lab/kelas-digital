@@ -696,24 +696,53 @@
         </div>
 
         <div class="ins-grid">
-            @foreach([
-                ['bg'=>'linear-gradient(135deg,#ff5733,#c0392b)','logo'=>'assets/logo-do better class.png','photo'=>'assets/s-ria.png','name'=>'Ria R. Christiana SE, MBA.','tag'=>'Business & Branding','link'=>route('course.index'),'c'=>'#c0392b'],
-                ['bg'=>'linear-gradient(135deg,#7c3aed,#5b21b6)','logo'=>'assets/logo-psikologi bisnis.png','photo'=>'assets/s-sukmayanti.png','name'=>'Sukmayanti Ranadireksa, M.Psi.','tag'=>'Psikologi & Komunikasi','link'=>route('course.index'),'c'=>'#7c3aed'],
-                ['bg'=>'linear-gradient(135deg,#db2777,#9d174d)','logo'=>'assets/logo-ski.png','photo'=>'assets/s-cahya.png','name'=>'Apt. Cahya Khairani K., M.Farm','tag'=>'Kosmetik & Kecantikan','link'=>route('course.index'),'c'=>'#be185d'],
-                ['bg'=>'linear-gradient(135deg,#1d4ed8,#1e3a8a)','logo'=>'assets/logo-amaizing.png','photo'=>'assets/s-wendra.png','name'=>'Wendra Wilendra M.MT.','tag'=>'Teknologi & AI','link'=>route('course.index'),'c'=>'#1d4ed8'],
-            ] as $idx => $ins)
-            <div class="ins-card rv rv-d{{ min($idx+1,4) }}" style="background:{{ $ins['bg'] }};">
+            <div class="ins-card rv rv-d1" style="background:linear-gradient(135deg,#ff5733,#c0392b);">
                 <div class="ins-card-inner">
-                    <img src="{{ asset($ins['logo']) }}" alt="{{ $ins['name'] }}" class="ins-card-logo" onerror="this.style.display='none'">
-                    <h3 class="ins-card-name">{{ $ins['name'] }}</h3>
-                    <p class="ins-card-tag">{{ $ins['tag'] }}</p>
-                    <a href="{{ $ins['link'] }}" class="ins-card-btn" style="color:{{ $ins['c'] }};">
+                    <img src="{{ asset('assets/logo-do better class.png') }}" alt="Ria R. Christiana SE, MBA." class="ins-card-logo" onerror="this.style.display='none'">
+                    <h3 class="ins-card-name">Ria R. Christiana SE, MBA.</h3>
+                    <p class="ins-card-tag">Business &amp; Branding</p>
+                    <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#c0392b;">
                         Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
                     </a>
                 </div>
-                <img src="{{ asset($ins['photo']) }}" alt="{{ $ins['name'] }}" class="ins-card-photo" onerror="this.style.display='none'">
+                <img src="{{ asset('assets/ria.png') }}" alt="Ria R. Christiana SE, MBA." class="ins-card-photo" style="object-position:bottom left;" onerror="this.style.display='none'">
             </div>
-            @endforeach
+
+            <div class="ins-card rv rv-d2" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
+                <div class="ins-card-inner">
+                    <img src="{{ asset('assets/logo-psikologi bisnis.png') }}" alt="Sukmayanti Ranadireksa, M.Psi." class="ins-card-logo" onerror="this.style.display='none'">
+                    <h3 class="ins-card-name">Sukmayanti Ranadireksa, M.Psi.</h3>
+                    <p class="ins-card-tag">Psikologi &amp; Komunikasi</p>
+                    <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#7c3aed;">
+                        Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+                    </a>
+                </div>
+                <img src="{{ asset('assets/s-sukmayanti.png') }}" alt="Sukmayanti Ranadireksa, M.Psi." class="ins-card-photo" onerror="this.style.display='none'">
+            </div>
+
+            <div class="ins-card rv rv-d3" style="background:linear-gradient(135deg,#db2777,#9d174d);">
+                <div class="ins-card-inner">
+                    <img src="{{ asset('assets/logo-ski.png') }}" alt="Apt. Cahya Khairani K., M.Farm" class="ins-card-logo" onerror="this.style.display='none'">
+                    <h3 class="ins-card-name">Apt. Cahya Khairani K., M.Farm</h3>
+                    <p class="ins-card-tag">Kosmetik &amp; Kecantikan</p>
+                    <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#be185d;">
+                        Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+                    </a>
+                </div>
+                <img src="{{ asset('assets/s-cahya.png') }}" alt="Apt. Cahya Khairani K., M.Farm" class="ins-card-photo" onerror="this.style.display='none'">
+            </div>
+
+            <div class="ins-card rv rv-d4" style="background:linear-gradient(135deg,#1d4ed8,#1e3a8a);">
+                <div class="ins-card-inner">
+                    <img src="{{ asset('assets/logo-amaizing.png') }}" alt="Wendra Wilendra M.MT." class="ins-card-logo" onerror="this.style.display='none'">
+                    <h3 class="ins-card-name">Wendra Wilendra M.MT.</h3>
+                    <p class="ins-card-tag">Teknologi &amp; AI</p>
+                    <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#1d4ed8;">
+                        Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+                    </a>
+                </div>
+                <img src="{{ asset('assets/s-wendra_new.png') }}" alt="Wendra Wilendra M.MT." class="ins-card-photo" onerror="this.style.display='none'">
+            </div>
 
             {{-- Row 2: 1 card centered --}}
             <div class="ins-row2">
