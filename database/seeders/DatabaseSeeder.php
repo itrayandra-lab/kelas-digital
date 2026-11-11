@@ -18,10 +18,8 @@ class DatabaseSeeder extends Seeder
             CourseCategorySeeder::class,
             ArticleCategorySeeder::class,
             TagSeeder::class,
-            CourseSeeder::class,
             ArticleSeederNew::class,
-            EnrollmentSeeder::class,
-            LessonSeeder::class,
+            DemoCourseSeeder::class,
             SettingsSeeder::class,
             ShareDomainPermissionSeeder::class,
         ]);
