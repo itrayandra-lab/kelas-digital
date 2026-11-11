@@ -395,28 +395,6 @@
 .art-placeholder a{font-size:.72rem;font-weight:600;color:#0056D2;text-decoration:none;}
 .art-placeholder a:hover{text-decoration:underline;}
 
-/* ═══ 8. TESTIMONIALS ═══ */
-.testi-section{background:#F8FAFF;padding:3rem 0;}
-.testi-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.75rem);font-weight:700;color:#0F1114;margin-bottom:1.5rem;}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-.testi-card{
-    background:#fff;border:1px solid #E2E8F0;border-radius:12px;
-    padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;
-    transition:border-color .2s,box-shadow .2s;
-}
-.testi-card:hover{border-color:#BFDBFE;box-shadow:0 8px 24px rgba(0,86,210,.08);}
-.testi-stars{display:flex;gap:2px;}
-.testi-stars svg{width:14px;height:14px;color:#FBBF24;fill:#FBBF24;}
-.testi-user{display:flex;align-items:center;gap:.75rem;}
-.testi-avatar{
-    width:44px;height:44px;border-radius:50%;flex-shrink:0;
-    background:linear-gradient(135deg,#DBEAFE,#93C5FD);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;color:#0056D2;
-}
-.testi-name{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:600;color:#0F1114;}
-.testi-text{font-size:.8rem;color:#6B7280;line-height:1.65;flex:1;}
-
 /* ═══ 9. FAQ ═══ */
 .faq-section{background:#fff;padding:3rem 0;border-top:1px solid #F1F5F9;}
 .faq-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.75rem);font-weight:700;color:#0F1114;margin-bottom:1.5rem;}
@@ -458,7 +436,6 @@
 
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:900px){
-    .testi-grid{grid-template-columns:repeat(2,1fr);}
     .art-grid{grid-template-columns:repeat(2,1fr);}
     .ins-grid{grid-template-columns:repeat(2,1fr);}
     .ins-card:nth-child(1),.ins-card:nth-child(2),.ins-card:nth-child(3),.ins-card:nth-child(4){margin-top:0;}
@@ -480,7 +457,6 @@
     html,body{overflow-x:hidden!important;max-width:100vw!important;}
     .promo-grid{grid-template-columns:1fr;}
     .promo-card-img{width:120px;}
-    .testi-grid{grid-template-columns:1fr;}
     .art-grid{grid-template-columns:1fr;}
     .ins-grid{grid-template-columns:1fr;}
     .ins-row2{justify-content:center;}
@@ -852,36 +828,6 @@
 </section>
 
 {{-- ═══════════════════════════════
-     8. TESTIMONIALS
-═══════════════════════════════ --}}
-<section class="testi-section">
-    <div class="wrap">
-        <h2>Apa kata mereka</h2>
-        <div class="testi-grid">
-            @php
-            $testis=[
-                ['i'=>'A','n'=>'Abigail P.','t'=>'Saya memiliki pekerjaan penuh waktu dan 3 orang anak. Ray Academy memberi fleksibilitas yang saya butuhkan. Langganannya memotivasi saya untuk terus belajar.'],
-                ['i'=>'S','n'=>'Shi Jie F.','t'=>'Platform yang sangat membantu! Dengan setiap kursus saya mendapat nilai lebih. Saya bisa mengakses hampir semua konten dengan satu berlangganan.'],
-                ['i'=>'I','n'=>'Ines K.','t'=>'Saya sangat menghargai fleksibilitas yang ditawarkan. Bisa mencoba kursus apa saja tanpa biaya tambahan memotivasi saya belajar lebih banyak!'],
-            ];
-            @endphp
-            @foreach($testis as $t)
-            <div class="testi-card rv rv-d{{ $loop->index+1 }}">
-                <div class="testi-stars">
-                    @for($s=0;$s<5;$s++)<svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>@endfor
-                </div>
-                <p class="testi-text">"{{ $t['t'] }}"</p>
-                <div class="testi-user">
-                    <div class="testi-avatar">{{ $t['i'] }}</div>
-                    <div class="testi-name">{{ $t['n'] }}</div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- ═══════════════════════════════
      9. FAQ
 ═══════════════════════════════ --}}
 <section class="faq-section">
@@ -890,12 +836,12 @@
         <div class="faq-box rv">
             @php
             $faqs=[
-                ['q'=>'Apakah Ray Academy menyediakan sertifikat resmi?','a'=>'Ya! Setiap kursus yang diselesaikan mendapatkan sertifikat resmi terverifikasi yang dapat dicantumkan di CV atau portofolio LinkedIn Anda.'],
-                ['q'=>'Apa saja yang termasuk dalam paket berlangganan?','a'=>'Paket berlangganan mencakup akses tak terbatas ke semua kursus, video HD, forum diskusi, dan sertifikat resmi untuk setiap kursus yang diselesaikan.'],
-                ['q'=>'Apakah saya akan menghemat dengan berlangganan?','a'=>'Sangat! Dengan berlangganan Anda mendapat akses ke semua kursus dengan harga jauh lebih hemat dibanding membeli satu per satu.'],
-                ['q'=>'Berapa lama akses kursus yang saya beli?','a'=>'Anda mendapat akses LIFETIME untuk semua kursus yang dibeli. Tidak ada batasan waktu — belajar kapan saja sesuai kecepatan Anda sendiri.'],
-                ['q'=>'Bisakah saya belajar dari smartphone?','a'=>'Tentu saja! Platform Ray Academy 100% mobile-friendly. Belajar dari smartphone, tablet, atau laptop dengan pengalaman optimal di semua perangkat.'],
-                ['q'=>'Apakah ada garansi uang kembali?','a'=>'Ya, kami memberikan garansi uang kembali 30 hari untuk kursus premium jika Anda tidak puas dengan konten yang didapatkan.'],
+                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setelah mendaftar kelas, kamu mengerjakan pre-test untuk mengukur pemahaman awal, lalu mempelajari materi video dan bacaan bab demi bab. Di akhir ada post-test. Kalau lulus, kelasmu selesai.'],
+                ['q'=>'Apakah ada kelas gratis?','a'=>'Ada. Kelas berlabel Gratis bisa langsung diikuti setelah mendaftar akun, tanpa pembayaran.'],
+                ['q'=>'Bagaimana cara membayar kelas berbayar?','a'=>'Pembayaran diproses lewat Midtrans. Kamu bisa membayar dengan virtual account bank, QRIS, e-wallet, atau kartu. Kelas langsung terbuka setelah pembayaran berhasil.'],
+                ['q'=>'Berapa lama akses kelas yang sudah saya ikuti?','a'=>'Tidak ada batas waktu. Kelas yang sudah kamu ikuti tetap bisa dibuka kapan saja dari halaman Kursus Saya.'],
+                ['q'=>'Bisakah saya belajar dari smartphone?','a'=>'Bisa. Ray Academy bisa dibuka dari smartphone, tablet, maupun laptop. Progres belajarmu tersimpan, jadi kamu bisa lanjut di perangkat lain.'],
+                ['q'=>'Kapan nilai tes saya keluar?','a'=>'Soal pilihan ganda dan benar/salah langsung dinilai. Kalau tes berisi soal essay, nilainya keluar setelah diperiksa oleh tim kami.'],
             ];
             @endphp
             @foreach($faqs as $faq)
@@ -934,8 +880,8 @@
             <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="cta-logo-img" onerror="this.style.display='none'">
             <p>Wujudkan karier impian Anda bersama Ray Academy</p>
             @guest
-            <a href="{{ route('register') }}" class="btn-primary-ra">Mulai 7 hari Masa Percobaan Gratis</a>
-            <p class="cta-subtext">Daftar gratis &middot; Batalkan kapan saja</p>
+            <a href="{{ route('register') }}" class="btn-primary-ra">Daftar Gratis Sekarang</a>
+            <p class="cta-subtext">Gratis daftar &middot; Ada kelas gratis untuk mulai</p>
             @else
             <a href="{{ route('dashboard') }}" class="btn-primary-ra">Dashboard Saya</a>
             @endguest
