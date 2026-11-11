@@ -70,9 +70,9 @@ class CourseTypeTest extends TestCase
         $response = $this->get(route('course.show', $course->slug));
 
         $response->assertStatus(200);
-        $response->assertSee('youtube.com/embed', false);
-        $response->assertSee('Login untuk Gabung');
-        $response->assertSee('Rp');
+        $response->assertSee("openPreviewModal('abc123')", false);
+        $response->assertSee('Login untuk Membeli');
+        $response->assertSee('Rp299.000');
     }
 
     public function test_free_class_show_page_displays_registration_info(): void
@@ -83,11 +83,11 @@ class CourseTypeTest extends TestCase
         $response = $this->get(route('course.show', $course->slug));
 
         $response->assertStatus(200);
-        $response->assertSee('Daftar Sekarang!');
+        $response->assertSee('Login untuk Daftar Gratis');
         $response->assertSee('Zoom');
         $response->assertSee('Gratis E-Certificate');
         $response->assertSee('Pengenalan Data Analysis');
-        $response->assertDontSee('Gabung Kelas Ini');
+        $response->assertDontSee('Beli Sekarang');
     }
 
     public function test_free_class_enrollment_auto_completes(): void
@@ -124,7 +124,7 @@ class CourseTypeTest extends TestCase
 
         $this->assertNotNull($enrollment);
         $this->assertEquals('pending', $enrollment->payment_status);
-        $this->assertEquals('manual_transfer', $enrollment->payment_method);
+        $this->assertEquals('midtrans', $enrollment->payment_method);
     }
 
     public function test_free_class_shows_registered_state_after_enrollment(): void
@@ -146,8 +146,8 @@ class CourseTypeTest extends TestCase
             ->get(route('course.show', $course->slug));
 
         $response->assertStatus(200);
-        $response->assertSee('Anda Sudah Terdaftar');
-        $response->assertDontSee('Daftar Sekarang!');
+        $response->assertSee('Mulai Belajar');
+        $response->assertDontSee('Daftar Gratis</button>', false);
     }
 
     public function test_course_index_shows_correct_badge_for_free_class(): void
