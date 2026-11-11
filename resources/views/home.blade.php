@@ -111,9 +111,10 @@
     display:flex;gap:2rem;margin-top:2rem;flex-wrap:wrap;
     padding-top:2rem;border-top:1px solid rgba(15,17,20,.08);
 }
-.hero-stat-item{}
-.hero-stat-num{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:#0F1114;line-height:1;}
-.hero-stat-label{font-size:.72rem;color:#6B7280;margin-top:.2rem;}
+.hero-stat-item{display:flex;align-items:center;gap:.7rem;}
+.hero-stat-icon{width:42px;height:42px;border-radius:12px;background:#EAF2FF;color:#0056D2;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.hero-stat-num{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0F1114;line-height:1.2;}
+.hero-stat-label{font-size:.75rem;color:#6B7280;margin-top:.15rem;}
 
 /* hero right image */
 .hero-ra-right{
@@ -507,18 +508,37 @@
                 </a>
                 <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Kelas</a>
             </div>
+            {{-- Small counts look empty, so learner numbers only appear once they are worth showing. --}}
             <div class="hero-stats-row">
+                @if($stats['total_students'] >= 100)
                 <div class="hero-stat-item">
-                    <div class="hero-stat-num">{{ number_format($stats['total_students']) }}+</div>
-                    <div class="hero-stat-label">Pelajar Aktif</div>
+                    <div class="hero-stat-icon"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="hero-stat-num">{{ number_format($stats['total_students']) }}+ pelajar</div>
+                        <div class="hero-stat-label">Sudah bergabung</div>
+                    </div>
+                </div>
+                @endif
+                <div class="hero-stat-item">
+                    <div class="hero-stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div>
+                        <div class="hero-stat-num">Praktisi & akademisi</div>
+                        <div class="hero-stat-label">Belajar dari ahlinya</div>
+                    </div>
                 </div>
                 <div class="hero-stat-item">
-                    <div class="hero-stat-num">{{ number_format($stats['total_courses']) }}+</div>
-                    <div class="hero-stat-label">Kursus Tersedia</div>
+                    <div class="hero-stat-icon"><i class="fas fa-layer-group"></i></div>
+                    <div>
+                        <div class="hero-stat-num">Video & modul</div>
+                        <div class="hero-stat-label">Tersusun per bab</div>
+                    </div>
                 </div>
                 <div class="hero-stat-item">
-                    <div class="hero-stat-num">Lifetime</div>
-                    <div class="hero-stat-label">Akses Materi</div>
+                    <div class="hero-stat-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div>
+                        <div class="hero-stat-num">Pre & post test</div>
+                        <div class="hero-stat-label">Ukur progres belajarmu</div>
+                    </div>
                 </div>
             </div>
         </div>
