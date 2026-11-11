@@ -36,7 +36,27 @@ class Course extends Model
         'schedule_start',
         'schedule_end',
         'meeting_platform',
+        'meeting_link',
+        'post_test_pass_score',
     ];
+
+    /**
+     * Uploaded thumbnail first, then the trailer's YouTube cover, so a course always has a preview image.
+     * "default-course.jpg" is a placeholder value with no real file behind it.
+     */
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if ($this->thumbnail && $this->thumbnail !== 'default-course.jpg') {
+            return asset('storage/'.$this->thumbnail);
+        }
+
+        return $this->trailer_video_id ? "https://img.youtube.com/vi/{$this->trailer_video_id}/hqdefault.jpg" : null;
+    }
+
+    public function setTrailerVideoIdAttribute($value): void
+    {
+        $this->attributes['trailer_video_id'] = \App\Support\YouTube::id($value);
+    }
 
     protected $casts = [
         'featured_at' => 'datetime',
@@ -112,6 +132,24 @@ class Course extends Model
         return $this->hasMany(Lesson::class)->orderBy('order');
     }
 
+    public function sections()
+    {
+        return $this->hasMany(CourseSection::class)->orderBy('order')->orderBy('id');
+    }
+
+    /**
+     * Every lesson in study order: section order first, then lesson order inside the section.
+     */
+    public function orderedLessons()
+    {
+        return $this->sections()->with('lessons')->get()->flatMap->lessons->values();
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(CourseQuestion::class)->orderBy('order')->orderBy('id');
+    }
+
     public function category()
     {
         return $this->belongsTo(CourseCategory::class, 'course_category_id');
@@ -126,7 +164,7 @@ class Course extends Model
             title: $this->title,
             description: $this->description ?: 'Kursus online berkualitas tinggi di Kelas Digital. Pelajari dengan instruktur berpengalaman dan dapatkan sertifikat setelah menyelesaikan kursus.',
             author: $this->instructor ?: 'Kelas Digital Team',
-            image: $this->thumbnail ?: '/logo.webp',
+            image: $this->thumbnail_url ?: '/logo.webp',
             url: route('course.show', $this->slug),
             published_time: $this->created_at,
             modified_time: $this->updated_at,

@@ -59,6 +59,13 @@ class User extends Authenticatable
         return $this->hasMany(Enrollment::class);
     }
 
+    public function completedLessons()
+    {
+        // lesson_progress also holds unfinished rows (video watch position), so only finished ones count.
+        return $this->belongsToMany(Lesson::class, 'lesson_progress')->withPivot('completed_at')->withTimestamps()
+            ->wherePivotNotNull('completed_at');
+    }
+
     /**
      * Get user's enrolled courses that have completed payment
      */
