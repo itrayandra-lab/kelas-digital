@@ -567,40 +567,40 @@
             <a href="{{ route('course.index') }}" class="promo-card" style="background:#CCDDF6;">
                 <div class="promo-card-content">
                     <div>
-                        <div class="promo-logo-txt">RAYACADEMY</div>
-                        <div class="promo-title">Buka akses ke 10.000+ kursus dengan berlangganan</div>
+                        <div class="promo-logo-txt">RAY ACADEMY</div>
+                        <div class="promo-title">Mulai dari kelas gratis, tanpa biaya apa pun</div>
                     </div>
-                    <span class="promo-link-txt">Berkembang bersama kami <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="promo-link-txt">Lihat kelas gratis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </div>
                 <img src="{{ asset('img/content-course1.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
             <a href="{{ route('course.index') }}" class="promo-card" style="background:#CEFFCC;">
                 <div class="promo-card-content">
                     <div>
-                        <div class="promo-logo-txt">RAYACADEMY</div>
+                        <div class="promo-logo-txt">RAY ACADEMY</div>
                         <div class="promo-title">Memajukan bisnis Anda dan memberdayakan tim Anda</div>
                     </div>
-                    <span class="promo-link-txt">Coba Rayacademy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="promo-link-txt">Coba Ray Academy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </div>
                 <img src="{{ asset('img/content-course2.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
-            <a href="{{ route('course.index') }}" class="promo-card" style="background:#FFCDCD;">
+            <a href="#instruktur" class="promo-card" style="background:#FFCDCD;">
                 <div class="promo-card-content">
                     <div>
-                        <div class="promo-logo-txt">RAYACADEMY</div>
-                        <div class="promo-title">Buka akses ke 10.000+ kursus dengan berlangganan</div>
+                        <div class="promo-logo-txt">RAY ACADEMY</div>
+                        <div class="promo-title">Belajar langsung dari praktisi dan akademisi</div>
                     </div>
-                    <span class="promo-link-txt">Berkembang bersama kami <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="promo-link-txt">Kenali instruktur kami <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </div>
                 <img src="{{ asset('img/content-course3.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
             <a href="{{ route('course.index') }}" class="promo-card" style="background:#FFF9CC;">
                 <div class="promo-card-content">
                     <div>
-                        <div class="promo-logo-txt">RAYACADEMY</div>
-                        <div class="promo-title">Memajukan bisnis Anda dan memberdayakan tim Anda</div>
+                        <div class="promo-logo-txt">RAY ACADEMY</div>
+                        <div class="promo-title">Pre-test dan post-test untuk mengukur progresmu</div>
                     </div>
-                    <span class="promo-link-txt">Coba Rayacademy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="promo-link-txt">Lihat cara belajarnya <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </div>
                 <img src="{{ asset('img/content-course4.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
