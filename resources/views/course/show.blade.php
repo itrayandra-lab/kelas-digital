@@ -6,993 +6,392 @@
 
 @push('styles')
 <style>
-/* ── PAID COURSE HERO ── */
-.course-hero {
-    background: linear-gradient(135deg, var(--ink) 0%, #1a2942 100%);
-    position: relative;
-    overflow: hidden;
-}
-.course-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(20,116,188,.12) 0%, transparent 65%);
-    pointer-events: none;
-}
-.course-hero-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem;
-}
-/* Hero content dibatasi selebar kolom kiri body agar sejajar */
-.course-hero-content {
-    max-width: calc(100% - 380px - 3rem);
-}
+.cd-hero { background:linear-gradient(135deg,#0a1628 0%,#14304f 100%); color:#fff; }
+.cd-wrap { max-width:1200px; margin:0 auto; padding:0 1.25rem; }
+.cd-grid { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:2.5rem; }
+.cd-hero-inner { padding:2.5rem 0 2.75rem; }
+.cd-crumb { font-size:.8rem; color:rgba(255,255,255,.6); display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+.cd-crumb a { color:rgba(255,255,255,.75); text-decoration:none; }
+.cd-title { font-family:'Sora',sans-serif; font-size:clamp(1.6rem,3.2vw,2.4rem); font-weight:800; line-height:1.2; }
+.cd-sub { color:rgba(255,255,255,.8); font-size:1rem; margin-top:.75rem; max-width:680px; }
+.cd-badges { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
+.cd-badge { font-size:.72rem; font-weight:700; padding:.3rem .75rem; border-radius:999px; background:rgba(255,255,255,.12); text-transform:uppercase; letter-spacing:.04em; }
+.cd-badge.free { background:#10b981; }
+.cd-meta { display:flex; gap:1.25rem; flex-wrap:wrap; margin-top:1.25rem; font-size:.875rem; color:rgba(255,255,255,.85); }
+.cd-meta i { color:#7cc4f5; margin-right:.35rem; }
+
+.cd-aside { grid-column:2; grid-row:1; margin-top:-17rem; }
+.cd-card { position:sticky; top:88px; background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 12px 40px rgba(10,22,40,.15); overflow:hidden; }
+.cd-thumb { position:relative; aspect-ratio:16/9; background:linear-gradient(135deg,#1474bc,#10b981); cursor:pointer; display:block; width:100%; border:0; padding:0; }
+.cd-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.cd-play { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; background:rgba(10,22,40,.35); color:#fff; font-weight:700; font-size:.85rem; }
+.cd-play span:first-child { width:58px; height:58px; border-radius:50%; background:#fff; color:var(--ink); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+.cd-card-body { padding:1.4rem; }
+.cd-price { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:800; color:var(--ink); }
+.cta-btn { display:flex; width:100%; align-items:center; justify-content:center; gap:.5rem; padding:.9rem 1rem; margin-top:1rem; background:var(--blue); color:#fff; font-weight:700; font-size:.95rem; border:0; border-radius:12px; cursor:pointer; text-decoration:none; }
+.cta-btn:hover { background:var(--blue-d); }
+.cta-success { background:#10b981; } .cta-success:hover { background:#059669; }
+.cta-warn { background:#f59e0b; } .cta-warn:hover { background:#d97706; }
+.cd-includes { margin-top:1.25rem; padding-top:1.1rem; border-top:1px solid var(--border); }
+.cd-includes h4 { font-size:.85rem; font-weight:700; color:var(--ink); margin-bottom:.6rem; }
+.cd-includes li { display:flex; gap:.6rem; font-size:.85rem; color:var(--ink-2); padding:.25rem 0; }
+.cd-includes i { width:16px; color:var(--blue); margin-top:.2rem; }
+
+.cd-main { grid-column:1; grid-row:1; padding:2rem 0 4rem; min-width:0; }
+.cd-box { border:1px solid var(--border); border-radius:14px; padding:1.5rem; margin-bottom:2rem; background:#fff; }
+.cd-h2 { font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:1rem; }
+.cd-learn { display:grid; grid-template-columns:1fr 1fr; gap:.6rem 1.5rem; }
+.cd-learn li { display:flex; gap:.6rem; font-size:.9rem; color:var(--ink-2); line-height:1.5; }
+.cd-learn i { color:#10b981; margin-top:.25rem; }
+
+.cd-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; }
+.cd-step { text-align:center; padding:1rem .5rem; border-radius:12px; background:var(--surf); }
+.cd-step-n { width:36px; height:36px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:.9rem; }
+.cd-step strong { display:block; font-size:.85rem; color:var(--ink); }
+.cd-step span { font-size:.75rem; color:var(--muted); }
+
+.cd-cur-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; font-size:.85rem; color:var(--muted); margin-bottom:.75rem; }
+.cd-cur-head button { color:var(--blue); font-weight:700; background:none; border:0; cursor:pointer; }
+.cd-sec { border:1px solid var(--border); border-top:0; }
+.cd-sec:first-of-type { border-top:1px solid var(--border); border-radius:12px 12px 0 0; }
+.cd-sec:last-of-type { border-radius:0 0 12px 12px; }
+.cd-sec-h { display:flex; align-items:center; gap:.75rem; padding:.95rem 1.1rem; background:var(--surf); cursor:pointer; user-select:none; }
+.cd-sec-h strong { flex:1; font-size:.92rem; color:var(--ink); }
+.cd-sec-h small { font-size:.78rem; color:var(--muted); white-space:nowrap; }
+.cd-row { display:flex; align-items:center; gap:.75rem; padding:.7rem 1.1rem .7rem 2.6rem; font-size:.87rem; color:var(--ink-2); border-top:1px solid var(--border); }
+.cd-row .ic { width:16px; color:var(--muted); text-align:center; }
+.cd-row .t { flex:1; min-width:0; }
+.cd-row a, .cd-row button.lnk { color:var(--blue); font-weight:600; text-decoration:underline; background:none; border:0; cursor:pointer; font-size:.8rem; }
+.cd-row .dur { font-size:.78rem; color:var(--muted); white-space:nowrap; }
+.cd-row .ok { color:#10b981; }
+
+.cd-desc { font-size:.93rem; color:var(--ink-2); line-height:1.85; }
+.cd-desc.clamp { max-height:13rem; overflow:hidden; -webkit-mask-image:linear-gradient(#000 60%,transparent); mask-image:linear-gradient(#000 60%,transparent); }
+.cd-more { margin-top:.5rem; color:var(--blue); font-weight:700; background:none; border:0; cursor:pointer; font-size:.875rem; }
+
+.cd-inst { display:flex; gap:1rem; align-items:center; }
+.cd-avatar { width:64px; height:64px; border-radius:50%; background:var(--blue-xl); color:var(--blue); font-family:'Sora',sans-serif; font-weight:800; font-size:1.5rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+.cd-related { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+.cd-rel { border:1px solid var(--border); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; background:#fff; display:flex; flex-direction:column; }
+.cd-rel:hover { box-shadow:0 8px 24px rgba(10,22,40,.1); }
+.cd-rel-img { aspect-ratio:16/9; background:linear-gradient(135deg,#dbeafe,#eff6ff); }
+.cd-rel-img img { width:100%; height:100%; object-fit:cover; }
+.cd-rel-b { padding:.85rem; display:flex; flex-direction:column; gap:.35rem; flex:1; }
+.cd-rel-b strong { font-size:.88rem; color:var(--ink); line-height:1.35; }
+.cd-rel-b span { margin-top:auto; font-weight:800; color:var(--ink); font-size:.9rem; }
+
+.cd-flash { border-radius:10px; padding:.8rem 1rem; font-size:.875rem; margin-bottom:1.25rem; border:1px solid; }
+.cd-bar { display:none; }
+
 @media (max-width: 1024px) {
-    .course-hero-content { max-width: 100%; }
+    .cd-grid { grid-template-columns:1fr; gap:0; }
+    .cd-aside, .cd-main { grid-column:1; grid-row:auto; }
+    .cd-aside { margin-top:1.5rem; }
+    .cd-card { position:static; }
+    .cd-main { padding-bottom:6rem; }
+    .cd-bar { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:40; background:#fff; border-top:1px solid var(--border); padding:.7rem 1rem; gap:1rem; align-items:center; box-shadow:0 -6px 20px rgba(10,22,40,.08); }
+    .cd-bar .cta-btn { margin-top:0; }
+    .cd-related { grid-template-columns:1fr 1fr; }
 }
-.course-hero-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: .4rem;
-    font-size: .8rem;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-}
-.course-hero-breadcrumb a { color: rgba(255,255,255,.6); text-decoration: none; transition: color .18s; }
-.course-hero-breadcrumb a:hover { color: #fff; }
-.course-hero-breadcrumb span { color: rgba(255,255,255,.4); }
-.course-hero-breadcrumb .current { color: rgba(255,255,255,.85); }
-.course-hero h1 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    font-weight: 800;
-    color: #fff;
-    line-height: 1.25;
-    margin-bottom: .75rem;
-}
-.course-hero-subtitle {
-    font-size: 1rem;
-    color: rgba(255,255,255,.75);
-    margin-bottom: 1rem;
-    line-height: 1.6;
-}
-.course-hero-badges { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.course-badge {
-    font-size: .7rem;
-    font-weight: 700;
-    padding: .25rem .7rem;
-    border-radius: 5px;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-}
-.badge-level-beginner { background: #dcfce7; color: #15803d; }
-.badge-level-intermediate { background: #fef9c3; color: #854d0e; }
-.badge-level-advanced { background: #fee2e2; color: #991b1b; }
-.badge-premium { background: var(--blue); color: #fff; }
-.course-hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    font-size: .82rem;
-    color: rgba(255,255,255,.65);
-    margin-bottom: 1.25rem;
-}
-.course-hero-meta-item { display: flex; align-items: center; gap: .4rem; }
-.course-hero-meta-item i { font-size: .8rem; }
-.course-hero-instructor {
-    font-size: .875rem;
-    color: rgba(255,255,255,.75);
-}
-.course-hero-instructor a { color: #93c5fd; text-decoration: none; }
-.course-hero-instructor a:hover { text-decoration: underline; }
-
-/* ── SIDEBAR CARD (hero) ── */
-.course-sidebar-card {
-    background: #fff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 24px 64px rgba(0,0,0,.35);
-}
-.course-sidebar-preview {
-    position: relative;
-    aspect-ratio: 16/9;
-    background: #000;
-    cursor: pointer;
-}
-.course-sidebar-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: .75;
-    transition: opacity .2s;
-}
-.course-sidebar-preview:hover img { opacity: .6; }
-.course-sidebar-play {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: .5rem;
-    color: #fff;
-}
-.course-sidebar-play .play-btn {
-    width: 56px;
-    height: 56px;
-    background: rgba(255,255,255,.2);
-    backdrop-filter: blur(8px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255,255,255,.5);
-    transition: all .2s;
-}
-.course-sidebar-preview:hover .play-btn {
-    background: rgba(255,255,255,.35);
-    transform: scale(1.08);
-}
-.course-sidebar-play span { font-size: .8rem; font-weight: 600; }
-.course-sidebar-body { padding: 1.5rem; }
-.course-sidebar-price {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: .75rem;
-}
-.course-sidebar-price .original {
-    font-size: .85rem;
-    font-weight: 400;
-    color: var(--muted);
-    text-decoration: line-through;
-    margin-left: .4rem;
-}
-.btn-enroll {
-    display: block;
-    width: 100%;
-    padding: .9rem 1.5rem;
-    text-align: center;
-    font-family: 'Sora', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #fff;
-    background: var(--blue);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all .2s;
-    text-decoration: none;
-    margin-bottom: .75rem;
-}
-.btn-enroll:hover { background: var(--blue-d); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(20,116,188,.35); }
-.btn-enroll-success {
-    background: #10b981;
-}
-.btn-enroll-success:hover { background: #059669; box-shadow: 0 8px 24px rgba(16,185,129,.35); }
-.course-sidebar-includes {
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
-}
-.course-sidebar-includes h4 {
-    font-size: .75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--muted);
-    margin-bottom: .75rem;
-}
-.course-sidebar-includes ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .55rem; }
-.course-sidebar-includes li { display: flex; align-items: center; gap: .6rem; font-size: .82rem; color: var(--ink-2); }
-.course-sidebar-includes li i { width: 16px; color: var(--blue); font-size: .8rem; flex-shrink: 0; }
-
-/* ── MAIN CONTENT AREA ── */
-.course-body {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 5rem;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 3rem;
-    position: relative;
-}
-.course-body > div:first-child {
-    min-width: 0;
-}
-.course-body-sidebar {
-    position: sticky;
-    top: 96px;
-    align-self: start;
-    height: fit-content;
-}
-@media (max-width: 1024px) {
-    .course-body { grid-template-columns: 1fr; }
-    .course-body-sidebar { display: none; position: static; }
-}
-
-/* ── SECTION BLOCKS ── */
-.course-section {
-    margin-bottom: 2.5rem;
-}
-.course-section-title {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 1rem;
-    padding-bottom: .6rem;
-    border-bottom: 2px solid var(--border);
-}
-
-/* ── WHAT YOU'LL LEARN ── */
-.learn-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: .6rem .75rem;
-    background: var(--surf);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-}
-@media (max-width: 640px) { .learn-grid { grid-template-columns: 1fr; } }
-.learn-item {
-    display: flex;
-    align-items: flex-start;
-    gap: .6rem;
-    font-size: .875rem;
-    color: var(--ink-2);
-    line-height: 1.5;
-}
-.learn-item i { color: var(--blue); margin-top: 2px; flex-shrink: 0; font-size: .8rem; }
-
-/* ── CURRICULUM ── */
-.curriculum-summary {
-    font-size: .82rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-}
-.curriculum-summary strong { color: var(--ink); }
-.module-block {
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: .6rem;
-}
-.module-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: .9rem 1.1rem;
-    background: var(--surf);
-    cursor: pointer;
-    user-select: none;
-    transition: background .15s;
-}
-.module-header:hover { background: #eef2f8; }
-.module-header-left { display: flex; align-items: center; gap: .65rem; }
-.module-header-left i { color: var(--blue); font-size: .85rem; transition: transform .25s; }
-.module-title {
-    font-family: 'Sora', sans-serif;
-    font-size: .9rem;
-    font-weight: 700;
-    color: var(--ink);
-}
-.module-count {
-    font-size: .75rem;
-    color: var(--muted);
-    flex-shrink: 0;
-}
-.lesson-list { border-top: 1px solid var(--border); }
-.lesson-item {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: .7rem 1.1rem;
-    border-bottom: 1px solid var(--border);
-    transition: background .15s;
-}
-.lesson-item:last-child { border-bottom: none; }
-.lesson-item.clickable { cursor: pointer; }
-.lesson-item.clickable:hover { background: #f0f7ff; }
-.lesson-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: .7rem;
-}
-.lesson-icon-play { background: #dbeafe; color: var(--blue); }
-.lesson-icon-lock { background: #f3f4f6; color: #9ca3af; }
-.lesson-title {
-    flex: 1;
-    font-size: .85rem;
-    color: var(--ink-2);
-    line-height: 1.4;
-}
-.lesson-title.accessible { color: var(--ink); }
-.lesson-badges { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
-.lesson-preview-badge {
-    font-size: .65rem;
-    font-weight: 700;
-    color: var(--blue);
-    background: #dbeafe;
-    padding: .15rem .5rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-}
-.lesson-duration {
-    font-size: .75rem;
-    color: var(--muted);
-}
-
-/* ── DESCRIPTION ── */
-.course-description {
-    font-size: .9rem;
-    color: var(--ink-2);
-    line-height: 1.8;
-}
-.course-description-fade {
-    position: relative;
-    max-height: 160px;
-    overflow: hidden;
-}
-.course-description-fade::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(transparent, #fff);
-}
-.course-description-fade.expanded { max-height: none; }
-.course-description-fade.expanded::after { display: none; }
-.btn-show-more {
-    background: none;
-    border: none;
-    color: var(--blue);
-    font-size: .875rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: .5rem 0;
-    display: flex;
-    align-items: center;
-    gap: .35rem;
-    margin-top: .5rem;
-}
-.btn-show-more:hover { color: var(--blue-d); }
-
-/* ── INSTRUCTOR ── */
-.instructor-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1.25rem;
-    background: var(--surf);
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-}
-.instructor-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: var(--blue-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-family: 'Sora', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--blue);
-}
-.instructor-name {
-    font-family: 'Sora', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: .2rem;
-}
-.instructor-bio {
-    font-size: .85rem;
-    color: var(--muted);
-}
-
-/* ── RELATED COURSES ── */
-.related-scroll {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-}
-.related-card {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform .25s, box-shadow .25s, border-color .2s;
-    display: flex;
-    flex-direction: column;
-}
-.related-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(10,22,40,.1);
-    border-color: #93c5fd;
-}
-.related-thumb {
-    aspect-ratio: 16/9;
-    background: var(--blue-xl);
-    overflow: hidden;
-}
-.related-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
-.related-card:hover .related-thumb img { transform: scale(1.06); }
-.related-body { padding: .85rem 1rem; flex: 1; display: flex; flex-direction: column; }
-.related-cat { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--blue); margin-bottom: .3rem; }
-.related-title { font-family: 'Sora', sans-serif; font-size: .82rem; font-weight: 700; color: var(--ink); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.related-price { font-family: 'Sora', sans-serif; font-size: .85rem; font-weight: 800; color: var(--blue); margin-top: auto; padding-top: .6rem; }
-
-/* ── MOBILE STICKY BUY BAR ── */
-.mobile-buy-bar {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-top: 1px solid var(--border);
-    padding: .85rem 1.25rem;
-    z-index: 500;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    box-shadow: 0 -4px 20px rgba(10,22,40,.08);
-}
-@media (max-width: 1024px) { .mobile-buy-bar { display: flex; } }
-.mobile-buy-price { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 800; color: var(--ink); }
-.mobile-buy-btn {
-    padding: .75rem 1.75rem;
-    background: var(--blue);
-    color: #fff;
-    font-weight: 700;
-    font-size: .9rem;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background .2s;
-    white-space: nowrap;
-}
-.mobile-buy-btn:hover { background: var(--blue-d); }
-
-/* ── FREE CLASS RESPONSIVE ── */
-@media (max-width: 768px) {
-    .fc-grid { grid-template-columns: 1fr !important; }
-    .fc-hero-grid { grid-template-columns: 1fr !important; }
-    .fc-nav { display: none !important; }
+@media (max-width: 640px) {
+    .cd-learn, .cd-related { grid-template-columns:1fr; }
+    .cd-steps { grid-template-columns:1fr 1fr; }
+    .cd-row { padding-left:1.1rem; }
 }
 </style>
 @endpush
 
+@php
+    $fmtMinutes = fn (int $m) => $m >= 60 ? intdiv($m, 60).' jam'.($m % 60 ? ' '.($m % 60).' menit' : '') : $m.' menit';
+    $cleanLines = fn (?string $text) => collect(preg_split('/\r?\n/', (string) $text))
+        ->map(fn ($line) => trim(preg_replace('/^[\s•\-\*✅✔️☑️]+/u', '', $line)))
+        ->filter()->values();
+    $learnPoints = $cleanLines($course->benefits)->merge($cleanLines($course->topics_preview));
+    $videoCount = $lessons->filter->isVideo()->count();
+    $textCount = $lessons->count() - $videoCount;
+    $hasThumb = (bool) $course->thumbnail_url;
+    $priceLabel = $course->isFreeClass() ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.');
+@endphp
+
 @section('content')
 
-    {{-- ===================== FREE CLASS LAYOUT ===================== --}}
-    @if($course->isFreeClass())
-
-    {{-- FREE CLASS: HERO BANNER --}}
-    <div style="background:linear-gradient(135deg,#e8f4fd 0%,#f0fdf4 100%);border-bottom:1px solid #e4eaf2;padding:2.5rem 0;">
-        <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
-            <nav style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;">
-                <a href="{{ route('home') }}" style="color:var(--muted);text-decoration:none;">Beranda</a>
-                <span>›</span>
-                <a href="{{ route('course.index') }}" style="color:var(--muted);text-decoration:none;">Kursus</a>
-                @if($course->category)
-                    <span>›</span>
-                    <a href="{{ route('course.index', ['category' => $course->category->slug]) }}" style="color:var(--muted);text-decoration:none;">{{ $course->category->name }}</a>
-                @endif
-                <span>›</span>
-                <span style="color:var(--ink);">{{ Str::limit($course->title, 50) }}</span>
-            </nav>
-            <div style="display:grid;grid-template-columns:320px 1fr;gap:2.5rem;align-items:start;" class="fc-hero-grid">
-                <div style="border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(10,22,40,.12);">
-                    @if($course->thumbnail && $course->thumbnail !== 'default-course.jpg')
-                        <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width:100%;display:block;object-fit:cover;">
-                    @else
-                        <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#1474bc,#10b981);display:flex;align-items:center;justify-content:center;">
-                            <div style="text-align:center;color:#fff;">
-                                <i class="fas fa-bolt" style="font-size:3rem;margin-bottom:.5rem;display:block;"></i>
-                                <span style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;">Kelas Gratis</span>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div>
-                    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;">
-                        <span style="background:#dcfce7;color:#15803d;font-size:.7rem;font-weight:700;padding:.3rem .8rem;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;"><i class="fas fa-bolt mr-1"></i> Kelas Gratis</span>
-                        @if($course->category)
-                            <span style="background:#dbeafe;color:#1d4ed8;font-size:.7rem;font-weight:700;padding:.3rem .8rem;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;">{{ $course->category->name }}</span>
-                        @endif
-                    </div>
-                    <h1 style="font-family:'Sora',sans-serif;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:800;color:var(--ink);line-height:1.2;margin-bottom:.6rem;">{{ $course->title }}</h1>
-                    <p style="font-size:.95rem;color:var(--muted);margin-bottom:1.25rem;">{{ $course->instructor }}</p>
-                    @if($course->schedule_start)
-                    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;">
-                        <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.1rem;min-width:180px;flex:1;">
-                            <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Jadwal Mulai</div>
-                            <div style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);">{{ $course->schedule_start->translatedFormat('d M Y') }}</div>
-                            <div style="font-size:.8rem;color:var(--muted);">{{ $course->schedule_start->format('H:i') }} WIB{{ $course->meeting_platform ? ' · ' . $course->meeting_platform : '' }}</div>
-                        </div>
-                        @if($course->schedule_end)
-                        <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:.85rem 1.1rem;min-width:180px;flex:1;">
-                            <div style="font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Jadwal Selesai</div>
-                            <div style="font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:var(--ink);">{{ $course->schedule_end->translatedFormat('d M Y') }}</div>
-                            <div style="font-size:.8rem;color:var(--muted);">{{ $course->schedule_end->format('H:i') }} WIB</div>
-                        </div>
-                        @endif
-                    </div>
-                    @endif
-                    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-                        @if(auth()->check())
-                            @if($userHasAccess)
-                                <div style="display:flex;align-items:center;gap:.6rem;background:#dcfce7;border:1.5px solid #86efac;border-radius:12px;padding:.75rem 1.25rem;">
-                                    <i class="fas fa-check-circle" style="color:#16a34a;font-size:1.1rem;"></i>
-                                    <span style="font-weight:700;color:#15803d;font-size:.9rem;">Anda Sudah Terdaftar!</span>
-                                </div>
-                            @else
-                                <form method="post" action="{{ route('course.enroll', $course->slug) }}" style="margin:0;">
-                                    @csrf
-                                    <button type="submit" style="display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.75rem;background:#f59e0b;color:#fff;font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,.35);">
-                                        <i class="fas fa-bolt"></i> Daftar Sekarang!
-                                    </button>
-                                </form>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" style="display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.75rem;background:#f59e0b;color:#fff;font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(245,158,11,.35);">
-                                <i class="fas fa-bolt"></i> Daftar Sekarang!
-                            </a>
-                        @endif
-                        <span style="font-size:.8rem;color:var(--muted);"><i class="fas fa-users mr-1"></i> {{ number_format($enrolledStudentsCount) }}+ peserta</span>
-                    </div>
-                    @if(session('message'))
-                        <div style="margin-top:.75rem;padding:.6rem 1rem;background:#dcfce7;border:1px solid #86efac;border-radius:8px;color:#15803d;font-size:.85rem;">{{ session('message') }}</div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- FREE CLASS: BODY --}}
-    <div style="max-width:1280px;margin:0 auto;padding:2.5rem 1.5rem 5rem;display:grid;grid-template-columns:220px 1fr;gap:2.5rem;align-items:start;" class="fc-grid">
-
-        {{-- Sidebar Nav --}}
-        <div style="position:sticky;top:88px;" class="fc-nav">
-            <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;">
-                <div style="padding:.75rem 1rem;background:var(--surf);border-bottom:1px solid var(--border);">
-                    <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);">Detail</span>
-                </div>
-                <nav style="padding:.5rem 0;">
-                    @foreach([
-                        ['fc-tentang',   'Tentang Short Class'],
-                        ['fc-materi',    'Yang Akan Kamu Pelajari'],
-                        ['fc-benefit',   'Benefit Kelas'],
-                        ['fc-jadwal',    'Jadwal & Platform'],
-                        ['fc-video',     'Video Pembelajaran'],
-                        ['fc-instruktur','Instruktur'],
-                    ] as [$id, $label])
-                    <a href="#{{ $id }}" style="display:flex;align-items:center;gap:.5rem;padding:.6rem 1rem;font-size:.85rem;color:var(--ink-2);text-decoration:none;transition:background .15s;border-left:3px solid transparent;"
-                       onmouseover="this.style.background='var(--surf)';this.style.color='var(--blue)'"
-                       onmouseout="this.style.background='';this.style.color='var(--ink-2)'">
-                        <i class="fas fa-chevron-right" style="font-size:.6rem;opacity:.4;"></i> {{ $label }}
-                    </a>
-                    @endforeach
-                </nav>
-                <div style="padding:1rem;border-top:1px solid var(--border);">
-                    @if(auth()->check())
-                        @if($userHasAccess)
-                            <div style="text-align:center;padding:.6rem;background:#dcfce7;border-radius:8px;font-size:.8rem;font-weight:700;color:#15803d;"><i class="fas fa-check-circle mr-1"></i> Sudah Terdaftar</div>
-                        @else
-                            <form method="post" action="{{ route('course.enroll', $course->slug) }}" style="margin:0;">
-                                @csrf
-                                <button type="submit" style="width:100%;padding:.7rem;background:#f59e0b;color:#fff;font-weight:700;font-size:.85rem;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
-                                    <i class="fas fa-bolt"></i> Daftar Sekarang
-                                </button>
-                            </form>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}" style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.7rem;background:#f59e0b;color:#fff;font-weight:700;font-size:.85rem;border-radius:10px;text-decoration:none;">
-                            <i class="fas fa-bolt"></i> Daftar Sekarang
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- Content --}}
-        <div style="min-width:0;">
-            <div id="fc-tentang" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Tentang Short Class</h2>
-                <div style="font-size:.9rem;color:var(--ink-2);line-height:1.85;">{!! nl2br(e($course->description)) !!}</div>
-            </div>
-            @if($course->topics_preview)
-            <div id="fc-materi" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Yang Akan Kamu Pelajari</h2>
-                <div style="font-size:.9rem;color:var(--ink-2);line-height:1.85;white-space:pre-line;">{{ $course->topics_preview }}</div>
-            </div>
-            @endif
-            @if($course->benefits)
-            <div id="fc-benefit" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Benefit Kelas</h2>
-                <div style="font-size:.9rem;color:var(--ink-2);line-height:1.85;white-space:pre-line;">{{ $course->benefits }}</div>
-            </div>
-            @endif
-            @if($course->schedule_start)
-            <div id="fc-jadwal" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Jadwal & Platform</h2>
-                <div style="background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;">
-                    <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--ink-2);"><i class="fas fa-calendar-alt" style="color:var(--blue);width:18px;"></i><span><strong>Mulai:</strong> {{ $course->schedule_start->translatedFormat('l, d F Y') }} pukul {{ $course->schedule_start->format('H:i') }} WIB</span></div>
-                    @if($course->schedule_end)
-                    <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--ink-2);"><i class="fas fa-calendar-check" style="color:var(--blue);width:18px;"></i><span><strong>Selesai:</strong> {{ $course->schedule_end->translatedFormat('l, d F Y') }} pukul {{ $course->schedule_end->format('H:i') }} WIB</span></div>
-                    @endif
-                    @if($course->meeting_platform)
-                    <div style="display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--ink-2);"><i class="fas fa-video" style="color:var(--blue);width:18px;"></i><span><strong>Platform:</strong> {{ $course->meeting_platform }}</span></div>
-                    @endif
-                </div>
-            </div>
-            @endif
-            <div id="fc-instruktur" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Instruktur</h2>
-                <div style="display:flex;align-items:center;gap:1rem;background:var(--surf);border:1.5px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;">
-                    <div style="width:52px;height:52px;border-radius:50%;background:var(--blue-xl);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:1.3rem;font-weight:700;color:var(--blue);flex-shrink:0;">{{ strtoupper(substr($course->instructor, 0, 1)) }}</div>
-                    <div>
-                        <div style="font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);font-size:.95rem;">{{ $course->instructor }}</div>
-                        <div style="font-size:.82rem;color:var(--muted);">Instruktur {{ $course->category?->name ?? 'Kelas Digital' }}</div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- FREE: VIDEO PLAYER --}}
-            <div id="fc-video" style="margin-bottom:2.5rem;scroll-margin-top:100px;">
-                <h2 style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;"><i class="fas fa-chevron-right" style="color:var(--blue);font-size:.85rem;"></i> Video Pembelajaran</h2>
-                @if($course->lessons->count() > 0)
-                    <div style="border:1.5px solid var(--border);border-radius:12px;overflow:hidden;">
-                        @foreach($course->lessons as $lesson)
-                            <a href="{{ route('course.lesson', [$course->slug, $lesson]) }}"
-                               style="display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;text-decoration:none;border-bottom:1px solid var(--border);transition:background .15s;"
-                               onmouseover="this.style.background='var(--surf)'"
-                               onmouseout="this.style.background=''">
-                                <div style="width:34px;height:34px;border-radius:50%;background:var(--blue-xl);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="fas fa-play" style="color:var(--blue);font-size:.75rem;margin-left:2px;"></i>
-                                </div>
-                                <div style="flex:1;min-width:0;">
-                                    <div style="font-size:.875rem;font-weight:500;color:var(--ink);">{{ $lesson->title }}</div>
-                                    @if($lesson->duration)
-                                        <div style="font-size:.75rem;color:var(--muted);margin-top:2px;">{{ $lesson->duration }}</div>
-                                    @endif
-                                </div>
-                                <i class="fas fa-chevron-right" style="color:var(--muted);font-size:.8rem;"></i>
-                            </a>
-                        @endforeach
-                    </div>
-                @else
-                    <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.9rem;background:var(--surf);border-radius:10px;border:1.5px dashed var(--border);">
-                        Materi video akan segera ditambahkan.
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-    {{-- ===================== PAID COURSE LAYOUT ===================== --}}
-    @else
-
-    {{-- HERO SECTION --}}
-    <div class="course-hero">
-        <div class="course-hero-inner">
-
-            {{-- Left: Info --}}
-            <div class="course-hero-content">
-                {{-- Breadcrumb --}}
-                <nav class="course-hero-breadcrumb">
-                    <a href="{{ route('home') }}">Beranda</a>
-                    <span>/</span>
+{{-- ═════ HERO ═════ --}}
+<section class="cd-hero">
+    <div class="cd-wrap">
+        <div class="cd-grid">
+            <div class="cd-hero-inner">
+                <nav class="cd-crumb">
                     <a href="{{ route('course.index') }}">Kursus</a>
                     @if($course->category)
-                        <span>/</span>
-                        <a href="{{ route('course.index', ['category' => $course->category->slug]) }}">{{ $course->category->name }}</a>
+                        <span>›</span><a href="{{ route('course.index', ['category' => $course->category->slug]) }}">{{ $course->category->name }}</a>
                     @endif
-                    <span>/</span>
-                    <span class="current">{{ Str::limit($course->title, 40) }}</span>
                 </nav>
-
-                {{-- Badges --}}
-                <div class="course-hero-badges">
-                    <span class="course-badge badge-premium"><i class="fas fa-crown mr-1"></i> Premium</span>
-                    <span class="course-badge badge-level-{{ strtolower($course->level) }}">{{ $course->level }}</span>
+                <h1 class="cd-title">{{ $course->title }}</h1>
+                <p class="cd-sub">{{ Str::limit(strip_tags($course->description), 180) }}</p>
+                <div class="cd-badges">
+                    @if($course->isFreeClass())<span class="cd-badge free">Gratis</span>@endif
+                    <span class="cd-badge">{{ $course->level }}</span>
+                    @if($questionCount)<span class="cd-badge">Pre &amp; Post Test</span>@endif
                 </div>
-
-                <h1>{{ $course->title }}</h1>
-
-                @if($course->description)
-                    <p class="course-hero-subtitle">{{ Str::limit(strip_tags($course->description), 160) }}</p>
-                @endif
-
-                {{-- Meta stats --}}
-                <div class="course-hero-meta">
-                    <div class="course-hero-meta-item">
-                        <i class="fas fa-users"></i>
-                        <span>{{ number_format($enrolledStudentsCount) }} siswa terdaftar</span>
-                    </div>
-                    <div class="course-hero-meta-item">
-                        <i class="fas fa-play-circle"></i>
-                        <span>{{ $totalVideos }} video</span>
-                    </div>
-                    <div class="course-hero-meta-item">
-                        <div class="flex text-yellow-400 gap-0.5">
-                            @for($i = 0; $i < 5; $i++)<i class="fas fa-star text-xs"></i>@endfor
-                        </div>
-                        <span>4.8</span>
-                    </div>
+                <div class="cd-meta">
+                    <span><i class="fas fa-chalkboard-teacher"></i>{{ $course->instructor }}</span>
+                    <span><i class="fas fa-users"></i>{{ number_format($enrolledStudentsCount) }} peserta</span>
+                    <span><i class="fas fa-layer-group"></i>{{ $sections->count() }} bab · {{ $lessons->count() }} materi</span>
+                    @if($totalMinutes)<span><i class="fas fa-clock"></i>{{ $fmtMinutes($totalMinutes) }}</span>@endif
+                    @if($course->schedule_start)<span><i class="fas fa-calendar-alt"></i>Mulai {{ $course->schedule_start->translatedFormat('d M Y') }}</span>@endif
                 </div>
-
-                <p class="course-hero-instructor">
-                    Instruktur: <a href="#">{{ $course->instructor }}</a>
-                </p>
             </div>
-
         </div>
     </div>
+</section>
 
-    {{-- PREVIEW MODAL (di luar course-body agar fixed benar-benar full screen) --}}
-    <div id="preview-modal"
-         style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.9);align-items:center;justify-content:center;padding:1.5rem;"
-         onclick="if(event.target===this)closePreviewModal()">
-        <div style="width:100%;max-width:900px;position:relative;">
-            <button onclick="closePreviewModal()"
-                    style="position:absolute;top:-2.75rem;right:0;background:none;border:none;color:#fff;font-size:1.75rem;cursor:pointer;line-height:1;padding:.25rem;"
-                    aria-label="Tutup">
-                <i class="fas fa-times"></i>
-            </button>
-            <div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;" id="preview-iframe-wrap">
-            </div>
-            <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.78rem;margin-top:.75rem;">
-                Video preview — berbeda dengan konten kelas penuh
-            </p>
-        </div>
-    </div>
+<div class="cd-wrap">
+    <div class="cd-grid">
 
-    {{-- MAIN BODY --}}
-    <div class="course-body" x-data="{
-        currentVideoId: '{{ $initialVideoId }}',
-        descExpanded: false,
-        switchVideo(videoId) { this.currentVideoId = videoId; document.getElementById('main-video').scrollIntoView({behavior:'smooth'}); }
-    }">
-
-        {{-- LEFT COLUMN --}}
-        <div>
-
-            {{-- Video Player --}}
-            <div class="course-section" id="main-video">
-                <div style="border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(10,22,40,.12);background:#000;">
-                    <div style="aspect-ratio:16/9;">
-                        <iframe :src="`https://www.youtube.com/embed/${currentVideoId}`"
-                                width="100%" height="100%"
-                                title="Course Video" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen style="width:100%;height:100%;display:block;"></iframe>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Description --}}
-            @if($course->description)
-            <div class="course-section">
-                <h2 class="course-section-title">Tentang Kelas Ini</h2>
-                <div class="course-description">
-                    <div class="course-description-fade" :class="{ 'expanded': descExpanded }" id="desc-block">
-                        {!! nl2br(e($course->description)) !!}
-                    </div>
-                    <button class="btn-show-more" @click="descExpanded = !descExpanded">
-                        <span x-text="descExpanded ? 'Tampilkan lebih sedikit' : 'Tampilkan selengkapnya'"></span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{'rotate-180': descExpanded}"></i>
-                    </button>
-                </div>
-            </div>
-            @endif
-
-            {{-- Curriculum --}}
-            <div class="course-section">
-                <h2 class="course-section-title">Kurikulum Kelas</h2>
-                <p class="curriculum-summary">
-                    <strong>{{ $lessonsByModule->count() }}</strong> modul &bull;
-                    <strong>{{ $totalVideos }}</strong> video
-                </p>
-
-                @forelse($lessonsByModule as $module => $lessons)
-                <div class="module-block" x-data="{ open: {{ $loop->first ? 'true' : 'false' }} }">
-                    <div class="module-header" @click="open = !open">
-                        <div class="module-header-left">
-                            <i class="fas fa-chevron-right" :class="{ 'rotate-90': open }"></i>
-                            <span class="module-title">{{ $module }}</span>
-                        </div>
-                        <span class="module-count">{{ $lessons->count() }} video</span>
-                    </div>
-                    <div class="lesson-list" x-show="open" x-collapse>
-                        @foreach($lessons as $lesson)
-                        <div class="lesson-item {{ ($userHasAccess || $lesson->is_preview) ? 'clickable' : '' }}"
-                             @if($userHasAccess || $lesson->is_preview)
-                                 @click="switchVideo('{{ $lesson->youtube_video_id }}')"
-                             @endif>
-                            <div class="lesson-icon {{ ($userHasAccess || $lesson->is_preview) ? 'lesson-icon-play' : 'lesson-icon-lock' }}">
-                                <i class="fas {{ ($userHasAccess || $lesson->is_preview) ? 'fa-play' : 'fa-lock' }}"></i>
-                            </div>
-                            <span class="lesson-title {{ ($userHasAccess || $lesson->is_preview) ? 'accessible' : '' }}">
-                                {{ $lesson->title }}
-                            </span>
-                            <div class="lesson-badges">
-                                @if($lesson->is_preview && !$userHasAccess)
-                                    <span class="lesson-preview-badge">Preview</span>
-                                @endif
-                                @if($lesson->duration)
-                                    <span class="lesson-duration">{{ $lesson->duration }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                @empty
-                    <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.9rem;background:var(--surf);border-radius:10px;border:1.5px dashed var(--border);">
-                        Materi pembelajaran akan segera ditambahkan.
-                    </div>
-                @endforelse
-            </div>
-
-            {{-- Instructor --}}
-            <div class="course-section">
-                <h2 class="course-section-title">Instruktur</h2>
-                <div class="instructor-card">
-                    <div class="instructor-avatar">{{ strtoupper(substr($course->instructor, 0, 1)) }}</div>
-                    <div>
-                        <div class="instructor-name">{{ $course->instructor }}</div>
-                        <div class="instructor-bio">Instruktur berpengalaman di bidang {{ $course->category?->name ?? 'teknologi' }}</div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Related Courses --}}
-            @if($relatedCourses->count())
-            <div class="course-section">
-                <h2 class="course-section-title">Kelas Lainnya yang Mungkin Kamu Suka</h2>
-                <div class="related-scroll">
-                    @foreach($relatedCourses as $related)
-                    <a href="{{ route('course.show', $related->slug) }}" class="related-card">
-                        <div class="related-thumb">
-                            @if($related->thumbnail && $related->thumbnail !== 'default-course.jpg')
-                                <img src="{{ asset('storage/' . $related->thumbnail) }}" alt="{{ $related->title }}" loading="lazy">
-                            @else
-                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#dbeafe,#eff6ff);display:flex;align-items:center;justify-content:center;">
-                                    <i class="fas fa-play-circle" style="font-size:2rem;color:var(--blue);opacity:.3;"></i>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="related-body">
-                            @if($related->category)
-                                <span class="related-cat">{{ $related->category->name }}</span>
-                            @endif
-                            <h4 class="related-title">{{ $related->title }}</h4>
-                            <div class="related-price">
-                                @if($related->course_type === 'free')
-                                    <span style="color:#10b981;">Gratis!</span>
-                                @else
-                                    Rp{{ number_format($related->price, 0, ',', '.') }}
-                                @endif
-                            </div>
-                        </div>
-                    </a>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-        </div>
-
-        {{-- RIGHT COLUMN (sticky sidebar, desktop) --}}
-        <div class="course-body-sidebar">
-            <div class="course-sidebar-card">
-                <div class="course-sidebar-preview" onclick="openPreviewModal('{{ $course->trailer_video_id }}')" style="cursor:pointer;">
-                    @if($course->thumbnail && $course->thumbnail !== 'default-course.jpg')
-                        <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
-                    @else
-                        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1e3a5f,#1474bc);"></div>
+        {{-- ═════ STICKY CARD ═════ --}}
+        <aside class="cd-aside">
+            <div class="cd-card">
+                <button type="button" class="cd-thumb" @if($course->trailer_video_id) onclick="openPreviewModal('{{ $course->trailer_video_id }}')" @endif aria-label="Putar trailer kelas">
+                    @if($hasThumb)
+                        <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}">
                     @endif
-                    <div class="course-sidebar-play">
-                        <div class="play-btn"><i class="fas fa-play" style="margin-left:3px;font-size:1.1rem;"></i></div>
-                        <span>Preview Kelas</span>
-                    </div>
-                </div>
-                <div class="course-sidebar-body">
-                    <div class="course-sidebar-price">
-                        Rp{{ number_format($course->price, 0, ',', '.') }}
-                        <span class="original">Rp{{ number_format($course->price * 1.2, 0, ',', '.') }}</span>
-                    </div>
-
-                    @if(auth()->check())
-                        @if($userHasAccess)
-                            <a href="#main-video" class="btn-enroll btn-enroll-success">
-                                <i class="fas fa-play mr-2"></i> Mulai Belajar
-                            </a>
-                            <p class="text-center text-sm text-green-600 font-semibold mt-1">✓ Anda sudah terdaftar</p>
-                        @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
-                            <div class="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm">
-                                <p class="font-semibold text-yellow-800">Menunggu Pembayaran</p>
-                                <p class="text-yellow-600 text-xs mt-1">Selesaikan pembayaran untuk mengakses kelas.</p>
-                                <button type="button" class="btn-enroll mt-2 btn-pay" data-slug="{{ $course->slug }}" style="font-size:.85rem;padding:.6rem 1rem;">
-                                    <i class="fas fa-credit-card mr-1"></i> Bayar Sekarang
-                                </button>
-                            </div>
-                        @else
-                            <button type="button" class="btn-enroll btn-pay" data-slug="{{ $course->slug }}">
-                                Gabung Kelas Ini
-                            </button>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}" class="btn-enroll">Login untuk Gabung</a>
+                    @if($course->trailer_video_id)
+                        <div class="cd-play"><span><i class="fas fa-play"></i></span><span>Tonton trailer</span></div>
                     @endif
+                </button>
+                <div class="cd-card-body">
+                    <div class="cd-price">{{ $priceLabel }}</div>
 
-                    @if(session('message'))
-                        <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm text-center">
-                            {{ session('message') }}
+                    @if($progress)
+                        <div style="margin-top:.75rem;">
+                            <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.3rem;">
+                                <span>Progress belajarmu</span><strong style="color:var(--blue);">{{ $progress->percent() }}%</strong>
+                            </div>
+                            <div style="height:7px;background:var(--surf);border-radius:999px;overflow:hidden;">
+                                <div style="height:100%;width:{{ $progress->percent() }}%;background:{{ $progress->isCourseFinished() ? '#10b981' : 'var(--blue)' }};"></div>
+                            </div>
                         </div>
                     @endif
 
-                    <div class="course-sidebar-includes">
-                        <h4>Termasuk dalam kelas ini</h4>
+                    @include('course._cta')
+
+                    @if($userEnrollment && $userEnrollment->payment_status === 'pending' && ! $course->isFreeClass())
+                        <p style="font-size:.78rem;color:#b45309;margin-top:.5rem;text-align:center;">Pembayaranmu belum selesai.</p>
+                    @endif
+
+                    <div class="cd-includes">
+                        <h4>Kelas ini mencakup</h4>
                         <ul>
-                            <li><i class="fas fa-infinity"></i> Akses seumur hidup</li>
-                            <li><i class="fas fa-play-circle"></i> {{ $totalVideos }} video pembelajaran</li>
-                            <li><i class="fas fa-mobile-alt"></i> Akses di semua perangkat</li>
-                            <li><i class="fas fa-certificate"></i> Sertifikat penyelesaian</li>
-                            <li><i class="fas fa-comments"></i> Konsultasi dengan instruktur</li>
+                            @if($videoCount)<li><i class="fas fa-play-circle"></i>{{ $videoCount }} video pembelajaran</li>@endif
+                            @if($textCount)<li><i class="fas fa-file-alt"></i>{{ $textCount }} materi bacaan</li>@endif
+                            @if($totalMinutes)<li><i class="fas fa-clock"></i>Total {{ $fmtMinutes($totalMinutes) }}</li>@endif
+                            @if($questionCount)<li><i class="fas fa-clipboard-check"></i>Pre-test &amp; post-test ({{ $questionCount }} soal)</li>@endif
+                            @if($course->schedule_start)<li><i class="fas fa-video"></i>Sesi live {{ $course->meeting_platform ? 'via '.$course->meeting_platform : '' }}</li>@endif
+                            <li><i class="fas fa-mobile-alt"></i>Akses dari HP dan laptop</li>
+                            <li><i class="fas fa-infinity"></i>Belajar kapan saja, sesuai kecepatanmu</li>
                         </ul>
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-    </div>
+        {{-- ═════ MAIN ═════ --}}
+        <main class="cd-main">
 
-    {{-- MOBILE STICKY BUY BAR --}}
-    <div class="mobile-buy-bar">
-        <div>
-            <div class="mobile-buy-price">Rp{{ number_format($course->price, 0, ',', '.') }}</div>
-            @if($userHasAccess)
-                <div style="font-size:.75rem;color:#10b981;font-weight:600;">✓ Sudah terdaftar</div>
+            @foreach (['error' => 'background:#fef2f2;color:#b91c1c;border-color:#fecaca', 'message' => 'background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe', 'success' => 'background:#ecfdf5;color:#047857;border-color:#a7f3d0'] as $key => $style)
+                @if(session($key))<div class="cd-flash" style="{{ $style }}">{{ session($key) }}</div>@endif
+            @endforeach
+            @if(request('payment') === 'success')
+                <div class="cd-flash" style="background:#ecfdf5;color:#047857;border-color:#a7f3d0">Pembayaran diterima. Kalau kelas belum terbuka, tunggu sebentar lalu muat ulang halaman ini.</div>
             @endif
-        </div>
-        @if(auth()->check())
-            @if($userHasAccess)
-                <a href="#main-video" class="mobile-buy-btn" style="background:#10b981;">Mulai Belajar</a>
-            @elseif($userEnrollment && $userEnrollment->payment_status === 'pending')
-                <button type="button" class="mobile-buy-btn btn-pay" data-slug="{{ $course->slug }}" style="background:#f59e0b;border:none;cursor:pointer;">
-                    <i class="fas fa-credit-card mr-1"></i> Bayar
-                </button>
-            @else
-                <button type="button" class="mobile-buy-btn btn-pay" data-slug="{{ $course->slug }}">Gabung Kelas</button>
-            @endif
-        @else
-            <a href="{{ route('login') }}" class="mobile-buy-btn">Login untuk Gabung</a>
-        @endif
-    </div>
 
-    @endif
+            {{-- Live session --}}
+            @if($course->schedule_start || $course->meeting_link)
+                <div class="cd-box" style="background:var(--blue-xl);border-color:#bfdbfe;">
+                    <h2 class="cd-h2" style="font-size:1.1rem;"><i class="fas fa-video" style="color:var(--blue);"></i> Sesi Live</h2>
+                    <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.9rem;color:var(--ink-2);">
+                        @if($course->schedule_start)
+                            <div><strong>Mulai:</strong> {{ $course->schedule_start->translatedFormat('l, d F Y') }} pukul {{ $course->schedule_start->format('H:i') }} WIB</div>
+                        @endif
+                        @if($course->schedule_end)
+                            <div><strong>Selesai:</strong> {{ $course->schedule_end->translatedFormat('l, d F Y') }} pukul {{ $course->schedule_end->format('H:i') }} WIB</div>
+                        @endif
+                        @if($course->meeting_platform)<div><strong>Platform:</strong> {{ $course->meeting_platform }}</div>@endif
+                        @if($course->meeting_link)
+                            @if($userHasAccess)
+                                <a href="{{ $course->meeting_link }}" target="_blank" rel="noopener" class="cta-btn cta-success" style="width:auto;align-self:flex-start;padding:.7rem 1.25rem;"><i class="fas fa-video"></i> Gabung Meeting</a>
+                            @else
+                                <div style="color:var(--muted);"><i class="fas fa-lock"></i> Link meeting muncul setelah kamu terdaftar.</div>
+                            @endif
+                        @endif
+                    </div>
+                </div>
+            @endif
+
+            {{-- What you'll learn --}}
+            @if($learnPoints->isNotEmpty())
+                <div class="cd-box">
+                    <h2 class="cd-h2">Yang akan kamu pelajari</h2>
+                    <ul class="cd-learn">
+                        @foreach($learnPoints as $point)
+                            <li><i class="fas fa-check"></i><span>{{ $point }}</span></li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- Learning path --}}
+            @if($lessons->isNotEmpty())
+                @php
+                    $steps = collect([
+                        $questionCount ? ['fa-clipboard-list', 'Pre-test', 'Ukur pemahaman awal'] : null,
+                        ['fa-book-open', 'Materi', 'Video & bacaan berurutan'],
+                        $questionCount ? ['fa-clipboard-check', 'Post-test', 'Lulus minimal '.$course->post_test_pass_score] : null,
+                        ['fa-trophy', 'Selesai', 'Kelas tuntas'],
+                    ])->filter()->values();
+                @endphp
+                <div style="margin-bottom:2rem;">
+                    <h2 class="cd-h2">Alur belajar</h2>
+                    <div class="cd-steps" style="grid-template-columns:repeat({{ $steps->count() }},1fr);">
+                        @foreach($steps as [$icon, $label, $hint])
+                            <div class="cd-step">
+                                <div class="cd-step-n"><i class="fas {{ $icon }}"></i></div>
+                                <strong>{{ $loop->iteration }}. {{ $label }}</strong>
+                                <span>{{ $hint }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            {{-- Curriculum --}}
+            <div style="margin-bottom:2rem;" x-data="{ all: false, open: { 0: true } }">
+                <h2 class="cd-h2">Kurikulum</h2>
+                @if($sections->isEmpty())
+                    <div class="cd-box" style="text-align:center;color:var(--muted);border-style:dashed;">Materi kelas akan segera ditambahkan.</div>
+                @else
+                    <div class="cd-cur-head">
+                        <span>{{ $sections->count() }} bab · {{ $lessons->count() }} materi{{ $totalMinutes ? ' · '.$fmtMinutes($totalMinutes) : '' }}</span>
+                        <button type="button" @click="all = !all; open = {}; if (all) { @foreach($sections as $s) open[{{ $loop->index }}] = true; @endforeach }" x-text="all ? 'Tutup semua bab' : 'Buka semua bab'"></button>
+                    </div>
+
+                    @if($questionCount)
+                        <div class="cd-sec">
+                            <div class="cd-row" style="padding-left:1.1rem;border-top:0;">
+                                <i class="fas {{ $progress?->preTestDone ? 'fa-check-circle ok' : 'fa-clipboard-list' }} ic"></i>
+                                <span class="t"><strong>Pre-test</strong> · {{ $questionCount }} soal</span>
+                            </div>
+                        </div>
+                    @endif
+
+                    @foreach($sections as $section)
+                        @php $mins = (int) $section->lessons->sum(fn ($l) => (int) $l->duration); @endphp
+                        <div class="cd-sec">
+                            <div class="cd-sec-h" @click="open[{{ $loop->index }}] = !open[{{ $loop->index }}]">
+                                <i class="fas fa-chevron-down" style="font-size:.75rem;color:var(--muted);transition:transform .2s;" :style="open[{{ $loop->index }}] ? '' : 'transform:rotate(-90deg)'"></i>
+                                <strong>{{ $section->title }}</strong>
+                                <small>{{ $section->lessons->count() }} materi{{ $mins ? ' · '.$fmtMinutes($mins) : '' }}</small>
+                            </div>
+                            <div x-show="open[{{ $loop->index }}]" x-collapse>
+                                @foreach($section->lessons as $lesson)
+                                    @php $done = $progress?->isCompleted($lesson); @endphp
+                                    <div class="cd-row">
+                                        <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt') }} ic"></i>
+                                        <span class="t">{{ $lesson->title }}</span>
+                                        @if($lesson->is_preview && ! $userHasAccess)
+                                            @if($lesson->isVideo())
+                                                <button type="button" class="lnk" onclick="openPreviewModal('{{ $lesson->youtube_video_id }}')">Preview</button>
+                                            @else
+                                                <a href="{{ route('course.lesson', [$course->slug, $lesson]) }}">Preview</a>
+                                            @endif
+                                        @elseif(! $userHasAccess)
+                                            <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
+                                        @endif
+                                        @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+
+                    @if($questionCount)
+                        <div class="cd-sec">
+                            <div class="cd-row" style="padding-left:1.1rem;border-top:0;">
+                                <i class="fas {{ $progress?->postTestPassed() ? 'fa-check-circle ok' : 'fa-clipboard-check' }} ic"></i>
+                                <span class="t"><strong>Post-test</strong> · lulus minimal {{ $course->post_test_pass_score }}</span>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+            </div>
+
+            {{-- Description --}}
+            @if($course->description)
+                <div style="margin-bottom:2rem;" x-data="{ more: false }">
+                    <h2 class="cd-h2">Tentang kelas ini</h2>
+                    <div class="cd-desc" :class="more ? '' : 'clamp'">{!! nl2br(e($course->description)) !!}</div>
+                    @if(Str::length($course->description) > 600)
+                        <button type="button" class="cd-more" @click="more = !more" x-text="more ? 'Tampilkan lebih sedikit' : 'Tampilkan selengkapnya'"></button>
+                    @endif
+                </div>
+            @endif
+
+            {{-- Instructor --}}
+            <div style="margin-bottom:2rem;">
+                <h2 class="cd-h2">Instruktur</h2>
+                <div class="cd-inst">
+                    <div class="cd-avatar">{{ strtoupper(substr($course->instructor, 0, 1)) }}</div>
+                    <div>
+                        <div style="font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);font-size:1.05rem;">{{ $course->instructor }}</div>
+                        <div style="font-size:.85rem;color:var(--muted);">Instruktur {{ $course->category?->name ?? 'Kelas Digital' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Related --}}
+            @if($relatedCourses->isNotEmpty())
+                <div>
+                    <h2 class="cd-h2">Kelas lain yang mungkin kamu suka</h2>
+                    <div class="cd-related">
+                        @foreach($relatedCourses->take(3) as $related)
+                            <a href="{{ route('course.show', $related->slug) }}" class="cd-rel">
+                                <div class="cd-rel-img">
+                                    @if($related->thumbnail_url)
+                                        <img src="{{ $related->thumbnail_url }}" alt="{{ $related->title }}" loading="lazy">
+                                    @endif
+                                </div>
+                                <div class="cd-rel-b">
+                                    <strong>{{ $related->title }}</strong>
+                                    <small style="color:var(--muted);">{{ $related->instructor }}</small>
+                                    <span>{!! $related->isFreeClass() ? '<span style="color:#10b981;">Gratis</span>' : 'Rp'.number_format($related->price, 0, ',', '.') !!}</span>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </main>
+    </div>
+</div>
+
+{{-- Mobile bottom bar --}}
+<div class="cd-bar">
+    <div style="flex-shrink:0;">
+        <div style="font-family:'Sora',sans-serif;font-weight:800;color:var(--ink);">{{ $priceLabel }}</div>
+        @if($progress)<div style="font-size:.72rem;color:var(--muted);">Progress {{ $progress->percent() }}%</div>@endif
+    </div>
+    <div style="flex:1;">@include('course._cta')</div>
+</div>
+
+{{-- Trailer / preview modal --}}
+<div id="preview-modal" onclick="if (event.target === this) closePreviewModal()"
+     style="display:none;position:fixed;inset:0;z-index:60;background:rgba(10,22,40,.85);align-items:center;justify-content:center;padding:1rem;">
+    <div style="width:100%;max-width:900px;position:relative;">
+        <button type="button" onclick="closePreviewModal()" aria-label="Tutup" style="position:absolute;top:-2.5rem;right:0;color:#fff;background:none;border:0;font-size:1.5rem;cursor:pointer;"><i class="fas fa-times"></i></button>
+        <div id="preview-iframe-wrap" style="aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;"></div>
+    </div>
+</div>
 
 @endsection
 
@@ -1082,7 +481,9 @@ function checkoutAndPay(slug, btn) {
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'Accept': 'application/json',
+                                'Content-Type': 'application/json',
                             },
+                            body: JSON.stringify({ order_id: result.order_id }),
                         })
                         .then(() => {
                             window.location.href = '{{ route('course.show', $course->slug) }}?payment=success';
@@ -1129,5 +530,18 @@ if (urlParams.get('payment') === 'success') {
     // Clean URL
     window.history.replaceState({}, document.title, window.location.pathname);
 }
+</script>
+@endpush
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('course-detail', [
+  { element: '.cd-card .cd-thumb', popover: { title: 'Tonton trailer', description: 'Klik untuk melihat cuplikan kelas sebelum memutuskan ikut.', side: 'left' } },
+  { element: '.cd-card .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: {{ Js::from($userHasAccess ? 'Klik untuk lanjut dari langkah terakhirmu. Progress tersimpan otomatis.' : 'Kelas gratis langsung aktif setelah daftar. Kelas berbayar dibayar lewat Midtrans (VA, QRIS, e-wallet, kartu).') }}, side: 'left' } },
+  { element: '.cd-bar .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: 'Tombol ini selalu ada di bawah layar.', side: 'top' } },
+  { element: '.cd-steps', popover: { title: 'Alur belajar', description: 'Urutannya tetap: pre-test dulu, lalu materi satu per satu, lalu post-test. Materi berikutnya terbuka setelah yang sebelumnya selesai.', side: 'top' } },
+  { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: 'Lihat semua bab dan materi. Materi berlabel "Preview" bisa dicoba gratis sebelum daftar.', side: 'top' } }
+]);
 </script>
 @endpush
