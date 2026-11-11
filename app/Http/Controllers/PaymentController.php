@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
 use Midtrans\Notification;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class PaymentController extends Controller
 {
@@ -38,12 +39,10 @@ class PaymentController extends Controller
             return response()->json(['error' => 'already_enrolled'], 400);
         }
 
-        if ($existing && $existing->snap_token) {
-            return response()->json(['snap_token' => $existing->snap_token, 'enrollment_id' => $existing->id]);
-        }
-
         if ($existing) {
+            // Old tokens expire or belong to failed orders, so every checkout gets a fresh order.
             $enrollment = $existing;
+            $enrollment->update(['payment_status' => 'pending', 'status' => 'pending']);
         } else {
             $enrollment = Enrollment::create([
                 'user_id' => $user->id,
@@ -84,13 +83,31 @@ class PaymentController extends Controller
         }
     }
 
-    public function complete(Enrollment $enrollment)
+    public function complete(Request $request, Enrollment $enrollment)
     {
         if ($enrollment->user_id !== Auth::id()) {
             abort(403);
         }
 
+        $orderId = (string) $request->input('order_id');
+
+        if (! str_starts_with($orderId, 'ENR-'.$enrollment->id.'-')) {
+            abort(422);
+        }
+
+        // The browser's success callback can be faked, so ask Midtrans for the real status.
+        try {
+            $status = Transaction::status($orderId);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false], 422);
+        }
+
+        if (! in_array($status->transaction_status ?? null, ['capture', 'settlement'])) {
+            return response()->json(['success' => false], 422);
+        }
+
         $enrollment->update([
+            'transaction_id' => $status->transaction_id ?? null,
             'payment_status' => 'completed',
             'status' => 'active',
             'payment_method' => 'midtrans',
@@ -133,7 +150,8 @@ class PaymentController extends Controller
                 'status' => 'active',
                 'payment_method' => 'midtrans',
             ]);
-        } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire'])) {
+        } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire']) && $enrollment->payment_status !== 'completed') {
+            // An old abandoned order expiring must not revoke a course that was already paid.
             $enrollment->update([
                 'payment_status' => 'rejected',
                 'status' => 'inactive',
