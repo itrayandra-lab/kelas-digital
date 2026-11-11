@@ -633,7 +633,7 @@
     <div class="wrap">
         <div class="featured-wrap rv">
             <div class="featured-label">
-                <h3>Rilis baru yang hangat</h3>
+                <h3>Kelas terbaru</h3>
                 <a href="{{ route('course.index') }}" class="btn-white-sm">
                     Jelajahi kursus
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -643,8 +643,8 @@
                 @forelse($featuredCourses->take(7) as $course)
                 <a href="{{ route('course.show', $course->slug) }}" class="feat-card">
                     <div class="feat-card-thumb">
-                        @if($course->thumbnail)
-                            <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}">
+                        @if($course->thumbnail_url)
+                            <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" loading="lazy">
                         @else
                             <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:1.5rem;color:#0056D2;opacity:.35;"></i></div>
                         @endif
@@ -653,7 +653,7 @@
                         @if($course->category)<div class="feat-card-cat">{{ $course->category->name }}</div>@endif
                         <div class="feat-card-title">{{ $course->title }}</div>
                         @if($course->instructor)<div class="feat-card-meta">{{ $course->instructor }}</div>@endif
-                        <div class="feat-card-badge">{{ (!$course->price || $course->price == 0) ? 'Gratis' : 'Spesialisasi' }}</div>
+                        <div class="feat-card-badge" @unless($course->isFreeClass()) style="color:#0F1114;" @endunless>{{ $course->isFreeClass() ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.') }}</div>
                     </div>
                 </a>
                 @empty
@@ -674,7 +674,7 @@
 ═══════════════════════════════ --}}
 <section class="search-section">
     <div class="wrap rv">
-        <h2>Cari 10,000+ program pembelajaran</h2>
+        <h2>Cari kelas yang kamu butuhkan</h2>
         <form action="{{ route('search') }}" method="GET">
             <div class="search-box-ra">
                 <svg style="width:18px;height:18px;color:#94A3B8;margin-left:.85rem;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
