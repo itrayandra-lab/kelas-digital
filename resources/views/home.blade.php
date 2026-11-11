@@ -462,7 +462,7 @@
     .ins-row2{justify-content:center;}
     .feat-card{flex:0 0 175px;}
     .hero-stats-row{gap:1.25rem;}
-    .hero-stat-num{font-size:1.25rem;}
+    .hero-stat-num{font-size:.88rem;}
 }
 </style>
 @endpush
