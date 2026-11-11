@@ -5,9 +5,9 @@ use App\Http\Controllers\Admin\ArticleCategoryController as AdminArticleCategory
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
+use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController;
-use App\Http\Controllers\Admin\LessonController as AdminLessonController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ShareDomainController;
@@ -39,6 +39,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
 Route::get('/course/{slug}', [CourseController::class, 'show'])->name('course.show');
 Route::get('/course/{slug}/lesson/{lesson}', [LessonController::class, 'show'])->name('course.lesson');
+Route::middleware('auth')->group(function () {
+    Route::get('/course/{slug}/learn', [LessonController::class, 'learn'])->name('course.learn');
+    Route::post('/course/{slug}/lesson/{lesson}/complete', [LessonController::class, 'complete'])->name('course.lesson.complete');
+    Route::post('/course/{slug}/lesson/{lesson}/progress', [LessonController::class, 'ping'])->middleware('throttle:30,1')->name('course.lesson.progress');
+    Route::get('/course/{slug}/test/{kind}', [LessonController::class, 'test'])->name('course.test');
+    Route::post('/course/{slug}/test/{kind}', [LessonController::class, 'submitTest'])->name('course.test.submit');
+    Route::get('/course/{slug}/completed', [LessonController::class, 'completed'])->name('course.completed');
+});
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->name('course.enroll');
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
@@ -104,9 +112,24 @@ Route::prefix('admin')
             Route::resource('course-categories', AdminCourseCategoryController::class)->except(['show']);
         });
 
-        // Lesson management
-        Route::middleware('can:view lessons')->group(function () {
-            Route::resource('lessons', AdminLessonController::class);
+
+        // Curriculum builder: sections, lessons and pre/post-test questions of one course
+        Route::middleware('can:edit courses')->controller(CurriculumController::class)->group(function () {
+            Route::get('courses/{course}/curriculum', 'show')->name('curriculum.show');
+            Route::put('courses/{course}/curriculum/settings', 'updateSettings')->name('curriculum.settings');
+            Route::post('courses/{course}/sections', 'storeSection')->name('sections.store');
+            Route::put('sections/{section}', 'updateSection')->name('sections.update');
+            Route::delete('sections/{section}', 'destroySection')->name('sections.destroy');
+            Route::post('sections/{section}/move/{direction}', 'moveSection')->whereIn('direction', ['up', 'down'])->name('sections.move');
+            Route::post('sections/{section}/lessons', 'storeLesson')->name('curriculum.lessons.store');
+            Route::put('curriculum/lessons/{lesson}', 'updateLesson')->name('curriculum.lessons.update');
+            Route::delete('curriculum/lessons/{lesson}', 'destroyLesson')->name('curriculum.lessons.destroy');
+            Route::post('curriculum/lessons/{lesson}/move/{direction}', 'moveLesson')->whereIn('direction', ['up', 'down'])->name('curriculum.lessons.move');
+            Route::post('courses/{course}/questions', 'storeQuestion')->name('questions.store');
+            Route::put('questions/{question}', 'updateQuestion')->name('questions.update');
+            Route::delete('questions/{question}', 'destroyQuestion')->name('questions.destroy');
+            Route::post('questions/{question}/move/{direction}', 'moveQuestion')->whereIn('direction', ['up', 'down'])->name('questions.move');
+            Route::put('attempts/{attempt}/review', 'reviewAttempt')->name('attempts.review');
         });
 
         // User management

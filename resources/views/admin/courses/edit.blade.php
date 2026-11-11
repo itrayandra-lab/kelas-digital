@@ -16,9 +16,9 @@
                 </a>
             </div>
             <div class="mt-4 sm:mt-0 flex items-center space-x-3">
-                <a href="{{ route('admin.lessons.index') }}?course_id={{ $course->id }}"
+                <a href="{{ route('admin.curriculum.show', $course) }}"
                     class="inline-flex items-center justify-center px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold text-sm rounded-lg shadow-sm hover:bg-gray-50 transition-colors duration-300">
-                    Manage Lessons
+                    <i class="fas fa-list-ol mr-2"></i> Kurikulum &amp; Tes
                 </a>
                 <button type="submit"
                     class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
@@ -116,7 +116,7 @@
 
                     <!-- Trailer Video ID (paid only) -->
                     <div class="md:col-span-2" x-show="courseType === 'paid'">
-                        <label for="trailer_video_id" class="block text-sm font-medium text-gray-700 mb-2">Trailer Video ID (YouTube)</label>
+                        <label for="trailer_video_id" class="block text-sm font-medium text-gray-700 mb-2">Trailer Video (link atau ID YouTube)</label>
                         <input type="text" name="trailer_video_id" id="trailer_video_id"
                             value="{{ old('trailer_video_id', $course->trailer_video_id) }}"
                             placeholder="e.g., dQw4w9WgXcQ"
@@ -129,8 +129,8 @@
                     <div class="md:col-span-2">
                         <label for="thumbnail" class="block text-sm font-medium text-gray-700 mb-2">Thumbnail</label>
                         <div class="flex items-center space-x-6">
-                            @if ($course->thumbnail)
-                                <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="Current Thumbnail"
+                            @if($course->thumbnail_url)
+                                <img src="{{ $course->thumbnail_url }}" alt="Current Thumbnail"
                                     class="h-16 w-16 object-cover rounded-lg">
                             @endif
                             <input type="file" name="thumbnail" id="thumbnail"
@@ -189,6 +189,18 @@
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+                            <div class="md:col-span-2">
+                                <label for="meeting_link" class="block text-sm font-medium text-gray-700 mb-2">Link Meeting</label>
+                                <input type="url" name="meeting_link" id="meeting_link"
+                                    value="{{ old('meeting_link', $course->meeting_link) }}"
+                                    placeholder="https://zoom.us/j/... atau https://meet.google.com/..."
+                                    class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                                <p class="mt-1 text-xs text-gray-500">Hanya ditampilkan ke peserta yang sudah terdaftar.</p>
+                                @error('meeting_link')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
 
                             <div class="md:col-span-2">
                                 <label for="benefits" class="block text-sm font-medium text-gray-700 mb-2">Yang Akan Didapat (Benefits)</label>
@@ -226,3 +238,18 @@
     </form>
 
 @endsection
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('admin-course-form', [
+  { element: '#title', popover: { title: 'Judul kelas', description: 'Nama kelas yang tampil di katalog dan halaman kelas.', side: 'bottom' } },
+  { element: '#price', popover: { title: 'Tipe & harga', description: 'Pilih Berbayar atau Gratis di atas. Untuk kelas berbayar, isi harga minimal Rp1.000. Pembayaran lewat Midtrans.', side: 'bottom' } },
+  { element: '#trailer_video_id', popover: { title: 'Trailer', description: 'Tempel link YouTube apa saja. Video ini diputar di kartu kelas, dan sampulnya otomatis jadi gambar preview kalau thumbnail kosong.', side: 'top' } },
+  { element: '#thumbnail', popover: { title: 'Thumbnail (opsional)', description: 'Gambar sampul kelas. Kalau tidak diisi, dipakai sampul video trailer.', side: 'top' } },
+  { element: '#meeting_link', popover: { title: 'Sesi live (opsional)', description: 'Isi jadwal dan link Zoom/Meet kalau kelas punya sesi live. Link hanya terlihat oleh peserta terdaftar.', side: 'top' } },
+  { element: '#benefits', popover: { title: 'Yang akan dipelajari', description: 'Tulis satu poin per baris. Poin-poin ini tampil sebagai checklist "Yang akan kamu pelajari".', side: 'top' } },
+  { popover: { title: 'Langkah berikutnya', description: 'Simpan, lalu buka tombol "Kurikulum & Tes" untuk mengisi bab, materi, dan soal.' } }
+]);
+</script>
+@endpush

@@ -13,9 +13,9 @@
             </a>
         </div>
         <div class="mt-4 sm:mt-0 flex items-center space-x-3">
-            <a href="{{ route('admin.lessons.index') }}?course_id={{ $course->id }}"
+            <a href="{{ route('admin.curriculum.show', $course) }}"
                 class="inline-flex items-center justify-center px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold text-sm rounded-lg shadow-sm hover:bg-gray-50 transition-colors duration-300">
-                Manage Lessons
+                <i class="fas fa-list-ol mr-2"></i> Kurikulum &amp; Tes
             </a>
             <a href="{{ route('admin.courses.edit', $course->id) }}"
                 class="inline-flex items-center justify-center px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors duration-300">
@@ -28,8 +28,8 @@
         <div class="p-6 md:p-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1">
-                    @if ($course->thumbnail && $course->thumbnail != 'default-course.jpg')
-                        <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}"
+                    @if($course->thumbnail_url)
+                        <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}"
                             class="w-full object-cover rounded-lg shadow-md mb-6">
                     @else
                         <div

@@ -66,7 +66,7 @@
                          class="space-y-1 mt-2">
                         @can('view courses')
                         <a href="{{ route('admin.courses.index') }}"
-                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.courses.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.courses.*', 'admin.curriculum.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-book-open mr-3 text-base"></i>
                             Manage Courses
                         </a>
@@ -77,14 +77,6 @@
                             class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.course-categories.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                             <i class="fas fa-sitemap mr-3 text-base"></i>
                             Course Categories
-                        </a>
-                        @endcan
-                        
-                        @can('view lessons')
-                        <a href="{{ route('admin.lessons.index') }}"
-                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.lessons.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
-                            <i class="fas fa-list mr-3 text-base"></i>
-                            Manage Lessons
                         </a>
                         @endcan
                     </div>
@@ -253,6 +245,7 @@
     <!-- Alpine.js -->
     <script defer src="{{ asset('vendor/alpinejs/alpine.min.js') }}"></script>
 
+    @stack('scripts')
 </body>
 
 </html>

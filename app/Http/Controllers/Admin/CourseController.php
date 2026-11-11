@@ -49,7 +49,7 @@ class CourseController extends Controller
             'instructor' => 'required|string|max:255',
             'description' => 'required',
             'course_type' => 'required|in:paid,free',
-            'price' => 'nullable|integer|min:0',
+            'price' => 'exclude_if:course_type,free|required|integer|min:1000',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'trailer_video_id' => 'nullable|string',
             'course_category_id' => 'required|exists:course_categories,id',
@@ -59,6 +59,7 @@ class CourseController extends Controller
             'schedule_start' => 'nullable|date',
             'schedule_end' => 'nullable|date|after_or_equal:schedule_start',
             'meeting_platform' => 'nullable|string|max:100',
+            'meeting_link' => 'nullable|url|max:500',
         ]);
 
         $thumbnail = 'default-course.jpg';
@@ -81,6 +82,7 @@ class CourseController extends Controller
             'schedule_start' => $data['schedule_start'] ?? null,
             'schedule_end' => $data['schedule_end'] ?? null,
             'meeting_platform' => $data['meeting_platform'] ?? null,
+            'meeting_link' => $data['meeting_link'] ?? null,
         ]);
 
         return redirect()->route('admin.courses.index')->with('success', 'Course created successfully.');
@@ -121,7 +123,7 @@ class CourseController extends Controller
             'instructor' => 'required|string|max:255',
             'description' => 'required',
             'course_type' => 'required|in:paid,free',
-            'price' => 'nullable|integer|min:0',
+            'price' => 'exclude_if:course_type,free|required|integer|min:1000',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'trailer_video_id' => 'nullable|string',
             'course_category_id' => 'required|exists:course_categories,id',
@@ -131,6 +133,7 @@ class CourseController extends Controller
             'schedule_start' => 'nullable|date',
             'schedule_end' => 'nullable|date|after_or_equal:schedule_start',
             'meeting_platform' => 'nullable|string|max:100',
+            'meeting_link' => 'nullable|url|max:500',
         ]);
 
         $payload = [
@@ -147,6 +150,7 @@ class CourseController extends Controller
             'schedule_start' => $data['schedule_start'] ?? null,
             'schedule_end' => $data['schedule_end'] ?? null,
             'meeting_platform' => $data['meeting_platform'] ?? null,
+            'meeting_link' => $data['meeting_link'] ?? null,
         ];
 
         if ($request->hasFile('thumbnail')) {
