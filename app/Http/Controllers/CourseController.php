@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Enrollment;
+use App\Support\CourseProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,9 +39,7 @@ class CourseController extends Controller
 
     public function show($slug)
     {
-        $course = Course::with(['lessons' => function ($query) {
-            $query->orderBy('module')->orderBy('order');
-        }])->where('slug', $slug)->firstOrFail();
+        $course = Course::with('sections.lessons')->where('slug', $slug)->firstOrFail();
 
         $user = Auth::user();
 
@@ -52,20 +51,15 @@ class CourseController extends Controller
                 ->where('course_id', $course->id)
                 ->first();
 
-            $userHasAccess = $userEnrollment && $userEnrollment->payment_status === 'completed';
+            $userHasAccess = CourseProgress::canAccessCourse($user, $course);
         }
 
-        // Group lessons by module
-        $lessonsByModule = $course->lessons->groupBy('module');
-
-        // Calculate total videos
-        $totalVideos = $course->lessons->count();
-
-        // Calculate enrolled students count
+        $progress = $userHasAccess ? new CourseProgress($course, $user) : null;
+        $sections = $course->sections->filter(fn ($section) => $section->lessons->isNotEmpty())->values();
+        $lessons = $sections->flatMap->lessons;
+        $totalMinutes = (int) $lessons->sum(fn ($lesson) => (int) $lesson->duration);
+        $questionCount = $course->questions()->count();
         $enrolledStudentsCount = $course->enrollments()->where('payment_status', 'completed')->count();
-
-        // Always start with trailer video when opening course detail
-        $initialVideoId = $course->trailer_video_id;
 
         // Related courses from same category
         $relatedCourses = Course::with('category')
@@ -76,7 +70,7 @@ class CourseController extends Controller
             ->limit(6)
             ->get();
 
-        return view('course.show', compact('course', 'userHasAccess', 'userEnrollment', 'lessonsByModule', 'totalVideos', 'enrolledStudentsCount', 'initialVideoId', 'relatedCourses'));
+        return view('course.show', compact('course', 'userHasAccess', 'userEnrollment', 'progress', 'sections', 'lessons', 'totalMinutes', 'questionCount', 'enrolledStudentsCount', 'relatedCourses'));
     }
 
     public function enroll($slug)
@@ -92,10 +86,21 @@ class CourseController extends Controller
             ->where('course_id', $course->id)
             ->first();
 
+        // A pending/rejected enrollment from when the course was still paid would otherwise lock the user out.
+        if ($existingEnrollment && $course->isFreeClass() && $existingEnrollment->payment_status !== 'completed') {
+            $existingEnrollment->update([
+                'status' => 'active',
+                'payment_status' => 'completed',
+                'payment_method' => 'free',
+            ]);
+
+            return redirect()->back()->with('message', 'Pendaftaran berhasil! Anda sudah terdaftar di kelas ini.');
+        }
+
         if ($existingEnrollment) {
             $message = $course->isFreeClass()
                 ? 'Anda sudah terdaftar di kelas ini.'
-                : 'Anda sudah mendaftar kelas ini. Silakan tunggu verifikasi pembayaran.';
+                : 'Anda sudah mendaftar kelas ini. Silakan selesaikan pembayaran.';
 
             return redirect()->back()->with('message', $message);
         }
