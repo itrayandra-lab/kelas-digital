@@ -113,7 +113,7 @@ class LessonController extends Controller
 
         return response()->json([
             'watched' => $watch->watched_seconds,
-            'can_complete' => $watch->videoWatchedEnough($lesson),
+            'can_complete' => $watch->videoWatchedEnough(),
         ]);
     }
 
@@ -122,7 +122,7 @@ class LessonController extends Controller
         $watch = $this->unlockedProgress($slug, $lesson);
 
         if (! $watch->completed_at) {
-            $ok = $lesson->isVideo() ? $watch->videoWatchedEnough($lesson) : $watch->readLongEnough($lesson);
+            $ok = $lesson->isVideo() ? $watch->videoWatchedEnough() : $watch->readLongEnough($lesson);
 
             if (! $ok) {
                 return response()->json(['message' => $lesson->isVideo()

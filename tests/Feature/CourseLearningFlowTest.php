@@ -366,6 +366,23 @@ class CourseLearningFlowTest extends TestCase
         $this->postJson(route('course.lesson.complete', [$slug, $this->text]))->assertOk();
     }
 
+    public function test_a_short_video_completes_even_if_the_admin_typed_a_longer_duration(): void
+    {
+        $slug = $this->course->slug;
+        // The admin typed "1" minute for what is really a 15-second Short.
+        $this->video->update(['duration' => 1]);
+        $this->actingAs($this->student());
+        $this->takeTest($this->bab1, 'pre', $this->answersFor($this->bab1, 'pre', true));
+
+        $this->get(route('course.lesson', [$slug, $this->video]))->assertOk();
+        foreach ([5, 10, 15] as $t) {
+            $this->travel(5)->seconds();
+            $this->postJson(route('course.lesson.progress', [$slug, $this->video]), ['position' => $t, 'duration' => 15])->assertOk();
+        }
+
+        $this->postJson(route('course.lesson.complete', [$slug, $this->video]))->assertOk();
+    }
+
     public function test_question_grading_rules(): void
     {
         $multiple = CourseQuestion::where('type', 'multiple')->with('options')->first();

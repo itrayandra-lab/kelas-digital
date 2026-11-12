@@ -48,11 +48,11 @@ class LessonProgress extends Model
         $this->last_ping_at = $now;
     }
 
-    public function videoWatchedEnough(Lesson $lesson): bool
+    public function videoWatchedEnough(): bool
     {
-        // If the admin filled in the duration, it sets a floor (minus 20% for rounding) on the reported length.
-        $floor = $lesson->duration ? (int) ($lesson->duration * 60 * 0.8) : 0;
-        $duration = max((int) $this->video_duration, $floor);
+        // The admin's "duration" field is display-only: it's in whole minutes, so using it as a minimum
+        // would lock learners out of videos shorter than what was typed (e.g. "1" for a 15-second Short).
+        $duration = (int) $this->video_duration;
 
         return $duration > 0 && $this->watched_seconds >= $duration * 0.9;
     }

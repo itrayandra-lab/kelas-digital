@@ -84,7 +84,7 @@
         });
     };
 
-    @if($watch?->videoWatchedEnough($lesson))
+    @if($watch?->videoWatchedEnough())
     window.addEventListener('DOMContentLoaded', unlock);
     @endif
 
