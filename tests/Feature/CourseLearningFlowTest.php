@@ -166,8 +166,14 @@ class CourseLearningFlowTest extends TestCase
         $this->actingAs($this->student()->assignRole('student'));
         $this->fakeAi(true);
 
+        // A new learner lands on the class introduction first, with the module list on the side.
+        $this->get(route('course.learn', $slug))->assertRedirect(route('course.intro', $slug));
+        $this->get(route('course.intro', $slug))->assertOk()
+            ->assertSee('Pengenalan Kelas')->assertSee('Mekanisme belajar')->assertSee('Materi yang akan dibahas')->assertSee('Daftar Modul');
+
         // Bab 1 starts with its pre-test; lessons and the post-test are locked until then.
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.test', [$slug, $this->bab1, 'pre']));
+        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('Materi yang akan dibahas di bab ini')->assertSee('Bacaan');
         $this->get(route('course.lesson', [$slug, $this->video]))->assertRedirect(route('course.learn', $slug));
         $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertRedirect(route('course.learn', $slug));
 
