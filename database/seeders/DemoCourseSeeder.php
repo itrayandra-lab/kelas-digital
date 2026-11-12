@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Five complete sample courses (sections, video + text lessons, per-section pre/post-tests with every question type)
+ * Six complete sample courses (sections, video + text lessons, per-section pre/post-tests with every question type)
  * so the learning flow can be tried end to end. Re-running replaces only these courses (matched by slug).
  */
 class DemoCourseSeeder extends Seeder
@@ -339,6 +339,9 @@ class DemoCourseSeeder extends Seeder
                 ],
             ],
         ]);
+
+        $this->paidShortCourse();
+
         // The seeded student gets the paid courses so the whole flow can be tried without paying.
         if ($student = User::where('email', 'student@example.com')->first()) {
             foreach ([$branding, $basic, $coding] as $paid) {
@@ -348,6 +351,73 @@ class DemoCourseSeeder extends Seeder
                 );
             }
         }
+    }
+
+    /**
+     * Short paid course for demoing the purchase flow. Nobody is enrolled, so the "Beli" button opens Midtrans.
+     * Public so it can be seeded alone without recreating the other sample courses.
+     */
+    public function paidShortCourse(): Course
+    {
+        return $this->course([
+            'slug' => 'manajemen-waktu-kilat',
+            'title' => 'Manajemen Waktu Kilat untuk Pekerja & Mahasiswa',
+            'category' => 'Komunikasi & Soft Skills',
+            'instructor' => 'Tim Ray Academy',
+            'course_type' => 'paid',
+            'price' => 49000,
+            'level' => 'Beginner',
+            'trailer_video_id' => 'scQiC0c8Mno',
+            'post_test_pass_score' => 60,
+            'description' => "Kelas singkat tentang cara mengatur waktu supaya pekerjaan dan kuliah sama-sama beres.\n\nSetiap bab berisi satu video pendek di bawah satu menit dan satu bacaan singkat, lalu ditutup dengan post-test.",
+            'benefits' => "Menentukan prioritas dengan matriks penting-mendesak\nMenyusun jadwal harian yang realistis\nMembagi waktu antara kerja dan kuliah",
+        ], [
+            'Bab 1: Mengatur Prioritas' => [
+                ['video', 'Cara Mengatur Waktu Agar Lebih Produktif', 'scQiC0c8Mno', true],
+                ['text', 'Rangkuman: Matriks Prioritas', $this->html('prioritas')],
+            ],
+            'Bab 2: Jadwal Kerja dan Kuliah' => [
+                ['video', 'Mengatur Waktu Kuliah Sambil Kerja', 'SLoFzNhIpNw'],
+                ['text', 'Rangkuman: Menyusun Jadwal Harian', $this->html('jadwal')],
+            ],
+        ], [
+            'Bab 1: Mengatur Prioritas' => [
+                'pre' => [
+                    ['true_false', 'Semua tugas sebaiknya dikerjakan sesuai urutan datangnya.', ['Benar' => false, 'Salah' => true]],
+                    ['single', 'Tugas yang penting dan mendesak sebaiknya...', [
+                        'Dikerjakan sekarang' => true,
+                        'Dijadwalkan minggu depan' => false,
+                        'Diabaikan' => false,
+                    ]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang membantu mengatur prioritas? (pilih semua yang benar)', [
+                        'Membuat daftar tugas' => true,
+                        'Memisahkan tugas penting dan mendesak' => true,
+                        'Mengerjakan semua tugas sekaligus' => false,
+                    ]],
+                    ['essay', 'Apa yang kamu lakukan dengan tugas yang mendesak tetapi tidak penting?', 'Didelegasikan atau diserahkan ke orang lain, atau dikerjakan secepatnya tanpa menghabiskan banyak waktu.'],
+                ],
+            ],
+            'Bab 2: Jadwal Kerja dan Kuliah' => [
+                'pre' => [
+                    ['true_false', 'Jadwal harian yang terlalu padat justru sering gagal dijalankan.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Kapan waktu terbaik menyusun jadwal untuk besok?', [
+                        'Malam sebelumnya' => true,
+                        'Saat sudah terlambat' => false,
+                        'Tidak perlu disusun' => false,
+                    ]],
+                ],
+                'post' => [
+                    ['single', 'Kenapa perlu menyisakan waktu kosong di jadwal?', [
+                        'Untuk cadangan kalau ada tugas yang molor atau mendadak' => true,
+                        'Supaya bisa menunda pekerjaan' => false,
+                        'Karena jadwal harus selalu kosong' => false,
+                    ]],
+                    ['essay', 'Sebutkan satu cara membagi waktu antara kerja dan kuliah.', 'Menyusun jadwal tetap untuk kerja, kuliah, dan belajar, lalu mengerjakan tugas sesuai prioritas dan memanfaatkan waktu luang seperti perjalanan untuk mengulang materi.'],
+                ],
+            ],
+        ]);
     }
 
     private function course(array $data, array $sections, array $questions): Course
@@ -486,6 +556,13 @@ alert("Halo, " + nama + "!");</pre>
 <h3>Checklist sebelum posting</h3>
 <ol><li>Apakah konten ini sesuai dengan personal brand statement-ku?</li><li>Apakah audiensku mendapat manfaat dari konten ini?</li><li>Apakah gaya visual dan bahasanya konsisten dengan konten sebelumnya?</li></ol>
 <p>Selamat! Kamu sudah menyelesaikan semua materi. Lanjutkan ke <strong>post-test</strong> untuk menyelesaikan kelas.</p>',
+            'prioritas' => '<h2>Matriks Prioritas</h2>
+<p>Bagi semua tugasmu ke empat kotak berdasarkan <strong>penting</strong> dan <strong>mendesak</strong>:</p>
+<ul><li><strong>Penting dan mendesak:</strong> kerjakan sekarang.</li><li><strong>Penting, tidak mendesak:</strong> jadwalkan, misalnya belajar untuk ujian minggu depan.</li><li><strong>Mendesak, tidak penting:</strong> delegasikan atau selesaikan secepatnya.</li><li><strong>Tidak penting, tidak mendesak:</strong> hapus dari daftar.</li></ul>
+<blockquote>Sibuk belum tentu produktif. Yang penting dikerjakan lebih dulu.</blockquote>',
+            'jadwal' => '<h2>Menyusun Jadwal Harian</h2>
+<ol><li><strong>Susun malam sebelumnya.</strong> Pagi hari langsung tahu harus mulai dari mana.</li><li><strong>Kunci jadwal tetap dulu:</strong> jam kerja dan jam kuliah.</li><li><strong>Isi sisanya dengan 3 tugas utama.</strong> Jangan lebih, supaya realistis.</li><li><strong>Sisakan waktu kosong</strong> untuk tugas yang molor atau mendadak.</li></ol>
+<p>Waktu perjalanan atau istirahat bisa dipakai untuk mengulang materi kuliah secara singkat.</p>',
             'channels' => '<h2>Rangkuman: Channel Digital Marketing</h2>
 <p>Digital marketing adalah pemasaran produk atau jasa melalui <strong>channel digital</strong>. Channel yang paling umum:</p>
 <ul><li><strong>Media sosial:</strong> Instagram, TikTok, LinkedIn, Facebook, untuk membangun awareness dan komunitas.</li><li><strong>SEO:</strong> membuat website muncul di hasil pencarian Google secara organik.</li><li><strong>Iklan berbayar:</strong> Meta Ads, Google Ads, untuk menjangkau audiens lebih cepat.</li><li><strong>Email marketing:</strong> menjaga hubungan dengan pelanggan yang sudah kenal brand-mu.</li></ul>
