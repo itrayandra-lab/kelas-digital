@@ -36,28 +36,22 @@ class HomeController extends Controller
             $heroArticles = $heroArticles->merge($fallbackArticles);
         }
 
-        // 2. Featured Courses - main section (up to 8 courses)
-        $featuredCourses = Course::featured()
-            ->with(['category', 'enrollments'])
-            ->withCount('enrollments')
-            ->limit(8)
-            ->get();
+        // Card data shared by the "Mau belajar apa?" tabs.
+        $cardData = fn ($q) => $q->with('category')
+            ->withCount(['lessons', 'enrollments as students_count' => fn ($e) => $e->where('payment_status', 'completed')]);
 
-        // Fallback to latest courses if no featured courses
-        if ($featuredCourses->isEmpty()) {
-            $featuredCourses = Course::latest()
-                ->with(['category', 'enrollments'])
-                ->withCount('enrollments')
-                ->limit(8)
-                ->get();
-            $isFeaturedFallback = true;
-        } else {
-            $isFeaturedFallback = false;
+        // 2. Featured Courses for the first tab, falling back to the latest ones.
+        $featuredCourses = $cardData(Course::featured())->limit(4)->get();
+        $isFeaturedFallback = $featuredCourses->isEmpty();
+
+        if ($isFeaturedFallback) {
+            $featuredCourses = $cardData(Course::latest())->limit(4)->get();
         }
 
-        // 3. Course Categories - for filter tabs
+        // 3. Course Categories, each with its 4 newest courses for the category tabs.
         $courseCategories = CourseCategory::whereHas('courses')
             ->withCount('courses')
+            ->with(['courses' => fn ($q) => $cardData($q)->latest()->limit(4)])
             ->orderBy('courses_count', 'desc')
             ->get();
 

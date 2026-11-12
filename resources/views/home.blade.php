@@ -238,48 +238,22 @@
 }
 
 /* ═══ 4. FEATURED COURSES ═══ */
-.featured-section{background:#F8FAFF;padding:3rem 0;}
-.featured-wrap{
-    background:linear-gradient(89deg,#0056D2 0%,#1a6bdb 35%,#5B8BD8 75%,#7CA4E4 100%);
-    border-radius:20px;padding:1.75rem;display:flex;gap:2rem;align-items:stretch;
-    position:relative;overflow:hidden;
-}
-.featured-wrap::before{
-    content:'';position:absolute;right:-40px;top:-40px;
-    width:250px;height:250px;border-radius:50%;
-    background:rgba(255,255,255,.05);pointer-events:none;
-}
-.featured-label{flex-shrink:0;width:200px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1;}
-.featured-label h3{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:1.1rem;line-height:1.35;}
-.btn-white-sm{
-    display:inline-flex;align-items:center;gap:.35rem;
-    background:#fff;color:#0056D2;font-weight:600;font-size:.78rem;
-    padding:.5rem 1rem;border-radius:8px;text-decoration:none;
-    transition:opacity .2s;width:fit-content;
-}
-.btn-white-sm:hover{opacity:.88;color:#0056D2;}
-.featured-scroll{
-    flex:1;display:flex;gap:.75rem;overflow-x:auto;
-    padding-bottom:.5rem;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;position:relative;z-index:1;
-}
-.featured-scroll::-webkit-scrollbar{height:3px;}
-.featured-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:2px;}
-.feat-card{
-    flex:0 0 195px;background:#fff;border:1px solid #E2E8F0;
-    border-radius:10px;overflow:hidden;scroll-snap-align:start;
-    text-decoration:none;color:inherit;
-    transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;
-}
-.feat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.15);}
-.feat-card-thumb{aspect-ratio:16/9;overflow:hidden;background:#dbeafe;position:relative;}
-.feat-card-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
-.feat-card:hover .feat-card-thumb img{transform:scale(1.05);}
-.feat-card-body{padding:.75rem;flex:1;display:flex;flex-direction:column;}
-.feat-card-cat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;margin-bottom:.25rem;}
-.feat-card-title{font-family:'Sora',sans-serif;font-size:.75rem;font-weight:600;color:#0F1114;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.feat-card-meta{font-size:.63rem;color:#6B7280;margin-top:.3rem;}
-.feat-card-badge{font-size:.6rem;font-weight:700;color:#16a34a;margin-top:.25rem;}
+.browse-section{background:#F8FAFF;padding:3.5rem 0;}
+.browse-head h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;color:#0F1114;}
+.browse-head p{color:#6B7280;margin-top:.35rem;}
+.browse-tabs{display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;margin:1.5rem 0 1.25rem;padding-bottom:.25rem;border-bottom:1px solid #E5E7EB;}
+.browse-tabs::-webkit-scrollbar{display:none;}
+.browse-tab{flex-shrink:0;display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1rem;border-radius:10px 10px 0 0;font-size:.875rem;font-weight:600;color:#4B5563;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.browse-tab i{font-size:.8rem;color:#9CA3AF;}
+.browse-tab:hover{color:#0056D2;}
+.browse-tab.on{color:#0056D2;border-bottom-color:#0056D2;background:#EEF4FF;}
+.browse-tab.on i{color:#0056D2;}
+.browse-panel{background:#fff;border:1px solid #E5E7EB;border-radius:16px;padding:1.5rem;}
+.browse-panel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.browse-panel-head h3{font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:#0F1114;}
+.browse-panel-head p{font-size:.875rem;color:#6B7280;margin-top:.25rem;max-width:620px;}
+.browse-all{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1rem;border:1.5px solid #0056D2;border-radius:10px;color:#0056D2;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap;}
+.browse-all:hover{background:#0056D2;color:#fff;}
 
 /* ═══ 5. SEARCH ═══ */
 .search-section{background:#fff;padding:3rem 0;text-align:center;border-top:1px solid #F1F5F9;}
@@ -449,8 +423,6 @@
     .free-banner-inner{grid-template-columns:1fr;}
     .free-banner-img-wrap{min-height:220px;}
     .free-banner-img-wrap::before{width:100%;top:0;bottom:0;right:0;}
-    .featured-wrap{flex-direction:column;}
-    .featured-label{width:100%;}
     .promo-card-img{width:130px;}
 }
 @media(max-width:640px){
@@ -460,7 +432,6 @@
     .art-grid{grid-template-columns:1fr;}
     .ins-grid{grid-template-columns:1fr;}
     .ins-row2{justify-content:center;}
-    .feat-card{flex:0 0 175px;}
     .hero-stats-row{gap:1.25rem;}
     .hero-stat-num{font-size:.88rem;}
 }
@@ -603,48 +574,47 @@
 </section>
 
 {{-- ═══════════════════════════════
-     4. FEATURED COURSES
+     4. BROWSE BY CATEGORY
 ═══════════════════════════════ --}}
-<section class="featured-section">
+@php
+    $tabs = collect([['key' => 'new', 'name' => $isFeaturedFallback ? 'Terbaru' : 'Pilihan', 'icon' => 'fa-star', 'courses' => $featuredCourses, 'count' => null, 'slug' => null, 'description' => null]])
+        ->merge($courseCategories->map(fn ($cat) => ['key' => $cat->slug, 'name' => $cat->name, 'icon' => $cat->icon, 'courses' => $cat->courses, 'count' => $cat->courses_count, 'slug' => $cat->slug, 'description' => $cat->description !== $cat->name ? $cat->description : null]));
+@endphp
+@if($featuredCourses->isNotEmpty())
+<section class="browse-section" x-data="{ tab: 'new' }">
     <div class="wrap">
-        <div class="featured-wrap rv">
-            <div class="featured-label">
-                <h3>Kelas terbaru</h3>
-                <a href="{{ route('course.index') }}" class="btn-white-sm">
-                    Jelajahi kursus
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-            </div>
-            <div class="featured-scroll">
-                @forelse($featuredCourses->take(7) as $course)
-                <a href="{{ route('course.show', $course->slug) }}" class="feat-card">
-                    <div class="feat-card-thumb">
-                        @if($course->thumbnail_url)
-                            <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" loading="lazy">
-                        @else
-                            <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-play-circle" style="font-size:1.5rem;color:#0056D2;opacity:.35;"></i></div>
-                        @endif
-                    </div>
-                    <div class="feat-card-body">
-                        @if($course->category)<div class="feat-card-cat">{{ $course->category->name }}</div>@endif
-                        <div class="feat-card-title">{{ $course->title }}</div>
-                        @if($course->instructor)<div class="feat-card-meta">{{ $course->instructor }}</div>@endif
-                        <div class="feat-card-badge" @unless($course->isFreeClass()) style="color:#0F1114;" @endunless>{{ $course->isFreeClass() ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.') }}</div>
-                    </div>
-                </a>
-                @empty
-                @for($i=0;$i<4;$i++)
-                <div class="feat-card" style="pointer-events:none;">
-                    <div class="feat-card-thumb" style="background:#E2E8F0;"></div>
-                    <div class="feat-card-body"><div style="height:8px;background:#E2E8F0;border-radius:3px;width:45%;margin-bottom:.5rem;"></div><div style="height:10px;background:#E2E8F0;border-radius:3px;"></div></div>
-                </div>
-                @endfor
-                @endforelse
-            </div>
+        <div class="browse-head rv">
+            <h2>Mau belajar apa?</h2>
+            <p>Pilih bidang yang ingin kamu kuasai, lalu lihat kelas yang tersedia.</p>
         </div>
+        <div class="browse-tabs" role="tablist">
+            @foreach($tabs as $t)
+                <button type="button" role="tab" class="browse-tab" :class="tab === '{{ $t['key'] }}' && 'on'" :aria-selected="tab === '{{ $t['key'] }}'" @click="tab = '{{ $t['key'] }}'">
+                    <i class="fas {{ $t['icon'] }}"></i> {{ $t['name'] }}
+                </button>
+            @endforeach
+        </div>
+        @foreach($tabs as $t)
+            <div class="browse-panel" role="tabpanel" x-show="tab === '{{ $t['key'] }}'" @unless($loop->first) x-cloak @endunless>
+                <div class="browse-panel-head">
+                    <div>
+                        <h3>{{ $t['slug'] ? 'Belajar '.$t['name'] : ($isFeaturedFallback ? 'Kelas terbaru' : 'Kelas pilihan') }}</h3>
+                        <p>{{ $t['description'] ?? ($t['slug'] ? $t['count'].' kelas di bidang '.$t['name'].', dari dasar sampai siap praktik.' : 'Kelas yang baru saja dibuka dan siap kamu ikuti.') }}</p>
+                    </div>
+                    <a href="{{ route('course.index', array_filter(['category' => $t['slug']])) }}" class="browse-all">
+                        {{ $t['slug'] ? 'Lihat semua kelas '.$t['name'] : 'Lihat semua kelas' }} <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="cc-grid">
+                    @foreach($t['courses'] as $course)
+                        @include('course._card')
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
     </div>
 </section>
-
+@endif
 {{-- ═══════════════════════════════
      5. SEARCH
 ═══════════════════════════════ --}}
