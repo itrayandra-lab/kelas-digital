@@ -114,8 +114,8 @@
                         @enderror
                     </div>
 
-                    <!-- Trailer Video ID (paid only) -->
-                    <div class="md:col-span-2" x-show="courseType === 'paid'">
+                    <!-- Trailer video (also the automatic preview image when no thumbnail is uploaded) -->
+                    <div class="md:col-span-2">
                         <label for="trailer_video_id" class="block text-sm font-medium text-gray-700 mb-2">Trailer Video (link atau ID YouTube)</label>
                         <input type="text" name="trailer_video_id" id="trailer_video_id"
                             value="{{ old('trailer_video_id', $course->trailer_video_id) }}"
@@ -152,10 +152,10 @@
                         @enderror
                     </div>
 
-                    <!-- Free Class Fields -->
-                    <div class="md:col-span-2 border-t border-gray-100 pt-6" x-show="courseType === 'free'">
+                    <!-- Learning points and an optional live session, for every course type -->
+                    <div class="md:col-span-2 border-t border-gray-100 pt-6">
                         <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
-                            <i class="fas fa-bolt text-green-500"></i> Informasi Kelas Gratis
+                            <i class="fas fa-list-check text-primary-500"></i> Isi Kelas &amp; Sesi Live (opsional)
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
 

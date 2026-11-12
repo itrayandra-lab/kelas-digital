@@ -72,7 +72,7 @@
                     </div>
                     <div class="flex-1">
                         <div x-show="!renaming" class="font-semibold text-gray-900">
-                            <span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> {{ $section->title }}
+                            @unless(Str::startsWith(Str::lower($section->title), "bab"))<span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> @endunless{{ $section->title }}
                         </div>
                         <form x-show="renaming" x-cloak method="POST" action="{{ route('admin.sections.update', $section) }}" class="flex gap-2">
                             @csrf @method('PUT')
@@ -175,7 +175,7 @@
 
         @forelse($course->sections as $section)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold text-gray-900 mb-3"><span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> {{ $section->title }}</h3>
+                <h3 class="font-semibold text-gray-900 mb-3">@unless(Str::startsWith(Str::lower($section->title), "bab"))<span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> @endunless{{ $section->title }}</h3>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     @include('admin.curriculum._test-block', ['kind' => 'pre'])
                     @include('admin.curriculum._test-block', ['kind' => 'post'])
