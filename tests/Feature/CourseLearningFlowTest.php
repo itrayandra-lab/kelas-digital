@@ -233,7 +233,7 @@ class CourseLearningFlowTest extends TestCase
 
         // Refreshing doesn't reset the clock.
         $this->travel(20)->seconds();
-        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('id="q-seconds">10<', false);
+        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('id="q-seconds">10<', false)->assertSee('data-no-copy', false);
 
         // An answer that arrives after the time limit (plus grace) counts as empty.
         $this->travel(15)->seconds();

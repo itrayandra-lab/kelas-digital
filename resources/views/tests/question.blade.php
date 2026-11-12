@@ -7,6 +7,9 @@
 
 @push('styles')
 <style>
+/* Question and options can't be highlighted (and so not copied); the essay box stays editable. */
+[data-no-copy] { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+[data-no-copy] textarea { -webkit-user-select:text; user-select:text; }
 .q-opt { display:flex; align-items:center; gap:.7rem; padding:.8rem 1rem; border:1.5px solid var(--border); border-radius:12px; margin-top:.6rem; cursor:pointer; font-size:.92rem; color:var(--ink-2); background:#fff; }
 .q-opt:hover { background:var(--surf); }
 .q-opt:has(input:checked) { border-color:var(--blue); background:var(--blue-xl); }
@@ -42,7 +45,7 @@
             </div>
         </div>
 
-        <form id="q-form" method="POST" action="{{ route('course.test.answer', [$course->slug, $section, $kind]) }}"
+        <form id="q-form" method="POST" action="{{ route('course.test.answer', [$course->slug, $section, $kind]) }}" data-no-copy
               style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:1.5rem;">
             @csrf
             <input type="hidden" name="index" value="{{ $attempt->current_index }}">
@@ -52,6 +55,7 @@
             @if($question->type === 'essay')
                 <textarea name="answer" rows="5" maxlength="5000" autofocus placeholder="Tulis jawabanmu di sini..."
                     style="width:100%;margin-top:1rem;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-size:.92rem;"></textarea>
+                <p id="q-paste-hint" style="display:none;font-size:.78rem;color:#b45309;margin-top:.4rem;"><i class="fas fa-info-circle"></i> Jawaban harus diketik sendiri, tidak bisa ditempel.</p>
             @else
                 @foreach($question->options as $opt)
                     <label class="q-opt">
@@ -93,6 +97,20 @@
     }
 
     form.addEventListener('submit', function (e) { e.preventDefault(); send(); });
+
+    // Discourage looking answers up elsewhere: no copying the question, no right-click menu,
+    // and essays must be typed rather than pasted in.
+    const block = e => e.preventDefault();
+    ['copy', 'cut', 'contextmenu', 'dragstart', 'selectstart'].forEach(type => form.addEventListener(type, function (e) {
+        if (e.target.tagName !== 'TEXTAREA' || type === 'copy' || type === 'cut') block(e);
+    }));
+    const essay = form.querySelector('textarea');
+    if (essay) {
+        ['paste', 'drop'].forEach(type => essay.addEventListener(type, function (e) {
+            block(e);
+            document.getElementById('q-paste-hint').style.display = 'block';
+        }));
+    }
 
     const tick = setInterval(function () {
         const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
