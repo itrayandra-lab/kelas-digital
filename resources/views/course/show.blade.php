@@ -537,9 +537,13 @@ if (urlParams.get('payment') === 'success') {
 @push('scripts')
 @include('partials.tour-assets')
 <script>
-KATour.page('course-detail', [
+@php $mustPay = ! $userHasAccess && $course->isPaidCourse(); @endphp
+KATour.page({{ Js::from($mustPay ? 'course-detail-paid' : 'course-detail') }}, [
   { element: '.cd-card .cd-thumb', popover: { title: 'Tonton trailer', description: 'Klik untuk melihat cuplikan kelas sebelum memutuskan ikut.', side: 'left' } },
   { element: '.cd-card .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: {{ Js::from($userHasAccess ? 'Klik untuk lanjut dari langkah terakhirmu. Progress tersimpan otomatis.' : 'Kelas gratis langsung aktif setelah daftar. Kelas berbayar dibayar lewat Midtrans (VA, QRIS, e-wallet, kartu).') }}, side: 'left' } },
+  @if($mustPay)
+  { popover: { title: 'Cara membayar', description: 'Setelah tombol diklik, jendela pembayaran muncul. Pilih cara bayar (QRIS, e-wallet, transfer bank, atau kartu), lalu ikuti petunjuknya.<br><br>Begitu pembayaran diterima, kelas otomatis terbuka di <b>Kursus Saya</b>. Kalau bayar lewat transfer bank, kelas yang belum dibayar ada di <b>Kursus Saya → Menunggu pembayaran</b>.' } },
+  @endif
   { element: '.cd-bar .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: 'Tombol ini selalu ada di bawah layar.', side: 'top' } },
   { element: '.cd-steps', popover: { title: 'Alur belajar', description: 'Urutannya tetap: pre-test dulu, lalu materi satu per satu, lalu post-test. Materi berikutnya terbuka setelah yang sebelumnya selesai.', side: 'top' } },
   { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: 'Lihat semua bab dan materi. Materi berlabel "Preview" bisa dicoba gratis sebelum daftar.', side: 'top' } }

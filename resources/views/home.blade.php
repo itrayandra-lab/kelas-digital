@@ -897,4 +897,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 </script>
+@include('partials.tour-assets')
+<script>
+{{-- Plain-words tours, so visitors of any age know where to start. Guests get a short look at the menu;
+     after logging in the full "how to start learning" tour opens once. Hidden elements are skipped, so both work on phones. --}}
+@guest
+KATour.page('home-guest', [
+  { popover: { title: 'Selamat datang di Ray Academy 👋', description: 'Tempat belajar online langsung dari praktisi dan akademisi. Yuk, kenalan sebentar dengan menu di atas.' } },
+  { element: '.nav-links > li:nth-child(2)', popover: { title: 'Kursus', description: 'Semua kelas ada di sini, dari bisnis sampai teknologi. Ada yang gratis dan ada yang berbayar.', side: 'bottom' } },
+  { element: '.nav-links > li:nth-child(3)', popover: { title: 'Artikel', description: 'Bacaan dan tips gratis dari instruktur kami. Bisa dibaca tanpa akun.', side: 'bottom' } },
+  { element: '.btn-nav-cta', popover: { title: 'Daftar gratis', description: 'Belum punya akun? Daftar di sini cukup dengan nama, email, dan kata sandi. Gratis.', side: 'bottom' } },
+  { element: '.btn-nav-login', popover: { title: 'Masuk', description: 'Sudah punya akun? Masuk di sini. Setelah masuk, kami tunjukkan cara mulai belajar.', side: 'bottom' } },
+  { element: '.nav-mobile-btn', popover: { title: 'Menu', description: 'Menu Kursus, Artikel, Daftar, dan Masuk ada di tombol ini.', side: 'bottom' } }
+]);
+@else
+KATour.page('home-member', [
+  { popover: { title: {{ Js::from('Halo, '.e(Str::words(auth()->user()->name, 1, '')).' 👋') }}, description: 'Kamu sudah masuk. Ini cara mulai belajar di Ray Academy, hanya sekitar 1 menit.<br><br>Klik <b>Lanjut</b> untuk mulai, atau tanda <b>×</b> untuk menutup.' } },
+  { element: '.nav-search', popover: { title: 'Cari kelas', description: 'Ketik topik yang ingin kamu pelajari di sini, misalnya <i>marketing</i>, lalu tekan Enter.', side: 'bottom' } },
+  { element: '.browse-tabs', popover: { title: 'Pilih bidang yang kamu minati', description: 'Klik salah satu bidang. Kelas di bidang itu langsung muncul di bawahnya.', side: 'bottom' } },
+  { element: '.browse-section .cc', popover: { title: 'Buka kelas', description: 'Klik kartu kelas untuk melihat isi materi, harga, dan video cuplikannya. Label <b>Kelas Gratis</b> artinya bisa diikuti tanpa bayar.', side: 'right' } },
+  { element: '.nav-avatar', popover: { title: 'Kelas yang kamu ikuti', description: 'Klik namamu di sini, lalu pilih <b>Dashboard Saya</b> untuk melihat kelas yang sudah kamu ikuti dan melanjutkan belajar.', side: 'bottom' } },
+  { element: '.nav-mobile-btn', popover: { title: 'Menu', description: 'Semua menu (Kursus, Artikel, dan akunmu) ada di tombol ini.', side: 'bottom' } },
+  { popover: { title: 'Cara belajarnya', description: '1. Pilih kelas, lalu daftar.<br>2. Kerjakan pre-test singkat.<br>3. Tonton video dan baca materi secara berurutan.<br>4. Kerjakan post-test. Kalau lulus, bab berikutnya terbuka.<br><br>Lupa caranya? Klik tombol <b>Panduan</b> di pojok kanan bawah kapan saja.' } }
+]);
+@endguest
+</script>
 @endpush

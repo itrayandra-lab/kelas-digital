@@ -276,11 +276,12 @@
 @push('scripts')
 @include('partials.tour-assets')
 <script>
-KATour.page('admin-curriculum', [
-  { element: '[data-tour="flow"]', popover: { title: 'Alur yang dilihat peserta', description: 'Peserta mengerjakan pre-test, lalu membuka materi satu per satu sesuai urutan di sini, lalu post-test. Setelah lulus muncul halaman Selamat.', side: 'bottom' } },
+KATour.page('admin-curriculum-v2', [
+  { element: '[data-tour="flow"]', popover: { title: 'Alur yang dilihat peserta', description: 'Di setiap bab, peserta mengerjakan pre-test, lalu membuka materi satu per satu sesuai urutan di sini, lalu post-test. Bab berikutnya terbuka setelah post-test lulus. Setelah semua bab selesai muncul halaman Selamat.', side: 'bottom' } },
   { element: '[data-tour="add-section"]', popover: { title: 'Buat bab', description: 'Bab mengelompokkan materi (mis. "Bab 1: Dasar-dasar"). Urutan bab bisa diubah dengan panah naik/turun.', side: 'top' } },
   { element: '[data-tour="add-lesson"]', popover: { title: 'Tambah materi', description: 'Pilih Video (tempel link YouTube) atau Tulisan (editor teks, bisa gambar). Centang "Preview gratis" agar bisa dicoba sebelum daftar.', side: 'top' } },
-  { element: '[data-tour="tab-tes"]', popover: { title: 'Soal tes', description: 'Di tab ini buat soal pilihan ganda (1 atau lebih jawaban), benar/salah, atau essay, dan atur nilai minimal lulus. Soal yang sama dipakai untuk pre-test dan post-test.', side: 'bottom' } },
+  { element: '[data-tour="tab-tes"]', popover: { title: 'Soal tes per bab', description: 'Di tab ini atur pre-test dan post-test untuk tiap bab, serta nilai minimal lulus. Pre-test hanya pilihan ganda dan benar/salah. Post-test boleh berisi essay; isi kunci jawabannya supaya AI bisa menilai.', side: 'bottom' } },
+  { element: '[data-tour="tab-jawaban"]', popover: { title: 'Periksa jawaban peserta', description: 'Semua hasil tes peserta ada di sini. Kalau AI gagal menilai essay, statusnya "Perlu dinilai" dan kamu tinggal memilih Benar, Sebagian, atau Salah. Nilai peserta langsung dihitung ulang.', side: 'bottom' } },
   { popover: { title: 'Cek hasilnya', description: 'Klik "Lihat halaman kelas" di kanan atas untuk melihat tampilan dari sisi peserta. Tombol Panduan di pojok kanan bawah bisa diklik kapan saja untuk mengulang tur ini.' } }
 ]);
 </script>

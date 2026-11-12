@@ -42,7 +42,7 @@
                         @endforeach
                     </ol>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0;">
+                <div data-tour="test-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0;">
                     <div style="background:var(--surf);border-radius:12px;padding:.9rem;text-align:center;">
                         <div style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);">{{ $questions->count() }}</div>
                         <div style="font-size:.75rem;color:var(--muted);">soal</div>
@@ -58,7 +58,7 @@
                 </div>
 
                 <div style="font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">Tata cara</div>
-                <ul style="font-size:.85rem;color:var(--ink-2);line-height:1.9;padding-left:1.1rem;list-style:disc;">
+                <ul data-tour="test-rules" style="font-size:.85rem;color:var(--ink-2);line-height:1.9;padding-left:1.1rem;list-style:disc;">
                     <li>Soal muncul satu per satu. Kamu tidak bisa kembali ke soal sebelumnya.</li>
                     <li>Setiap soal punya waktu {{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }} detik. Kalau waktunya habis, soal itu dianggap kosong dan langsung lanjut.</li>
                     <li>Sudah yakin dengan jawabanmu? Klik <strong>Lanjut</strong> tanpa menunggu waktu habis.</li>
@@ -77,7 +77,7 @@
                 <form method="POST" action="{{ route('course.test.start', [$course->slug, $section, $kind]) }}" style="margin-top:1.5rem;"
                       onsubmit="const b = this.querySelector('button'); if (b.disabled) return false; b.disabled = true; b.textContent = 'Memulai...';">
                     @csrf
-                    <button type="submit" style="width:100%;padding:.9rem;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;">
+                    <button type="submit" data-tour="test-start" style="width:100%;padding:.9rem;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;">
                         Mulai {{ $kind === 'pre' ? 'Pre-test' : 'Post-test' }}
                     </button>
                 </form>
@@ -85,3 +85,21 @@
         @endif
 </x-classroom>
 @endsection
+
+@unless($pending)
+@push('scripts')
+@include('partials.tour-assets')
+@php
+    $seconds = \App\Models\QuizAttempt::SECONDS_PER_QUESTION;
+    $hasEssay = $kind === 'post' && $questions->contains('type', 'essay');
+@endphp
+<script>
+{{-- Shown before the first test of each kind, because the timer only starts after "Mulai". --}}
+KATour.page({{ Js::from('test-'.$kind) }}, [
+  { element: '[data-tour="test-stats"]', popover: { title: {{ Js::from("Setiap soal punya waktu {$seconds} detik") }}, description: {{ Js::from("Di atas soal ada hitungan mundur. Kalau waktunya habis, soal itu dianggap kosong dan otomatis pindah ke soal berikutnya.".($kind === 'post' ? " Nilai minimal untuk lulus: {$course->post_test_pass_score}." : '')) }}, side: 'bottom' } },
+  { element: '[data-tour="test-rules"]', popover: { title: 'Baca tata caranya', description: {{ Js::from('Soal muncul satu per satu dan tidak bisa kembali ke soal sebelumnya. Kalau sudah yakin, klik Lanjut tanpa menunggu waktu habis.'.($hasEssay ? ' Untuk soal essay, tulis jawaban dengan kata-katamu sendiri. Tidak perlu sama persis dengan materi; yang dinilai adalah maksudnya.' : '')) }}, side: 'top' } },
+  { element: '[data-tour="test-start"]', popover: { title: 'Siap? Klik di sini', description: {{ Js::from('Waktu mulai berjalan begitu tombol ini diklik. Pastikan internet stabil dan kamu tidak sedang terburu-buru.'.($kind === 'pre' ? ' Pre-test tidak menentukan lulus atau tidak, jadi kerjakan dengan santai.' : ' Kalau belum lulus, kamu bisa mencoba lagi.')) }}, side: 'top' } }
+]);
+</script>
+@endpush
+@endunless

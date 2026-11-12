@@ -1,22 +1,25 @@
-/* Guided tour theme (Driver.js) in Ray Academy blue #1474bc */
+/* Guided tour theme (Driver.js) in Ray Academy blue #0056D2; large text so every age group can read it */
 .driver-popover.ka-tour {
   font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
   background: #fff; color: #0a1628; border-radius: 16px; padding: 20px 20px 16px;
-  max-width: 330px; box-shadow: 0 18px 50px rgba(10, 22, 40, .35);
+  max-width: 370px; box-shadow: 0 18px 50px rgba(10, 22, 40, .35);
 }
+/* driver.css sets its own font on every popover child */
+.driver-popover.ka-tour * { font-family: 'DM Sans', 'Inter', system-ui, sans-serif; }
+.driver-popover.ka-tour .driver-popover-title { font-family: 'Sora', 'DM Sans', system-ui, sans-serif; }
 .driver-popover.ka-tour header,
 .driver-popover.ka-tour footer { all: unset; display: block; box-sizing: border-box; }
 .driver-popover.ka-tour footer.driver-popover-footer { display: flex; margin-top: 16px; gap: 8px; align-items: center; justify-content: space-between; }
-.driver-popover.ka-tour .driver-popover-title { font-size: 16px; font-weight: 700; line-height: 1.35; color: #0a1628; margin: 0 0 6px; }
-.driver-popover.ka-tour .driver-popover-description { font-size: 13.5px; line-height: 1.7; color: #2d3a4e; margin: 0; }
-.driver-popover.ka-tour .driver-popover-progress-text { font-size: 11.5px; font-weight: 600; color: #6b7a92; }
+.driver-popover.ka-tour .driver-popover-title { font-size: 18px; font-weight: 700; line-height: 1.35; color: #0a1628; margin: 0 0 6px; }
+.driver-popover.ka-tour .driver-popover-description { font-size: 15px; line-height: 1.65; color: #2d3a4e; margin: 0; }
+.driver-popover.ka-tour .driver-popover-progress-text { font-size: 13px; font-weight: 600; color: #6b7a92; }
 .driver-popover.ka-tour .driver-popover-footer button {
-  font-family: inherit; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 8px 16px;
+  font-family: inherit; font-size: 14px; font-weight: 600; border-radius: 999px; padding: 10px 18px;
   text-shadow: none; border: 1.5px solid #e4eaf2; background: #fff; color: #0a1628; cursor: pointer;
 }
 .driver-popover.ka-tour .driver-popover-footer button:hover { background: #f7f9fc; }
-.driver-popover.ka-tour .driver-popover-next-btn { background: #1474bc !important; border-color: #1474bc !important; color: #fff !important; }
-.driver-popover.ka-tour .driver-popover-next-btn:hover { background: #0d5a96 !important; }
+.driver-popover.ka-tour .driver-popover-next-btn { background: #0056D2 !important; border-color: #0056D2 !important; color: #fff !important; }
+.driver-popover.ka-tour .driver-popover-next-btn:hover { background: #0048B0 !important; }
 .driver-popover.ka-tour .driver-popover-close-btn { color: #6b7a92; font-size: 22px; top: 10px; right: 12px; }
 .driver-popover.ka-tour .driver-popover-arrow-side-left.driver-popover-arrow { border-left-color: #fff; }
 .driver-popover.ka-tour .driver-popover-arrow-side-right.driver-popover-arrow { border-right-color: #fff; }
@@ -29,8 +32,8 @@
   background: #0a1628; color: #fff; border: 0; border-radius: 999px; cursor: pointer;
   font: 600 13px 'DM Sans', system-ui, sans-serif; box-shadow: 0 8px 24px rgba(10, 22, 40, .25);
 }
-.ka-tour-btn span { width: 20px; height: 20px; border-radius: 50%; background: #1474bc; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
-.ka-tour-btn:hover { background: #1474bc; }
+.ka-tour-btn span { width: 20px; height: 20px; border-radius: 50%; background: #0056D2; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
+.ka-tour-btn:hover { background: #0056D2; }
 /* Keep clear of the course page's mobile buy bar */
 @media (max-width: 1024px) { .cd-bar ~ .ka-tour-btn, body:has(.cd-bar) .ka-tour-btn { bottom: 84px; } }
 @media (max-width: 480px) { .driver-popover.ka-tour { max-width: calc(100vw - 32px); padding: 18px 16px 14px; } }
