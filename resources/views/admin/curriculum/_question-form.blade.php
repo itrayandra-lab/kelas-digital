@@ -22,6 +22,7 @@
         <select name="type" x-model="type" @change="correct = []"
             class="w-full md:w-80 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
             @foreach(\App\Models\CourseQuestion::TYPES as $value => $label)
+                @continue($kind === 'pre' && ! in_array($value, \App\Models\CourseQuestion::PRE_TYPES))
                 <option value="{{ $value }}">{{ $label }}</option>
             @endforeach
         </select>
@@ -65,9 +66,13 @@
         </div>
     </div>
 
-    <p x-show="type === 'essay'" class="text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
-        Essay tidak punya opsi. Jawaban dianggap benar asal peserta sudah mengisinya.
-    </p>
+    <div x-show="type === 'essay'">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Kunci jawaban</label>
+        <textarea name="answer_key" rows="3" :required="type === 'essay'" :disabled="type !== 'essay'"
+            placeholder="Tulis jawaban yang benar. AI menilai jawaban peserta benar kalau maknanya mendekati kunci ini."
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">{{ $question?->answer_key }}</textarea>
+        <p class="mt-1 text-xs text-gray-500">Gaya bahasa peserta boleh berbeda; yang dinilai adalah kesamaan maknanya.</p>
+    </div>
 
     <div class="flex gap-2">
         <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700">Simpan soal</button>

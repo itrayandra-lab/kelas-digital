@@ -33,12 +33,10 @@
     {{-- Alur yang dilihat peserta --}}
     <div data-tour="flow" class="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-900">
         <strong>Alur peserta:</strong>
-        {{ $course->questions->isNotEmpty() ? 'Pre-test →' : '' }}
-        materi bab demi bab (harus berurutan)
-        {{ $course->questions->isNotEmpty() ? '→ Post-test (lulus minimal '.$course->post_test_pass_score.')' : '' }}
-        → Selamat, kelas selesai.
+        untuk setiap bab: pre-test → materi berurutan → post-test (lulus minimal {{ $course->post_test_pass_score }}) → bab berikutnya terbuka.
+        Setelah semua bab selesai, muncul halaman Selamat.
         @if($course->questions->isEmpty())
-            <span class="text-blue-700">Tambahkan soal di tab "Soal Tes" untuk mengaktifkan pre-test dan post-test.</span>
+            <span class="text-blue-700">Tambahkan soal di tab "Soal Tes" untuk mengaktifkan pre-test dan post-test tiap bab.</span>
         @endif
     </div>
 
@@ -162,75 +160,37 @@
     {{-- ===================== TAB: SOAL TES ===================== --}}
     <div x-show="tab === 'tes'" x-cloak class="space-y-4">
         <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center gap-4 justify-between">
-            <p class="text-sm text-gray-600">Soal yang sama dipakai untuk <strong>pre-test</strong> (cukup dikerjakan) dan <strong>post-test</strong> (harus lulus).</p>
-            <form data-tour="pass-score" method="POST" action="{{ route('admin.curriculum.settings', $course) }}" class="flex items-center gap-2">
+            <p class="text-sm text-gray-600">
+                Setiap bab punya <strong>pre-test</strong> (pilihan ganda &amp; benar/salah, cukup dikerjakan) dan <strong>post-test</strong>
+                (boleh essay, harus lulus sebelum bab berikutnya terbuka). Soal muncul satu per satu, {{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }} detik per soal.
+                Essay dinilai AI berdasarkan kunci jawaban.
+            </p>
+            <form data-tour="pass-score" method="POST" action="{{ route('admin.curriculum.settings', $course) }}" class="flex items-center gap-2 flex-shrink-0">
                 @csrf @method('PUT')
-                <label class="text-sm text-gray-700">Nilai minimal lulus post-test</label>
+                <label class="text-sm text-gray-700">Nilai lulus post-test</label>
                 <input type="number" name="post_test_pass_score" min="1" max="100" value="{{ $course->post_test_pass_score }}" class="w-20 px-2 py-1.5 border border-gray-300 rounded-lg text-sm">
                 <button class="px-3 py-1.5 bg-primary-600 text-white text-sm rounded-lg">Simpan</button>
             </form>
         </div>
 
-        @foreach($course->questions as $question)
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200" x-data="{ editing: false }" @close-form="editing = false">
-                <div class="flex items-start gap-3 p-4">
-                    <div class="flex flex-col pt-1">
-                        <form method="POST" action="{{ route('admin.questions.move', [$question, 'up']) }}">@csrf
-                            <button class="text-gray-300 hover:text-gray-700 disabled:opacity-30" @disabled($loop->first)><i class="fas fa-chevron-up text-xs"></i></button>
-                        </form>
-                        <form method="POST" action="{{ route('admin.questions.move', [$question, 'down']) }}">@csrf
-                            <button class="text-gray-300 hover:text-gray-700 disabled:opacity-30" @disabled($loop->last)><i class="fas fa-chevron-down text-xs"></i></button>
-                        </form>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-xs text-gray-500 mb-1">Soal {{ $loop->iteration }} · {{ \App\Models\CourseQuestion::TYPES[$question->type] ?? $question->type }}</div>
-                        <div class="text-sm font-medium text-gray-900 whitespace-pre-line">{{ $question->question }}</div>
-                        @if($question->options->isNotEmpty())
-                            <ul class="mt-2 space-y-1">
-                                @foreach($question->options as $opt)
-                                    <li class="text-sm {{ $opt->is_correct ? 'text-green-700 font-semibold' : 'text-gray-600' }}">
-                                        <i class="fas {{ $opt->is_correct ? 'fa-check-circle' : 'fa-circle text-gray-300' }} mr-1 text-xs"></i> {{ $opt->text }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
-                    </div>
-                    <button type="button" @click="editing = !editing" class="text-sm text-gray-500 hover:text-primary-600"><i class="fas fa-pen"></i></button>
-                    <form method="POST" action="{{ route('admin.questions.destroy', $question) }}" onsubmit="return confirm('Hapus soal ini?')">
-                        @csrf @method('DELETE')
-                        <button class="text-sm text-gray-500 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                    </form>
-                </div>
-                <div x-show="editing" x-cloak class="px-4 pb-4 border-t border-gray-100 pt-4 bg-gray-50">
-                    @include('admin.curriculum._question-form', [
-                        'action' => route('admin.questions.update', $question),
-                        'method' => 'PUT',
-                        'question' => $question,
-                    ])
+        @forelse($course->sections as $section)
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="font-semibold text-gray-900 mb-3"><span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> {{ $section->title }}</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    @include('admin.curriculum._test-block', ['kind' => 'pre'])
+                    @include('admin.curriculum._test-block', ['kind' => 'post'])
                 </div>
             </div>
-        @endforeach
-
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4" x-data="{ adding: {{ $course->questions->isEmpty() ? 'true' : 'false' }} }" @close-form="adding = false">
-            <button type="button" data-tour="add-question" x-show="!adding" @click="adding = true" class="text-sm font-semibold text-primary-600 hover:text-primary-700">
-                <i class="fas fa-plus mr-1"></i> Tambah soal
-            </button>
-            <div x-show="adding" x-cloak>
-                <h3 class="font-semibold text-gray-900 mb-3">Soal baru</h3>
-                @include('admin.curriculum._question-form', [
-                    'action' => route('admin.questions.store', $course),
-                    'method' => 'POST',
-                    'question' => null,
-                ])
-            </div>
-        </div>
+        @empty
+            <div class="p-8 text-center text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">Buat bab dulu di tab Kurikulum, lalu tambahkan soal pre-test dan post-test per bab di sini.</div>
+        @endforelse
     </div>
 
     {{-- ===================== TAB: JAWABAN PESERTA ===================== --}}
     <div x-show="tab === 'jawaban'" x-cloak class="space-y-3">
         <p class="text-sm text-gray-600">
-            Jawaban pilihan ganda dan benar/salah dinilai otomatis. Kalau ada <strong>essay</strong>, nilai peserta berstatus
-            <em>sedang diverifikasi</em> sampai kamu menandai essay-nya benar atau salah di sini.
+            Pilihan ganda dan benar/salah dinilai otomatis. <strong>Essay dinilai AI</strong> dengan membandingkan jawaban peserta ke kunci jawaban, dan alasannya tampil di bawah jawaban.
+            Kalau AI sedang tidak bisa dihubungi, nilai berstatus <em>perlu dinilai</em> sampai kamu menandai essay-nya di sini. Penilaian AI juga bisa kamu ubah.
         </p>
 
         @php $questionsById = $course->questions->keyBy('id'); @endphp
@@ -242,7 +202,7 @@
                         <div class="text-sm font-semibold text-gray-900">{{ $attempt->user?->name ?? 'Pengguna dihapus' }}</div>
                         <div class="text-xs text-gray-500">{{ $attempt->user?->email }} · {{ $attempt->created_at->translatedFormat('d M Y H:i') }}</div>
                     </div>
-                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full {{ $attempt->kind === 'pre' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700' }}">{{ $attempt->kind === 'pre' ? 'Pre-test' : 'Post-test' }}</span>
+                    <span class="px-2.5 py-1 text-xs font-semibold rounded-full {{ $attempt->kind === 'pre' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700' }}">{{ $attempt->kind === 'pre' ? 'Pre-test' : 'Post-test' }}{{ $attempt->section ? ' · '.$attempt->section->title : '' }}</span>
                     @if($attempt->isPending())
                         <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"><i class="fas fa-hourglass-half mr-1"></i> Perlu dinilai</span>
                     @else
@@ -262,7 +222,11 @@
                             <div class="text-sm">
                                 <div class="font-medium text-gray-900">{{ $loop->iteration }}. {{ $q->question }}</div>
                                 @if($q->type === 'essay')
-                                    <div class="mt-1 p-3 bg-gray-50 rounded-lg text-gray-800 whitespace-pre-line">{{ $answer }}</div>
+                                    <div class="mt-1 p-3 bg-gray-50 rounded-lg text-gray-800 whitespace-pre-line">{{ $answer ?? '(tidak dijawab)' }}</div>
+                                    <div class="mt-1 text-xs text-gray-500"><span class="font-semibold">Kunci jawaban:</span> {{ $q->answer_key }}</div>
+                                    @if($feedback = $attempt->ai_feedback[$q->id] ?? null)
+                                        <div class="mt-1 text-xs text-purple-700"><i class="fas fa-robot"></i> {{ $feedback }}</div>
+                                    @endif
                                     @php $mark = $attempt->essay_marks[$q->id] ?? null; @endphp
                                     <div class="mt-2 flex gap-2">
                                         <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg cursor-pointer {{ $mark === true ? 'border-green-500 bg-green-50' : 'border-gray-300' }}">
@@ -288,7 +252,7 @@
                             </div>
                         @endforeach
 
-                        @if($course->questions->contains('type', 'essay'))
+                        @if(collect($attempt->answers)->keys()->contains(fn ($id) => $questionsById->get($id)?->type === 'essay'))
                             <button class="px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700">
                                 {{ $attempt->isPending() ? 'Simpan Penilaian' : 'Ubah Penilaian' }}
                             </button>

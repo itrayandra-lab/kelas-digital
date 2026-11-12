@@ -19,10 +19,11 @@ class CurriculumController extends Controller
 {
     public function show(Course $course)
     {
-        $course->load(['sections.lessons', 'questions.options']);
+        $course->load(['sections.lessons', 'sections.questions.options', 'questions.options']);
 
         // shortcut: newest 200 attempts only, add pagination once a course has more learners than that
-        $attempts = QuizAttempt::with('user')
+        $attempts = QuizAttempt::with(['user', 'section'])
+            ->where('status', '!=', 'in_progress')
             ->where('course_id', $course->id)
             ->orderByRaw("status = 'pending' desc")
             ->latest()
@@ -38,7 +39,7 @@ class CurriculumController extends Controller
     public function reviewAttempt(Request $request, QuizAttempt $attempt)
     {
         $course = $attempt->course;
-        $questions = $course->questions()->with('options')->get();
+        $questions = $attempt->questions();
         $essayIds = $questions->where('type', 'essay')->pluck('id')->map(fn ($id) => (string) $id);
 
         $data = $request->validate([
@@ -137,22 +138,24 @@ class CurriculumController extends Controller
         return $this->back($course, 'Nilai minimal lulus disimpan.', 'tes');
     }
 
-    public function storeQuestion(Request $request, Course $course)
+    public function storeQuestion(Request $request, CourseSection $section, string $kind)
     {
-        DB::transaction(function () use ($request, $course) {
-            $question = $course->questions()->create($this->questionData($request) + [
-                'order' => (int) $course->questions()->max('order') + 1,
+        DB::transaction(function () use ($request, $section, $kind) {
+            $question = $section->questions()->create($this->questionData($request, $kind) + [
+                'course_id' => $section->course_id,
+                'kind' => $kind,
+                'order' => (int) $section->testQuestions($kind)->max('order') + 1,
             ]);
             $this->syncOptions($question, $request);
         });
 
-        return $this->back($course, 'Soal ditambahkan.', 'tes');
+        return $this->back($section->course, 'Soal ditambahkan.', 'tes');
     }
 
     public function updateQuestion(Request $request, CourseQuestion $question)
     {
         DB::transaction(function () use ($request, $question) {
-            $question->update($this->questionData($request));
+            $question->update($this->questionData($request, $question->kind));
             $this->syncOptions($question, $request);
         });
 
@@ -169,7 +172,7 @@ class CurriculumController extends Controller
 
     public function moveQuestion(CourseQuestion $question, string $direction)
     {
-        $this->swap($question->course->questions()->get(), $question, $direction);
+        $this->swap($question->section->testQuestions($question->kind)->get(), $question, $direction);
 
         return $this->back($question->course, null, 'tes');
     }
@@ -201,11 +204,15 @@ class CurriculumController extends Controller
         return $data;
     }
 
-    private function questionData(Request $request): array
+    private function questionData(Request $request, string $kind): array
     {
+        // Pre-tests only measure the starting point, so essays belong to post-tests only.
+        $types = $kind === 'pre' ? CourseQuestion::PRE_TYPES : array_keys(CourseQuestion::TYPES);
+
         $data = $request->validate([
-            'type' => ['required', Rule::in(array_keys(CourseQuestion::TYPES))],
+            'type' => ['required', Rule::in($types)],
             'question' => 'required|string|max:5000',
+            'answer_key' => 'exclude_unless:type,essay|required|string|max:5000',
             'options' => 'exclude_if:type,essay|exclude_if:type,true_false|required|array|min:2',
             'options.*.text' => 'exclude_if:type,essay|exclude_if:type,true_false|required|string|max:500',
             'correct' => 'exclude_if:type,essay|required|array|min:1',
@@ -213,13 +220,15 @@ class CurriculumController extends Controller
             'options.min' => 'Minimal 2 opsi jawaban.',
             'options.*.text.required' => 'Teks opsi jawaban tidak boleh kosong.',
             'correct.required' => 'Tandai minimal satu jawaban yang benar.',
+            'type.in' => 'Pre-test hanya boleh berisi pilihan ganda dan benar/salah.',
+            'answer_key.required' => 'Kunci jawaban essay wajib diisi. AI memakainya untuk menilai jawaban peserta.',
         ]);
 
         if (in_array($data['type'], ['single', 'true_false']) && count($data['correct']) !== 1) {
             throw \Illuminate\Validation\ValidationException::withMessages(['correct' => 'Soal ini hanya boleh punya satu jawaban benar.']);
         }
 
-        return ['type' => $data['type'], 'question' => $data['question']];
+        return ['type' => $data['type'], 'question' => $data['question'], 'answer_key' => $data['answer_key'] ?? null];
     }
 
     /**
