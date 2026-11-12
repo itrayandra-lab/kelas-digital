@@ -6,19 +6,22 @@
 
 @push('styles')
 <style>
-.cd-hero { background:linear-gradient(135deg,#0a1628 0%,#14304f 100%); color:#fff; }
+.cd-hero { background:#F5F5F4; color:#0F1114; border-bottom:1px solid #E2E8F0; position:relative; }
+.cd-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,86,210,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,86,210,.03) 1px,transparent 1px); background-size:48px 48px; pointer-events:none; }
+.cd-hero > .cd-wrap { position:relative; }
 .cd-wrap { max-width:1200px; margin:0 auto; padding:0 1.25rem; }
 .cd-grid { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:2.5rem; }
 .cd-hero-inner { padding:2.5rem 0 2.75rem; }
-.cd-crumb { font-size:.8rem; color:rgba(255,255,255,.6); display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
-.cd-crumb a { color:rgba(255,255,255,.75); text-decoration:none; }
-.cd-title { font-family:'Sora',sans-serif; font-size:clamp(1.6rem,3.2vw,2.4rem); font-weight:800; line-height:1.2; }
-.cd-sub { color:rgba(255,255,255,.8); font-size:1rem; margin-top:.75rem; max-width:680px; }
+.cd-crumb { font-size:.8rem; color:#6B7280; display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+.cd-crumb a { color:#6B7280; text-decoration:none; }
+.cd-crumb a:hover { color:#0056D2; }
+.cd-title { font-family:'Sora',sans-serif; font-size:clamp(1.6rem,3.2vw,2.4rem); font-weight:700; line-height:1.2; letter-spacing:-.02em; color:#0F1114; }
+.cd-sub { color:#4B5563; font-size:1rem; margin-top:.75rem; max-width:680px; }
 .cd-badges { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
-.cd-badge { font-size:.72rem; font-weight:700; padding:.3rem .75rem; border-radius:999px; background:rgba(255,255,255,.12); text-transform:uppercase; letter-spacing:.04em; }
-.cd-badge.free { background:#10b981; }
-.cd-meta { display:flex; gap:1.25rem; flex-wrap:wrap; margin-top:1.25rem; font-size:.875rem; color:rgba(255,255,255,.85); }
-.cd-meta i { color:#7cc4f5; margin-right:.35rem; }
+.cd-badge { font-size:.72rem; font-weight:700; padding:.3rem .75rem; border-radius:999px; background:#EEF4FF; color:#0056D2; border:1px solid rgba(0,86,210,.15); text-transform:uppercase; letter-spacing:.04em; }
+.cd-badge.free { background:#dcfce7; color:#15803d; border-color:#bbf7d0; }
+.cd-meta { display:flex; gap:1.25rem; flex-wrap:wrap; margin-top:1.25rem; font-size:.875rem; color:#374151; }
+.cd-meta i { color:#0056D2; margin-right:.35rem; }
 
 .cd-aside { grid-column:2; grid-row:1; margin-top:-17rem; }
 .cd-card { position:sticky; top:88px; background:#fff; border:1px solid var(--border); border-radius:16px; box-shadow:0 12px 40px rgba(10,22,40,.15); overflow:hidden; }
@@ -27,31 +30,31 @@
 .cd-play { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; background:rgba(10,22,40,.35); color:#fff; font-weight:700; font-size:.85rem; }
 .cd-play span:first-child { width:58px; height:58px; border-radius:50%; background:#fff; color:var(--ink); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
 .cd-card-body { padding:1.4rem; }
-.cd-price { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:800; color:var(--ink); }
-.cta-btn { display:flex; width:100%; align-items:center; justify-content:center; gap:.5rem; padding:.9rem 1rem; margin-top:1rem; background:var(--blue); color:#fff; font-weight:700; font-size:.95rem; border:0; border-radius:12px; cursor:pointer; text-decoration:none; }
-.cta-btn:hover { background:var(--blue-d); }
+.cd-price { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:700; color:var(--ink); }
+.cta-btn { display:flex; width:100%; align-items:center; justify-content:center; gap:.5rem; padding:.9rem 1rem; margin-top:1rem; background:#0056D2; color:#fff; font-weight:700; font-size:.95rem; border:0; border-radius:8px; cursor:pointer; text-decoration:none; }
+.cta-btn:hover { background:#0048B0; }
 .cta-success { background:#10b981; } .cta-success:hover { background:#059669; }
 .cta-warn { background:#f59e0b; } .cta-warn:hover { background:#d97706; }
 .cd-includes { margin-top:1.25rem; padding-top:1.1rem; border-top:1px solid var(--border); }
 .cd-includes h4 { font-size:.85rem; font-weight:700; color:var(--ink); margin-bottom:.6rem; }
 .cd-includes li { display:flex; gap:.6rem; font-size:.85rem; color:var(--ink-2); padding:.25rem 0; }
-.cd-includes i { width:16px; color:var(--blue); margin-top:.2rem; }
+.cd-includes i { width:16px; color:#0056D2; margin-top:.2rem; }
 
 .cd-main { grid-column:1; grid-row:1; padding:2rem 0 4rem; min-width:0; }
 .cd-box { border:1px solid var(--border); border-radius:14px; padding:1.5rem; margin-bottom:2rem; background:#fff; }
-.cd-h2 { font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:800; color:var(--ink); margin-bottom:1rem; }
+.cd-h2 { font-family:'Sora',sans-serif; font-size:1.3rem; font-weight:700; color:var(--ink); margin-bottom:1rem; }
 .cd-learn { display:grid; grid-template-columns:1fr 1fr; gap:.6rem 1.5rem; }
 .cd-learn li { display:flex; gap:.6rem; font-size:.9rem; color:var(--ink-2); line-height:1.5; }
 .cd-learn i { color:#10b981; margin-top:.25rem; }
 
 .cd-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; }
 .cd-step { text-align:center; padding:1rem .5rem; border-radius:12px; background:var(--surf); }
-.cd-step-n { width:36px; height:36px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:.9rem; }
+.cd-step-n { width:36px; height:36px; border-radius:50%; background:#0056D2; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:.9rem; }
 .cd-step strong { display:block; font-size:.85rem; color:var(--ink); }
 .cd-step span { font-size:.75rem; color:var(--muted); }
 
 .cd-cur-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; font-size:.85rem; color:var(--muted); margin-bottom:.75rem; }
-.cd-cur-head button { color:var(--blue); font-weight:700; background:none; border:0; cursor:pointer; }
+.cd-cur-head button { color:#0056D2; font-weight:700; background:none; border:0; cursor:pointer; }
 .cd-sec { border:1px solid var(--border); border-top:0; }
 .cd-sec:first-of-type { border-top:1px solid var(--border); border-radius:12px 12px 0 0; }
 .cd-sec:last-of-type { border-radius:0 0 12px 12px; }
@@ -61,16 +64,16 @@
 .cd-row { display:flex; align-items:center; gap:.75rem; padding:.7rem 1.1rem .7rem 2.6rem; font-size:.87rem; color:var(--ink-2); border-top:1px solid var(--border); }
 .cd-row .ic { width:16px; color:var(--muted); text-align:center; }
 .cd-row .t { flex:1; min-width:0; }
-.cd-row a, .cd-row button.lnk { color:var(--blue); font-weight:600; text-decoration:underline; background:none; border:0; cursor:pointer; font-size:.8rem; }
+.cd-row a, .cd-row button.lnk { color:#0056D2; font-weight:600; text-decoration:underline; background:none; border:0; cursor:pointer; font-size:.8rem; }
 .cd-row .dur { font-size:.78rem; color:var(--muted); white-space:nowrap; }
 .cd-row .ok { color:#10b981; }
 
 .cd-desc { font-size:.93rem; color:var(--ink-2); line-height:1.85; }
 .cd-desc.clamp { max-height:13rem; overflow:hidden; -webkit-mask-image:linear-gradient(#000 60%,transparent); mask-image:linear-gradient(#000 60%,transparent); }
-.cd-more { margin-top:.5rem; color:var(--blue); font-weight:700; background:none; border:0; cursor:pointer; font-size:.875rem; }
+.cd-more { margin-top:.5rem; color:#0056D2; font-weight:700; background:none; border:0; cursor:pointer; font-size:.875rem; }
 
 .cd-inst { display:flex; gap:1rem; align-items:center; }
-.cd-avatar { width:64px; height:64px; border-radius:50%; background:var(--blue-xl); color:var(--blue); font-family:'Sora',sans-serif; font-weight:800; font-size:1.5rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.cd-avatar { width:64px; height:64px; border-radius:50%; background:#EEF4FF; color:#0056D2; font-family:'Sora',sans-serif; font-weight:800; font-size:1.5rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
 .cd-related { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
 .cd-rel { border:1px solid var(--border); border-radius:12px; overflow:hidden; text-decoration:none; color:inherit; background:#fff; display:flex; flex-direction:column; }
@@ -166,10 +169,10 @@
                     @if($progress)
                         <div style="margin-top:.75rem;">
                             <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.3rem;">
-                                <span>Progress belajarmu</span><strong style="color:var(--blue);">{{ $progress->percent() }}%</strong>
+                                <span>Progress belajarmu</span><strong style="color:#0056D2;">{{ $progress->percent() }}%</strong>
                             </div>
                             <div style="height:7px;background:var(--surf);border-radius:999px;overflow:hidden;">
-                                <div style="height:100%;width:{{ $progress->percent() }}%;background:{{ $progress->isCourseFinished() ? '#10b981' : 'var(--blue)' }};"></div>
+                                <div style="height:100%;width:{{ $progress->percent() }}%;background:{{ $progress->isCourseFinished() ? '#10b981' : '#0056D2' }};"></div>
                             </div>
                         </div>
                     @endif
@@ -208,8 +211,8 @@
 
             {{-- Live session --}}
             @if($course->schedule_start || $course->meeting_link)
-                <div class="cd-box" style="background:var(--blue-xl);border-color:#bfdbfe;">
-                    <h2 class="cd-h2" style="font-size:1.1rem;"><i class="fas fa-video" style="color:var(--blue);"></i> Sesi Live</h2>
+                <div class="cd-box" style="background:#EEF4FF;border-color:#bfdbfe;">
+                    <h2 class="cd-h2" style="font-size:1.1rem;"><i class="fas fa-video" style="color:#0056D2;"></i> Sesi Live</h2>
                     <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.9rem;color:var(--ink-2);">
                         @if($course->schedule_start)
                             <div><strong>Mulai:</strong> {{ $course->schedule_start->translatedFormat('l, d F Y') }} pukul {{ $course->schedule_start->format('H:i') }} WIB</div>

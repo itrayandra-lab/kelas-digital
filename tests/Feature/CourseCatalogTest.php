@@ -32,7 +32,7 @@ class CourseCatalogTest extends TestCase
         $this->course($tech, 'Belajar Laravel', 'paid');
 
         $this->get(route('course.index', ['category' => 'digital-marketing']))
-            ->assertOk()->assertSee('Belajar Digital Marketing')->assertSee('Iklan Instagram')->assertDontSee('Belajar Laravel');
+            ->assertOk()->assertSeeText('Belajar Digital Marketing')->assertSee('Iklan Instagram')->assertDontSee('Belajar Laravel');
         $this->get(route('course.index', ['q' => 'laravel']))->assertSee('Belajar Laravel')->assertDontSee('SEO Dasar');
         $this->get(route('course.index', ['type' => 'free']))->assertSee('SEO Dasar')->assertDontSee('Iklan Instagram');
         $this->get(route('course.index', ['level' => 'Intermediate']))->assertSee('SEO Dasar')->assertDontSee('Belajar Laravel');

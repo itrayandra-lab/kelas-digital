@@ -8,19 +8,20 @@
 @push('styles')
 <style>
 .db-wrap { max-width:1200px; margin:0 auto; padding:0 1.25rem; }
-.db-hero { background:linear-gradient(135deg,#0a1628 0%,#14304f 100%); color:#fff; padding:2.5rem 0 2.75rem; position:relative; overflow:hidden; }
-.db-hero::after { content:''; position:absolute; right:-140px; top:-160px; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle,rgba(20,116,188,.35),transparent 70%); pointer-events:none; }
+.db-hero { background:#F5F5F4; color:#0F1114; border-bottom:1px solid #E2E8F0; padding:2.25rem 0 2.5rem; position:relative; overflow:hidden; }
+.db-hero::after { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(0,86,210,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,86,210,.03) 1px,transparent 1px); background-size:48px 48px; pointer-events:none; }
 .db-hero-grid { position:relative; z-index:1; display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:center; }
-.db-hello { font-family:'Sora',sans-serif; font-size:clamp(1.5rem,3vw,2.1rem); font-weight:800; }
-.db-sub { color:rgba(255,255,255,.72); margin-top:.35rem; font-size:.95rem; }
+.db-hello { font-family:'Sora',sans-serif; font-size:clamp(1.5rem,3vw,2rem); font-weight:700; letter-spacing:-.02em; }
+.db-sub { color:#6B7280; margin-top:.35rem; font-size:.92rem; }
+.db-sub strong { color:#0F1114; }
 .db-stats { display:grid; grid-template-columns:repeat(4,minmax(110px,1fr)); gap:.75rem; }
-.db-stat { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:.9rem 1rem; }
-.db-stat i { color:#7cc4f5; font-size:.95rem; }
-.db-stat strong { display:block; font-family:'Sora',sans-serif; font-size:1.5rem; line-height:1.1; margin-top:.35rem; }
-.db-stat span { font-size:.75rem; color:rgba(255,255,255,.7); }
+.db-stat { background:#fff; border:1px solid #E2E8F0; border-radius:12px; padding:.9rem 1rem; }
+.db-stat i { width:30px; height:30px; border-radius:8px; background:#EEF4FF; color:#0056D2; font-size:.8rem; display:inline-flex; align-items:center; justify-content:center; }
+.db-stat strong { display:block; font-family:'Sora',sans-serif; font-size:1.45rem; line-height:1.1; margin-top:.45rem; color:#0F1114; }
+.db-stat span { font-size:.75rem; color:#6B7280; }
 
 .db-body { display:grid; grid-template-columns:1fr 340px; gap:1.75rem; align-items:start; padding:2rem 0 1rem; }
-.db-h2 { font-family:'Sora',sans-serif; font-size:1.15rem; font-weight:800; color:var(--ink); margin:0 0 .9rem; }
+.db-h2 { font-family:'Sora',sans-serif; font-size:1.15rem; font-weight:700; color:var(--ink); margin:0 0 .9rem; }
 .db-box { background:#fff; border:1px solid var(--border); border-radius:16px; }
 
 .db-resume { display:grid; grid-template-columns:280px 1fr; overflow:hidden; box-shadow:0 8px 24px rgba(10,22,40,.06); margin-bottom:2rem; }
@@ -30,7 +31,7 @@
 .db-bab { display:flex; align-items:center; gap:.6rem; font-size:.84rem; color:var(--ink); }
 .db-bab .dot { width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.62rem; background:var(--surf); color:var(--muted); border:1px solid var(--border); }
 .db-bab.done .dot { background:#10b981; color:#fff; border-color:#10b981; }
-.db-bab.now .dot { background:var(--blue); color:#fff; border-color:var(--blue); }
+.db-bab.now .dot { background:#0056D2; color:#fff; border-color:#0056D2; }
 .db-bab.lock { color:var(--muted); }
 .db-bab .name { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .db-bab em { font-style:normal; font-size:.74rem; color:var(--muted); }
@@ -50,17 +51,17 @@
 .db-chip.done { background:#10b981; color:#fff; }
 .db-chip.warn { background:#f59e0b; color:#fff; }
 .db-body-card { padding:1rem 1.1rem 1.15rem; display:flex; flex-direction:column; flex:1; }
-.db-cat { font-size:.72rem; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:.04em; }
+.db-cat { font-size:.72rem; font-weight:700; color:#0056D2; text-transform:uppercase; letter-spacing:.04em; }
 .db-title { font-family:'Sora',sans-serif; font-size:1rem; font-weight:700; line-height:1.35; color:var(--ink); margin:.25rem 0 .5rem; }
 .db-title a { color:inherit; text-decoration:none; }
 .db-next { font-size:.8rem; color:var(--muted); margin-bottom:.85rem; display:flex; gap:.4rem; align-items:baseline; }
-.db-next i { color:var(--blue); }
+.db-next i { color:#0056D2; }
 .db-prog-row { display:flex; justify-content:space-between; font-size:.75rem; color:var(--muted); margin:auto 0 .3rem; }
 .db-prog-row strong { color:var(--ink); }
 .db-prog { height:7px; background:var(--surf); border-radius:999px; overflow:hidden; }
-.db-prog div { height:100%; background:var(--blue); border-radius:999px; }
-.db-btn { margin-top:1rem; display:block; text-align:center; padding:.7rem; background:var(--blue); color:#fff; font-weight:700; font-size:.875rem; border-radius:10px; text-decoration:none; }
-.db-btn:hover { background:var(--blue-d); color:#fff; }
+.db-prog div { height:100%; background:#0056D2; border-radius:999px; }
+.db-btn { margin-top:1rem; display:block; text-align:center; padding:.7rem; background:#0056D2; color:#fff; font-weight:700; font-size:.875rem; border-radius:10px; text-decoration:none; }
+.db-btn:hover { background:#0048B0; color:#fff; }
 .db-btn.ghost { background:#fff; color:var(--ink); border:1px solid var(--border); }
 .db-btn.warn { background:#f59e0b; }
 .db-empty { text-align:center; background:#fff; border:2px dashed var(--border); border-radius:16px; padding:2.5rem 1.5rem; }
@@ -68,7 +69,7 @@
 
 .db-side { display:flex; flex-direction:column; gap:1.25rem; }
 .db-side .db-box { padding:1.2rem 1.25rem; }
-.db-side h3 { font-family:'Sora',sans-serif; font-size:.98rem; font-weight:800; color:var(--ink); margin-bottom:.8rem; }
+.db-side h3 { font-family:'Sora',sans-serif; font-size:.98rem; font-weight:700; color:var(--ink); margin-bottom:.8rem; }
 .db-test { display:flex; align-items:center; gap:.75rem; padding:.65rem 0; border-top:1px solid var(--border); }
 .db-test:first-of-type { border-top:0; padding-top:0; }
 .db-test-info { flex:1; min-width:0; }
@@ -82,7 +83,7 @@
 .db-tag.wait { background:#fef3c7; color:#b45309; }
 .db-steps { counter-reset:s; display:flex; flex-direction:column; gap:.6rem; }
 .db-steps li { list-style:none; display:flex; gap:.6rem; font-size:.84rem; color:var(--ink-2,#334155); line-height:1.45; }
-.db-steps li::before { counter-increment:s; content:counter(s); width:22px; height:22px; flex-shrink:0; border-radius:50%; background:var(--blue-xl); color:var(--blue); font-size:.72rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.db-steps li::before { counter-increment:s; content:counter(s); width:22px; height:22px; flex-shrink:0; border-radius:50%; background:#EEF4FF; color:#0056D2; font-size:.72rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
 
 @media (max-width: 1024px) {
     .db-hero-grid, .db-body { grid-template-columns:1fr; }
@@ -108,7 +109,7 @@
             <h1 class="db-hello">{{ $user->name }} 👋</h1>
             <p class="db-sub">
                 @if($resume)
-                    Kamu sedang belajar <strong style="color:#fff;">{{ $resume['course']->title }}</strong>{{ $resume['progress']->percent() > 0 ? ", sudah ".$resume['progress']->percent()."%." : ". Yuk, mulai sekarang!" }}
+                    Kamu sedang belajar <strong>{{ $resume['course']->title }}</strong>{{ $resume['progress']->percent() > 0 ? ", sudah ".$resume['progress']->percent()."%." : ". Yuk, mulai sekarang!" }}
                 @elseif($total)
                     Semua kelasmu sudah selesai. Saatnya pilih kelas baru.
                 @else
@@ -171,7 +172,7 @@
             <h2 class="db-h2">Kursus saya</h2>
             @if(! $total && $unpaid->isEmpty())
                 <div class="db-empty">
-                    <i class="fas fa-graduation-cap" style="font-size:2.2rem;color:var(--blue);opacity:.5;"></i>
+                    <i class="fas fa-graduation-cap" style="font-size:2.2rem;color:#0056D2;opacity:.5;"></i>
                     <h3 style="font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);margin-top:.75rem;">Kamu belum mengikuti kelas apa pun</h3>
                     <p class="db-note" style="margin-top:.35rem;">Pilih kelas pertamamu dari katalog. Ada juga kelas gratis.</p>
                     <a href="{{ route('course.index') }}" class="db-btn" style="display:inline-block;padding:.75rem 1.5rem;">Jelajahi Kelas</a>
@@ -219,7 +220,7 @@
 
         <aside class="db-side">
             <div class="db-box">
-                <h3><i class="fas fa-chart-line" style="color:var(--blue);margin-right:.35rem;"></i> Nilai tes terakhir</h3>
+                <h3><i class="fas fa-chart-line" style="color:#0056D2;margin-right:.35rem;"></i> Nilai tes terakhir</h3>
                 @forelse($recentTests as $attempt)
                     <div class="db-test">
                         <div class="db-test-info">
@@ -245,7 +246,7 @@
             </div>
 
             <div class="db-box">
-                <h3><i class="fas fa-route" style="color:var(--blue);margin-right:.35rem;"></i> Cara belajar di sini</h3>
+                <h3><i class="fas fa-route" style="color:#0056D2;margin-right:.35rem;"></i> Cara belajar di sini</h3>
                 <ol class="db-steps">
                     <li>Kerjakan pre-test bab untuk mengukur pemahaman awal.</li>
                     <li>Pelajari video dan bacaan secara berurutan.</li>
