@@ -24,6 +24,11 @@ class LessonController extends Controller
         $progress = new CourseProgress($course, auth()->user());
         $step = $progress->nextStep();
 
+        // A learner who hasn't started yet sees the class introduction first.
+        if ($progress->percent() === 0 && ! session()->has("intro_seen.{$course->id}")) {
+            return redirect()->route('course.intro', $slug);
+        }
+
         if ($step && $step['type'] === 'lesson') {
             return redirect()->route('course.lesson', [$slug, $step['lesson']]);
         }
@@ -37,6 +42,23 @@ class LessonController extends Controller
         }
 
         return redirect()->route('course.show', $slug)->with('message', 'Materi kelas ini belum tersedia.');
+    }
+
+    /**
+     * "Pengenalan Kelas": what the class covers, its chapters and how studying works.
+     */
+    public function intro(string $slug)
+    {
+        $course = Course::where('slug', $slug)->firstOrFail();
+
+        if (! CourseProgress::canAccessCourse(auth()->user(), $course)) {
+            return redirect()->route('course.show', $slug)->with('error', 'Daftar kelas ini dulu untuk mulai belajar.');
+        }
+
+        session()->put("intro_seen.{$course->id}", true);
+        $progress = new CourseProgress($course, auth()->user());
+
+        return view('lessons.intro', compact('course', 'progress'));
     }
 
     public function show(string $slug, Lesson $lesson)
@@ -62,8 +84,6 @@ class LessonController extends Controller
                 ->with('error', 'Selesaikan langkah sebelumnya dulu.');
         }
 
-        $sections = $course->sections()->with('lessons')->get();
-
         $watch = null;
         if ($progress) {
             $watch = LessonProgress::firstOrCreate(
@@ -74,7 +94,7 @@ class LessonController extends Controller
             $watch->update(['last_ping_at' => now()]);
         }
 
-        return view('lessons.show', compact('course', 'lesson', 'sections', 'progress', 'watch'));
+        return view('lessons.show', compact('course', 'lesson', 'progress', 'watch'));
     }
 
     /**

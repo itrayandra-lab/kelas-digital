@@ -6,13 +6,8 @@
 @endsection
 
 @section('content')
-<div style="background:var(--surf);min-height:100vh;">
-    <div style="max-width:680px;margin:0 auto;padding:1.5rem;">
+<x-classroom :course="$course" :progress="$progress" :current="$kind.'-'.$section->id">
         @include('tests._header')
-
-        @if(session('error'))
-            <div style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-bottom:1rem;">{{ session('error') }}</div>
-        @endif
 
         @if($pending)
             <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:2.5rem 1.5rem;text-align:center;">
@@ -37,6 +32,16 @@
                     @endif
                 </p>
 
+                <div style="background:var(--surf);border-radius:12px;padding:1rem 1.1rem;margin-top:1.1rem;">
+                    <div style="font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;">
+                        {{ $kind === 'pre' ? 'Materi yang akan dibahas di bab ini' : 'Materi yang diuji' }}
+                    </div>
+                    <ol style="font-size:.85rem;color:var(--ink-2);line-height:1.8;padding-left:1.2rem;list-style:decimal;">
+                        @foreach($section->lessons as $lesson)
+                            <li>{{ $lesson->title }} <span style="color:var(--muted);">({{ $lesson->isVideo() ? 'video' : 'bacaan' }})</span></li>
+                        @endforeach
+                    </ol>
+                </div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin:1.25rem 0;">
                     <div style="background:var(--surf);border-radius:12px;padding:.9rem;text-align:center;">
                         <div style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);">{{ $questions->count() }}</div>
@@ -52,6 +57,7 @@
                     </div>
                 </div>
 
+                <div style="font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">Tata cara</div>
                 <ul style="font-size:.85rem;color:var(--ink-2);line-height:1.9;padding-left:1.1rem;list-style:disc;">
                     <li>Soal muncul satu per satu. Kamu tidak bisa kembali ke soal sebelumnya.</li>
                     <li>Setiap soal punya waktu {{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }} detik. Kalau waktunya habis, soal itu dianggap kosong dan langsung lanjut.</li>
@@ -77,6 +83,5 @@
                 </form>
             </div>
         @endif
-    </div>
-</div>
+</x-classroom>
 @endsection

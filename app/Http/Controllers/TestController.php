@@ -44,7 +44,7 @@ class TestController extends Controller
 
         if ($attempt) {
             return view('tests.question', [
-                'course' => $course, 'section' => $section, 'kind' => $kind, 'attempt' => $attempt,
+                'course' => $course, 'section' => $section, 'kind' => $kind, 'attempt' => $attempt, 'progress' => $progress,
                 'question' => $questions->get($attempt->current_index), 'total' => $questions->count(),
             ]);
         }

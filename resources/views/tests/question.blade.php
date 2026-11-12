@@ -24,8 +24,7 @@
     $number = $attempt->current_index + 1;
     $isLast = $number >= $total;
 @endphp
-<div style="background:var(--surf);min-height:100vh;">
-    <div style="max-width:680px;margin:0 auto;padding:1.5rem;">
+<x-classroom :course="$course" :progress="$progress" :current="$kind.'-'.$section->id">
         @include('tests._header')
 
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
@@ -68,8 +67,7 @@
             </button>
             <p style="font-size:.75rem;color:var(--muted);text-align:center;margin-top:.6rem;">Kamu tidak bisa kembali ke soal ini setelah lanjut.</p>
         </form>
-    </div>
-</div>
+</x-classroom>
 @endsection
 
 @push('scripts')
