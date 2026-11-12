@@ -108,13 +108,32 @@
 
 /* hero stats row */
 .hero-stats-row{
-    display:flex;gap:2rem;margin-top:2rem;flex-wrap:wrap;
-    padding-top:2rem;border-top:1px solid rgba(15,17,20,.08);
+    display:flex;flex-direction:column;gap:1rem;margin-top:2rem;
+    padding-top:1.75rem;border-top:1px solid rgba(15,17,20,.08);
 }
-.hero-stat-item{display:flex;align-items:center;gap:.7rem;}
-.hero-stat-icon{width:42px;height:42px;border-radius:12px;background:#EAF2FF;color:#0056D2;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.hero-stat-num{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0F1114;line-height:1.2;}
-.hero-stat-label{font-size:.75rem;color:#6B7280;margin-top:.15rem;}
+.hero-proof{display:flex;align-items:center;gap:.9rem;text-decoration:none;}
+.hero-avatars{display:flex;flex-shrink:0;}
+.hero-avatars i{width:44px;height:44px;border-radius:50%;border:3px solid #F5F5F4;margin-left:-12px;box-shadow:0 2px 8px rgba(15,17,20,.08);}
+.hero-avatars i:first-child{margin-left:0;}
+.hero-proof strong{display:block;font-family:'Sora',sans-serif;font-size:.92rem;font-weight:600;color:#0F1114;}
+.hero-proof small{display:block;font-size:.76rem;color:#6B7280;margin-top:.1rem;}
+.hero-proof:hover strong{color:#0056D2;}
+.hero-points{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0;padding:0;list-style:none;}
+.hero-points li{display:flex;align-items:center;gap:.45rem;font-size:.82rem;font-weight:500;color:#374151;}
+.hero-points i{width:18px;height:18px;border-radius:50%;background:#0056D2;color:#fff;font-size:.55rem;display:inline-flex;align-items:center;justify-content:center;}
+
+/* floating cards on the hero photo */
+.hero-float{position:absolute;z-index:4;display:flex;align-items:center;gap:.65rem;background:#fff;border-radius:14px;padding:.7rem .95rem;box-shadow:0 12px 32px rgba(15,17,20,.12);animation:hero-bob 5s ease-in-out infinite;}
+.hero-float strong{display:block;font-family:'Sora',sans-serif;font-size:.78rem;font-weight:600;color:#0F1114;}
+.hero-float small{display:block;font-size:.68rem;color:#6B7280;margin-top:.1rem;}
+.hero-float b{font-family:'Sora',sans-serif;font-size:.85rem;color:#0056D2;}
+.hero-float-ic{width:32px;height:32px;border-radius:10px;background:#EEF4FF;color:#0056D2;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
+.hero-float-bar{display:block;width:120px;height:6px;background:#EEF4FF;border-radius:999px;overflow:hidden;margin-top:.35rem!important;}
+.hero-float-bar i{display:block;height:100%;background:#0056D2;border-radius:999px;}
+.hero-float-a{left:-28px;top:34%;}
+.hero-float-b{right:28px;bottom:150px;animation-delay:-2.5s;}
+@keyframes hero-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.hero-float{animation:none;}}
 
 /* hero right image */
 .hero-ra-right{
@@ -430,8 +449,7 @@
     .art-grid{grid-template-columns:1fr;}
     .ins-grid{grid-template-columns:1fr;}
     .ins-row2{justify-content:center;}
-    .hero-stats-row{gap:1.25rem;}
-    .hero-stat-num{font-size:.88rem;}
+    .hero-stats-row{gap:.85rem;}
 }
 </style>
 @endpush
@@ -453,38 +471,25 @@
                 </a>
                 <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Kelas</a>
             </div>
-            {{-- Small counts look empty, so learner numbers only appear once they are worth showing. --}}
             <div class="hero-stats-row">
-                @if($stats['total_students'] >= 100)
-                <div class="hero-stat-item">
-                    <div class="hero-stat-icon"><i class="fas fa-users"></i></div>
-                    <div>
-                        <div class="hero-stat-num">{{ number_format($stats['total_students']) }}+ pelajar</div>
-                        <div class="hero-stat-label">Sudah bergabung</div>
-                    </div>
-                </div>
-                @endif
-                <div class="hero-stat-item">
-                    <div class="hero-stat-icon"><i class="fas fa-chalkboard-teacher"></i></div>
-                    <div>
-                        <div class="hero-stat-num">Praktisi & akademisi</div>
-                        <div class="hero-stat-label">Belajar dari ahlinya</div>
-                    </div>
-                </div>
-                <div class="hero-stat-item">
-                    <div class="hero-stat-icon"><i class="fas fa-layer-group"></i></div>
-                    <div>
-                        <div class="hero-stat-num">Video & modul</div>
-                        <div class="hero-stat-label">Tersusun per bab</div>
-                    </div>
-                </div>
-                <div class="hero-stat-item">
-                    <div class="hero-stat-icon"><i class="fas fa-clipboard-check"></i></div>
-                    <div>
-                        <div class="hero-stat-num">Pre & post test</div>
-                        <div class="hero-stat-label">Ukur progres belajarmu</div>
-                    </div>
-                </div>
+                <a href="#instruktur" class="hero-proof">
+                    <span class="hero-avatars">
+                        {{-- photo => crop; ria.png is a wide shot, so it is zoomed in on the face --}}
+                        @foreach(['ria.png' => '38% 4% / 210% auto', 's-sukmayanti.png' => 'center top / cover', 's-cahya.png' => 'center top / cover', 's-wendra_new.png' => 'center top / cover', 's-fricil-1.png' => 'center top / cover'] as $photo => $crop)
+                            <i style="background:#DBEAFE url('{{ asset('assets/'.$photo) }}') {{ $crop }} no-repeat;"></i>
+                        @endforeach
+                    </span>
+                    <span>
+                        <strong>Diajar langsung oleh praktisi & akademisi</strong>
+                        {{-- Small counts look empty, so learner numbers only appear once they are worth showing. --}}
+                        <small>{{ $stats['total_students'] >= 100 ? number_format($stats['total_students']).'+ pelajar sudah bergabung' : 'Bisnis, psikologi, farmasi, teknologi, dan kesehatan' }}</small>
+                    </span>
+                </a>
+                <ul class="hero-points">
+                    <li><i class="fas fa-check"></i> Video & modul per bab</li>
+                    <li><i class="fas fa-check"></i> Pre-test & post-test</li>
+                    <li><i class="fas fa-check"></i> Belajar kapan saja</li>
+                </ul>
             </div>
         </div>
         <div class="hero-ra-right" id="hero-right">
@@ -498,6 +503,16 @@
             <div class="hero-ra-img-wrap">
                 <img src="{{ asset('img/hero.png') }}" alt="Belajar di Ray Academy"
                      onerror="this.style.display='none'">
+            </div>
+            {{-- Floating cards showing what learning here looks like. --}}
+            <div class="hero-float hero-float-a" aria-hidden="true">
+                <span class="hero-float-ic" style="background:#DCFCE7;color:#16A34A;"><i class="fas fa-check"></i></span>
+                <span><strong>Post-test lulus</strong><small>Bab 1 · Skor 92</small></span>
+            </div>
+            <div class="hero-float hero-float-b" aria-hidden="true">
+                <span class="hero-float-ic"><i class="fas fa-play"></i></span>
+                <span style="flex:1;"><strong>Progres belajar</strong><small class="hero-float-bar"><i style="width:75%;"></i></small></span>
+                <b>75%</b>
             </div>
         </div>
     </div>
