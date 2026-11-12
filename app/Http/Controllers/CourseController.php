@@ -55,6 +55,10 @@ class CourseController extends Controller
         }
 
         $progress = $userHasAccess ? new CourseProgress($course, $user) : null;
+        $course->sections->loadCount([
+            'questions as pre_count' => fn ($q) => $q->where('kind', 'pre'),
+            'questions as post_count' => fn ($q) => $q->where('kind', 'post'),
+        ]);
         $sections = $course->sections->filter(fn ($section) => $section->lessons->isNotEmpty())->values();
         $lessons = $sections->flatMap->lessons;
         $totalMinutes = (int) $lessons->sum(fn ($lesson) => (int) $lesson->duration);

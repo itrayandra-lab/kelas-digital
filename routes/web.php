@@ -25,6 +25,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,8 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/{slug}/learn', [LessonController::class, 'learn'])->name('course.learn');
     Route::post('/course/{slug}/lesson/{lesson}/complete', [LessonController::class, 'complete'])->name('course.lesson.complete');
     Route::post('/course/{slug}/lesson/{lesson}/progress', [LessonController::class, 'ping'])->middleware('throttle:30,1')->name('course.lesson.progress');
-    Route::get('/course/{slug}/test/{kind}', [LessonController::class, 'test'])->name('course.test');
-    Route::post('/course/{slug}/test/{kind}', [LessonController::class, 'submitTest'])->name('course.test.submit');
+    // Per-section pre-test and post-test, one question at a time with a server-side timer
+    Route::controller(TestController::class)->prefix('/course/{slug}/bab/{section}/{kind}')->whereIn('kind', ['pre', 'post'])->group(function () {
+        Route::get('/', 'show')->name('course.test');
+        Route::post('/start', 'start')->name('course.test.start');
+        Route::post('/answer', 'answer')->name('course.test.answer');
+    });
     Route::get('/course/{slug}/completed', [LessonController::class, 'completed'])->name('course.completed');
 });
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->name('course.enroll');
@@ -125,7 +130,7 @@ Route::prefix('admin')
             Route::put('curriculum/lessons/{lesson}', 'updateLesson')->name('curriculum.lessons.update');
             Route::delete('curriculum/lessons/{lesson}', 'destroyLesson')->name('curriculum.lessons.destroy');
             Route::post('curriculum/lessons/{lesson}/move/{direction}', 'moveLesson')->whereIn('direction', ['up', 'down'])->name('curriculum.lessons.move');
-            Route::post('courses/{course}/questions', 'storeQuestion')->name('questions.store');
+            Route::post('sections/{section}/questions/{kind}', 'storeQuestion')->whereIn('kind', ['pre', 'post'])->name('questions.store');
             Route::put('questions/{question}', 'updateQuestion')->name('questions.update');
             Route::delete('questions/{question}', 'destroyQuestion')->name('questions.destroy');
             Route::post('questions/{question}/move/{direction}', 'moveQuestion')->whereIn('direction', ['up', 'down'])->name('questions.move');

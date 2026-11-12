@@ -98,17 +98,12 @@
                                 <div style="height:100%;width:{{ $progress->percent() }}%;background:var(--blue);"></div>
                             </div>
                         </div>
-                        @if($progress->hasTests)
-                            <a href="{{ $progress->preTestDone ? '#' : route('course.test', [$course->slug, 'pre']) }}" class="learn-item" style="{{ $progress->preTestDone ? 'pointer-events:none;' : '' }}">
-                                <span class="learn-dot {{ $progress->preTestDone ? 'done' : '' }}"><i class="fas {{ $progress->preTestDone ? 'fa-check' : 'fa-clipboard-list' }}"></i></span>
-                                <span>Pre-test</span>
-                            </a>
-                        @endif
                     @endif
 
                     <div style="max-height:65vh;overflow-y:auto;">
                         @foreach($sections as $section)
                             <div style="padding:.6rem 1.1rem;background:var(--surf);border-top:1px solid var(--border);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);">{{ $section->title }}</div>
+                            @include('tests._sidebar-item', ['kind' => 'pre'])
                             @foreach($section->lessons as $item)
                                 @php
                                     $itemDone = $progress?->isCompleted($item);
@@ -126,23 +121,9 @@
                                     @if($item->duration)<span style="font-size:.7rem;color:var(--muted);">{{ $item->duration }}m</span>@endif
                                 @if($itemOpen)</a>@else</div>@endif
                             @endforeach
+                            @include('tests._sidebar-item', ['kind' => 'post'])
                         @endforeach
                     </div>
-
-                    @if($progress?->hasTests)
-                        @php $postOpen = $progress->postTestUnlocked(); @endphp
-                        @if($postOpen)
-                            <a href="{{ route('course.test', [$course->slug, 'post']) }}" class="learn-item">
-                                <span class="learn-dot {{ $progress->postTestPassed() ? 'done' : '' }}"><i class="fas {{ $progress->postTestPassed() ? 'fa-check' : 'fa-clipboard-check' }}"></i></span>
-                                <span>Post-test</span>
-                            </a>
-                        @else
-                            <div class="learn-item is-locked">
-                                <span class="learn-dot locked"><i class="fas fa-lock"></i></span>
-                                <span>Post-test</span>
-                            </div>
-                        @endif
-                    @endif
                 </div>
             </div>
         </div>

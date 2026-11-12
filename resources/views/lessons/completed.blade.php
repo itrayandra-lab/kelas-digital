@@ -15,16 +15,23 @@
         <h1 style="font-family:'Sora',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--ink);">Selamat, {{ auth()->user()->name }}!</h1>
         <p style="font-size:1rem;color:var(--muted);margin-top:.75rem;">Kamu telah menyelesaikan kelas <strong style="color:var(--ink);">{{ $course->title }}</strong>.</p>
 
-        @if($progress->hasTests)
-            <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
-                <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;min-width:150px;">
-                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Pre-test</div>
-                    <div style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:800;color:var(--ink);">{{ $preTest?->isPending() ? 'Diverifikasi' : ($preTest?->score ?? '-') }}</div>
+        @if($progress->hasTests())
+            <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;margin-top:2rem;overflow:hidden;text-align:left;">
+                <div style="display:grid;grid-template-columns:1fr 90px 90px;padding:.7rem 1rem;background:var(--surf);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;">
+                    <span>Bab</span><span style="text-align:center;">Pre-test</span><span style="text-align:center;">Post-test</span>
                 </div>
-                <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:1rem 1.5rem;min-width:150px;">
-                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Post-test</div>
-                    <div style="font-family:'Sora',sans-serif;font-size:1.8rem;font-weight:800;color:#16a34a;">{{ $progress->bestPostTest?->score }}</div>
-                </div>
+                @foreach($progress->sections as $section)
+                    @continue(! $progress->sectionHasTest($section, 'pre') && ! $progress->sectionHasTest($section, 'post'))
+                    @php
+                        $pre = $progress->bestScore($section, 'pre');
+                        $post = $progress->bestScore($section, 'post');
+                    @endphp
+                    <div style="display:grid;grid-template-columns:1fr 90px 90px;padding:.75rem 1rem;border-top:1px solid var(--border);font-size:.9rem;align-items:center;">
+                        <span style="color:var(--ink);">{{ $section->title }}</span>
+                        <span style="text-align:center;font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);">{{ $pre ?? '-' }}</span>
+                        <span style="text-align:center;font-family:'Sora',sans-serif;font-weight:700;color:#16a34a;">{{ $post ?? '-' }}</span>
+                    </div>
+                @endforeach
             </div>
         @endif
 

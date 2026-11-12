@@ -186,7 +186,7 @@
                             @if($videoCount)<li><i class="fas fa-play-circle"></i>{{ $videoCount }} video pembelajaran</li>@endif
                             @if($textCount)<li><i class="fas fa-file-alt"></i>{{ $textCount }} materi bacaan</li>@endif
                             @if($totalMinutes)<li><i class="fas fa-clock"></i>Total {{ $fmtMinutes($totalMinutes) }}</li>@endif
-                            @if($questionCount)<li><i class="fas fa-clipboard-check"></i>Pre-test &amp; post-test ({{ $questionCount }} soal)</li>@endif
+                            @if($questionCount)<li><i class="fas fa-clipboard-check"></i>Pre-test &amp; post-test di setiap bab ({{ $questionCount }} soal)</li>@endif
                             @if($course->schedule_start)<li><i class="fas fa-video"></i>Sesi live {{ $course->meeting_platform ? 'via '.$course->meeting_platform : '' }}</li>@endif
                             <li><i class="fas fa-mobile-alt"></i>Akses dari HP dan laptop</li>
                             <li><i class="fas fa-infinity"></i>Belajar kapan saja, sesuai kecepatanmu</li>
@@ -245,10 +245,10 @@
             @if($lessons->isNotEmpty())
                 @php
                     $steps = collect([
-                        $questionCount ? ['fa-clipboard-list', 'Pre-test', 'Ukur pemahaman awal'] : null,
-                        ['fa-book-open', 'Materi', 'Video & bacaan berurutan'],
-                        $questionCount ? ['fa-clipboard-check', 'Post-test', 'Lulus minimal '.$course->post_test_pass_score] : null,
-                        ['fa-trophy', 'Selesai', 'Kelas tuntas'],
+                        $questionCount ? ['fa-clipboard-list', 'Pre-test bab', 'Ukur pemahaman awal'] : null,
+                        ['fa-book-open', 'Materi bab', 'Video & bacaan berurutan'],
+                        $questionCount ? ['fa-clipboard-check', 'Post-test bab', 'Lulus minimal '.$course->post_test_pass_score.', lalu bab berikutnya terbuka'] : null,
+                        ['fa-trophy', 'Selesai', 'Semua bab tuntas'],
                     ])->filter()->values();
                 @endphp
                 <div style="margin-bottom:2rem;">
@@ -276,15 +276,6 @@
                         <button type="button" @click="all = !all; open = {}; if (all) { @foreach($sections as $s) open[{{ $loop->index }}] = true; @endforeach }" x-text="all ? 'Tutup semua bab' : 'Buka semua bab'"></button>
                     </div>
 
-                    @if($questionCount)
-                        <div class="cd-sec">
-                            <div class="cd-row" style="padding-left:1.1rem;border-top:0;">
-                                <i class="fas {{ $progress?->preTestDone ? 'fa-check-circle ok' : 'fa-clipboard-list' }} ic"></i>
-                                <span class="t"><strong>Pre-test</strong> · {{ $questionCount }} soal</span>
-                            </div>
-                        </div>
-                    @endif
-
                     @foreach($sections as $section)
                         @php $mins = (int) $section->lessons->sum(fn ($l) => (int) $l->duration); @endphp
                         <div class="cd-sec">
@@ -294,6 +285,12 @@
                                 <small>{{ $section->lessons->count() }} materi{{ $mins ? ' · '.$fmtMinutes($mins) : '' }}</small>
                             </div>
                             <div x-show="open[{{ $loop->index }}]" x-collapse>
+                                @if($section->pre_count)
+                                    <div class="cd-row">
+                                        <i class="fas {{ $progress?->preTestDone($section) ? 'fa-check-circle ok' : 'fa-clipboard-list' }} ic"></i>
+                                        <span class="t"><strong>Pre-test</strong> · {{ $section->pre_count }} soal</span>
+                                    </div>
+                                @endif
                                 @foreach($section->lessons as $lesson)
                                     @php $done = $progress?->isCompleted($lesson); @endphp
                                     <div class="cd-row">
@@ -311,18 +308,15 @@
                                         @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
                                     </div>
                                 @endforeach
+                                @if($section->post_count)
+                                    <div class="cd-row">
+                                        <i class="fas {{ $progress?->postTestPassed($section) ? 'fa-check-circle ok' : 'fa-clipboard-check' }} ic"></i>
+                                        <span class="t"><strong>Post-test</strong> · {{ $section->post_count }} soal · lulus minimal {{ $course->post_test_pass_score }}</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @endforeach
-
-                    @if($questionCount)
-                        <div class="cd-sec">
-                            <div class="cd-row" style="padding-left:1.1rem;border-top:0;">
-                                <i class="fas {{ $progress?->postTestPassed() ? 'fa-check-circle ok' : 'fa-clipboard-check' }} ic"></i>
-                                <span class="t"><strong>Post-test</strong> · lulus minimal {{ $course->post_test_pass_score }}</span>
-                            </div>
-                        </div>
-                    @endif
                 @endif
             </div>
 

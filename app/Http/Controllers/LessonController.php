@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
-use App\Models\QuizAttempt;
 use App\Support\CourseProgress;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class LessonController extends Controller
 {
@@ -24,17 +22,14 @@ class LessonController extends Controller
         }
 
         $progress = new CourseProgress($course, auth()->user());
+        $step = $progress->nextStep();
 
-        if ($progress->hasTests && ! $progress->preTestDone) {
-            return redirect()->route('course.test', [$slug, 'pre']);
+        if ($step && $step['type'] === 'lesson') {
+            return redirect()->route('course.lesson', [$slug, $step['lesson']]);
         }
 
-        if ($lesson = $progress->nextLesson()) {
-            return redirect()->route('course.lesson', [$slug, $lesson]);
-        }
-
-        if ($progress->hasTests && ! $progress->postTestPassed()) {
-            return redirect()->route('course.test', [$slug, 'post']);
+        if ($step) {
+            return redirect()->route('course.test', [$slug, $step['section'], $step['type']]);
         }
 
         if ($progress->isCourseFinished()) {
@@ -135,71 +130,6 @@ class LessonController extends Controller
         );
     }
 
-    public function test(string $slug, string $kind)
-    {
-        [$course, $progress] = $this->testContext($slug, $kind);
-
-        $questions = $course->questions()->with('options')->get();
-        $lastAttempt = QuizAttempt::where('user_id', auth()->id())
-            ->where('course_id', $course->id)
-            ->where('kind', $kind)
-            ->latest()
-            ->first();
-
-        return view('lessons.test', compact('course', 'kind', 'questions', 'progress', 'lastAttempt'));
-    }
-
-    public function submitTest(Request $request, string $slug, string $kind)
-    {
-        // One submission at a time per learner and course: double clicks or a second tab must not
-        // create a second pre-test or post-test attempt. The checks below run inside the lock.
-        $lock = Cache::lock('quiz-submit:'.auth()->id().':'.$slug, 15);
-
-        if (! $lock->get()) {
-            return redirect()->route('course.learn', $slug)->with('message', 'Jawabanmu sedang diproses.');
-        }
-
-        try {
-            [$course] = $this->testContext($slug, $kind);
-
-            $questions = $course->questions()->with('options')->get();
-            $answers = (array) $request->input('answers', []);
-
-            $request->validate(
-                $questions->mapWithKeys(fn ($q) => ["answers.{$q->id}" => 'required'])->all(),
-                ['answers.*.required' => 'Semua soal wajib dijawab.'],
-            );
-
-            $attempt = new QuizAttempt([
-                'user_id' => auth()->id(),
-                'course_id' => $course->id,
-                'kind' => $kind,
-                'answers' => $questions->mapWithKeys(fn ($q) => [$q->id => $answers[$q->id] ?? null])->all(),
-            ]);
-            $attempt->grade($questions, $course->post_test_pass_score);
-            $attempt->save();
-        } finally {
-            $lock->release();
-        }
-
-        if ($kind === 'pre') {
-            return redirect()->route('course.learn', $slug)->with('message', $attempt->isPending()
-                ? 'Pre-test terkirim. Nilaimu sedang diverifikasi, materi sudah bisa kamu pelajari. Selamat belajar!'
-                : "Pre-test selesai. Skor awal kamu: {$attempt->score}. Selamat belajar!");
-        }
-
-        if ($attempt->isPending()) {
-            return redirect()->route('course.test', [$slug, 'post']);
-        }
-
-        if ($attempt->passed) {
-            return redirect()->route('course.completed', $slug);
-        }
-
-        return redirect()->route('course.test', [$slug, 'post'])
-            ->with('error', "Skor kamu {$attempt->score}, minimal {$course->post_test_pass_score} untuk lulus. Pelajari lagi materinya lalu coba lagi.");
-    }
-
     public function completed(string $slug)
     {
         $course = Course::where('slug', $slug)->firstOrFail();
@@ -215,42 +145,7 @@ class LessonController extends Controller
             return redirect()->route('course.learn', $slug);
         }
 
-        $preTest = QuizAttempt::where('user_id', $user->id)->where('course_id', $course->id)
-            ->where('kind', 'pre')->oldest()->first();
-
-        return view('lessons.completed', compact('course', 'progress', 'preTest'));
+        return view('lessons.completed', compact('course', 'progress'));
     }
 
-    private function testContext(string $slug, string $kind): array
-    {
-        abort_unless(in_array($kind, ['pre', 'post'], true), 404);
-
-        $course = Course::where('slug', $slug)->firstOrFail();
-        $user = auth()->user();
-
-        abort_unless(CourseProgress::canAccessCourse($user, $course), 403);
-
-        $progress = new CourseProgress($course, $user);
-
-        abort_unless($progress->hasTests, 404);
-
-        if ($kind === 'pre' && $progress->preTestDone) {
-            abort(redirect()->route('course.learn', $slug));
-        }
-
-        if ($kind === 'post' && ! $progress->postTestUnlocked()) {
-            abort(redirect()->route('course.learn', $slug)->with('error', 'Selesaikan semua materi dulu sebelum post-test.'));
-        }
-
-        if ($kind === 'post' && $progress->postTestPassed()) {
-            abort(redirect()->route('course.completed', $slug));
-        }
-
-        // While a post-test waits for essay review the learner sees its status, not a new form.
-        if ($kind === 'post' && $progress->postTestPending && request()->isMethod('post')) {
-            abort(redirect()->route('course.test', [$slug, 'post']));
-        }
-
-        return [$course, $progress];
-    }
 }
