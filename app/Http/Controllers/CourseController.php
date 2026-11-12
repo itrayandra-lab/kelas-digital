@@ -13,15 +13,31 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        $categorySlug = $request->query('category');
+        // Only plain strings; "?category[]=x" would otherwise break the queries and hidden inputs.
+        $filters = collect($request->only(['q', 'category', 'type', 'level', 'sort']))
+            ->map(fn ($v) => is_string($v) ? trim($v) : '')
+            ->filter(fn ($v) => $v !== '')
+            ->all();
+        $categorySlug = $filters['category'] ?? null;
+        $search = $filters['q'] ?? '';
+        $type = $filters['type'] ?? null;
+        $level = $filters['level'] ?? null;
+        $sort = $filters['sort'] ?? null;
 
-        $query = Course::with(['category'])
-            ->withCount('enrollments')
-            ->orderBy('created_at', 'desc');
+        $query = Course::with('category')
+            ->withCount(['lessons', 'enrollments as students_count' => fn ($q) => $q->where('payment_status', 'completed')])
+            ->when($categorySlug, fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $categorySlug)))
+            ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('instructor', 'like', "%{$search}%")))
+            ->when(in_array($type, ['free', 'paid'], true), fn ($q) => $q->where('course_type', $type))
+            ->when(in_array($level, ['Beginner', 'Intermediate', 'Advanced'], true), fn ($q) => $q->where('level', $level));
 
-        if ($categorySlug) {
-            $query->whereHas('category', fn ($q) => $q->where('slug', $categorySlug));
-        }
+        match ($sort) {
+            'popular' => $query->orderByDesc('students_count')->latest(),
+            'cheap' => $query->orderBy('price')->latest(),
+            default => $query->latest(),
+        };
 
         $courses = $query->paginate(12)->withQueryString();
 
@@ -34,7 +50,7 @@ class CourseController extends Controller
             ? $courseCategories->firstWhere('slug', $categorySlug)
             : null;
 
-        return view('course.index', compact('courses', 'courseCategories', 'activeCategory', 'categorySlug'));
+        return view('course.index', compact('courses', 'courseCategories', 'activeCategory', 'categorySlug', 'search', 'type', 'level', 'sort', 'filters'));
     }
 
     public function show($slug)
