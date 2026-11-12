@@ -67,7 +67,7 @@ class CourseController extends Controller
             $thumbnail = $request->file('thumbnail')->store('courses', 'public');
         }
 
-        Course::create([
+        $course = Course::create([
             'title' => $data['title'],
             'instructor' => $data['instructor'],
             'description' => $data['description'],
@@ -85,7 +85,9 @@ class CourseController extends Controller
             'meeting_link' => $data['meeting_link'] ?? null,
         ]);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Course created successfully.');
+        // Next step after creating a course is building its curriculum, so go straight there.
+        return redirect()->route('admin.curriculum.show', $course)
+            ->with('success', 'Kelas dibuat. Sekarang susun bab, materi, serta soal pre-test dan post-test-nya.');
     }
 
     /**
