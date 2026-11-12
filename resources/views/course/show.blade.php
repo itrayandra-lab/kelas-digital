@@ -139,7 +139,11 @@
                 </div>
                 <div class="cd-meta">
                     <span><i class="fas fa-chalkboard-teacher"></i>{{ $course->instructor }}</span>
-                    <span><i class="fas fa-users"></i>{{ number_format($enrolledStudentsCount) }} peserta</span>
+                    @if($enrolledStudentsCount >= \App\Models\Course::MIN_STUDENTS_SHOWN)
+                        <span><i class="fas fa-users"></i>{{ number_format($enrolledStudentsCount) }} peserta</span>
+                    @else
+                        <span><i class="fas fa-bolt"></i>Kelas baru</span>
+                    @endif
                     <span><i class="fas fa-layer-group"></i>{{ $sections->count() }} bab · {{ $lessons->count() }} materi</span>
                     @if($totalMinutes)<span><i class="fas fa-clock"></i>{{ $fmtMinutes($totalMinutes) }}</span>@endif
                     @if($course->schedule_start)<span><i class="fas fa-calendar-alt"></i>Mulai {{ $course->schedule_start->translatedFormat('d M Y') }}</span>@endif

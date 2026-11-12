@@ -18,6 +18,9 @@ class Course extends Model
     use HasSEO;
     use Sluggable;
 
+    /** Learner counts below this look empty on a new platform, so pages hide them until a course reaches it. */
+    public const MIN_STUDENTS_SHOWN = 50;
+
     protected $fillable = [
         'title',
         'slug',

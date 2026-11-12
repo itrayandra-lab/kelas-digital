@@ -17,7 +17,7 @@
         <div class="cc-meta">
             @if($level)<span>{{ $level }}</span>@endif
             @if($course->lessons_count)<span>{{ $course->lessons_count }} materi</span>@endif
-            @if($course->students_count)<span>{{ $course->students_count }} peserta</span>@endif
+            @if($course->students_count >= \App\Models\Course::MIN_STUDENTS_SHOWN)<span>{{ $course->students_count }} peserta</span>@endif
         </div>
         <div class="cc-foot">
             <span class="cc-price {{ $free ? 'free' : '' }}">{{ $free ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.') }}</span>

@@ -155,7 +155,7 @@
                         @endforeach
                         <select name="sort" class="ct-sort" onchange="this.form.submit()" aria-label="Urutkan">
                             <option value="">Terbaru</option>
-                            <option value="popular" @selected($sort === 'popular')>Paling banyak peserta</option>
+                            <option value="popular" @selected($sort === 'popular')>Terpopuler</option>
                             <option value="cheap" @selected($sort === 'cheap')>Harga terendah</option>
                         </select>
                     </form>
