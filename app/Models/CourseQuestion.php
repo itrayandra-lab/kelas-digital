@@ -13,7 +13,15 @@ class CourseQuestion extends Model
         'essay' => 'Essay',
     ];
 
-    protected $fillable = ['course_id', 'type', 'question', 'order'];
+    /** Pre-tests only measure the starting point, so they have no essays. */
+    public const PRE_TYPES = ['single', 'multiple', 'true_false'];
+
+    protected $fillable = ['course_id', 'section_id', 'kind', 'type', 'question', 'answer_key', 'order'];
+
+    public function section()
+    {
+        return $this->belongsTo(CourseSection::class, 'section_id');
+    }
 
     public function course()
     {
@@ -26,7 +34,7 @@ class CourseQuestion extends Model
     }
 
     /**
-     * Choice questions need exactly the set of correct options. Essays are marked by an admin instead.
+     * Choice questions need exactly the set of correct options. Essays are marked by the AI grader or an admin instead.
      */
     public function isAnsweredCorrectly(mixed $answer): bool
     {

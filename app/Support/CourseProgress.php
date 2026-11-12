@@ -3,42 +3,55 @@
 namespace App\Support;
 
 use App\Models\Course;
+use App\Models\CourseSection;
 use App\Models\Lesson;
 use App\Models\QuizAttempt;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
 /**
- * Where a learner stands in a course. Study order is: pre-test (if the course has questions),
- * every lesson in order, then the post-test. Each step unlocks only after the previous one.
+ * Where a learner stands in a course. Study order is, for every section in turn: its pre-test (if it
+ * has one), its lessons in order, then its post-test (if it has one). Each step unlocks only after
+ * every step before it is done, so the next section opens once the previous post-test is passed.
  */
 class CourseProgress
 {
+    public readonly Collection $sections;
+
     public readonly Collection $lessons;
+
+    /** Every step in study order: ['type' => pre|lesson|post, 'section' => CourseSection, 'lesson' => ?Lesson]. */
+    public readonly Collection $steps;
 
     public readonly array $completedIds;
 
-    public readonly bool $hasTests;
-
-    public readonly bool $preTestDone;
-
-    public readonly ?QuizAttempt $bestPostTest;
-
-    public readonly bool $postTestPending;
+    private Collection $attempts;
 
     public function __construct(public readonly Course $course, public readonly User $user)
     {
-        $this->lessons = $course->orderedLessons();
+        $this->sections = $course->sections()
+            ->with('lessons')
+            ->withCount([
+                'questions as pre_count' => fn ($q) => $q->where('kind', 'pre'),
+                'questions as post_count' => fn ($q) => $q->where('kind', 'post'),
+            ])
+            ->get();
+        $this->lessons = $this->sections->flatMap->lessons->values();
+
         $this->completedIds = $user->completedLessons()
             ->whereIn('lessons.id', $this->lessons->pluck('id'))
             ->pluck('lessons.id')
             ->all();
-        $this->hasTests = $course->questions()->exists();
 
-        $attempts = QuizAttempt::where('user_id', $user->id)->where('course_id', $course->id);
-        $this->preTestDone = (clone $attempts)->where('kind', 'pre')->exists();
-        $this->bestPostTest = (clone $attempts)->where('kind', 'post')->where('status', 'graded')->orderByDesc('score')->first();
-        $this->postTestPending = (clone $attempts)->where('kind', 'post')->where('status', 'pending')->exists();
+        $this->attempts = QuizAttempt::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->get(['id', 'section_id', 'kind', 'status', 'score', 'passed', 'created_at']);
+
+        $this->steps = $this->sections->flatMap(fn (CourseSection $s) => collect()
+            ->when($s->pre_count > 0, fn ($c) => $c->push(['type' => 'pre', 'section' => $s, 'lesson' => null]))
+            ->merge($s->lessons->map(fn ($l) => ['type' => 'lesson', 'section' => $s, 'lesson' => $l]))
+            ->when($s->post_count > 0, fn ($c) => $c->push(['type' => 'post', 'section' => $s, 'lesson' => null]))
+        )->values();
     }
 
     public static function canAccessCourse(?User $user, Course $course): bool
@@ -50,6 +63,45 @@ class CourseProgress
                 ->exists());
     }
 
+    // ---------- Tests ----------
+
+    public function hasTests(): bool
+    {
+        return $this->sections->contains(fn ($s) => $s->pre_count > 0 || $s->post_count > 0);
+    }
+
+    public function sectionHasTest(CourseSection $section, string $kind): bool
+    {
+        return (bool) $this->sectionRow($section)?->{$kind.'_count'};
+    }
+
+    public function preTestDone(CourseSection $section): bool
+    {
+        return $this->attemptsFor($section, 'pre')->contains(fn ($a) => ! $a->isInProgress());
+    }
+
+    public function postTestPassed(CourseSection $section): bool
+    {
+        return $this->attemptsFor($section, 'post')->contains(fn ($a) => $a->status === 'graded' && $a->passed);
+    }
+
+    public function postTestPending(CourseSection $section): bool
+    {
+        return $this->attemptsFor($section, 'post')->contains(fn ($a) => $a->isPending());
+    }
+
+    public function bestScore(CourseSection $section, string $kind): ?int
+    {
+        return $this->attemptsFor($section, $kind)->where('status', 'graded')->max('score');
+    }
+
+    public function testUnlocked(CourseSection $section, string $kind): bool
+    {
+        return $this->stepUnlocked(fn ($step) => $step['type'] === $kind && $step['section']->id === $section->id);
+    }
+
+    // ---------- Lessons ----------
+
     public function isCompleted(Lesson $lesson): bool
     {
         return in_array($lesson->id, $this->completedIds, true);
@@ -57,50 +109,37 @@ class CourseProgress
 
     public function isUnlocked(Lesson $lesson): bool
     {
-        if ($this->hasTests && ! $this->preTestDone) {
-            return false;
-        }
-
-        foreach ($this->lessons as $item) {
-            if ($item->id === $lesson->id) {
-                return true;
-            }
-
-            if (! $this->isCompleted($item)) {
-                return false;
-            }
-        }
-
-        return false;
+        return $this->stepUnlocked(fn ($step) => $step['type'] === 'lesson' && $step['lesson']->id === $lesson->id);
     }
 
-    public function allLessonsDone(): bool
+    // ---------- Overall ----------
+
+    public function isStepDone(array $step): bool
     {
-        return $this->lessons->every(fn (Lesson $lesson) => $this->isCompleted($lesson));
+        return match ($step['type']) {
+            'pre' => $this->preTestDone($step['section']),
+            'post' => $this->postTestPassed($step['section']),
+            default => $this->isCompleted($step['lesson']),
+        };
     }
 
-    public function postTestUnlocked(): bool
+    public function nextStep(): ?array
     {
-        return $this->hasTests && $this->preTestDone && $this->allLessonsDone();
-    }
-
-    public function postTestPassed(): bool
-    {
-        return (bool) $this->bestPostTest?->passed;
+        return $this->steps->first(fn ($step) => ! $this->isStepDone($step));
     }
 
     public function isCourseFinished(): bool
     {
-        if ($this->lessons->isEmpty() && ! $this->hasTests) {
-            return false;
-        }
-
-        return $this->allLessonsDone() && (! $this->hasTests || $this->postTestPassed());
+        return $this->steps->isNotEmpty() && $this->nextStep() === null;
     }
 
-    public function nextLesson(): ?Lesson
+    public function percent(): int
     {
-        return $this->lessons->first(fn (Lesson $lesson) => ! $this->isCompleted($lesson));
+        if ($this->steps->isEmpty()) {
+            return 0;
+        }
+
+        return (int) floor($this->steps->filter(fn ($s) => $this->isStepDone($s))->count() / $this->steps->count() * 100);
     }
 
     /**
@@ -108,36 +147,38 @@ class CourseProgress
      */
     public function nextStepLabel(): string
     {
-        if ($this->hasTests && ! $this->preTestDone) {
-            return 'Pre-test';
-        }
+        $step = $this->nextStep();
 
-        if ($lesson = $this->nextLesson()) {
-            return $lesson->title;
-        }
-
-        if ($this->hasTests && ! $this->postTestPassed()) {
-            return $this->postTestPending ? 'Post-test (nilai sedang diverifikasi)' : 'Post-test';
-        }
-
-        return 'Kelas selesai';
+        return match ($step['type'] ?? null) {
+            'pre' => 'Pre-test '.$step['section']->title,
+            'lesson' => $step['lesson']->title,
+            'post' => 'Post-test '.$step['section']->title.($this->postTestPending($step['section']) ? ' (nilai sedang diverifikasi)' : ''),
+            default => 'Kelas selesai',
+        };
     }
 
-    /**
-     * Pre- and post-test each count as one step next to the lessons.
-     */
-    public function percent(): int
+    private function stepUnlocked(callable $match): bool
     {
-        $total = $this->lessons->count() + ($this->hasTests ? 2 : 0);
+        foreach ($this->steps as $step) {
+            if ($match($step)) {
+                return true;
+            }
 
-        if ($total === 0) {
-            return 0;
+            if (! $this->isStepDone($step)) {
+                return false;
+            }
         }
 
-        $done = count($this->completedIds)
-            + ($this->hasTests && $this->preTestDone ? 1 : 0)
-            + ($this->hasTests && $this->postTestPassed() ? 1 : 0);
+        return false;
+    }
 
-        return (int) floor($done / $total * 100);
+    private function attemptsFor(CourseSection $section, string $kind): Collection
+    {
+        return $this->attempts->where('section_id', $section->id)->where('kind', $kind);
+    }
+
+    private function sectionRow(CourseSection $section): ?CourseSection
+    {
+        return $this->sections->firstWhere('id', $section->id);
     }
 }

@@ -17,4 +17,14 @@ class CourseSection extends Model
     {
         return $this->hasMany(Lesson::class, 'section_id')->orderBy('order')->orderBy('id');
     }
+
+    public function questions()
+    {
+        return $this->hasMany(CourseQuestion::class, 'section_id')->orderBy('order')->orderBy('id');
+    }
+
+    public function testQuestions(string $kind)
+    {
+        return $this->questions()->where('kind', $kind);
+    }
 }
