@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Four complete sample courses (sections, video + text lessons, per-section pre/post-tests with every question type)
+ * Five complete sample courses (sections, video + text lessons, per-section pre/post-tests with every question type)
  * so the learning flow can be tried end to end. Re-running replaces only these courses (matched by slug).
  */
 class DemoCourseSeeder extends Seeder
@@ -278,6 +278,67 @@ class DemoCourseSeeder extends Seeder
             ],
         ]);
 
+        // Short course for demos: ~30-second Shorts and brief readings, so the whole flow takes minutes.
+        // Video durations are left empty on purpose: a filled duration is a minimum watch length.
+        $this->course([
+            'slug' => 'kelas-kilat-siap-kerja',
+            'title' => 'Kelas Kilat: Siap Kerja dalam 5 Menit',
+            'category' => 'Business & Strategy',
+            'instructor' => 'Tim Ray Academy',
+            'course_type' => 'free',
+            'price' => 0,
+            'level' => 'Beginner',
+            'trailer_video_id' => 'PjfzPm9GAYY',
+            'post_test_pass_score' => 50,
+            'description' => "Kelas singkat berisi dua keterampilan dasar dunia kerja: menyelesaikan masalah dan berbicara dengan percaya diri.\n\nSetiap materi berupa video pendek di bawah satu menit dan bacaan singkat, jadi seluruh kelas bisa diselesaikan dalam beberapa menit.",
+            'benefits' => "Melatih cara menyelesaikan masalah di tempat kerja\nTampil lebih percaya diri saat berbicara di depan orang",
+        ], [
+            'Bab 1: Problem Solving' => [
+                ['video', '5 Tips Problem Solving di Dunia Kerja', 'GrmL05VGWVQ', true],
+                ['text', 'Rangkuman: Langkah Menyelesaikan Masalah', $this->html('problem-solving')],
+            ],
+            'Bab 2: Percaya Diri Berbicara' => [
+                ['video', 'Power Pose Sebelum Berbicara', 'PjfzPm9GAYY'],
+                ['text', 'Rangkuman: Tampil Percaya Diri', $this->html('percaya-diri')],
+            ],
+        ], [
+            'Bab 1: Problem Solving' => [
+                'pre' => [
+                    ['true_false', 'Kemampuan menyelesaikan masalah bisa dilatih.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Langkah pertama menyelesaikan masalah adalah...', [
+                        'Memahami masalahnya dengan jelas' => true,
+                        'Langsung mencari siapa yang salah' => false,
+                        'Menunggu masalahnya hilang sendiri' => false,
+                    ]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang termasuk langkah menyelesaikan masalah? (pilih semua yang benar)', [
+                        'Pahami masalahnya' => true,
+                        'Cari beberapa alternatif solusi' => true,
+                        'Abaikan masukan orang lain' => false,
+                    ]],
+                    ['essay', 'Menurutmu, apa yang pertama kali kamu lakukan saat menghadapi masalah di tempat kerja?', 'Memahami dan mendefinisikan masalahnya dengan jelas terlebih dahulu sebelum mencari solusi.'],
+                ],
+            ],
+            'Bab 2: Percaya Diri Berbicara' => [
+                'pre' => [
+                    ['true_false', 'Rasa gugup sebelum berbicara di depan umum adalah hal yang wajar.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Power pose dilakukan...', [
+                        'Sebelum mulai berbicara' => true,
+                        'Setelah acara selesai' => false,
+                        'Hanya saat ditanya audiens' => false,
+                    ]],
+                ],
+                'post' => [
+                    ['single', 'Tujuan melakukan power pose adalah...', [
+                        'Membuat diri merasa lebih percaya diri' => true,
+                        'Supaya terlihat sombong' => false,
+                        'Mengulur waktu presentasi' => false,
+                    ]],
+                    ['essay', 'Sebutkan satu cara supaya lebih percaya diri saat berbicara di depan orang.', 'Melakukan power pose sebelum tampil, berlatih lebih dulu, atau menjaga postur tegak dan kontak mata dengan audiens.'],
+                ],
+            ],
+        ]);
         // The seeded student gets the paid courses so the whole flow can be tried without paying.
         if ($student = User::where('email', 'student@example.com')->first()) {
             foreach ([$branding, $basic, $coding] as $paid) {
@@ -352,6 +413,12 @@ class DemoCourseSeeder extends Seeder
     private function html(string $key): string
     {
         return match ($key) {
+            'problem-solving' => '<h2>Langkah Menyelesaikan Masalah</h2>
+<ol><li><strong>Pahami masalahnya.</strong> Tulis dengan jelas apa yang sebenarnya terjadi.</li><li><strong>Cari penyebabnya.</strong> Tanyakan "kenapa" sampai menemukan akar masalah.</li><li><strong>Kumpulkan beberapa solusi.</strong> Jangan berhenti di ide pertama.</li><li><strong>Pilih dan jalankan.</strong> Ambil solusi terbaik, lalu evaluasi hasilnya.</li></ol>
+<blockquote>Masalah yang dipahami dengan jelas sudah setengah terselesaikan.</blockquote>',
+            'percaya-diri' => '<h2>Tampil Percaya Diri</h2>
+<ul><li><strong>Power pose:</strong> berdiri tegak dengan tangan di pinggang selama beberapa saat sebelum tampil.</li><li><strong>Berlatih dulu:</strong> latihan membuat kamu lebih siap dan tenang.</li><li><strong>Jaga kontak mata:</strong> lihat audiens, bukan lantai atau layar.</li></ul>
+<p>Rasa gugup itu wajar. Yang penting, gugupnya tidak menghentikanmu untuk mulai berbicara.</p>',
             'pemrograman' => '<h2>Apa Itu Pemrograman?</h2>
 <p>Pemrograman adalah proses menulis <strong>instruksi untuk komputer</strong> supaya komputer mengerjakan tugas tertentu. Instruksi itu ditulis dalam <strong>bahasa pemrograman</strong> seperti PHP, JavaScript, atau Python.</p>
 <h3>Algoritma dulu, kode kemudian</h3>
