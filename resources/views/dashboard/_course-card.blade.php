@@ -7,7 +7,7 @@
         @endif
         @if($done)<span class="db-chip done"><i class="fas fa-check"></i> Selesai</span>@endif
     </a>
-    <div class="db-body">
+    <div class="db-body-card">
         @if($course->category)<div class="db-cat">{{ $course->category->name }}</div>@endif
         <h3 class="db-title"><a href="{{ route('course.show', $course->slug) }}">{{ $course->title }}</a></h3>
         <div class="db-next">
