@@ -37,8 +37,9 @@ class CourseCatalogTest extends TestCase
         $this->get(route('course.index', ['type' => 'free']))->assertSee('SEO Dasar')->assertDontSee('Iklan Instagram');
         $this->get(route('course.index', ['level' => 'Intermediate']))->assertSee('SEO Dasar')->assertDontSee('Belajar Laravel');
         $this->get(route('course.index', ['q' => 'tidak-ada']))->assertSee('Kelas yang kamu cari belum ada');
-        // Array values are ignored instead of crashing the page.
-        $this->get('/courses?category[]=x&type[]=free')->assertOk()->assertSee('Belajar Laravel');
+        // Array values are ignored instead of crashing the page (the header search box reads q on every page).
+        $this->get('/courses?category[]=x&type[]=free&q[]=y')->assertOk()->assertSee('Belajar Laravel');
+        $this->get('/?q[]=y')->assertOk();
     }
 
     public function test_dashboard_lists_courses_waiting_for_payment(): void

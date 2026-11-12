@@ -12,11 +12,13 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $keyword = trim((string) $request->input('q', ''));
-        $categoryId = $request->input('category_id');
+        // "?q[]=x" style arrays would crash string handling and the views, so they count as empty.
+        $text = fn (string $key) => is_string($value = $request->input($key)) ? trim($value) : null;
+        $keyword = $text('q') ?? '';
+        $categoryId = $text('category_id');
         $tagIds = $request->input('tag_id', []);
-        $dateFrom = $request->input('date_from');
-        $dateTo = $request->input('date_to');
+        $dateFrom = $text('date_from');
+        $dateTo = $text('date_to');
 
         $courses = collect();
         $articles = collect();

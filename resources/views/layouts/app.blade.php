@@ -334,7 +334,7 @@
         <div class="nav-right">
             <form action="{{ route('search') }}" method="GET" class="nav-search">
                 <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                <input type="search" name="q" placeholder="Cari kursus..." value="{{ request('q') }}">
+                <input type="search" name="q" placeholder="Cari kursus..." value="{{ is_string(request('q')) ? request('q') : '' }}">
             </form>
 
             @auth
