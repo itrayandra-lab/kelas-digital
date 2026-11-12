@@ -383,6 +383,101 @@ class CourseLearningFlowTest extends TestCase
         $this->assertSame('pending', $enrollment->fresh()->payment_status);
     }
 
+    /**
+     * The whole job an admin does by hand, through the same requests the admin forms send,
+     * followed by a student taking the new course from enrolment to the completion page.
+     */
+    public function test_admin_creates_a_course_from_scratch_and_a_student_finishes_it(): void
+    {
+        $this->seed(RolePermissionSeeder::class);
+        $admin = User::factory()->create(['username' => 'creator']);
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        // 1. Course details. A paid course without a price is rejected.
+        $details = [
+            'title' => 'Kelas Uji Coba', 'instructor' => 'Admin', 'description' => 'Deskripsi kelas.',
+            'course_type' => 'paid', 'trailer_video_id' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'course_category_id' => $this->course->course_category_id, 'level' => 'Beginner',
+            'benefits' => "Poin satu\nPoin dua",
+        ];
+        $this->post(route('admin.courses.store'), $details)->assertSessionHasErrors('price');
+        $response = $this->post(route('admin.courses.store'), $details + ['price' => 25000])->assertSessionHasNoErrors();
+        $course = Course::where('title', 'Kelas Uji Coba')->firstOrFail();
+        $response->assertRedirect(route('admin.curriculum.show', $course));
+        $this->assertSame('dQw4w9WgXcQ', $course->trailer_video_id);
+
+        // 2. Sections and lessons.
+        $this->post(route('admin.sections.store', $course), ['title' => 'Bab A']);
+        $this->post(route('admin.sections.store', $course), ['title' => 'Bab B']);
+        [$babA, $babB] = $course->sections()->get()->all();
+        $this->post(route('admin.curriculum.lessons.store', $babA), ['title' => 'Video A', 'type' => 'video', 'youtube_video_id' => 'https://youtu.be/dQw4w9WgXcQ', 'duration' => 2, 'is_preview' => '1'])->assertSessionHasNoErrors();
+        $this->post(route('admin.curriculum.lessons.store', $babA), ['title' => 'Bacaan A', 'type' => 'text', 'content' => '<p>Materi A</p>'])->assertSessionHasNoErrors();
+        $this->post(route('admin.curriculum.lessons.store', $babB), ['title' => 'Bacaan B', 'type' => 'text', 'content' => '<p>Materi B</p>'])->assertSessionHasNoErrors();
+
+        // Edit a lesson, reorder lessons, then delete and re-add one.
+        $bacaanA = Lesson::where('title', 'Bacaan A')->firstOrFail();
+        $this->put(route('admin.curriculum.lessons.update', $bacaanA), ['title' => 'Bacaan A (revisi)', 'type' => 'text', 'content' => '<p>Materi A revisi</p>'])->assertSessionHasNoErrors();
+        $this->post(route('admin.curriculum.lessons.move', [$bacaanA, 'up']));
+        $this->assertSame(['Bacaan A (revisi)', 'Video A'], $babA->lessons()->pluck('title')->all());
+        $this->post(route('admin.curriculum.lessons.move', [$bacaanA->fresh(), 'down']));
+        $tmp = $babB->lessons()->create(['title' => 'Hapus saya', 'type' => 'text', 'content' => 'x', 'order' => 9]);
+        $this->delete(route('admin.curriculum.lessons.destroy', $tmp))->assertSessionHasNoErrors();
+
+        // 3. Tests per section, every question type, then edit, reorder and delete.
+        $q = fn ($section, $kind, $data) => $this->post(route('admin.questions.store', [$section, $kind]), $data)->assertSessionHasNoErrors();
+        $q($babA, 'pre', ['type' => 'single', 'question' => 'A-pre-1', 'options' => [['text' => 'benar'], ['text' => 'salah']], 'correct' => ['0']]);
+        $q($babA, 'pre', ['type' => 'true_false', 'question' => 'A-pre-2', 'correct' => ['true']]);
+        $q($babA, 'post', ['type' => 'multiple', 'question' => 'A-post-1', 'options' => [['text' => 'x'], ['text' => 'y'], ['text' => 'z']], 'correct' => ['0', '2']]);
+        $q($babA, 'post', ['type' => 'essay', 'question' => 'A-post-2', 'answer_key' => 'Kunci A']);
+        $q($babB, 'pre', ['type' => 'multiple', 'question' => 'B-pre-1', 'options' => [['text' => 'p'], ['text' => 'q']], 'correct' => ['0', '1']]);
+        $q($babB, 'post', ['type' => 'single', 'question' => 'B-post-1', 'options' => [['text' => 'm'], ['text' => 'n']], 'correct' => ['1']]);
+
+        $essay = CourseQuestion::where('question', 'A-post-2')->firstOrFail();
+        $this->put(route('admin.questions.update', $essay), ['type' => 'essay', 'question' => 'A-post-2 (revisi)', 'answer_key' => 'Kunci A revisi'])->assertSessionHasNoErrors();
+        $this->assertSame('Kunci A revisi', $essay->fresh()->answer_key);
+        $this->post(route('admin.questions.move', [$essay, 'up']));
+        $this->assertSame(['A-post-2 (revisi)', 'A-post-1'], $babA->testQuestions('post')->pluck('question')->all());
+        $this->post(route('admin.questions.move', [$essay->fresh(), 'down']));
+        $tmpQ = $babB->questions()->create(['course_id' => $course->id, 'kind' => 'post', 'type' => 'true_false', 'question' => 'hapus', 'order' => 9]);
+        $this->delete(route('admin.questions.destroy', $tmpQ))->assertSessionHasNoErrors();
+
+        // Every admin page renders with the new content.
+        foreach (['kurikulum', 'tes', 'jawaban'] as $tab) {
+            $this->get(route('admin.curriculum.show', $course).'?tab='.$tab)->assertOk()->assertSee('Bab A')->assertSee('A-post-2 (revisi)');
+        }
+        $this->get(route('admin.courses.index'))->assertOk()->assertSee('Kelas Uji Coba');
+        $this->get(route('admin.courses.edit', $course->id))->assertOk();
+
+        // 4. A student buys nothing (enrolled directly), follows the flow and finishes.
+        $student = User::factory()->create(['username' => 'learner']);
+        $student->assignRole('student');
+        Enrollment::create([
+            'user_id' => $student->id, 'course_id' => $course->id, 'status' => 'active',
+            'enrolled_at' => now(), 'payment_status' => 'completed', 'payment_method' => 'free',
+        ]);
+        $this->actingAs($student);
+        $this->fakeAi(true);
+        $this->course = $course;
+
+        $this->get(route('course.show', $course->slug))->assertOk()->assertSee('Bab A')->assertSee('Pre-test')->assertSee('Mulai Belajar');
+        $this->takeTest($babA, 'pre', $this->answersFor($babA, 'pre', true));
+        foreach ($babA->lessons()->get() as $lesson) {
+            $this->finishLesson($lesson);
+        }
+        $this->takeTest($babA, 'post', $this->answersFor($babA, 'post', true))->assertRedirect(route('course.learn', $course->slug));
+        $this->takeTest($babB, 'pre', $this->answersFor($babB, 'pre', true));
+        $this->finishLesson($babB->lessons()->first());
+        $this->takeTest($babB, 'post', $this->answersFor($babB, 'post', true));
+
+        $this->get(route('course.learn', $course->slug))->assertRedirect(route('course.completed', $course->slug));
+        $this->get(route('course.completed', $course->slug))->assertOk()->assertSee('Selamat');
+
+        // The admin sees the student's attempts, with the AI's reasoning on the essay.
+        $this->actingAs($admin)->get(route('admin.curriculum.show', $course).'?tab=jawaban')
+            ->assertOk()->assertSee($student->email)->assertSee('Maknanya sesuai.');
+    }
+
     public function test_admin_builds_curriculum(): void
     {
         $this->seed(RolePermissionSeeder::class);
