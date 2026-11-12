@@ -9,15 +9,15 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Two complete demo courses (sections, video + text lessons, per-section pre/post-tests with every question type)
- * so the learning flow can be tried end to end. Re-running replaces only these two courses.
+ * Four complete sample courses (sections, video + text lessons, per-section pre/post-tests with every question type)
+ * so the learning flow can be tried end to end. Re-running replaces only these courses (matched by slug).
  */
 class DemoCourseSeeder extends Seeder
 {
     public function run(): void
     {
         $branding = $this->course([
-            'slug' => 'demo-personal-branding-untuk-pemula',
+            'slug' => 'personal-branding-untuk-pemula',
             'title' => 'Personal Branding untuk Pemula',
             'category' => 'Personal Branding',
             'instructor' => 'Tim Ray Academy',
@@ -101,7 +101,7 @@ class DemoCourseSeeder extends Seeder
         ]);
 
         $this->course([
-            'slug' => 'demo-dasar-digital-marketing',
+            'slug' => 'dasar-dasar-digital-marketing',
             'title' => 'Dasar-Dasar Digital Marketing',
             'category' => 'Digital Marketing',
             'instructor' => 'Tim Ray Academy',
@@ -156,12 +156,136 @@ class DemoCourseSeeder extends Seeder
             ],
         ]);
 
-        // The seeded student gets the paid course so the whole flow can be tried without paying.
+        $basic = $this->course([
+            'slug' => 'basic-programming',
+            'title' => 'Basic Programming',
+            'category' => 'Technology & AI',
+            'instructor' => 'Muhammad Taufan Akbar S.Kom',
+            'course_type' => 'paid',
+            'price' => 50000,
+            'level' => 'Beginner',
+            'trailer_video_id' => '6Z-0f_mcyiY',
+            'post_test_pass_score' => 70,
+            'description' => "Kelas ini mengenalkan cara berpikir seorang programmer: memecah masalah menjadi langkah-langkah (algoritma), menyimpan data di variabel, lalu mengatur alur program dengan percabangan dan perulangan.\n\nCocok untuk kamu yang belum pernah menulis kode sama sekali dan ingin punya dasar yang kuat sebelum belajar bahasa pemrograman tertentu.",
+            'benefits' => "Memahami apa itu algoritma dan pemrograman\nMengenal variabel dan tipe data\nMemakai percabangan untuk mengambil keputusan\nMemakai perulangan untuk pekerjaan berulang",
+        ], [
+            'Bab 1: Mengenal Pemrograman' => [
+                ['video', 'Apa itu Algoritma dan Pemrograman?', '6Z-0f_mcyiY', true],
+                ['text', 'Apa Itu Pemrograman?', $this->html('pemrograman')],
+                ['video', 'Pengantar Algoritma untuk Pemula', 'wIzNyT8h5gU'],
+            ],
+            'Bab 2: Variabel dan Tipe Data' => [
+                ['text', 'Variabel dan Tipe Data', $this->html('variabel')],
+            ],
+            'Bab 3: Percabangan dan Perulangan' => [
+                ['video', 'Percabangan dengan Satu Kondisi', 'ORWq8BEnFqc'],
+                ['video', 'Konsep Perulangan For', 'BNq_KslsKEo'],
+                ['text', 'Rangkuman Percabangan dan Perulangan', $this->html('kontrol')],
+            ],
+        ], [
+            'Bab 1: Mengenal Pemrograman' => [
+                'pre' => [
+                    ['single', 'Algoritma adalah...', [
+                        'Urutan langkah yang jelas untuk menyelesaikan masalah' => true,
+                        'Nama lain dari komputer' => false,
+                        'Bahasa pemrograman tertentu' => false,
+                    ]],
+                    ['true_false', 'Komputer bisa menjalankan perintah yang ambigu dengan benar.', ['Benar' => false, 'Salah' => true]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja ciri algoritma yang baik? (pilih semua yang benar)', [
+                        'Langkahnya berurutan' => true,
+                        'Jelas dan tidak ambigu' => true,
+                        'Punya akhir' => true,
+                        'Boleh ditafsirkan berbeda-beda' => false,
+                    ]],
+                    ['essay', 'Jelaskan perbedaan algoritma dan program.', 'Algoritma adalah urutan langkah logis untuk menyelesaikan masalah, sedangkan program adalah algoritma yang sudah ditulis dalam bahasa pemrograman sehingga bisa dijalankan komputer.'],
+                ],
+            ],
+            'Bab 2: Variabel dan Tipe Data' => [
+                'pre' => [
+                    ['single', 'Tipe data yang cocok untuk menyimpan nama seseorang adalah...', ['String' => true, 'Integer' => false, 'Boolean' => false]],
+                    ['true_false', 'Nilai sebuah variabel bisa diubah ketika program berjalan.', ['Benar' => true, 'Salah' => false]],
+                ],
+                'post' => [
+                    ['single', 'Jika x = 5, lalu x = x + 2, berapa nilai x sekarang?', ['5' => false, '7' => true, '10' => false]],
+                    ['essay', 'Apa itu variabel dalam pemrograman?', 'Variabel adalah tempat atau wadah bernama untuk menyimpan data atau nilai yang bisa dipakai dan diubah selama program berjalan.'],
+                ],
+            ],
+            'Bab 3: Percabangan dan Perulangan' => [
+                'pre' => [
+                    ['true_false', 'Perulangan dipakai untuk menjalankan perintah yang sama berkali-kali.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Struktur untuk memilih tindakan berdasarkan kondisi disebut...', ['Percabangan' => true, 'Perulangan' => false, 'Variabel' => false]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang termasuk perulangan? (pilih semua yang benar)', ['for' => true, 'while' => true, 'if' => false, 'else' => false]],
+                    ['essay', 'Kapan kita memakai percabangan dalam program?', 'Percabangan dipakai ketika program harus memilih tindakan yang berbeda tergantung pada sebuah kondisi, misalnya jika nilai lebih dari 70 maka lulus, jika tidak maka mengulang.'],
+                ],
+            ],
+        ]);
+
+        $coding = $this->course([
+            'slug' => 'tutorial-coding',
+            'title' => 'Tutorial Coding: PHP, JavaScript, Python, dan Laravel',
+            'category' => 'Technology & AI',
+            'instructor' => 'Muhammad Taufan Akbar S.Kom',
+            'course_type' => 'paid',
+            'price' => 100000,
+            'level' => 'Intermediate',
+            'trailer_video_id' => 'I-k-iTUMQAY',
+            'post_test_pass_score' => 70,
+            'description' => "Kelas ini mengenalkan tiga bahasa pemrograman yang paling banyak dipakai, yaitu PHP, JavaScript, dan Python, lalu berlanjut ke framework Laravel untuk membangun aplikasi web.\n\nCocok untuk kamu yang sudah paham dasar pemrograman dan ingin memilih bahasa yang tepat untuk mulai membuat aplikasi.",
+            'benefits' => "Mengenal PHP, JavaScript, dan Python beserta kegunaannya\nMemahami peran framework dalam pengembangan aplikasi\nMengenal Laravel sebagai framework PHP",
+        ], [
+            'Bab 1: Dasar-Dasar Programming' => [
+                ['video', 'Pengenalan PHP', 'QJMTprXtPa0', true],
+                ['text', 'Pengenalan JavaScript', $this->html('javascript')],
+                ['video', 'Pengenalan Python', 'EHc4ZcT2sTk'],
+            ],
+            'Bab 2: Belajar Framework' => [
+                ['text', 'Apa Itu Framework?', $this->html('framework')],
+                ['video', 'Pengenalan Laravel', 'gH0e_wAm_nI'],
+            ],
+        ], [
+            'Bab 1: Dasar-Dasar Programming' => [
+                'pre' => [
+                    ['single', 'Apa itu programming?', [
+                        'Proses menulis instruksi agar komputer menjalankan tugas' => true,
+                        'Proses merakit perangkat keras komputer' => false,
+                        'Proses mendesain tampilan dengan aplikasi grafis' => false,
+                    ]],
+                    ['multiple', 'Mana saja yang merupakan bahasa pemrograman? (pilih semua yang benar)', ['PHP' => true, 'Python' => true, 'JavaScript' => true, 'HTML' => false]],
+                ],
+                'post' => [
+                    ['single', 'PHP paling banyak dipakai untuk...', [
+                        'Membuat sisi server (backend) aplikasi web' => true,
+                        'Mengedit foto' => false,
+                        'Membuat sistem operasi' => false,
+                    ]],
+                    ['true_false', 'JavaScript hanya bisa berjalan di browser.', ['Benar' => false, 'Salah' => true]],
+                    ['essay', 'Apa itu JavaScript?', 'JavaScript adalah bahasa pemrograman yang dipakai untuk membuat halaman web menjadi interaktif, dan sekarang juga bisa dijalankan di server melalui Node.js.'],
+                ],
+            ],
+            'Bab 2: Belajar Framework' => [
+                'pre' => [
+                    ['true_false', 'Framework membantu developer supaya tidak menulis semuanya dari nol.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Laravel adalah framework untuk bahasa...', ['PHP' => true, 'Python' => false, 'JavaScript' => false]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang merupakan framework PHP? (pilih semua yang benar)', ['Laravel' => true, 'CodeIgniter' => true, 'React' => false, 'Tailwind CSS' => false]],
+                    ['essay', 'Sebutkan satu keuntungan memakai framework dan jelaskan alasannya.', 'Framework mempercepat pengembangan karena struktur dan fitur umum seperti routing, database, dan keamanan sudah disediakan, sehingga developer tidak perlu menulis semuanya dari nol.'],
+                ],
+            ],
+        ]);
+
+        // The seeded student gets the paid courses so the whole flow can be tried without paying.
         if ($student = User::where('email', 'student@example.com')->first()) {
-            Enrollment::updateOrCreate(
-                ['user_id' => $student->id, 'course_id' => $branding->id],
-                ['status' => 'active', 'enrolled_at' => now(), 'payment_status' => 'completed', 'payment_method' => 'free'],
-            );
+            foreach ([$branding, $basic, $coding] as $paid) {
+                Enrollment::updateOrCreate(
+                    ['user_id' => $student->id, 'course_id' => $paid->id],
+                    ['status' => 'active', 'enrolled_at' => now(), 'payment_status' => 'completed', 'payment_method' => 'free'],
+                );
+            }
         }
     }
 
@@ -228,6 +352,51 @@ class DemoCourseSeeder extends Seeder
     private function html(string $key): string
     {
         return match ($key) {
+            'pemrograman' => '<h2>Apa Itu Pemrograman?</h2>
+<p>Pemrograman adalah proses menulis <strong>instruksi untuk komputer</strong> supaya komputer mengerjakan tugas tertentu. Instruksi itu ditulis dalam <strong>bahasa pemrograman</strong> seperti PHP, JavaScript, atau Python.</p>
+<h3>Algoritma dulu, kode kemudian</h3>
+<p>Sebelum menulis kode, programmer menyusun <strong>algoritma</strong>: urutan langkah yang jelas untuk menyelesaikan masalah. Contoh algoritma membuat teh:</p>
+<ol><li>Rebus air sampai mendidih.</li><li>Masukkan teh celup ke gelas.</li><li>Tuang air panas ke gelas.</li><li>Tambahkan gula, lalu aduk.</li></ol>
+<p>Komputer tidak bisa menebak maksud kita, jadi setiap langkah harus <strong>berurutan, jelas, dan punya akhir</strong>.</p>
+<blockquote>Algoritma adalah rencananya, program adalah rencana itu yang ditulis dalam bahasa yang dimengerti komputer.</blockquote>',
+            'variabel' => '<h2>Variabel dan Tipe Data</h2>
+<p><strong>Variabel</strong> adalah wadah bernama untuk menyimpan data. Bayangkan kotak berlabel: labelnya nama variabel, isinya nilai.</p>
+<pre>nama = "Budi"
+umur = 20
+umur = umur + 1   // sekarang umur bernilai 21</pre>
+<p>Nilai variabel bisa diubah selama program berjalan, seperti <code>umur</code> pada contoh di atas.</p>
+<h3>Tipe data yang paling sering dipakai</h3>
+<ul><li><strong>String</strong>: teks, misalnya "Budi" atau "Halo".</li><li><strong>Integer</strong>: bilangan bulat, misalnya 20 atau -5.</li><li><strong>Float</strong>: bilangan desimal, misalnya 3.14.</li><li><strong>Boolean</strong>: hanya true (benar) atau false (salah).</li></ul>
+<p>Memilih tipe data yang tepat membuat program lebih mudah dibaca dan tidak salah hitung.</p>',
+            'kontrol' => '<h2>Rangkuman Percabangan dan Perulangan</h2>
+<h3>Percabangan: memilih jalan</h3>
+<p>Percabangan dipakai ketika program harus memilih tindakan berdasarkan kondisi.</p>
+<pre>if (nilai >= 70) {
+    tampilkan("Lulus")
+} else {
+    tampilkan("Coba lagi")
+}</pre>
+<h3>Perulangan: mengulang pekerjaan</h3>
+<p>Perulangan dipakai untuk menjalankan perintah yang sama berkali-kali tanpa menulis ulang kodenya.</p>
+<pre>for (i = 1; i <= 5; i++) {
+    tampilkan(i)
+}</pre>
+<ul><li><strong>for</strong>: dipakai kalau jumlah pengulangannya sudah diketahui.</li><li><strong>while</strong>: dipakai selama sebuah kondisi masih bernilai benar.</li></ul>',
+            'javascript' => '<h2>Pengenalan JavaScript</h2>
+<p><strong>JavaScript</strong> adalah bahasa pemrograman yang membuat halaman web menjadi <strong>interaktif</strong>: tombol yang bisa diklik, menu yang terbuka, form yang dicek sebelum dikirim, sampai animasi.</p>
+<h3>Di mana JavaScript berjalan?</h3>
+<ul><li><strong>Di browser</strong>: hampir semua situs web memakai JavaScript.</li><li><strong>Di server</strong>: lewat Node.js, JavaScript juga bisa dipakai untuk backend.</li></ul>
+<h3>Contoh sederhana</h3>
+<pre>let nama = "Budi";
+alert("Halo, " + nama + "!");</pre>
+<p>Bersama HTML (struktur) dan CSS (tampilan), JavaScript (perilaku) adalah tiga bahan utama sebuah halaman web.</p>',
+            'framework' => '<h2>Apa Itu Framework?</h2>
+<p><strong>Framework</strong> adalah kerangka kerja berisi struktur dan fitur siap pakai, supaya developer tidak perlu menulis semuanya dari nol.</p>
+<h3>Kenapa memakai framework?</h3>
+<ul><li><strong>Lebih cepat</strong>: fitur umum seperti routing, koneksi database, dan login sudah tersedia.</li><li><strong>Lebih rapi</strong>: struktur folder dan cara menulis kode sudah disepakati, sehingga mudah dikerjakan bersama tim.</li><li><strong>Lebih aman</strong>: perlindungan dasar seperti CSRF dan validasi input sudah disediakan.</li></ul>
+<h3>Contoh framework</h3>
+<ul><li>PHP: <strong>Laravel</strong>, <strong>CodeIgniter</strong></li><li>JavaScript: Express, Next.js</li><li>Python: Django, Flask</li></ul>
+<p>Hati-hati: React dan Tailwind CSS sering disebut bersamaan, tetapi React adalah library JavaScript untuk tampilan dan Tailwind adalah framework CSS. Keduanya bukan framework PHP.</p>',
             'personal-branding' => '<h2>Apa Itu Personal Branding?</h2>
 <p>Personal branding adalah <strong>persepsi orang lain tentang dirimu</strong>, yang kamu bangun secara sadar dan konsisten. Setiap orang sebenarnya sudah punya "brand", yang membedakan hanyalah apakah brand itu dibentuk dengan sengaja atau dibiarkan terbentuk sendiri.</p>
 <h3>Kenapa penting?</h3>
