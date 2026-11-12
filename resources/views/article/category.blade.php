@@ -8,8 +8,9 @@
 /* Sama dengan article index, tidak ada perubahan CSS */
 
 .page-hero {
-    background: linear-gradient(135deg, var(--ink) 0%, #1a2942 100%);
-    padding: 4rem 0 3rem;
+    background: #F5F5F4;
+    border-bottom: 1px solid #E2E8F0;
+    padding: 2.25rem 0 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -18,7 +19,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(20,116,188,.15) 0%, transparent 60%);
+    background-image: linear-gradient(rgba(0,86,210,.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,86,210,.03) 1px, transparent 1px);
+    background-size: 48px 48px;
     pointer-events: none;
 }
 
@@ -28,43 +31,43 @@
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 1.5rem;
-    text-align: center;
 }
 
 .page-hero-label {
-    display: inline-block;
-    font-size: 0.75rem;
+    display: inline-flex;
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,.7);
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.2);
-    padding: 0.35rem 0.85rem;
+    color: #0056D2;
+    background: #EEF4FF;
+    border: 1px solid rgba(0,86,210,.15);
+    padding: 0.3rem 0.85rem;
     border-radius: 999px;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
 }
 
 .page-hero h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 0.75rem;
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    color: #0F1114;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
 }
 
 .page-hero p {
-    font-size: 1.05rem;
-    color: rgba(255,255,255,.65);
-    max-width: 600px;
-    margin: 0 auto;
+    font-size: 0.875rem;
+    color: #6B7280;
+    max-width: 620px;
 }
 
 .art-card {
     display: flex;
     flex-direction: column;
     background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
@@ -74,7 +77,7 @@
 .art-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 48px rgba(10,22,40,.09);
-    border-color: #93c5fd;
+    border-color: #BFDBFE;
 }
 
 .art-card-thumb-wrap {
@@ -116,7 +119,7 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     background: #fff;
-    color: var(--blue);
+    color: #0056D2;
     padding: 0.3rem 0.7rem;
     border-radius: 6px;
     cursor: pointer;
@@ -124,7 +127,7 @@
 }
 
 .art-card-badge:hover {
-    background: var(--blue-xl);
+    background: #EEF4FF;
 }
 
 .art-card-body {
@@ -154,7 +157,7 @@
 }
 
 .art-card:hover .art-card-title {
-    color: var(--blue);
+    color: #0056D2;
 }
 
 .art-card-excerpt {
@@ -181,7 +184,7 @@
 .art-card-read {
     font-size: 0.78rem;
     font-weight: 700;
-    color: var(--blue);
+    color: #0056D2;
 }
 
 .art-card-views {
@@ -213,21 +216,21 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.875rem 2rem;
-    background: var(--blue);
+    background: #0056D2;
     color: #fff;
     font-weight: 700;
     font-size: 0.9375rem;
-    border-radius: 12px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 6px 20px rgba(20,116,188,.3);
+    box-shadow: 0 6px 20px rgba(0,86,210,.3);
 }
 
 .btn-load-more:hover {
-    background: var(--blue-d);
+    background: #0048B0;
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(20,116,188,.4);
+    box-shadow: 0 10px 30px rgba(0,86,210,.4);
 }
 
 .btn-load-more:disabled {
@@ -251,7 +254,7 @@
 }
 
 .breadcrumb a:hover {
-    color: var(--blue);
+    color: #0056D2;
 }
 
 .breadcrumb span {
@@ -331,7 +334,7 @@
 </section>
 
 {{-- Content --}}
-<section style="background:var(--surf); padding:4rem 0 6rem;">
+<section style="background:#fff; padding:2rem 0 5rem;">
     <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
 
         <nav class="breadcrumb rv">
@@ -353,7 +356,7 @@
                 </svg>
                 <h3>Belum ada artikel</h3>
                 <p>Belum ada artikel dalam kategori ini. Kembali lagi nanti.</p>
-                <a href="{{ route('article.index') }}" style="display:inline-block;padding:0.75rem 1.75rem;background:var(--blue);color:#fff;border-radius:10px;font-weight:700;font-size:0.875rem;text-decoration:none;transition:all .2s;">
+                <a href="{{ route('article.index') }}" style="display:inline-block;padding:0.75rem 1.75rem;background:#0056D2;color:#fff;border-radius:10px;font-weight:700;font-size:0.875rem;text-decoration:none;transition:all .2s;">
                     Lihat Semua Artikel
                 </a>
             </div>
