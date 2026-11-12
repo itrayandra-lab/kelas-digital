@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Two complete demo courses (sections, video + text lessons, pre/post-test questions of every type)
+ * Two complete demo courses (sections, video + text lessons, per-section pre/post-tests with every question type)
  * so the learning flow can be tried end to end. Re-running replaces only these two courses.
  */
 class DemoCourseSeeder extends Seeder
@@ -44,26 +44,60 @@ class DemoCourseSeeder extends Seeder
                 ['text', 'Rencana Konten 30 Hari', $this->html('content-plan')],
             ],
         ], [
-            ['single', 'Apa pengertian personal branding yang paling tepat?', [
-                'Logo dan warna yang dipakai di akun media sosial' => false,
-                'Persepsi orang lain tentang dirimu yang kamu bangun secara sadar dan konsisten' => true,
-                'Jumlah followers yang kamu miliki' => false,
-                'Iklan berbayar untuk mempromosikan diri' => false,
-            ]],
-            ['multiple', 'Mana saja yang termasuk elemen personal branding? (pilih semua yang benar)', [
-                'Nilai dan keahlian yang kamu tawarkan' => true,
-                'Konsistensi pesan dan gaya komunikasi' => true,
-                'Membeli followers agar terlihat populer' => false,
-                'Cerita (storytelling) tentang perjalananmu' => true,
-            ]],
-            ['true_false', 'Personal branding hanya penting untuk selebriti dan influencer.', ['Benar' => false, 'Salah' => true]],
-            ['single', 'Dalam rumus personal brand statement, bagian "untuk siapa" disebut...', [
-                'Target audiens' => true,
-                'Kompetitor' => false,
-                'Nilai jual produk' => false,
-            ]],
-            ['true_false', 'Konsistensi lebih penting daripada sesekali membuat konten yang viral.', ['Benar' => true, 'Salah' => false]],
-            ['essay', 'Tuliskan personal brand statement versimu sendiri (1-2 kalimat).', []],
+            'Bab 1: Mengenal Personal Branding' => [
+                'pre' => [
+                    ['single', 'Apa pengertian personal branding yang paling tepat?', [
+                        'Logo dan warna yang dipakai di akun media sosial' => false,
+                        'Persepsi orang lain tentang dirimu yang kamu bangun secara sadar dan konsisten' => true,
+                        'Jumlah followers yang kamu miliki' => false,
+                        'Iklan berbayar untuk mempromosikan diri' => false,
+                    ]],
+                    ['true_false', 'Personal branding hanya penting untuk selebriti dan influencer.', ['Benar' => false, 'Salah' => true]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang termasuk tiga pilar personal branding? (pilih semua yang benar)', [
+                        'Nilai' => true,
+                        'Konsistensi' => true,
+                        'Jumlah followers' => false,
+                        'Visibilitas' => true,
+                    ]],
+                    ['true_false', 'Personal branding yang kuat dibangun dari siapa kamu sebenarnya, bukan pencitraan palsu.', ['Benar' => true, 'Salah' => false]],
+                    ['essay', 'Jelaskan dengan kata-katamu sendiri apa itu personal branding.', 'Personal branding adalah persepsi orang lain tentang diri kita yang dibangun secara sadar dan konsisten, berdasarkan nilai dan keahlian yang kita tawarkan.'],
+                ],
+            ],
+            'Bab 2: Menemukan Nilai Unik Dirimu' => [
+                'pre' => [
+                    ['single', 'Dalam rumus personal brand statement, bagian "untuk siapa" disebut...', [
+                        'Target audiens' => true,
+                        'Kompetitor' => false,
+                        'Nilai jual produk' => false,
+                    ]],
+                    ['true_false', 'Personal brand statement sebaiknya panjang, minimal satu halaman.', ['Benar' => false, 'Salah' => true]],
+                ],
+                'post' => [
+                    ['single', 'Personal brand statement idealnya terdiri dari...', [
+                        'Satu atau dua kalimat' => true,
+                        'Satu halaman penuh' => false,
+                        'Daftar semua pengalaman kerja' => false,
+                    ]],
+                    ['essay', 'Sebutkan rumus sederhana personal brand statement.', 'Saya membantu [target audiens] untuk [hasil yang mereka inginkan] melalui [keahlian atau cara unik saya].'],
+                ],
+            ],
+            'Bab 3: Personal Branding di Media Sosial' => [
+                'pre' => [
+                    ['true_false', 'Konsistensi lebih penting daripada sesekali membuat konten yang viral.', ['Benar' => true, 'Salah' => false]],
+                    ['single', 'Dalam pola konten 3-2-1, berapa konten edukasi yang dibuat setiap minggu?', ['1' => false, '2' => false, '3' => true]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang ada di checklist sebelum posting? (pilih semua yang benar)', [
+                        'Sesuai personal brand statement' => true,
+                        'Bermanfaat untuk audiens' => true,
+                        'Pasti viral' => false,
+                        'Gaya visual dan bahasanya konsisten' => true,
+                    ]],
+                    ['essay', 'Jelaskan isi pola konten 3-2-1 untuk satu minggu.', 'Tiga konten edukasi berisi tips atau insight, dua konten cerita tentang pengalaman atau proses, dan satu konten interaksi seperti pertanyaan atau polling.'],
+                ],
+            ],
         ]);
 
         $this->course([
@@ -88,19 +122,38 @@ class DemoCourseSeeder extends Seeder
                 ['video', 'Kerangka Ideal Belajar Digital Marketing', 'gGAA5gxzRoE'],
             ],
         ], [
-            ['single', 'Apa yang dimaksud dengan digital marketing?', [
-                'Pemasaran produk atau jasa melalui channel digital' => true,
-                'Menjual barang hanya di toko fisik' => false,
-                'Membuat website tanpa tujuan bisnis' => false,
-            ]],
-            ['multiple', 'Mana saja yang termasuk channel digital marketing?', [
-                'Media sosial' => true,
-                'SEO (mesin pencari)' => true,
-                'Brosur cetak' => false,
-                'Email marketing' => true,
-            ]],
-            ['true_false', 'SEO bertujuan agar website muncul di hasil pencarian Google.', ['Benar' => true, 'Salah' => false]],
-            ['essay', 'Channel digital marketing mana yang paling ingin kamu pelajari, dan kenapa?', []],
+            'Bab 1: Konsep Dasar' => [
+                'pre' => [
+                    ['single', 'Apa yang dimaksud dengan digital marketing?', [
+                        'Pemasaran produk atau jasa melalui channel digital' => true,
+                        'Menjual barang hanya di toko fisik' => false,
+                        'Membuat website tanpa tujuan bisnis' => false,
+                    ]],
+                    ['true_false', 'SEO bertujuan agar website muncul di hasil pencarian Google.', ['Benar' => true, 'Salah' => false]],
+                ],
+                'post' => [
+                    ['multiple', 'Mana saja yang termasuk channel digital marketing?', [
+                        'Media sosial' => true,
+                        'SEO (mesin pencari)' => true,
+                        'Brosur cetak' => false,
+                        'Email marketing' => true,
+                    ]],
+                    ['essay', 'Apa tujuan email marketing menurut materi?', 'Menjaga hubungan dengan pelanggan yang sudah mengenal brand.'],
+                ],
+            ],
+            'Bab 2: Mulai Belajar' => [
+                'pre' => [
+                    ['true_false', 'Pemula sebaiknya langsung mempelajari semua channel digital marketing sekaligus.', ['Benar' => false, 'Salah' => true]],
+                ],
+                'post' => [
+                    ['single', 'Saran untuk pemula yang baru belajar digital marketing adalah...', [
+                        'Pilih satu channel dan pelajari sampai paham' => true,
+                        'Langsung pasang iklan di semua platform' => false,
+                        'Fokus mengejar jumlah followers' => false,
+                    ]],
+                    ['essay', 'Mengapa pemula sebaiknya fokus pada satu channel dulu?', 'Supaya bisa memahami satu channel sampai benar-benar paham sebelum menambah channel lain, karena mempelajari semuanya sekaligus membuat tidak fokus.'],
+                ],
+            ],
         ]);
 
         // The seeded student gets the paid course so the whole flow can be tried without paying.
@@ -146,11 +199,26 @@ class DemoCourseSeeder extends Seeder
             }
         }
 
-        foreach ($questions as $i => [$type, $text, $options]) {
-            $question = $course->questions()->create(['type' => $type, 'question' => $text, 'order' => $i + 1]);
+        // Each section gets its own pre-test (choice questions) and post-test (may include essays,
+        // whose third value is the answer key the AI grader compares against).
+        foreach ($questions as $sectionTitle => $tests) {
+            $section = $course->sections()->where('title', $sectionTitle)->firstOrFail();
 
-            foreach ($options as $optionText => $correct) {
-                $question->options()->create(['text' => $optionText, 'is_correct' => $correct]);
+            foreach ($tests as $kind => $items) {
+                foreach ($items as $i => [$type, $text, $extra]) {
+                    $question = $section->questions()->create([
+                        'course_id' => $course->id,
+                        'kind' => $kind,
+                        'type' => $type,
+                        'question' => $text,
+                        'answer_key' => $type === 'essay' ? $extra : null,
+                        'order' => $i + 1,
+                    ]);
+
+                    foreach ($type === 'essay' ? [] : $extra as $optionText => $correct) {
+                        $question->options()->create(['text' => (string) $optionText, 'is_correct' => $correct]);
+                    }
+                }
             }
         }
 
