@@ -140,7 +140,7 @@ class CourseLearningFlowTest extends TestCase
 
     private function fakeAi(bool $correct): void
     {
-        Http::fake(['*' => Http::response(['choices' => [['message' => ['content' => json_encode(['benar' => $correct, 'alasan' => 'Maknanya sesuai.'])]]]])]);
+        Http::fake(['*' => Http::response(['choices' => [['message' => ['content' => json_encode(['skor' => $correct ? 100 : 0, 'alasan' => 'Maknanya sesuai.'])]]]])]);
     }
 
     public function test_youtube_links_are_stored_as_ids(): void
@@ -308,7 +308,7 @@ class CourseLearningFlowTest extends TestCase
         $deepseekUp = true;
         Http::fake(function ($request) use (&$deepseekUp) {
             if ($deepseekUp && str_contains($request->url(), 'api.deepseek.com')) {
-                return Http::response(['choices' => [['message' => ['content' => '{"benar": false, "alasan": "Meleset."}']]]]);
+                return Http::response(['choices' => [['message' => ['content' => '{"skor": 0, "alasan": "Meleset."}']]]]);
             }
 
             return Http::response('down', 503);
@@ -333,7 +333,11 @@ class CourseLearningFlowTest extends TestCase
         $admin = User::factory()->create(['username' => 'grader']);
         $admin->assignRole('admin');
         $essayId = CourseQuestion::where('type', 'essay')->value('id');
-        $this->actingAs($admin)->put(route('admin.attempts.review', $pending), ['marks' => [$essayId => '1']])->assertSessionHasNoErrors();
+        $this->actingAs($admin)->put(route('admin.attempts.review', $pending), ['marks' => [$essayId => '0.7']])->assertSessionHasErrors('marks.'.$essayId);
+        $this->put(route('admin.attempts.review', $pending), ['marks' => [$essayId => '0.5']])->assertSessionHasNoErrors();
+        $this->assertSame(50, $pending->fresh()->score);
+        $this->get(route('admin.curriculum.show', $this->course).'?tab=jawaban')->assertOk()->assertSee('Sebagian');
+        $this->put(route('admin.attempts.review', $pending), ['marks' => [$essayId => '1']])->assertSessionHasNoErrors();
         $this->assertSame(100, $pending->fresh()->score);
 
         $this->actingAs($student)->get(route('course.completed', $slug))->assertOk();
@@ -388,10 +392,43 @@ class CourseLearningFlowTest extends TestCase
         $multiple = CourseQuestion::where('type', 'multiple')->with('options')->first();
         $evens = $multiple->options->where('is_correct', true)->pluck('id')->all();
 
-        $this->assertTrue($multiple->isAnsweredCorrectly(array_reverse($evens)));
-        $this->assertFalse($multiple->isAnsweredCorrectly([$evens[0]]));
-        $this->assertFalse($multiple->isAnsweredCorrectly([]));
-        $this->assertFalse((new CourseQuestion(['type' => 'essay']))->isAnsweredCorrectly('apa saja'));
+        $odd = $multiple->options->where('is_correct', false)->pluck('id')->first();
+        $single = CourseQuestion::where('type', 'single')->where('kind', 'pre')->with('options')->first();
+        $singleRight = $single->options->where('is_correct', true)->pluck('id')->first();
+
+        // "Pick all that apply": full, partial, cancelled out by a wrong pick, empty.
+        $this->assertSame(1.0, $multiple->scoreFor(array_reverse($evens)));
+        $this->assertSame(0.5, $multiple->scoreFor([$evens[0]]));
+        $this->assertSame(0.0, $multiple->scoreFor([$evens[0], $odd]));
+        $this->assertSame(0.5, $multiple->scoreFor([$evens[0], $evens[1], $odd]));
+        $this->assertSame(0.0, $multiple->scoreFor([]));
+        // Single choice stays all or nothing; essays are never auto-scored.
+        $this->assertSame(1.0, $single->scoreFor($singleRight));
+        $this->assertSame(0.0, $single->scoreFor([$singleRight, $single->options->where('is_correct', false)->pluck('id')->first()]));
+        $this->assertSame(0.0, (new CourseQuestion(['type' => 'essay']))->scoreFor('apa saja'));
+    }
+
+    /**
+     * The case reported from the Digital Marketing class: 2 of 3 correct picks plus an essay the AI
+     * scored 55 must earn points, not zero.
+     */
+    public function test_partial_answers_earn_partial_points(): void
+    {
+        $section = $this->course->sections()->create(['title' => 'Bab DM', 'order' => 3]);
+        $multi = $this->question($section, 'post', 'multiple', 'Channel digital marketing?', ['Media sosial' => true, 'SEO' => true, 'Brosur' => false, 'Email marketing' => true]);
+        $essay = $this->question($section, 'post', 'essay', 'Tujuan email marketing?', 'Menjaga hubungan dengan pelanggan yang sudah mengenal brand.');
+        $picked = $multi->options->whereIn('text', ['Media sosial', 'SEO'])->pluck('id')->all();
+
+        $attempt = new QuizAttempt(['kind' => 'post', 'answers' => [$multi->id => $picked, $essay->id => 'berkomunikasi dengan pelanggan lewat email']]);
+
+        // Through the AI path, exactly as a learner's submission is finished.
+        Http::fake(['*' => Http::response(['choices' => [['message' => ['content' => '{"skor": 55, "alasan": "Mendekati."}']]]])]);
+        $attempt->finish(collect([$multi, $essay]), 60, app(\App\Support\EssayGrader::class));
+
+        $this->assertSame('graded', $attempt->status);
+        $this->assertSame(61, $attempt->score); // (2/3 + 0.55) / 2
+        $this->assertTrue($attempt->passed);
+        $this->assertStringContainsString('Skor 55/100', $attempt->ai_feedback[$essay->id]);
     }
 
     public function test_payment_cannot_be_marked_complete_without_a_midtrans_order(): void

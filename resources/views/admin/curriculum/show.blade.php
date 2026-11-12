@@ -227,23 +227,28 @@
                                     @if($feedback = $attempt->ai_feedback[$q->id] ?? null)
                                         <div class="mt-1 text-xs text-purple-700"><i class="fas fa-robot"></i> {{ $feedback }}</div>
                                     @endif
-                                    @php $mark = $attempt->essay_marks[$q->id] ?? null; @endphp
-                                    <div class="mt-2 flex gap-2">
-                                        <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg cursor-pointer {{ $mark === true ? 'border-green-500 bg-green-50' : 'border-gray-300' }}">
-                                            <input type="radio" name="marks[{{ $q->id }}]" value="1" required @checked($mark === true)> Benar
-                                        </label>
-                                        <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg cursor-pointer {{ $mark === false ? 'border-red-500 bg-red-50' : 'border-gray-300' }}">
-                                            <input type="radio" name="marks[{{ $q->id }}]" value="0" required @checked($mark === false)> Salah
-                                        </label>
+                                    @php
+                                        $mark = isset($attempt->essay_marks[$q->id]) ? (float) $attempt->essay_marks[$q->id] : null;
+                                        // The admin picks one of three levels; an AI score is shown on the nearest one.
+                                        $level = $mark === null ? null : ($mark >= 0.75 ? '1' : ($mark >= 0.25 ? '0.5' : '0'));
+                                    @endphp
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        @foreach(['1' => ['Benar', 'border-green-500 bg-green-50'], '0.5' => ['Sebagian', 'border-amber-500 bg-amber-50'], '0' => ['Salah', 'border-red-500 bg-red-50']] as $value => [$text, $on])
+                                            <label class="flex items-center gap-2 px-3 py-1.5 border rounded-lg cursor-pointer {{ $level === (string) $value ? $on : 'border-gray-300' }}">
+                                                <input type="radio" name="marks[{{ $q->id }}]" value="{{ $value }}" required @checked($level === (string) $value)> {{ $text }}
+                                            </label>
+                                        @endforeach
                                     </div>
                                 @else
                                     @php
                                         $picked = $q->options->whereIn('id', collect((array) $answer)->map(fn ($id) => (int) $id))->pluck('text');
-                                        $right = $q->isAnsweredCorrectly($answer);
+                                        $credit = $q->scoreFor($answer);
+                                        $right = $credit === 1.0;
+                                        $tone = $right ? 'text-green-700' : ($credit > 0 ? 'text-amber-700' : 'text-red-600');
                                     @endphp
-                                    <div class="mt-1 flex items-start gap-2 {{ $right ? 'text-green-700' : 'text-red-600' }}">
-                                        <i class="fas {{ $right ? 'fa-check-circle' : 'fa-times-circle' }} mt-0.5"></i>
-                                        <span>{{ $picked->implode(', ') ?: '(tidak dijawab)' }}</span>
+                                    <div class="mt-1 flex items-start gap-2 {{ $tone }}">
+                                        <i class="fas {{ $right ? 'fa-check-circle' : ($credit > 0 ? 'fa-adjust' : 'fa-times-circle') }} mt-0.5"></i>
+                                        <span>{{ $picked->implode(', ') ?: '(tidak dijawab)' }}@if($credit > 0 && ! $right) · sebagian benar ({{ round($credit * 100) }}%)@endif</span>
                                     </div>
                                     @unless($right)
                                         <div class="text-xs text-gray-500 ml-6">Jawaban benar: {{ $q->options->where('is_correct', true)->pluck('text')->implode(', ') }}</div>

@@ -34,7 +34,7 @@ class CurriculumController extends Controller
     }
 
     /**
-     * Admin marks each essay answer right or wrong; the attempt is then scored like any other.
+     * Admin marks each essay right, partly right or wrong (1, 0.5, 0); the attempt is then scored like any other.
      */
     public function reviewAttempt(Request $request, QuizAttempt $attempt)
     {
@@ -44,14 +44,14 @@ class CurriculumController extends Controller
 
         $data = $request->validate([
             'marks' => 'required|array',
-            'marks.*' => 'required|boolean',
+            'marks.*' => 'required|in:0,0.5,1',
         ], ['marks.required' => 'Nilai semua jawaban essay dulu.']);
 
         if ($essayIds->diff(array_keys($data['marks']))->isNotEmpty()) {
             return $this->back($course, null, 'jawaban')->withErrors(['marks' => 'Nilai semua jawaban essay dulu.']);
         }
 
-        $attempt->essay_marks = $essayIds->mapWithKeys(fn ($id) => [$id => (bool) $data['marks'][$id]])->all();
+        $attempt->essay_marks = $essayIds->mapWithKeys(fn ($id) => [$id => (float) $data['marks'][$id]])->all();
         $attempt->reviewed_at = now();
         $attempt->grade($questions, $course->post_test_pass_score);
         $attempt->save();

@@ -34,17 +34,30 @@ class CourseQuestion extends Model
     }
 
     /**
-     * Choice questions need exactly the set of correct options. Essays are marked by the AI grader or an admin instead.
+     * Credit for a choice question, from 0 to 1. Single and true/false are all or nothing. "Pick all that
+     * apply" gives partial credit: each correct pick adds a share, each wrong pick takes one away
+     * (so ticking every option doesn't pay off), never below zero. Essays are scored by the AI or an admin.
      */
-    public function isAnsweredCorrectly(mixed $answer): bool
+    public function scoreFor(mixed $answer): float
     {
         if ($this->type === 'essay') {
-            return false;
+            return 0.0;
         }
 
-        $given = collect((array) $answer)->map(fn ($id) => (int) $id)->sort()->values()->all();
-        $correct = $this->options->where('is_correct', true)->pluck('id')->sort()->values()->all();
+        $given = collect((array) $answer)->map(fn ($id) => (int) $id)->unique();
+        $correct = $this->options->where('is_correct', true)->pluck('id');
 
-        return $given !== [] && $given === $correct;
+        if ($given->isEmpty() || $correct->isEmpty()) {
+            return 0.0;
+        }
+
+        if ($this->type !== 'multiple') {
+            return $given->values()->all() === $correct->values()->all() ? 1.0 : 0.0;
+        }
+
+        $hits = $given->intersect($correct)->count();
+        $misses = $given->diff($correct)->count();
+
+        return max(0, $hits - $misses) / $correct->count();
     }
 }

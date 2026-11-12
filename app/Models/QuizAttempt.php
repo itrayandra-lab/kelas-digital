@@ -110,7 +110,7 @@ class QuizAttempt extends Model
             $answer = trim((string) ($this->answers[$q->id] ?? ''));
 
             if ($answer === '') {
-                $marks[$q->id] = false;
+                $marks[$q->id] = 0;
                 $feedback[$q->id] = 'Tidak dijawab.';
 
                 continue;
@@ -122,8 +122,8 @@ class QuizAttempt extends Model
             }
 
             if ($result = $grader->grade($q->question, (string) $q->answer_key, $answer)) {
-                $marks[$q->id] = $result['correct'];
-                $feedback[$q->id] = $result['reason'].' (dinilai AI via '.$result['provider'].')';
+                $marks[$q->id] = $result['score'];
+                $feedback[$q->id] = 'Skor '.round($result['score'] * 100).'/100. '.$result['reason'].' (dinilai AI via '.$result['provider'].')';
             }
         }
 
@@ -134,7 +134,7 @@ class QuizAttempt extends Model
 
     /**
      * Scores the attempt. Choice questions are checked automatically; essays count only once marked,
-     * so an attempt with an unmarked essay stays pending without a score.
+     * so an attempt with an unmarked essay stays pending without a score. Essay marks are 0 to 1.
      */
     public function grade(Collection $questions, int $passScore): void
     {
@@ -147,10 +147,11 @@ class QuizAttempt extends Model
             return;
         }
 
-        $correct = $questions->filter(fn ($q) => $q->type === 'essay'
-            ? (bool) $marks[$q->id]
-            : $q->isAnsweredCorrectly($this->answers[$q->id] ?? null))->count();
-        $score = $questions->isEmpty() ? 100 : (int) round($correct / $questions->count() * 100);
+        // Every question is worth one point; partial answers earn part of it.
+        $points = $questions->sum(fn ($q) => $q->type === 'essay'
+            ? (float) $marks[$q->id]
+            : $q->scoreFor($this->answers[$q->id] ?? null));
+        $score = $questions->isEmpty() ? 100 : (int) round($points / $questions->count() * 100);
 
         $this->fill([
             'status' => 'graded',
