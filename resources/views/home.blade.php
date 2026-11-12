@@ -836,12 +836,12 @@
         <div class="faq-box rv">
             @php
             $faqs=[
-                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setelah mendaftar kelas, kamu mengerjakan pre-test untuk mengukur pemahaman awal, lalu mempelajari materi video dan bacaan bab demi bab. Di akhir ada post-test. Kalau lulus, kelasmu selesai.'],
+                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setiap kelas terbagi menjadi beberapa bab. Di setiap bab kamu mengerjakan pre-test, mempelajari materi video dan bacaan secara berurutan, lalu mengerjakan post-test. Bab berikutnya terbuka setelah post-test lulus.'],
                 ['q'=>'Apakah ada kelas gratis?','a'=>'Ada. Kelas berlabel Gratis bisa langsung diikuti setelah mendaftar akun, tanpa pembayaran.'],
                 ['q'=>'Bagaimana cara membayar kelas berbayar?','a'=>'Pembayaran diproses lewat Midtrans. Kamu bisa membayar dengan virtual account bank, QRIS, e-wallet, atau kartu. Kelas langsung terbuka setelah pembayaran berhasil.'],
                 ['q'=>'Berapa lama akses kelas yang sudah saya ikuti?','a'=>'Tidak ada batas waktu. Kelas yang sudah kamu ikuti tetap bisa dibuka kapan saja dari halaman Kursus Saya.'],
                 ['q'=>'Bisakah saya belajar dari smartphone?','a'=>'Bisa. Ray Academy bisa dibuka dari smartphone, tablet, maupun laptop. Progres belajarmu tersimpan, jadi kamu bisa lanjut di perangkat lain.'],
-                ['q'=>'Kapan nilai tes saya keluar?','a'=>'Soal pilihan ganda dan benar/salah langsung dinilai. Kalau tes berisi soal essay, nilainya keluar setelah diperiksa oleh tim kami.'],
+                ['q'=>'Kapan nilai tes saya keluar?','a'=>'Nilai langsung keluar setelah tes dikirim. Jawaban essay dinilai otomatis dengan mencocokkan maknanya ke kunci jawaban. Kalau sistem penilai sedang tidak tersedia, essay diperiksa oleh tim kami dan nilainya menyusul.'],
             ];
             @endphp
             @foreach($faqs as $faq)
