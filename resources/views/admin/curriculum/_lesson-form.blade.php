@@ -27,6 +27,7 @@
             :required="type === 'video'" placeholder="Tempel link YouTube, mis. https://youtu.be/xxxx"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
         <p class="mt-1 text-xs text-gray-500">Peserta wajib menonton minimal 90% video dan tidak bisa melompati bagian yang belum ditonton.</p>
+        <p class="mt-1 text-xs text-amber-700"><i class="fas fa-eye-slash mr-1"></i> Upload video materi sebagai <strong>Unlisted</strong> (Tidak publik) di YouTube supaya tidak bisa dicari, dan pastikan "Izinkan penyematan" aktif. Video Private tidak bisa diputar di sini.</p>
     </div>
 
     <div x-show="type === 'text'">
