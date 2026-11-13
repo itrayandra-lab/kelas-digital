@@ -28,11 +28,15 @@ class CourseProgress
     /** Paid (or free course, or admin). Without it only the free chapters of a partly free course are open. */
     public readonly bool $fullAccess;
 
+    /** Admins check a course's content in any order, so none of the learner's step locks apply to them. */
+    public readonly bool $reviewer;
+
     private Collection $attempts;
 
     public function __construct(public readonly Course $course, public readonly User $user)
     {
         $this->fullAccess = self::canAccessCourse($user, $course);
+        $this->reviewer = $user->hasAnyRole(['admin', 'Super-Admin']);
 
         $this->sections = $course->sections()
             ->with('lessons')
@@ -187,6 +191,10 @@ class CourseProgress
 
     private function stepUnlocked(callable $match): bool
     {
+        if ($this->reviewer) {
+            return $this->steps->contains($match);
+        }
+
         foreach ($this->steps as $step) {
             if (! $this->sectionOpen($step['section'])) {
                 return false;

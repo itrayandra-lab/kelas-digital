@@ -315,6 +315,7 @@
                                     <div class="cd-row">
                                         <i class="fas {{ $progress?->preTestDone($section) ? 'fa-check-circle ok' : 'fa-clipboard-list' }} ic"></i>
                                         <span class="t"><strong>Pre-test</strong> · {{ $section->pre_count }} soal</span>
+                                        @if($progress?->reviewer)<a href="{{ route('course.test', [$course->slug, $section, 'pre']) }}">Buka</a>@endif
                                     </div>
                                 @endif
                                 @foreach($section->lessons as $lesson)
@@ -323,7 +324,9 @@
                                         <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt') }} ic"></i>
                                         <span class="t">{{ $lesson->title }}</span>
                                         {{-- Only the trailer is public; free chapters open after "Mulai Gratis". --}}
-                                        @if(! $userHasAccess && ! ($section->is_free && $partlyFree))
+                                        @if($progress?->reviewer)
+                                            <a href="{{ route('course.lesson', [$course->slug, $lesson]) }}">Buka</a>
+                                        @elseif(! $userHasAccess && ! ($section->is_free && $partlyFree))
                                             <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
                                         @endif
                                         @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
@@ -333,6 +336,7 @@
                                     <div class="cd-row">
                                         <i class="fas {{ $progress?->postTestPassed($section) ? 'fa-check-circle ok' : 'fa-clipboard-check' }} ic"></i>
                                         <span class="t"><strong>Post-test</strong> · {{ $section->post_count }} soal · lulus minimal {{ $course->post_test_pass_score }}</span>
+                                        @if($progress?->reviewer)<a href="{{ route('course.test', [$course->slug, $section, 'post']) }}">Buka</a>@endif
                                     </div>
                                 @endif
                             </div>

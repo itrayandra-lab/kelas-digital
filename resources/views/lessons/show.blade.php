@@ -69,7 +69,9 @@
         @endunless
 
         <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-            @if($done)
+            @if($progress->reviewer)
+                <span style="font-size:.85rem;color:var(--muted);"><i class="fas fa-user-shield" style="color:var(--blue);"></i> Mode admin: semua materi dan tes terbuka, video bisa digeser bebas. Pilih materi lain dari Daftar Modul.</span>
+            @elseif($done)
                 <a href="{{ route('course.learn', $course->slug) }}" class="btn-next">Lanjut <i class="fas fa-arrow-right"></i></a>
                 <span style="font-size:.8rem;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Materi ini sudah selesai</span>
             @else
@@ -90,7 +92,7 @@
 // resumes from the last position the server accepted.
 (function () {
     const tracking = {{ $watch ? 'true' : 'false' }};
-    const canComplete = {{ ($progress && ! $done) ? 'true' : 'false' }};
+    const canComplete = {{ (! $progress->reviewer && ! $done) ? 'true' : 'false' }};
     const resumeAt = {{ (int) ($watch?->position ?? 0) }};
     let maxWatched = {{ (int) ($watch?->watched_seconds ?? 0) }};
     let player, timer = null, lastPing = 0, unlocked = false;
@@ -177,7 +179,7 @@
 </script>
 @endif
 
-@if($progress && ! $done)
+@if(! $progress->reviewer && ! $done)
 <script>
 (function () {
     const btn = document.getElementById('btn-complete');

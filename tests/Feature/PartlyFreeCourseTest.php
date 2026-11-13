@@ -117,4 +117,15 @@ class PartlyFreeCourseTest extends TestCase
         $this->assertSame(1, $gratis->fresh()->used_count);
         $this->assertFalse($check('GRATIS')['ok']);
     }
+
+    public function test_admins_open_any_lesson_in_any_order(): void
+    {
+        $slug = $this->course->slug;
+        $this->seed(RolePermissionSeeder::class);
+        $this->actingAs(User::factory()->create(['username' => 'admin1'])->assignRole('admin'));
+
+        // The paid chapter's lesson opens straight away, before the free chapter is done.
+        $this->get(route('course.lesson', [$slug, $this->paidLesson]))->assertOk()->assertSee('Mode admin');
+        $this->get(route('course.show', $slug))->assertSee(route('course.lesson', [$slug, $this->paidLesson]));
+    }
 }

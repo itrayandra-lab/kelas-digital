@@ -174,7 +174,8 @@ class TestController extends Controller
 
         $done = $kind === 'pre' ? $progress->preTestDone($section) : $progress->postTestPassed($section);
 
-        if ($done && ! $this->openAttempt($course, $section, $kind)) {
+        // Learners take a finished test once (pre) or until passed (post); admins may retake any test to check it.
+        if ($done && ! $progress->reviewer && ! $this->openAttempt($course, $section, $kind)) {
             abort(redirect()->route('course.learn', $slug));
         }
 
