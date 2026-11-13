@@ -131,10 +131,8 @@ class RolePermissionSeeder extends Seeder
             'create tags',
             'edit tags',
             'delete tags',
-            // Admin Panel Access (for dashboard)
             'access admin panel',
             'view dashboard',
-            'manage site settings',
         ]);
 
         // Instructor role - Limited to course management only

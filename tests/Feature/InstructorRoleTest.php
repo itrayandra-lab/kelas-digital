@@ -47,4 +47,19 @@ class InstructorRoleTest extends TestCase
         $this->assertDatabaseCount('lesson_progress', 0);
         $this->assertDatabaseCount('enrollments', 0);
     }
+
+    public function test_content_managers_manage_articles_only(): void
+    {
+        $this->seed(RolePermissionSeeder::class);
+        $this->actingAs(User::factory()->create(['username' => 'penulis'])->assignRole('content-manager'));
+
+        foreach (['admin.dashboard', 'admin.articles.index', 'admin.article-categories.index', 'admin.tags.index', 'admin.hero-slider.index'] as $name) {
+            $this->get(route($name))->assertOk();
+        }
+        foreach (['admin.site-settings.index', 'admin.courses.index', 'admin.users.index', 'admin.payments.index', 'admin.vouchers.index'] as $name) {
+            $this->get(route($name))->assertForbidden();
+        }
+
+        $this->assertFalse(User::factory()->create(['username' => 'murid'])->assignRole('student')->can('manage site settings'));
+    }
 }
