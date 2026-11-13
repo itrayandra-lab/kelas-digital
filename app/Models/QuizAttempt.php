@@ -12,10 +12,10 @@ use Illuminate\Support\Collection;
  */
 class QuizAttempt extends Model
 {
-    /** From the Ray Academy test sheets: 15 choice questions take 20 minutes; the post-test's two essays share the other 40 of its 60. */
-    public const SECONDS_PER_CHOICE = 80;
+    /** Set by the course owner: 30 seconds per choice question, 3 minutes per essay. */
+    public const SECONDS_PER_CHOICE = 30;
 
-    public const SECONDS_PER_ESSAY = 1200;
+    public const SECONDS_PER_ESSAY = 180;
 
     /** Allowance for network delay between the timer running out and the answer arriving. */
     public const GRACE_SECONDS = 3;
