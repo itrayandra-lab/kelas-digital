@@ -1,0 +1,82 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Course;
+use App\Models\CourseCategory;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * "Marketing Strategy in the AI Era" from docs/docs (Master Course Structure V2.3, Modul 01, Module 02 tests).
+ * Content lives in data/marketing-ai-course.json; diagrams in public/img/courses/marketing-ai.
+ * Safe to run on production: it does nothing when the course already exists.
+ *
+ * php artisan db:seed --class=MarketingAiCourseSeeder
+ */
+class MarketingAiCourseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $data = json_decode(file_get_contents(database_path('seeders/data/marketing-ai-course.json')), true, flags: JSON_THROW_ON_ERROR);
+
+        if (Course::where('slug', $data['slug'])->exists()) {
+            $this->command?->warn("Kelas {$data['slug']} sudah ada, tidak diubah.");
+
+            return;
+        }
+
+        DB::transaction(function () use ($data) {
+            $course = Course::create([
+                'title' => $data['title'],
+                'slug' => $data['slug'],
+                'instructor' => 'Tim Ray Academy',
+                'description' => $data['description'],
+                'benefits' => $data['benefits'],
+                // shortcut: placeholder price, not in the docs; set the real one in Admin → Manage Courses.
+                'price' => 299000,
+                'course_type' => 'paid',
+                'level' => 'Beginner',
+                'thumbnail' => 'default-course.jpg',
+                'trailer_video_id' => $data['trailer'],
+                'course_category_id' => CourseCategory::firstOrCreate(['name' => 'Digital Marketing'], ['description' => 'Kelas digital marketing'])->id,
+            ]);
+
+            foreach ($data['sections'] as $sectionOrder => $sectionData) {
+                $section = $course->sections()->create([
+                    'title' => $sectionData['title'],
+                    'order' => $sectionOrder + 1,
+                    'is_free' => $sectionData['is_free'],
+                ]);
+
+                foreach ($sectionData['lessons'] as $lessonOrder => $lesson) {
+                    $section->lessons()->create([
+                        'course_id' => $course->id,
+                        'title' => $lesson['title'],
+                        'type' => $lesson['type'],
+                        'youtube_video_id' => $lesson['video'] ?? null,
+                        'content' => $lesson['html'] ?? null,
+                        'module' => $sectionData['title'],
+                        'order' => $lessonOrder + 1,
+                    ]);
+                }
+
+                foreach (['pre', 'post'] as $kind) {
+                    foreach ($sectionData[$kind] as $questionOrder => $q) {
+                        $question = $section->questions()->create([
+                            'course_id' => $course->id,
+                            'kind' => $kind,
+                            'type' => $q['type'],
+                            'question' => $q['question'],
+                            'answer_key' => $q['answer_key'] ?? null,
+                            'order' => $questionOrder + 1,
+                        ]);
+                        foreach ($q['options'] ?? [] as $option) {
+                            $question->options()->create(['text' => $option['text'], 'is_correct' => $option['correct']]);
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
