@@ -75,30 +75,27 @@ class LessonController extends Controller
         }
 
         $user = auth()->user();
-        $hasAccess = CourseProgress::canStart($user, $course);
 
-        // Visitors who haven't started the course may look at lessons in its free chapters, without progress.
-        if (! $hasAccess && ! $lesson->section?->is_free) {
-            return redirect()->route('course.show', $course->slug)
-                ->with('error', 'Daftar kelas ini dulu untuk membuka materi.');
+        // Only the trailer is public; lessons open after enrolling ("Mulai gratis" for free chapters), in order.
+        if (! CourseProgress::canStart($user, $course)) {
+            return redirect()->route('course.show', $course->slug)->with('error', $course->isPartlyFree()
+                ? 'Login lalu klik Mulai Gratis untuk membuka materi.'
+                : 'Daftar kelas ini dulu untuk membuka materi.');
         }
 
-        $progress = $hasAccess ? new CourseProgress($course, $user) : null;
+        $progress = new CourseProgress($course, $user);
 
-        if ($progress && ! $progress->isUnlocked($lesson)) {
+        if (! $progress->isUnlocked($lesson)) {
             return redirect()->route('course.learn', $course->slug)
                 ->with('error', $progress->sectionOpen($lesson->section) ? 'Selesaikan langkah sebelumnya dulu.' : null);
         }
 
-        $watch = null;
-        if ($progress) {
-            $watch = LessonProgress::firstOrCreate(
-                ['user_id' => $user->id, 'lesson_id' => $lesson->id],
-                ['started_at' => now()],
-            );
-            // Each page view starts a new watching session: time spent away doesn't count as watching.
-            $watch->update(['last_ping_at' => now()]);
-        }
+        $watch = LessonProgress::firstOrCreate(
+            ['user_id' => $user->id, 'lesson_id' => $lesson->id],
+            ['started_at' => now()],
+        );
+        // Each page view starts a new watching session: time spent away doesn't count as watching.
+        $watch->update(['last_ping_at' => now()]);
 
         return view('lessons.show', compact('course', 'lesson', 'progress', 'watch'));
     }

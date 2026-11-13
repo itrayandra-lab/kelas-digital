@@ -58,12 +58,14 @@ class PartlyFreeCourseTest extends TestCase
         $slug = $this->course->slug;
         $this->assertTrue($this->course->isPartlyFree());
 
-        // Visitors may read lessons of free chapters, but not paid ones.
-        $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertOk()->assertSee('Mulai gratis');
+        // Only the trailer is public: visitors and users who haven't started can't open any lesson.
+        $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertRedirect(route('course.show', $slug));
         $this->get(route('course.lesson', [$slug, $this->paidLesson]))->assertRedirect(route('course.show', $slug));
-        $this->get(route('course.show', $slug))->assertSee('Sebagian Gratis')->assertSee('Login untuk Mulai Gratis');
+        $this->get(route('course.show', $slug))->assertSee('Sebagian Gratis')->assertSee('Login untuk Mulai Gratis')
+            ->assertDontSee(route('course.lesson', [$slug, $this->freeLesson]));
 
         $this->actingAs($user = $this->student());
+        $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertRedirect(route('course.show', $slug));
         $this->post(route('course.enroll', $slug))->assertRedirect(route('course.learn', $slug));
         $this->assertSame('trial', Enrollment::firstOrFail()->payment_method);
         session()->put("intro_seen.{$this->course->id}", true);

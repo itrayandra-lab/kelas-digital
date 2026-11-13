@@ -43,8 +43,7 @@
 </style>
 
 @php
-    $done = $progress?->isCompleted($lesson) ?? false;
-    $preview = ! $progress;
+    $done = $progress->isCompleted($lesson);
 @endphp
 
 <x-classroom :course="$course" :progress="$progress" :current="'lesson-'.$lesson->id">
@@ -69,23 +68,17 @@
             <div id="text-end" style="height:1px;"></div>
         @endunless
 
-        @if($preview)
-            <div style="margin-top:1.5rem;padding:1rem;background:var(--blue-xl);border-radius:10px;font-size:.875rem;">
-                Ini materi dari bab gratis. <a href="{{ route('course.show', $course->slug) }}" style="color:var(--blue);font-weight:700;">Mulai gratis</a> supaya progresmu tersimpan dan pre-test serta post-test-nya terbuka.
-            </div>
-        @else
-            <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-                @if($done)
-                    <a href="{{ route('course.learn', $course->slug) }}" class="btn-next">Lanjut <i class="fas fa-arrow-right"></i></a>
-                    <span style="font-size:.8rem;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Materi ini sudah selesai</span>
-                @else
-                    <button id="btn-complete" class="btn-next" disabled>Tandai Selesai &amp; Lanjut <i class="fas fa-arrow-right"></i></button>
-                    <span id="complete-hint" style="font-size:.8rem;color:var(--muted);">
-                        {{ $lesson->isVideo() ? 'Tonton video sampai selesai untuk lanjut.' : 'Baca materi sampai bawah untuk lanjut.' }}
-                    </span>
-                @endif
-            </div>
-        @endif
+        <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+            @if($done)
+                <a href="{{ route('course.learn', $course->slug) }}" class="btn-next">Lanjut <i class="fas fa-arrow-right"></i></a>
+                <span style="font-size:.8rem;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Materi ini sudah selesai</span>
+            @else
+                <button id="btn-complete" class="btn-next" disabled>Tandai Selesai &amp; Lanjut <i class="fas fa-arrow-right"></i></button>
+                <span id="complete-hint" style="font-size:.8rem;color:var(--muted);">
+                    {{ $lesson->isVideo() ? 'Tonton video sampai selesai untuk lanjut.' : 'Baca materi sampai bawah untuk lanjut.' }}
+                </span>
+            @endif
+        </div>
     </div>
 </x-classroom>
 

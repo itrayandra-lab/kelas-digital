@@ -322,13 +322,9 @@
                                     <div class="cd-row">
                                         <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt') }} ic"></i>
                                         <span class="t">{{ $lesson->title }}</span>
-                                        @if(! $userHasAccess)
-                                            {{-- Lessons open in the framed lesson player only; the raw YouTube link is reserved for the trailer. --}}
-                                            @if($section->is_free && $partlyFree)
-                                                @unless($progress)<a href="{{ route('course.lesson', [$course->slug, $lesson]) }}">Coba</a>@endunless
-                                            @else
-                                                <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
-                                            @endif
+                                        {{-- Only the trailer is public; free chapters open after "Mulai Gratis". --}}
+                                        @if(! $userHasAccess && ! ($section->is_free && $partlyFree))
+                                            <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
                                         @endif
                                         @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
                                     </div>

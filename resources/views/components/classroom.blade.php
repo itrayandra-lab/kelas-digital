@@ -40,7 +40,7 @@
                 'label' => $no.'.'.($lIndex + 1).' '.$lesson->title,
                 'icon' => $lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt',
                 'url' => route('course.lesson', [$course->slug, $lesson]),
-                'open' => $progress ? $progress->isUnlocked($lesson) : (bool) $section->is_free,
+                'open' => (bool) $progress?->isUnlocked($lesson),
                 'done' => (bool) $progress?->isCompleted($lesson),
                 'meta' => $lesson->duration ? $lesson->duration.' mnt' : null,
             ]);
