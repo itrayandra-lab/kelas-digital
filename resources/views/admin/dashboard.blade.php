@@ -9,7 +9,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-6">
             <div class="bg-white p-6 rounded-lg shadow-sm flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-500">My Courses</p>
+                    <p class="text-sm font-medium text-gray-500">Total Kelas</p>
                     <p class="text-3xl font-bold text-gray-900">{{ $totalCourses }}</p>
                 </div>
                 <div class="flex-shrink-0 h-14 w-14 flex items-center justify-center bg-primary-100 rounded-full">
@@ -144,6 +144,8 @@
         @endif
     @endif
 
+    {{-- Enrollments carry learners' payment status, which instructors don't handle. --}}
+    @unless(auth()->user()->hasRole('instructor'))
     <div class="mt-8 bg-white rounded-lg shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-bold text-gray-800">
@@ -280,5 +282,6 @@
             @endif
         </div>
     </div>
+    @endunless
 
 @endsection

@@ -15,20 +15,13 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         if ($user->hasRole('instructor')) {
-            // Dashboard khusus untuk instructor
-            $totalCourses = Course::where('instructor', $user->name)->count();
+            // Instructors manage every course for now (not only their own), so they see the full count.
+            $totalCourses = Course::count();
             $totalUsers = null; // Hidden untuk instructor
             $totalEnrollments = null; // Hidden untuk instructor
             $pendingPayments = null; // Hidden untuk instructor
 
-            // Get enrollments hanya untuk course instructor tersebut
-            $recentEnrollments = Enrollment::with(['user', 'course'])
-                ->whereHas('course', function ($query) use ($user) {
-                    $query->where('instructor', $user->name);
-                })
-                ->latest()
-                ->take(5)
-                ->get();
+            $recentEnrollments = collect();
 
         } elseif ($user->hasRole('content-manager')) {
             // Dashboard khusus untuk content manager
