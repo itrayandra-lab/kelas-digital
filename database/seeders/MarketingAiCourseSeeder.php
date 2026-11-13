@@ -4,13 +4,14 @@ namespace Database\Seeders;
 
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\CourseSection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
  * "Marketing Strategy in the AI Era" from docs/docs (Master Course Structure V2.3, Modul 01, Module 02 tests).
  * Content lives in data/marketing-ai-course.json; diagrams in public/img/courses/marketing-ai.
- * Safe to run on production: it does nothing when the course already exists.
+ * Safe to run on production: when the course already exists it only adds tests that chapters are still missing.
  *
  * php artisan db:seed --class=MarketingAiCourseSeeder
  */
@@ -20,8 +21,8 @@ class MarketingAiCourseSeeder extends Seeder
     {
         $data = json_decode(file_get_contents(database_path('seeders/data/marketing-ai-course.json')), true, flags: JSON_THROW_ON_ERROR);
 
-        if (Course::where('slug', $data['slug'])->exists()) {
-            $this->command?->warn("Kelas {$data['slug']} sudah ada, tidak diubah.");
+        if ($existing = Course::where('slug', $data['slug'])->first()) {
+            $this->addMissingTests($existing, $data['sections']);
 
             return;
         }
@@ -62,21 +63,46 @@ class MarketingAiCourseSeeder extends Seeder
                 }
 
                 foreach (['pre', 'post'] as $kind) {
-                    foreach ($sectionData[$kind] as $questionOrder => $q) {
-                        $question = $section->questions()->create([
-                            'course_id' => $course->id,
-                            'kind' => $kind,
-                            'type' => $q['type'],
-                            'question' => $q['question'],
-                            'answer_key' => $q['answer_key'] ?? null,
-                            'order' => $questionOrder + 1,
-                        ]);
-                        foreach ($q['options'] ?? [] as $option) {
-                            $question->options()->create(['text' => $option['text'], 'is_correct' => $option['correct']]);
-                        }
+                    $this->createQuestions($section, $kind, $sectionData[$kind]);
+                }
+            }
+        });
+    }
+
+    /**
+     * For a course already on the server: adds a chapter's tests only where that chapter has none of that
+     * kind yet, so questions an admin wrote or edited are never touched.
+     */
+    private function addMissingTests(Course $course, array $sections): void
+    {
+        DB::transaction(function () use ($course, $sections) {
+            foreach ($sections as $order => $sectionData) {
+                $section = $course->sections()->where('order', $order + 1)->first();
+
+                foreach (['pre', 'post'] as $kind) {
+                    if ($section && $sectionData[$kind] && ! $section->testQuestions($kind)->exists()) {
+                        $this->createQuestions($section, $kind, $sectionData[$kind]);
+                        $this->command?->info("{$section->title}: {$kind}-test ditambahkan.");
                     }
                 }
             }
         });
+    }
+
+    private function createQuestions(CourseSection $section, string $kind, array $questions): void
+    {
+        foreach ($questions as $order => $q) {
+            $question = $section->questions()->create([
+                'course_id' => $section->course_id,
+                'kind' => $kind,
+                'type' => $q['type'],
+                'question' => $q['question'],
+                'answer_key' => $q['answer_key'] ?? null,
+                'order' => $order + 1,
+            ]);
+            foreach ($q['options'] ?? [] as $option) {
+                $question->options()->create(['text' => $option['text'], 'is_correct' => $option['correct']]);
+            }
+        }
     }
 }
