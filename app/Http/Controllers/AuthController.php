@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -39,16 +42,15 @@ class AuthController extends Controller
 
             // Redirect based on user role
             if ($user && ($user->isSuperAdmin() || $user->isAdmin() || $user->isInstructor() || $user->isContentManager())) {
-                return redirect()->intended('/admin');
+                return $this->done($request, redirect()->intended('/admin'));
             }
 
             // Student role goes to dashboard
-            return redirect()->intended('/dashboard');
+            return $this->done($request, redirect()->intended('/dashboard'));
         }
 
-        return back()->withErrors([
-            'login' => 'The provided credentials do not match our records.',
-        ])->onlyInput('login');
+        // Answers with a JSON 422 for the AJAX form, or redirects back with the input otherwise.
+        throw ValidationException::withMessages(['login' => 'Username/email atau password salah.']);
     }
 
     public function showRegister()
@@ -85,7 +87,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended('/');
+        return $this->done($request, redirect()->intended('/'));
     }
 
     public function logout(Request $request)
@@ -96,5 +98,11 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /** The login and register forms submit with fetch; they get the destination as JSON and navigate themselves. */
+    private function done(Request $request, RedirectResponse $redirect): RedirectResponse|JsonResponse
+    {
+        return $request->expectsJson() ? response()->json(['redirect' => $redirect->getTargetUrl()]) : $redirect;
     }
 }

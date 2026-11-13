@@ -39,17 +39,18 @@
                     </p>
                 </div>
 
-                @if ($errors->any())
-                    <div class="mt-6 bg-red-50 border border-red-200 text-sm text-red-700 px-4 py-3 rounded-lg">
+                <div id="form-errors" role="alert" aria-live="polite" @if (! $errors->any()) hidden @endif
+                    class="mt-6 bg-red-50 border border-red-200 text-sm text-red-700 px-4 py-3 rounded-lg">
+                    @if ($errors->any())
                         <ul class="list-disc list-inside">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
-                    </div>
-                @endif
+                    @endif
+                </div>
 
-                <form class="mt-8 space-y-6" method="POST" action="{{ route('register') }}">
+                <form data-ajax class="mt-8 space-y-6" method="POST" action="{{ route('register') }}">
                     @csrf
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
@@ -98,6 +99,7 @@
             </div>
         </div>
     </div>
+    @include('auth._ajax-form')
 </body>
 
 </html>
