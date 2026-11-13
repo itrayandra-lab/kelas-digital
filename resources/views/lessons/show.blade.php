@@ -70,7 +70,7 @@
 
         <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
             @if($progress->reviewer)
-                <span style="font-size:.85rem;color:var(--muted);"><i class="fas fa-user-shield" style="color:var(--blue);"></i> Mode admin: semua materi dan tes terbuka, video bisa digeser bebas. Pilih materi lain dari Daftar Modul.</span>
+                <span style="font-size:.85rem;color:var(--muted);"><i class="fas fa-user-shield" style="color:var(--blue);"></i> Mode admin: semua materi terbuka dan video bisa digeser bebas. Kunjunganmu tidak dicatat sebagai progres peserta.</span>
             @elseif($done)
                 <a href="{{ route('course.learn', $course->slug) }}" class="btn-next">Lanjut <i class="fas fa-arrow-right"></i></a>
                 <span style="font-size:.8rem;color:#16a34a;font-weight:600;"><i class="fas fa-check-circle"></i> Materi ini sudah selesai</span>

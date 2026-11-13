@@ -21,6 +21,12 @@ class TestController extends Controller
     {
         [$course, $progress] = $this->context($slug, $section, $kind);
 
+        if ($progress->reviewer) {
+            $questions = $section->testQuestions($kind)->with('options')->get();
+
+            return view('tests.preview', compact('course', 'section', 'kind', 'questions', 'progress'));
+        }
+
         $attempt = $this->withLock($slug, function () use ($course, $section, $kind) {
             $attempt = $this->openAttempt($course, $section, $kind);
             $current = $attempt?->questions()->get($attempt->current_index);
@@ -61,7 +67,7 @@ class TestController extends Controller
     {
         [$course, $progress] = $this->context($slug, $section, $kind);
 
-        if ($kind === 'post' && $progress->postTestPending($section)) {
+        if ($progress->reviewer || ($kind === 'post' && $progress->postTestPending($section))) {
             return redirect()->route('course.test', [$slug, $section, $kind]);
         }
 
@@ -86,7 +92,11 @@ class TestController extends Controller
 
     public function answer(Request $request, string $slug, CourseSection $section, string $kind)
     {
-        [$course] = $this->context($slug, $section, $kind);
+        [$course, $progress] = $this->context($slug, $section, $kind);
+
+        if ($progress->reviewer) {
+            return redirect()->route('course.test', [$slug, $section, $kind]);
+        }
 
         $attempt = $this->withLock($slug, function () use ($request, $course, $section, $kind) {
             $attempt = $this->openAttempt($course, $section, $kind);
@@ -174,7 +184,7 @@ class TestController extends Controller
 
         $done = $kind === 'pre' ? $progress->preTestDone($section) : $progress->postTestPassed($section);
 
-        // Learners take a finished test once (pre) or until passed (post); admins may retake any test to check it.
+        // Learners take a finished test once (pre) or until passed (post); admins only preview tests.
         if ($done && ! $progress->reviewer && ! $this->openAttempt($course, $section, $kind)) {
             abort(redirect()->route('course.learn', $slug));
         }

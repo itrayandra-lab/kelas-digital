@@ -90,12 +90,16 @@ class LessonController extends Controller
                 ->with('error', $progress->sectionOpen($lesson->section) ? 'Selesaikan langkah sebelumnya dulu.' : null);
         }
 
-        $watch = LessonProgress::firstOrCreate(
-            ['user_id' => $user->id, 'lesson_id' => $lesson->id],
-            ['started_at' => now()],
-        );
-        // Each page view starts a new watching session: time spent away doesn't count as watching.
-        $watch->update(['last_ping_at' => now()]);
+        // Admins only review content; nothing about their visit is recorded as learner progress.
+        $watch = null;
+        if (! $progress->reviewer) {
+            $watch = LessonProgress::firstOrCreate(
+                ['user_id' => $user->id, 'lesson_id' => $lesson->id],
+                ['started_at' => now()],
+            );
+            // Each page view starts a new watching session: time spent away doesn't count as watching.
+            $watch->update(['last_ping_at' => now()]);
+        }
 
         return view('lessons.show', compact('course', 'lesson', 'progress', 'watch'));
     }
@@ -145,7 +149,8 @@ class LessonController extends Controller
         $user = auth()->user();
 
         abort_if($lesson->course_id !== $course->id || ! CourseProgress::canStart($user, $course), 403);
-        abort_unless((new CourseProgress($course, $user))->isUnlocked($lesson), 403);
+        $progress = new CourseProgress($course, $user);
+        abort_unless($progress->isUnlocked($lesson) && ! $progress->reviewer, 403);
 
         return LessonProgress::firstOrCreate(
             ['user_id' => $user->id, 'lesson_id' => $lesson->id],

@@ -8,7 +8,9 @@
 @guest
     <a href="{{ route('login') }}" class="cta-btn">{{ $course->isFreeClass() ? 'Login untuk Daftar Gratis' : ($partlyFree ? 'Login untuk Mulai Gratis' : 'Login untuk Membeli') }}</a>
 @else
-    @if($userHasAccess)
+    @if($progress?->reviewer)
+        <a href="{{ route('course.learn', $course->slug) }}" class="cta-btn"><i class="fas fa-eye"></i> Lihat Isi Kelas</a>
+    @elseif($userHasAccess)
         @if($progress?->isCourseFinished())
             <a href="{{ route('course.completed', $course->slug) }}" class="cta-btn cta-success"><i class="fas fa-trophy"></i> Lihat Hasil</a>
         @else

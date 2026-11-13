@@ -126,6 +126,17 @@ class PartlyFreeCourseTest extends TestCase
 
         // The paid chapter's lesson opens straight away, before the free chapter is done.
         $this->get(route('course.lesson', [$slug, $this->paidLesson]))->assertOk()->assertSee('Mode admin');
-        $this->get(route('course.show', $slug))->assertSee(route('course.lesson', [$slug, $this->paidLesson]));
+        $this->get(route('course.show', $slug))->assertSee(route('course.lesson', [$slug, $this->paidLesson]))->assertSee('Lihat Isi Kelas');
+
+        // Tests show as a preview with the answer key; admins never leave attempts or progress behind.
+        $section = $this->paidLesson->section;
+        $question = $section->questions()->create(['course_id' => $this->course->id, 'kind' => 'post', 'type' => 'single', 'question' => 'Apa itu nilai?', 'order' => 1]);
+        $question->options()->create(['text' => 'Manfaat dibanding pengorbanan', 'is_correct' => true]);
+        $question->options()->create(['text' => 'Harga termahal', 'is_correct' => false]);
+
+        $this->get(route('course.test', [$slug, $section, 'post']))->assertOk()->assertSee('pratinjau soal')->assertSee('Manfaat dibanding pengorbanan');
+        $this->post(route('course.test.start', [$slug, $section, 'post']))->assertRedirect(route('course.test', [$slug, $section, 'post']));
+        $this->assertDatabaseCount('quiz_attempts', 0);
+        $this->assertDatabaseCount('lesson_progress', 0);
     }
 }

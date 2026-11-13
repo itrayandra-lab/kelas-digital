@@ -188,7 +188,7 @@
                         <p style="font-size:.82rem;color:#15803d;margin-top:.25rem;"><i class="fas fa-gift"></i> {{ $freeSectionCount }} bab bisa dipelajari gratis, lengkap dengan pre-test dan post-test.</p>
                     @endif
 
-                    @if($progress)
+                    @if($progress && ! $progress->reviewer)
                         <div style="margin-top:.75rem;">
                             <div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:.3rem;">
                                 <span>Progress belajarmu</span><strong style="color:#0056D2;">{{ $progress->percent() }}%</strong>
@@ -398,7 +398,7 @@
 <div class="cd-bar">
     <div style="flex-shrink:0;">
         <div style="font-family:'Sora',sans-serif;font-weight:800;color:var(--ink);">{{ $priceLabel }}</div>
-        @if($progress)<div style="font-size:.72rem;color:var(--muted);">Progress {{ $progress->percent() }}%</div>@endif
+        @if($progress && ! $progress->reviewer)<div style="font-size:.72rem;color:var(--muted);">Progress {{ $progress->percent() }}%</div>@endif
     </div>
     <div style="flex:1;">@include('course._cta')</div>
 </div>
