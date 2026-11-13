@@ -28,7 +28,6 @@
 @php
     $learnPoints = collect(preg_split('/\r?\n/', (string) $course->benefits))
         ->map(fn ($l) => trim(preg_replace('/^[\s•\-\*✅✔️☑️]+/u', '', $l)))->filter()->values();
-    $seconds = \App\Models\QuizAttempt::SECONDS_PER_QUESTION;
 @endphp
 
 <x-classroom :course="$course" :progress="$progress" current="intro">
@@ -87,9 +86,9 @@
         <h2 class="ci-h2">Aturan pre-test dan post-test</h2>
         <ul style="font-size:.88rem;color:var(--ink-2);line-height:1.9;padding-left:1.1rem;list-style:disc;">
             <li>Soal muncul satu per satu, dan kamu tidak bisa kembali ke soal sebelumnya.</li>
-            <li>Setiap soal punya waktu {{ $seconds }} detik. Kalau waktunya habis, soal dianggap kosong dan langsung lanjut.</li>
+            <li>Setiap soal pilihan punya waktu {{ \App\Models\QuizAttempt::SECONDS_PER_CHOICE }} detik dan setiap soal essay {{ \App\Models\QuizAttempt::SECONDS_PER_ESSAY / 60 }} menit. Kalau waktunya habis, soal dianggap kosong dan langsung lanjut.</li>
             <li>Me-refresh atau menutup halaman tidak menghentikan waktu.</li>
-            <li>Pre-test berisi pilihan ganda dan benar/salah. Post-test bisa berisi essay yang dinilai otomatis berdasarkan kesesuaian makna jawabanmu.</li>
+            <li>Pre-test berisi soal pilihan dan benar/salah. Post-test bisa berisi essay yang dinilai dari ketepatan konsep dan kualitas argumenmu.</li>
         </ul>
     </div>
 

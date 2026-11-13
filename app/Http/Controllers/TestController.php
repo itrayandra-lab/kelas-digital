@@ -23,9 +23,10 @@ class TestController extends Controller
 
         $attempt = $this->withLock($slug, function () use ($course, $section, $kind) {
             $attempt = $this->openAttempt($course, $section, $kind);
+            $current = $attempt?->questions()->get($attempt->current_index);
 
             // The learner left the current question until its time ran out: it stays empty.
-            if ($attempt && $attempt->timeIsUp()) {
+            if ($current && $attempt->timeIsUp($current)) {
                 $attempt->answerCurrent($attempt->questions(), null);
                 $this->saveOrFinish($attempt, $course);
             } elseif ($attempt && $attempt->isFinished($attempt->questions())) {
@@ -161,7 +162,7 @@ class TestController extends Controller
         $user = auth()->user();
 
         abort_unless($section->course_id === $course->id, 404);
-        abort_unless(CourseProgress::canAccessCourse($user, $course), 403);
+        abort_unless(CourseProgress::canStart($user, $course), 403);
 
         $progress = new CourseProgress($course, $user);
 

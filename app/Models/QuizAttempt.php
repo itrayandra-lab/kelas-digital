@@ -12,7 +12,10 @@ use Illuminate\Support\Collection;
  */
 class QuizAttempt extends Model
 {
-    public const SECONDS_PER_QUESTION = 30;
+    /** From the Ray Academy test sheets: 15 choice questions take 20 minutes; the post-test's two essays share the other 40 of its 60. */
+    public const SECONDS_PER_CHOICE = 80;
+
+    public const SECONDS_PER_ESSAY = 1200;
 
     /** Allowance for network delay between the timer running out and the answer arriving. */
     public const GRACE_SECONDS = 3;
@@ -65,14 +68,25 @@ class QuizAttempt extends Model
         return $this->status === 'pending';
     }
 
-    public function secondsLeft(): int
+    public static function secondsFor(CourseQuestion $question): int
     {
-        return max(0, self::SECONDS_PER_QUESTION - (int) $this->question_started_at->diffInSeconds(now(), true));
+        return $question->type === 'essay' ? self::SECONDS_PER_ESSAY : self::SECONDS_PER_CHOICE;
     }
 
-    public function timeIsUp(): bool
+    /** Total time for a set of questions, for showing "20 menit" before a test starts. */
+    public static function minutesFor(Collection $questions): int
     {
-        return $this->question_started_at->diffInSeconds(now(), true) > self::SECONDS_PER_QUESTION + self::GRACE_SECONDS;
+        return (int) ceil($questions->sum(fn ($q) => self::secondsFor($q)) / 60);
+    }
+
+    public function secondsLeft(CourseQuestion $question): int
+    {
+        return max(0, self::secondsFor($question) - (int) $this->question_started_at->diffInSeconds(now(), true));
+    }
+
+    public function timeIsUp(CourseQuestion $question): bool
+    {
+        return $this->question_started_at->diffInSeconds(now(), true) > self::secondsFor($question) + self::GRACE_SECONDS;
     }
 
     /**
@@ -84,7 +98,7 @@ class QuizAttempt extends Model
         $answers = (array) $this->answers;
 
         if ($question) {
-            $answers[$question->id] = $this->timeIsUp() ? null : $this->clean($question, $answer);
+            $answers[$question->id] = $this->timeIsUp($question) ? null : $this->clean($question, $answer);
         }
 
         $this->answers = $answers;

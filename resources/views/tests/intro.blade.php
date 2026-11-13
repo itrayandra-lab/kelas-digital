@@ -6,6 +6,12 @@
 @endsection
 
 @section('content')
+@php
+    $choiceSeconds = \App\Models\QuizAttempt::SECONDS_PER_CHOICE;
+    $essayMinutes = \App\Models\QuizAttempt::SECONDS_PER_ESSAY / 60;
+    $hasEssay = $questions->contains('type', 'essay');
+    $totalMinutes = \App\Models\QuizAttempt::minutesFor($questions);
+@endphp
 <x-classroom :course="$course" :progress="$progress" :current="$kind.'-'.$section->id">
         @include('tests._header')
 
@@ -48,8 +54,8 @@
                         <div style="font-size:.75rem;color:var(--muted);">soal</div>
                     </div>
                     <div style="background:var(--surf);border-radius:12px;padding:.9rem;text-align:center;">
-                        <div style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);">{{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }}</div>
-                        <div style="font-size:.75rem;color:var(--muted);">detik per soal</div>
+                        <div style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);">{{ $totalMinutes }}</div>
+                        <div style="font-size:.75rem;color:var(--muted);">menit total</div>
                     </div>
                     <div style="background:var(--surf);border-radius:12px;padding:.9rem;text-align:center;">
                         <div style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);">{{ $kind === 'pre' ? '-' : $course->post_test_pass_score }}</div>
@@ -60,11 +66,11 @@
                 <div style="font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">Tata cara</div>
                 <ul data-tour="test-rules" style="font-size:.85rem;color:var(--ink-2);line-height:1.9;padding-left:1.1rem;list-style:disc;">
                     <li>Soal muncul satu per satu. Kamu tidak bisa kembali ke soal sebelumnya.</li>
-                    <li>Setiap soal punya waktu {{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }} detik. Kalau waktunya habis, soal itu dianggap kosong dan langsung lanjut.</li>
+                    <li>Setiap soal pilihan punya waktu {{ $choiceSeconds }} detik{{ $hasEssay ? ', dan setiap soal essay '.$essayMinutes.' menit' : '' }}. Kalau waktunya habis, soal itu dianggap kosong dan langsung lanjut.</li>
                     <li>Sudah yakin dengan jawabanmu? Klik <strong>Lanjut</strong> tanpa menunggu waktu habis.</li>
                     <li>Me-refresh atau menutup halaman tidak menghentikan waktu.</li>
-                    @if($kind === 'post' && $questions->contains('type', 'essay'))
-                        <li>Jawaban essay dinilai otomatis dengan mencocokkan maknanya ke kunci jawaban.</li>
+                    @if($hasEssay)
+                        <li>Jawaban essay diperiksa berdasarkan ketepatan konsep dan kualitas argumen, jadi nilainya bisa muncul setelah diverifikasi.</li>
                     @endif
                 </ul>
 
@@ -90,13 +96,15 @@
 @push('scripts')
 @include('partials.tour-assets')
 @php
-    $seconds = \App\Models\QuizAttempt::SECONDS_PER_QUESTION;
-    $hasEssay = $kind === 'post' && $questions->contains('type', 'essay');
+    $choiceSeconds = \App\Models\QuizAttempt::SECONDS_PER_CHOICE;
+    $essayMinutes = \App\Models\QuizAttempt::SECONDS_PER_ESSAY / 60;
+    $hasEssay = $questions->contains('type', 'essay');
+    $totalMinutes = \App\Models\QuizAttempt::minutesFor($questions);
 @endphp
 <script>
 {{-- Shown before the first test of each kind, because the timer only starts after "Mulai". --}}
 KATour.page({{ Js::from('test-'.$kind) }}, [
-  { element: '[data-tour="test-stats"]', popover: { title: {{ Js::from("Setiap soal punya waktu {$seconds} detik") }}, description: {{ Js::from("Di atas soal ada hitungan mundur. Kalau waktunya habis, soal itu dianggap kosong dan otomatis pindah ke soal berikutnya.".($kind === 'post' ? " Nilai minimal untuk lulus: {$course->post_test_pass_score}." : '')) }}, side: 'bottom' } },
+  { element: '[data-tour="test-stats"]', popover: { title: {{ Js::from("Waktunya {$totalMinutes} menit") }}, description: {{ Js::from("Setiap soal pilihan punya waktu {$choiceSeconds} detik".($hasEssay ? " dan setiap essay {$essayMinutes} menit" : '').". Di atas soal ada hitungan mundur. Kalau waktunya habis, soal itu dianggap kosong dan otomatis pindah ke soal berikutnya.".($kind === 'post' ? " Nilai minimal untuk lulus: {$course->post_test_pass_score}." : '')) }}, side: 'bottom' } },
   { element: '[data-tour="test-rules"]', popover: { title: 'Baca tata caranya', description: {{ Js::from('Soal muncul satu per satu dan tidak bisa kembali ke soal sebelumnya. Kalau sudah yakin, klik Lanjut tanpa menunggu waktu habis.'.($hasEssay ? ' Untuk soal essay, tulis jawaban dengan kata-katamu sendiri. Tidak perlu sama persis dengan materi; yang dinilai adalah maksudnya.' : '')) }}, side: 'top' } },
   { element: '[data-tour="test-start"]', popover: { title: 'Siap? Klik di sini', description: {{ Js::from('Waktu mulai berjalan begitu tombol ini diklik. Pastikan internet stabil dan kamu tidak sedang terburu-buru.'.($kind === 'pre' ? ' Pre-test tidak menentukan lulus atau tidak, jadi kerjakan dengan santai.' : ' Kalau belum lulus, kamu bisa mencoba lagi.')) }}, side: 'top' } }
 ]);

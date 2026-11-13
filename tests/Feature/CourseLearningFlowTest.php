@@ -109,7 +109,7 @@ class CourseLearningFlowTest extends TestCase
     private function takeTest(CourseSection $section, string $kind, array $answers)
     {
         $slug = $this->course->slug;
-        $this->get(route('course.test', [$slug, $section, $kind]))->assertOk()->assertSee('detik per soal');
+        $this->get(route('course.test', [$slug, $section, $kind]))->assertOk()->assertSee('menit total');
         $this->post(route('course.test.start', [$slug, $section, $kind]));
 
         $response = null;
@@ -231,9 +231,9 @@ class CourseLearningFlowTest extends TestCase
         $this->post(route('course.test.start', [$slug, $this->bab1, 'pre']));
         $attempt = QuizAttempt::firstOrFail();
 
-        // Refreshing doesn't reset the clock.
-        $this->travel(20)->seconds();
-        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('id="q-seconds">10<', false)->assertSee('data-no-copy', false);
+        // Refreshing doesn't reset the clock (choice questions get 80 seconds).
+        $this->travel(70)->seconds();
+        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('>0:10</span>', false)->assertSee('data-no-copy', false);
 
         // An answer that arrives after the time limit (plus grace) counts as empty.
         $this->travel(15)->seconds();
@@ -255,7 +255,7 @@ class CourseLearningFlowTest extends TestCase
         $this->finishLesson($this->text);
 
         $this->post(route('course.test.start', [$slug, $this->bab1, 'post']));
-        $this->travel(40)->seconds();
+        $this->travel(90)->seconds();
 
         // Coming back after the timer expired skips question 1 and shows question 2.
         $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertOk()->assertSee('Bilangan genap?');

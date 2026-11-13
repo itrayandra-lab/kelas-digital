@@ -22,8 +22,8 @@
 
 @section('content')
 @php
-    $limit = \App\Models\QuizAttempt::SECONDS_PER_QUESTION;
-    $left = $attempt->secondsLeft();
+    $limit = \App\Models\QuizAttempt::secondsFor($question);
+    $left = $attempt->secondsLeft($question);
     $number = $attempt->current_index + 1;
     $isLast = $number >= $total;
 @endphp
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="q-timer" id="q-timer" style="--p: {{ $left / $limit * 100 }};" role="timer" aria-live="off" aria-label="Sisa waktu">
-                <span id="q-seconds">{{ $left }}</span>
+                <span id="q-seconds" @if($limit >= 60) style="font-size:.95rem;" @endif>{{ $limit >= 60 ? intdiv($left, 60).':'.str_pad($left % 60, 2, '0', STR_PAD_LEFT) : $left }}</span>
             </div>
         </div>
 
@@ -53,7 +53,7 @@
             <div style="font-size:1.05rem;font-weight:600;color:var(--ink);white-space:pre-line;line-height:1.6;">{{ $question->question }}</div>
 
             @if($question->type === 'essay')
-                <textarea name="answer" rows="5" maxlength="5000" autofocus placeholder="Tulis jawabanmu di sini..."
+                <textarea name="answer" rows="12" maxlength="5000" autofocus placeholder="Tulis jawabanmu di sini..."
                     style="width:100%;margin-top:1rem;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-size:.92rem;"></textarea>
                 <p id="q-paste-hint" style="display:none;font-size:.78rem;color:#b45309;margin-top:.4rem;"><i class="fas fa-info-circle"></i> Jawaban harus diketik sendiri, tidak bisa ditempel.</p>
             @else
@@ -114,9 +114,9 @@
 
     const tick = setInterval(function () {
         const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-        label.textContent = left;
+        label.textContent = limit >= 60 ? Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') : left;
         timer.style.setProperty('--p', left / limit * 100);
-        timer.classList.toggle('low', left <= 10);
+        timer.classList.toggle('low', left <= Math.max(10, limit / 10));
         if (left === 0) { clearInterval(tick); send(); }
     }, 250);
 })();
