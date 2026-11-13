@@ -19,6 +19,22 @@
 .lesson-text img { max-width:100%; border-radius:8px; margin:1rem 0; }
 .lesson-text a { color:var(--blue); text-decoration:underline; }
 .lesson-text blockquote { border-left:3px solid var(--blue); padding-left:1rem; color:var(--muted); margin:1rem 0; }
+/* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
+.vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
+.vid-ratio { aspect-ratio:16/9; }
+/* Branded bottom band from the 1920x1080 frame design, over YouTube's Share / More videos row.
+   Logo and URL are separate images so the band can grow to 56px on phones (enough to cover that row) without stretching. */
+.vid-frame { position:absolute; left:0; right:0; bottom:0; height:max(13.7%, 56px); padding:0 9.9% 0 5%; pointer-events:none;
+  display:flex; align-items:center; justify-content:space-between; background:#000; }
+.vf-logo { height:40.5%; width:auto; }
+.vf-url { height:27%; width:auto; position:relative; top:-6%; }
+/* Blocks clicks on YouTube's links and buttons; a click only plays/pauses via the API. */
+.vid-shield { position:absolute; inset:0; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
+.vid-wrap:fullscreen { border-radius:0; display:flex; align-items:center; }
+.vid-wrap:fullscreen .vid-ratio { width:100%; max-height:100%; }
+.vid-fs { position:absolute; right:12px; bottom:64px; width:38px; height:38px; border:0; border-radius:8px; cursor:pointer;
+  background:rgba(10,22,40,.55); color:#fff; font-size:15px; }
+.vid-fs:hover { background:rgba(10,22,40,.8); }
 </style>
 
 @php
@@ -28,8 +44,14 @@
 
 <x-classroom :course="$course" :progress="$progress" :current="'lesson-'.$lesson->id">
     @if($lesson->isVideo())
-        <div style="border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(10,22,40,.12);background:#000;">
-            <div style="aspect-ratio:16/9;"><div id="player" style="width:100%;height:100%;"></div></div>
+        <div class="vid-wrap" id="vid-wrap">
+            <div class="vid-ratio"><div id="player" style="width:100%;height:100%;"></div></div>
+            <div class="vid-frame" aria-hidden="true">
+                <img class="vf-logo" src="{{ asset('img/lesson/video-frame-logo.webp') }}" alt="">
+                <img class="vf-url" src="{{ asset('img/lesson/video-frame-url.webp') }}" alt="">
+            </div>
+            <button type="button" class="vid-shield" id="vid-shield" aria-label="Putar atau jeda video"></button>
+            <button type="button" class="vid-fs" id="vid-fs" aria-label="Layar penuh"><i class="fas fa-expand"></i></button>
         </div>
     @endif
 
@@ -79,7 +101,7 @@
         player = new YT.Player('player', {
             videoId: @json($lesson->youtube_video_id),
             // Resume a few seconds early so the learner gets context back.
-            playerVars: { rel: 0, modestbranding: 1, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
+            playerVars: { rel: 0, fs: 0, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
             events: { onStateChange: onState },
         });
     };
@@ -128,6 +150,21 @@
         if (unlocked) return;
         unlocked = true;
         window.lessonUnlock && window.lessonUnlock();
+    }
+
+    const wrap = document.getElementById('vid-wrap'), fsBtn = document.getElementById('vid-fs');
+    document.getElementById('vid-shield').addEventListener('click', () => {
+        if (!player || !player.getPlayerState) return;
+        player.getPlayerState() === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo();
+    });
+    // iPhone Safari can't fullscreen a div; hide the button there.
+    if (document.fullscreenEnabled) {
+        fsBtn.addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : wrap.requestFullscreen());
+        document.addEventListener('fullscreenchange', () => {
+            fsBtn.innerHTML = document.fullscreenElement ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+        });
+    } else {
+        fsBtn.hidden = true;
     }
 
     const s = document.createElement('script');
