@@ -33,7 +33,8 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Off: nothing uses temporary URLs, and PDF lessons are streamed only through the lesson's own route.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

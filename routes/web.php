@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/{slug}/learn', [LessonController::class, 'learn'])->name('course.learn');
     Route::get('/course/{slug}/pengenalan', [LessonController::class, 'intro'])->name('course.intro');
     Route::post('/course/{slug}/lesson/{lesson}/complete', [LessonController::class, 'complete'])->name('course.lesson.complete');
-    Route::get('/course/{slug}/lesson/{lesson}/pdf', [LessonController::class, 'pdf'])->name('course.lesson.pdf');
+    Route::get('/course/{slug}/lesson/{lesson}/pdf', [LessonController::class, 'pdf'])->middleware('throttle:30,1')->name('course.lesson.pdf');
     Route::post('/course/{slug}/lesson/{lesson}/progress', [LessonController::class, 'ping'])->middleware('throttle:30,1')->name('course.lesson.progress');
     // Per-section pre-test and post-test, one question at a time with a server-side timer
     Route::controller(TestController::class)->prefix('/course/{slug}/bab/{section}/{kind}')->whereIn('kind', ['pre', 'post'])->group(function () {
@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/course/{slug}/completed', [LessonController::class, 'completed'])->name('course.completed');
 });
-Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->name('course.enroll');
+Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->middleware('throttle:10,1')->name('course.enroll');
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
 Route::get('/articles/load-more', [ArticleController::class, 'loadMore'])->name('article.load-more');
@@ -64,7 +64,8 @@ Route::get('/recommendations', [RecommendationController::class, 'index'])->name
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 // Midtrans payment routes
-Route::post('/payment/checkout/{course}', [PaymentController::class, 'checkout'])->name('payment.checkout');
+// Each checkout calls Midtrans, so one person can't hammer it.
+Route::post('/payment/checkout/{course}', [PaymentController::class, 'checkout'])->middleware('throttle:10,1')->name('payment.checkout');
 Route::post('/payment/voucher/{course}', [PaymentController::class, 'voucher'])->middleware(['auth', 'throttle:20,1'])->name('payment.voucher');
 Route::post('/payment/complete/{enrollment}', [PaymentController::class, 'complete'])->name('payment.complete')->middleware('auth');
 Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');

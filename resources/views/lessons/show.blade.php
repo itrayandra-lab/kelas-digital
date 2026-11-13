@@ -197,7 +197,7 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     // Started during page parsing, PDF.js's first document load could stall forever; after "load" it is reliable.
-    window.addEventListener('load', () => pdfjsLib.getDocument({ url: box.dataset.src, withCredentials: true }).promise.then(async function (pdf) {
+    window.addEventListener('load', () => pdfjsLib.getDocument({ url: box.dataset.src, withCredentials: true, isEvalSupported: false }).promise.then(async function (pdf) {
         const first = await pdf.getPage(1).then(p => p.getViewport({ scale: 1 }));
         box.style.setProperty('--ratio', first.width / first.height);
         box.innerHTML = '';

@@ -43,7 +43,8 @@ class EssayGrader
     private function ask(array $config, string $question, string $answerKey, string $answer): ?array
     {
         $response = Http::withToken($config['key'])
-            ->timeout(30)
+            // Two providers are tried in turn inside the learner's request; keep their sum under the web server's 60 s limit.
+            ->timeout(20)
             ->post(rtrim($config['base_url'], '/').'/chat/completions', [
                 'model' => $config['model'],
                 'temperature' => 0,
