@@ -159,7 +159,7 @@
                     @else
                         <span><i class="fas fa-bolt"></i>Kelas baru</span>
                     @endif
-                    <span><i class="fas fa-layer-group"></i>{{ $sections->count() }} bab · {{ $lessons->count() }} materi</span>
+                    <span><i class="fas fa-layer-group"></i>{{ $sections->count() }} modul · {{ $lessons->count() }} materi</span>
                     @if($totalMinutes)<span><i class="fas fa-clock"></i>{{ $fmtMinutes($totalMinutes) }}</span>@endif
                     @if($course->schedule_start)<span><i class="fas fa-calendar-alt"></i>Mulai {{ $course->schedule_start->translatedFormat('d M Y') }}</span>@endif
                 </div>
@@ -185,7 +185,7 @@
                 <div class="cd-card-body">
                     <div class="cd-price">{{ $priceLabel }}</div>
                     @if($partlyFree && ! $userHasAccess)
-                        <p style="font-size:.82rem;color:#15803d;margin-top:.25rem;"><i class="fas fa-gift"></i> {{ $freeSectionCount }} bab bisa dipelajari gratis, lengkap dengan pre-test dan post-test.</p>
+                        <p style="font-size:.82rem;color:#15803d;margin-top:.25rem;"><i class="fas fa-gift"></i> {{ $freeSectionCount }} modul bisa dipelajari gratis, lengkap dengan pre-test dan post-test.</p>
                     @endif
 
                     @if($progress && ! $progress->reviewer)
@@ -211,7 +211,7 @@
                             @if($videoCount)<li><i class="fas fa-play-circle"></i>{{ $videoCount }} video pembelajaran</li>@endif
                             @if($textCount)<li><i class="fas fa-file-alt"></i>{{ $textCount }} materi bacaan</li>@endif
                             @if($totalMinutes)<li><i class="fas fa-clock"></i>Total {{ $fmtMinutes($totalMinutes) }}</li>@endif
-                            @if($questionCount)<li><i class="fas fa-clipboard-check"></i>Pre-test &amp; post-test di setiap bab ({{ $questionCount }} soal)</li>@endif
+                            @if($questionCount)<li><i class="fas fa-clipboard-check"></i>Pre-test &amp; post-test di setiap modul ({{ $questionCount }} soal)</li>@endif
                             @if($course->schedule_start)<li><i class="fas fa-video"></i>Sesi live {{ $course->meeting_platform ? 'via '.$course->meeting_platform : '' }}</li>@endif
                             <li><i class="fas fa-mobile-alt"></i>Akses dari HP dan laptop</li>
                             <li><i class="fas fa-infinity"></i>Belajar kapan saja, sesuai kecepatanmu</li>
@@ -270,10 +270,10 @@
             @if($lessons->isNotEmpty())
                 @php
                     $steps = collect([
-                        $questionCount ? ['fa-clipboard-list', 'Pre-test bab', 'Ukur pemahaman awal'] : null,
-                        ['fa-book-open', 'Materi bab', 'Video & bacaan berurutan'],
-                        $questionCount ? ['fa-clipboard-check', 'Post-test bab', 'Lulus minimal '.$course->post_test_pass_score.', lalu bab berikutnya terbuka'] : null,
-                        ['fa-trophy', 'Selesai', 'Semua bab tuntas'],
+                        $questionCount ? ['fa-clipboard-list', 'Pre-test modul', 'Ukur pemahaman awal'] : null,
+                        ['fa-book-open', 'Materi modul', 'Video & bacaan berurutan'],
+                        $questionCount ? ['fa-clipboard-check', 'Post-test modul', 'Lulus minimal '.$course->post_test_pass_score.', lalu modul berikutnya terbuka'] : null,
+                        ['fa-trophy', 'Selesai', 'Semua modul tuntas'],
                     ])->filter()->values();
                 @endphp
                 <div style="margin-bottom:2rem;">
@@ -297,8 +297,8 @@
                     <div class="cd-box" style="text-align:center;color:var(--muted);border-style:dashed;">Materi kelas akan segera ditambahkan.</div>
                 @else
                     <div class="cd-cur-head">
-                        <span>{{ $sections->count() }} bab · {{ $lessons->count() }} materi{{ $totalMinutes ? ' · '.$fmtMinutes($totalMinutes) : '' }}</span>
-                        <button type="button" @click="all = !all; open = {}; if (all) { @foreach($sections as $s) open[{{ $loop->index }}] = true; @endforeach }" x-text="all ? 'Tutup semua bab' : 'Buka semua bab'"></button>
+                        <span>{{ $sections->count() }} modul · {{ $lessons->count() }} materi{{ $totalMinutes ? ' · '.$fmtMinutes($totalMinutes) : '' }}</span>
+                        <button type="button" @click="all = !all; open = {}; if (all) { @foreach($sections as $s) open[{{ $loop->index }}] = true; @endforeach }" x-text="all ? 'Tutup semua modul' : 'Buka semua modul'"></button>
                     </div>
 
                     @foreach($sections as $section)
@@ -641,7 +641,7 @@ KATour.page({{ Js::from($mustPay ? 'course-detail-paid' : 'course-detail') }}, [
   @endif
   { element: '.cd-bar .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: 'Tombol ini selalu ada di bawah layar.', side: 'top' } },
   { element: '.cd-steps', popover: { title: 'Alur belajar', description: 'Urutannya tetap: pre-test dulu, lalu materi satu per satu, lalu post-test. Materi berikutnya terbuka setelah yang sebelumnya selesai.', side: 'top' } },
-  { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: {{ Js::from($partlyFree ? 'Lihat semua bab dan materi. Bab berlabel "Gratis" bisa dipelajari tanpa membayar, termasuk pre-test dan post-test-nya.' : 'Lihat semua bab dan materi yang akan kamu pelajari.') }}, side: 'top' } }
+  { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: {{ Js::from($partlyFree ? 'Lihat semua modul dan materi. Modul berlabel "Gratis" bisa dipelajari tanpa membayar, termasuk pre-test dan post-test-nya.' : 'Lihat semua modul dan materi yang akan kamu pelajari.') }}, side: 'top' } }
 ]);
 </script>
 @endpush

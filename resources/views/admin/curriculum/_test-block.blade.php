@@ -46,7 +46,7 @@
                 </div>
             </div>
         @empty
-            <p class="p-3 text-sm text-gray-500">Belum ada soal. Tanpa soal, {{ $kind === 'pre' ? 'pre-test' : 'post-test' }} bab ini dilewati.</p>
+            <p class="p-3 text-sm text-gray-500">Belum ada soal. Tanpa soal, {{ $kind === 'pre' ? 'pre-test' : 'post-test' }} modul ini dilewati.</p>
         @endforelse
     </div>
 

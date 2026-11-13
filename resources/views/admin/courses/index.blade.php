@@ -108,7 +108,7 @@
 KATour.page('admin-courses', [
   { popover: { title: 'Kelola Kelas', description: 'Di sini semua kelas dibuat dan diatur. Alurnya cuma 2 langkah: isi detail kelas, lalu susun kurikulum & soal tesnya.' } },
   { element: '[data-tour="add-course"]', popover: { title: '1. Buat kelas baru', description: 'Isi judul, deskripsi, harga (atau gratis), trailer YouTube, dan thumbnail. Ini yang dilihat calon peserta di halaman kelas.', side: 'bottom' } },
-  { element: '[data-tour="curriculum-btn"]', popover: { title: '2. Kurikulum & Tes', description: 'Setelah kelas dibuat, klik ini untuk menyusun bab, materi video/tulisan, dan soal pre-test & post-test.', side: 'left' } },
+  { element: '[data-tour="curriculum-btn"]', popover: { title: '2. Kurikulum & Tes', description: 'Setelah kelas dibuat, klik ini untuk menyusun modul, materi video/tulisan, dan soal pre-test & post-test.', side: 'left' } },
   { element: '[data-tour="edit-course"]', popover: { title: 'Ubah detail kelas', description: 'Klik Edit kalau mau mengganti judul, harga, thumbnail, atau deskripsi.', side: 'left' } },
   { popover: { title: 'Kategori kelas', description: 'Menu "Course Categories" di samping dipakai untuk mengelompokkan kelas (mis. Personal Branding, Digital Marketing). Kategori muncul sebagai filter di halaman Kursus.' } }
 ]);

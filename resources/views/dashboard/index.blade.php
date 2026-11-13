@@ -121,7 +121,7 @@
             <div class="db-stat"><i class="fas fa-book-open"></i><strong>{{ $total }}</strong><span>Kelas diikuti</span></div>
             <div class="db-stat"><i class="fas fa-trophy"></i><strong>{{ $finished->count() }}</strong><span>Kelas selesai</span></div>
             <div class="db-stat"><i class="fas fa-play-circle"></i><strong>{{ $stats['lessons'] }}</strong><span>Materi dipelajari</span></div>
-            <div class="db-stat"><i class="fas fa-clipboard-check"></i><strong>{{ $stats['passed'] }}</strong><span>Bab lulus post-test</span></div>
+            <div class="db-stat"><i class="fas fa-clipboard-check"></i><strong>{{ $stats['passed'] }}</strong><span>Modul lulus post-test</span></div>
         </div>
     </div>
 </section>
@@ -248,10 +248,10 @@
             <div class="db-box">
                 <h3><i class="fas fa-route" style="color:#0056D2;margin-right:.35rem;"></i> Cara belajar di sini</h3>
                 <ol class="db-steps">
-                    <li>Kerjakan pre-test bab untuk mengukur pemahaman awal.</li>
+                    <li>Kerjakan pre-test modul untuk mengukur pemahaman awal.</li>
                     <li>Pelajari video dan bacaan secara berurutan.</li>
-                    <li>Lulus post-test bab supaya bab berikutnya terbuka.</li>
-                    <li>Selesaikan semua bab untuk menuntaskan kelas.</li>
+                    <li>Lulus post-test modul supaya modul berikutnya terbuka.</li>
+                    <li>Selesaikan semua modul untuk menuntaskan kelas.</li>
                 </ol>
             </div>
         </aside>
@@ -274,10 +274,10 @@
 <script>
 KATour.page('student-dashboard', [
   { popover: { title: 'Selamat datang di Ray Academy!', description: 'Ini halaman Kursus Saya, tempat semua kelas yang kamu ikuti.' } },
-  { element: '[data-tour="stats"]', popover: { title: 'Ringkasan belajar', description: 'Jumlah kelas, materi yang sudah dipelajari, dan bab yang sudah lulus post-test.', side: 'bottom' } },
-  { element: '[data-tour="resume"]', popover: { title: 'Lanjutkan belajar', description: 'Kelas yang sedang kamu pelajari, langkah berikutnya, dan progres tiap bab. Klik tombolnya untuk langsung lanjut.', side: 'bottom' } },
+  { element: '[data-tour="stats"]', popover: { title: 'Ringkasan belajar', description: 'Jumlah kelas, materi yang sudah dipelajari, dan modul yang sudah lulus post-test.', side: 'bottom' } },
+  { element: '[data-tour="resume"]', popover: { title: 'Lanjutkan belajar', description: 'Kelas yang sedang kamu pelajari, langkah berikutnya, dan progres tiap modul. Klik tombolnya untuk langsung lanjut.', side: 'bottom' } },
   { element: '[data-tour="tabs"]', popover: { title: 'Semua kelasmu', description: 'Lihat kelas yang sedang dipelajari, yang sudah selesai, atau yang masih menunggu pembayaran.', side: 'bottom' } },
-  { popover: { title: 'Cara belajar', description: 'Setiap bab dimulai dengan pre-test, lalu materi video/bacaan berurutan, lalu post-test. Tombol Panduan di pojok kanan bawah bisa diklik kapan saja.' } }
+  { popover: { title: 'Cara belajar', description: 'Setiap modul dimulai dengan pre-test, lalu materi video/bacaan berurutan, lalu post-test. Tombol Panduan di pojok kanan bawah bisa diklik kapan saja.' } }
 ]);
 </script>
 @endpush

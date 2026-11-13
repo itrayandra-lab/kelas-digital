@@ -31,16 +31,16 @@
             <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:1.75rem;">
                 <p style="font-size:.95rem;color:var(--ink-2);line-height:1.7;">
                     @if($kind === 'pre')
-                        Pre-test mengukur pemahaman awalmu sebelum mempelajari bab ini. Nilainya tidak menentukan kelulusan.
+                        Pre-test mengukur pemahaman awalmu sebelum mempelajari modul ini. Nilainya tidak menentukan kelulusan.
                     @else
-                        Post-test menguji pemahamanmu setelah mempelajari bab ini. Kamu perlu nilai minimal
-                        <strong>{{ $course->post_test_pass_score }}</strong> untuk membuka bab berikutnya.
+                        Post-test menguji pemahamanmu setelah mempelajari modul ini. Kamu perlu nilai minimal
+                        <strong>{{ $course->post_test_pass_score }}</strong> untuk membuka modul berikutnya.
                     @endif
                 </p>
 
                 <div style="background:var(--surf);border-radius:12px;padding:1rem 1.1rem;margin-top:1.1rem;">
                     <div style="font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;">
-                        {{ $kind === 'pre' ? 'Materi yang akan dibahas di bab ini' : 'Materi yang diuji' }}
+                        {{ $kind === 'pre' ? 'Materi yang akan dibahas di modul ini' : 'Materi yang diuji' }}
                     </div>
                     <ol style="font-size:.85rem;color:var(--ink-2);line-height:1.8;padding-left:1.2rem;list-style:decimal;">
                         @foreach($section->lessons as $lesson)

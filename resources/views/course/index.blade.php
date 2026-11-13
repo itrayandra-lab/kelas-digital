@@ -90,7 +90,7 @@
                 <p>Ditemukan {{ $courses->total() }} kelas</p>
             @else
                 <h1>Mau belajar <span>apa</span> hari ini?</h1>
-                <p>Pilih bidang yang ingin kamu kuasai. Setiap kelas berisi video, bacaan, serta pre-test dan post-test di tiap bab.</p>
+                <p>Pilih bidang yang ingin kamu kuasai. Setiap kelas berisi video, bacaan, serta pre-test dan post-test di tiap modul.</p>
             @endif
         </div>
         <img src="{{ asset('img/search/hero.png') }}" alt="" class="ct-hero-img" onerror="this.style.display='none'">

@@ -147,7 +147,7 @@ class TestController extends Controller
         }
 
         return redirect()->route('course.test', [$course->slug, $section, 'post'])
-            ->with('error', "Skor kamu {$attempt->score}, minimal {$course->post_test_pass_score} untuk lulus. Pelajari lagi materi bab ini lalu coba lagi.");
+            ->with('error', "Skor kamu {$attempt->score}, minimal {$course->post_test_pass_score} untuk lulus. Pelajari lagi materi modul ini lalu coba lagi.");
     }
 
     private function openAttempt(Course $course, CourseSection $section, string $kind): ?QuizAttempt

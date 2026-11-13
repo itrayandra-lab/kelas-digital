@@ -18,7 +18,7 @@
         @if($progress->hasTests())
             <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;margin-top:2rem;overflow:hidden;text-align:left;">
                 <div style="display:grid;grid-template-columns:1fr 90px 90px;padding:.7rem 1rem;background:var(--surf);font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;">
-                    <span>Bab</span><span style="text-align:center;">Pre-test</span><span style="text-align:center;">Post-test</span>
+                    <span>Modul</span><span style="text-align:center;">Pre-test</span><span style="text-align:center;">Post-test</span>
                 </div>
                 @foreach($progress->sections as $section)
                     @continue(! $progress->sectionHasTest($section, 'pre') && ! $progress->sectionHasTest($section, 'post'))

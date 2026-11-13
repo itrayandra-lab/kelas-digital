@@ -71,14 +71,14 @@ class CurriculumController extends Controller
             'order' => (int) $course->sections()->max('order') + 1,
         ]);
 
-        return $this->back($course, 'Bab ditambahkan.');
+        return $this->back($course, 'Modul ditambahkan.');
     }
 
     public function updateSection(Request $request, CourseSection $section)
     {
         $section->update($request->validate(['title' => 'required|string|max:255']));
 
-        return $this->back($section->course, 'Nama bab disimpan.');
+        return $this->back($section->course, 'Nama modul disimpan.');
     }
 
     /** Free chapters turn a paid course into "sebagian gratis": learners study them before paying for the rest. */
@@ -86,7 +86,7 @@ class CurriculumController extends Controller
     {
         $section->update(['is_free' => ! $section->is_free]);
 
-        return $this->back($section->course, $section->is_free ? 'Bab ini sekarang gratis.' : 'Bab ini sekarang berbayar.');
+        return $this->back($section->course, $section->is_free ? 'Modul ini sekarang gratis.' : 'Modul ini sekarang berbayar.');
     }
 
     public function destroySection(CourseSection $section)
@@ -94,7 +94,7 @@ class CurriculumController extends Controller
         $course = $section->course;
         $section->delete();
 
-        return $this->back($course, 'Bab dan semua materinya dihapus.');
+        return $this->back($course, 'Modul dan semua materinya dihapus.');
     }
 
     public function moveSection(CourseSection $section, string $direction)

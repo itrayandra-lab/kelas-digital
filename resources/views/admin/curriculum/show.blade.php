@@ -13,7 +13,7 @@
             </a>
             <h1 class="text-2xl font-bold text-gray-900 mt-2">{{ $course->title }}</h1>
             <p class="text-sm text-gray-500">
-                {{ $course->sections->count() }} bab · {{ $course->sections->sum(fn ($s) => $s->lessons->count()) }} materi · {{ $course->questions->count() }} soal tes
+                {{ $course->sections->count() }} modul · {{ $course->sections->sum(fn ($s) => $s->lessons->count()) }} materi · {{ $course->questions->count() }} soal tes
             </p>
         </div>
         <a href="{{ route('course.show', $course->slug) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-sm font-semibold rounded-lg hover:bg-gray-50">
@@ -33,10 +33,10 @@
     {{-- Alur yang dilihat peserta --}}
     <div data-tour="flow" class="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-900">
         <strong>Alur peserta:</strong>
-        untuk setiap bab: pre-test → materi berurutan → post-test (lulus minimal {{ $course->post_test_pass_score }}) → bab berikutnya terbuka.
-        Setelah semua bab selesai, muncul halaman Selamat.
+        untuk setiap modul: pre-test → materi berurutan → post-test (lulus minimal {{ $course->post_test_pass_score }}) → modul berikutnya terbuka.
+        Setelah semua modul selesai, muncul halaman Selamat.
         @if($course->questions->isEmpty())
-            <span class="text-blue-700">Tambahkan soal di tab "Soal Tes" untuk mengaktifkan pre-test dan post-test tiap bab.</span>
+            <span class="text-blue-700">Tambahkan soal di tab "Soal Tes" untuk mengaktifkan pre-test dan post-test tiap modul.</span>
         @endif
     </div>
 
@@ -72,7 +72,7 @@
                     </div>
                     <div class="flex-1">
                         <div x-show="!renaming" class="font-semibold text-gray-900">
-                            @unless(Str::startsWith(Str::lower($section->title), "bab"))<span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> @endunless{{ $section->title }}
+                            @unless(Str::startsWith(Str::lower($section->title), "modul"))<span class="text-gray-500 font-normal">Modul {{ $loop->iteration }}:</span> @endunless{{ $section->title }}
                         </div>
                         <form x-show="renaming" x-cloak method="POST" action="{{ route('admin.sections.update', $section) }}" class="flex gap-2">
                             @csrf @method('PUT')
@@ -86,14 +86,14 @@
                             <form method="POST" action="{{ route('admin.sections.free', $section) }}">@csrf
                                 <button data-tour="section-free" class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $section->is_free ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-gray-500 border-gray-300 hover:border-gray-400' }}"
                                     title="{{ $section->is_free ? 'Klik untuk jadikan berbayar' : 'Klik untuk jadikan gratis' }}">
-                                    <i class="fas {{ $section->is_free ? 'fa-gift' : 'fa-lock' }} mr-1"></i>{{ $section->is_free ? 'Bab gratis' : 'Berbayar' }}
+                                    <i class="fas {{ $section->is_free ? 'fa-gift' : 'fa-lock' }} mr-1"></i>{{ $section->is_free ? 'Modul gratis' : 'Berbayar' }}
                                 </button>
                             </form>
                         @endif
                         <button type="button" @click="renaming = true" class="text-gray-500 hover:text-primary-600" title="Ganti nama"><i class="fas fa-pen"></i></button>
-                        <form method="POST" action="{{ route('admin.sections.destroy', $section) }}" onsubmit="return confirm('Hapus bab ini beserta semua materinya?')">
+                        <form method="POST" action="{{ route('admin.sections.destroy', $section) }}" onsubmit="return confirm('Hapus modul ini beserta semua materinya?')">
                             @csrf @method('DELETE')
-                            <button class="text-gray-500 hover:text-red-600" title="Hapus bab"><i class="fas fa-trash"></i></button>
+                            <button class="text-gray-500 hover:text-red-600" title="Hapus modul"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
 
                 <div class="px-4 py-3 border-t border-gray-100" @close-form="adding = false">
                     <button type="button" data-tour="add-lesson" x-show="!adding" @click="adding = true" class="text-sm font-semibold text-primary-600 hover:text-primary-700">
-                        <i class="fas fa-plus mr-1"></i> Tambah materi di bab ini
+                        <i class="fas fa-plus mr-1"></i> Tambah materi di modul ini
                     </button>
                     <div x-show="adding" x-cloak>
                         @include('admin.curriculum._lesson-form', [
@@ -152,15 +152,15 @@
             </div>
         @empty
             <div class="p-8 text-center text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">
-                Belum ada bab. Mulai dengan membuat bab pertama di bawah.
+                Belum ada modul. Mulai dengan membuat modul pertama di bawah.
             </div>
         @endforelse
 
         <form data-tour="add-section" method="POST" action="{{ route('admin.sections.store', $course) }}" class="flex gap-2 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             @csrf
-            <input type="text" name="title" required placeholder="Nama bab baru, mis. Bab 1: Dasar-dasar"
+            <input type="text" name="title" required placeholder="Nama modul baru, mis. Modul 1: Dasar-dasar"
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-            <button class="px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700"><i class="fas fa-plus mr-1"></i> Tambah Bab</button>
+            <button class="px-4 py-2 bg-primary-600 text-white text-sm font-semibold rounded-lg hover:bg-primary-700"><i class="fas fa-plus mr-1"></i> Tambah Modul</button>
         </form>
     </div>
 
@@ -168,8 +168,8 @@
     <div x-show="tab === 'tes'" x-cloak class="space-y-4">
         <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center gap-4 justify-between">
             <p class="text-sm text-gray-600">
-                Setiap bab punya <strong>pre-test</strong> (pilihan ganda &amp; benar/salah, cukup dikerjakan) dan <strong>post-test</strong>
-                (boleh essay, harus lulus sebelum bab berikutnya terbuka). Soal muncul satu per satu: {{ \App\Models\QuizAttempt::SECONDS_PER_CHOICE }} detik per soal pilihan
+                Setiap modul punya <strong>pre-test</strong> (pilihan ganda &amp; benar/salah, cukup dikerjakan) dan <strong>post-test</strong>
+                (boleh essay, harus lulus sebelum modul berikutnya terbuka). Soal muncul satu per satu: {{ \App\Models\QuizAttempt::SECONDS_PER_CHOICE }} detik per soal pilihan
                 dan {{ \App\Models\QuizAttempt::SECONDS_PER_ESSAY / 60 }} menit per essay. Essay dinilai AI berdasarkan kunci jawaban, atau kamu nilai sendiri di tab Jawaban.
             </p>
             <form data-tour="pass-score" method="POST" action="{{ route('admin.curriculum.settings', $course) }}" class="flex items-center gap-2 flex-shrink-0">
@@ -182,14 +182,14 @@
 
         @forelse($course->sections as $section)
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold text-gray-900 mb-3">@unless(Str::startsWith(Str::lower($section->title), "bab"))<span class="text-gray-500 font-normal">Bab {{ $loop->iteration }}:</span> @endunless{{ $section->title }}</h3>
+                <h3 class="font-semibold text-gray-900 mb-3">@unless(Str::startsWith(Str::lower($section->title), "modul"))<span class="text-gray-500 font-normal">Modul {{ $loop->iteration }}:</span> @endunless{{ $section->title }}</h3>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     @include('admin.curriculum._test-block', ['kind' => 'pre'])
                     @include('admin.curriculum._test-block', ['kind' => 'post'])
                 </div>
             </div>
         @empty
-            <div class="p-8 text-center text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">Buat bab dulu di tab Kurikulum, lalu tambahkan soal pre-test dan post-test per bab di sini.</div>
+            <div class="p-8 text-center text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">Buat modul dulu di tab Kurikulum, lalu tambahkan soal pre-test dan post-test per modul di sini.</div>
         @endforelse
     </div>
 
@@ -284,11 +284,11 @@
 @include('partials.tour-assets')
 <script>
 KATour.page('admin-curriculum-v3', [
-  { element: '[data-tour="flow"]', popover: { title: 'Alur yang dilihat peserta', description: 'Di setiap bab, peserta mengerjakan pre-test, lalu membuka materi satu per satu sesuai urutan di sini, lalu post-test. Bab berikutnya terbuka setelah post-test lulus. Setelah semua bab selesai muncul halaman Selamat.', side: 'bottom' } },
-  { element: '[data-tour="add-section"]', popover: { title: 'Buat bab', description: 'Bab mengelompokkan materi (mis. "Bab 1: Dasar-dasar"). Urutan bab bisa diubah dengan panah naik/turun.', side: 'top' } },
+  { element: '[data-tour="flow"]', popover: { title: 'Alur yang dilihat peserta', description: 'Di setiap modul, peserta mengerjakan pre-test, lalu membuka materi satu per satu sesuai urutan di sini, lalu post-test. Modul berikutnya terbuka setelah post-test lulus. Setelah semua modul selesai muncul halaman Selamat.', side: 'bottom' } },
+  { element: '[data-tour="add-section"]', popover: { title: 'Buat modul', description: 'Modul mengelompokkan materi (mis. "Modul 1: Dasar-dasar"). Urutan modul bisa diubah dengan panah naik/turun.', side: 'top' } },
   { element: '[data-tour="add-lesson"]', popover: { title: 'Tambah materi', description: 'Pilih Video (tempel link YouTube) atau Tulisan (editor teks, bisa gambar).', side: 'top' } },
-  { element: '[data-tour="section-free"]', popover: { title: 'Bab gratis atau berbayar', description: 'Klik untuk mengubah status bab. Kalau ada bab gratis, kelas berbayar menjadi "Sebagian Gratis": peserta bisa mempelajari bab itu tanpa bayar, lengkap dengan pre-test dan post-test, lalu diminta membeli kelas saat sampai di bab berbayar.', side: 'left' } },
-  { element: '[data-tour="tab-tes"]', popover: { title: 'Soal tes per bab', description: 'Di tab ini atur pre-test dan post-test untuk tiap bab, serta nilai minimal lulus. Pre-test hanya pilihan ganda dan benar/salah. Post-test boleh berisi essay; isi kunci jawabannya supaya AI bisa menilai.', side: 'bottom' } },
+  { element: '[data-tour="section-free"]', popover: { title: 'Modul gratis atau berbayar', description: 'Klik untuk mengubah status modul. Kalau ada modul gratis, kelas berbayar menjadi "Sebagian Gratis": peserta bisa mempelajari modul itu tanpa bayar, lengkap dengan pre-test dan post-test, lalu diminta membeli kelas saat sampai di modul berbayar.', side: 'left' } },
+  { element: '[data-tour="tab-tes"]', popover: { title: 'Soal tes per modul', description: 'Di tab ini atur pre-test dan post-test untuk tiap modul, serta nilai minimal lulus. Pre-test hanya pilihan ganda dan benar/salah. Post-test boleh berisi essay; isi kunci jawabannya supaya AI bisa menilai.', side: 'bottom' } },
   { element: '[data-tour="tab-jawaban"]', popover: { title: 'Periksa jawaban peserta', description: 'Semua hasil tes peserta ada di sini. Kalau AI gagal menilai essay, statusnya "Perlu dinilai" dan kamu tinggal memilih Benar, Sebagian, atau Salah. Nilai peserta langsung dihitung ulang.', side: 'bottom' } },
   { popover: { title: 'Cek hasilnya', description: 'Klik "Lihat halaman kelas" di kanan atas untuk melihat tampilan dari sisi peserta. Tombol Panduan di pojok kanan bawah bisa diklik kapan saja untuk mengulang tur ini.' } }
 ]);

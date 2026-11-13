@@ -486,7 +486,7 @@
                     </span>
                 </a>
                 <ul class="hero-points">
-                    <li><i class="fas fa-check"></i> Video & modul per bab</li>
+                    <li><i class="fas fa-check"></i> Video & bacaan per modul</li>
                     <li><i class="fas fa-check"></i> Pre-test & post-test</li>
                     <li><i class="fas fa-check"></i> Belajar kapan saja</li>
                 </ul>
@@ -507,7 +507,7 @@
             {{-- Floating cards showing what learning here looks like. --}}
             <div class="hero-float hero-float-a" aria-hidden="true">
                 <span class="hero-float-ic" style="background:#DCFCE7;color:#16A34A;"><i class="fas fa-check"></i></span>
-                <span><strong>Post-test lulus</strong><small>Bab 1 · Skor 92</small></span>
+                <span><strong>Post-test lulus</strong><small>Modul 1 · Skor 92</small></span>
             </div>
             <div class="hero-float hero-float-b" aria-hidden="true">
                 <span class="hero-float-ic"><i class="fas fa-play"></i></span>
@@ -819,7 +819,7 @@
         <div class="faq-box rv">
             @php
             $faqs=[
-                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setiap kelas terbagi menjadi beberapa bab. Di setiap bab kamu mengerjakan pre-test, mempelajari materi video dan bacaan secara berurutan, lalu mengerjakan post-test. Bab berikutnya terbuka setelah post-test lulus.'],
+                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setiap kelas terbagi menjadi beberapa modul. Di setiap modul kamu mengerjakan pre-test, mempelajari materi video dan bacaan secara berurutan, lalu mengerjakan post-test. Modul berikutnya terbuka setelah post-test lulus.'],
                 ['q'=>'Apakah ada kelas gratis?','a'=>'Ada. Kelas berlabel Gratis bisa langsung diikuti setelah mendaftar akun, tanpa pembayaran.'],
                 ['q'=>'Bagaimana cara membayar kelas berbayar?','a'=>'Pembayaran diproses lewat Midtrans. Kamu bisa membayar dengan virtual account bank, QRIS, e-wallet, atau kartu. Kelas langsung terbuka setelah pembayaran berhasil.'],
                 ['q'=>'Berapa lama akses kelas yang sudah saya ikuti?','a'=>'Tidak ada batas waktu. Kelas yang sudah kamu ikuti tetap bisa dibuka kapan saja dari halaman Kursus Saya.'],
@@ -918,7 +918,7 @@ KATour.page('home-member', [
   { element: '.browse-section .cc', popover: { title: 'Buka kelas', description: 'Klik kartu kelas untuk melihat isi materi, harga, dan video cuplikannya. Label <b>Kelas Gratis</b> artinya bisa diikuti tanpa bayar.', side: 'right' } },
   { element: '.nav-avatar', popover: { title: 'Kelas yang kamu ikuti', description: 'Klik namamu di sini, lalu pilih <b>Dashboard Saya</b> untuk melihat kelas yang sudah kamu ikuti dan melanjutkan belajar.', side: 'bottom' } },
   { element: '.nav-mobile-btn', popover: { title: 'Menu', description: 'Semua menu (Kursus, Artikel, dan akunmu) ada di tombol ini.', side: 'bottom' } },
-  { popover: { title: 'Cara belajarnya', description: '1. Pilih kelas, lalu daftar.<br>2. Kerjakan pre-test singkat.<br>3. Tonton video dan baca materi secara berurutan.<br>4. Kerjakan post-test. Kalau lulus, bab berikutnya terbuka.<br><br>Lupa caranya? Klik tombol <b>Panduan</b> di pojok kanan bawah kapan saja.' } }
+  { popover: { title: 'Cara belajarnya', description: '1. Pilih kelas, lalu daftar.<br>2. Kerjakan pre-test singkat.<br>3. Tonton video dan baca materi secara berurutan.<br>4. Kerjakan post-test. Kalau lulus, modul berikutnya terbuka.<br><br>Lupa caranya? Klik tombol <b>Panduan</b> di pojok kanan bawah kapan saja.' } }
 ]);
 @endguest
 </script>

@@ -87,7 +87,7 @@ class CourseController extends Controller
 
         // Next step after creating a course is building its curriculum, so go straight there.
         return redirect()->route('admin.curriculum.show', $course)
-            ->with('success', 'Kelas dibuat. Sekarang susun bab, materi, serta soal pre-test dan post-test-nya.');
+            ->with('success', 'Kelas dibuat. Sekarang susun modul, materi, serta soal pre-test dan post-test-nya.');
     }
 
     /**

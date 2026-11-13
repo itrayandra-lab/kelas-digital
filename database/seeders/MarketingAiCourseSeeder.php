@@ -23,6 +23,11 @@ class MarketingAiCourseSeeder extends Seeder
     /** Bab 1 used to split the Modul 01 PDF into reading lessons; the module PDF now replaces them. */
     private const OLD_BAB1_READING = '/^(01\.\d Unit \d: |Tujuan belajar dan peta Modul 01$)/';
 
+    private const PRICE = 599000;
+
+    /** The first seed went out with this placeholder; an admin-set price is never overwritten. */
+    private const PLACEHOLDER_PRICE = 299000;
+
     public function run(): void
     {
         $data = json_decode(file_get_contents(database_path('seeders/data/marketing-ai-course.json')), true, flags: JSON_THROW_ON_ERROR);
@@ -40,8 +45,7 @@ class MarketingAiCourseSeeder extends Seeder
                 'instructor' => 'Tim Ray Academy',
                 'description' => $data['description'],
                 'benefits' => $data['benefits'],
-                // shortcut: placeholder price, not in the docs; set the real one in Admin → Manage Courses.
-                'price' => 299000,
+                'price' => self::PRICE,
                 'course_type' => 'paid',
                 'level' => 'Beginner',
                 'thumbnail' => 'default-course.jpg',
@@ -74,10 +78,20 @@ class MarketingAiCourseSeeder extends Seeder
     private function updateExisting(Course $course, array $sections): void
     {
         DB::transaction(function () use ($course, $sections) {
+            if ((int) $course->price === self::PLACEHOLDER_PRICE) {
+                $course->update(['price' => self::PRICE]);
+                $this->command?->info('Harga kelas diubah jadi Rp'.number_format(self::PRICE, 0, ',', '.').'.');
+            }
+
             foreach ($sections as $order => $sectionData) {
                 $section = $course->sections()->where('order', $order + 1)->first();
                 if (! $section) {
                     continue;
+                }
+
+                // Chapters were first seeded as "Bab N: ..."; the course calls them modules. Admin-renamed titles stay.
+                if (str_starts_with($section->title, 'Bab ') && $section->title !== $sectionData['title']) {
+                    $section->update(['title' => $sectionData['title']]);
                 }
 
                 if ($order === 0) {

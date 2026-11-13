@@ -49,7 +49,7 @@
                                 <span class="text-xs text-gray-500">— Kelas gratis / webinar</span>
                             </label>
                         </div>
-                        <p class="mt-2 text-xs text-gray-500" x-show="courseType === 'paid'"><i class="fas fa-gift text-amber-500 mr-1"></i> Mau <strong>kelas sebagian gratis</strong>? Pilih Paid Course, lalu tandai bab yang gratis lewat tombol <strong>Bab gratis</strong> di halaman Kurikulum &amp; Tes.</p>
+                        <p class="mt-2 text-xs text-gray-500" x-show="courseType === 'paid'"><i class="fas fa-gift text-amber-500 mr-1"></i> Mau <strong>kelas sebagian gratis</strong>? Pilih Paid Course, lalu tandai modul yang gratis lewat tombol <strong>Modul gratis</strong> di halaman Kurikulum &amp; Tes.</p>
                         @error('course_type')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -250,7 +250,7 @@ KATour.page('admin-course-form', [
   { element: '#thumbnail', popover: { title: 'Thumbnail (opsional)', description: 'Gambar sampul kelas. Kalau tidak diisi, dipakai sampul video trailer.', side: 'top' } },
   { element: '#meeting_link', popover: { title: 'Sesi live (opsional)', description: 'Isi jadwal dan link Zoom/Meet kalau kelas punya sesi live. Link hanya terlihat oleh peserta terdaftar.', side: 'top' } },
   { element: '#benefits', popover: { title: 'Yang akan dipelajari', description: 'Tulis satu poin per baris. Poin-poin ini tampil sebagai checklist "Yang akan kamu pelajari".', side: 'top' } },
-  { popover: { title: 'Langkah berikutnya', description: 'Simpan, lalu buka tombol "Kurikulum & Tes" untuk mengisi bab, materi, dan soal.' } }
+  { popover: { title: 'Langkah berikutnya', description: 'Simpan, lalu buka tombol "Kurikulum & Tes" untuk mengisi modul, materi, dan soal.' } }
 ]);
 </script>
 @endpush

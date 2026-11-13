@@ -32,7 +32,7 @@ class LessonController extends Controller
 
         if ($progress->needsPayment()) {
             return redirect()->route('course.show', $slug)
-                ->with('checkout', 'Bab gratis sudah kamu selesaikan. Beli kelas lengkap untuk lanjut ke '.$step['section']->title.'.');
+                ->with('checkout', 'Modul gratis sudah kamu selesaikan. Beli kelas lengkap untuk lanjut ke '.$step['section']->title.'.');
         }
 
         if ($step && $step['type'] === 'lesson') {

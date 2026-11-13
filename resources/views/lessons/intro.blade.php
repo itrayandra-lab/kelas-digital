@@ -40,7 +40,7 @@
         <div style="display:flex;gap:1.25rem;flex-wrap:wrap;margin-top:1rem;font-size:.85rem;color:var(--muted);">
             <span><i class="fas fa-chalkboard-teacher" style="color:var(--blue);"></i> {{ $course->instructor }}</span>
             <span><i class="fas fa-signal" style="color:var(--blue);"></i> {{ $course->level }}</span>
-            <span><i class="fas fa-layer-group" style="color:var(--blue);"></i> {{ $progress->sections->count() }} bab · {{ $progress->lessons->count() }} materi</span>
+            <span><i class="fas fa-layer-group" style="color:var(--blue);"></i> {{ $progress->sections->count() }} modul · {{ $progress->lessons->count() }} materi</span>
         </div>
     </div>
 
@@ -74,11 +74,11 @@
     <div class="ci-card">
         <h2 class="ci-h2">Mekanisme belajar</h2>
         <div class="ci-steps">
-            <div class="ci-step"><span class="ci-step-n">1</span><div><strong>Kerjakan pre-test bab</strong><p>Setiap bab dibuka dengan pre-test untuk mengukur pemahaman awalmu. Nilainya tidak menentukan kelulusan.</p></div></div>
+            <div class="ci-step"><span class="ci-step-n">1</span><div><strong>Kerjakan pre-test modul</strong><p>Setiap modul dibuka dengan pre-test untuk mengukur pemahaman awalmu. Nilainya tidak menentukan kelulusan.</p></div></div>
             <div class="ci-step"><span class="ci-step-n">2</span><div><strong>Pelajari materi secara berurutan</strong><p>Tonton video sampai minimal 90% atau baca materi sampai bawah, lalu klik <em>Tandai Selesai</em>. Materi berikutnya terbuka setelah materi sebelumnya selesai.</p></div></div>
-            <div class="ci-step"><span class="ci-step-n">3</span><div><strong>Lulus post-test bab</strong><p>Kerjakan post-test di akhir bab dengan nilai minimal <strong>{{ $course->post_test_pass_score }}</strong>. Kalau belum lulus, kamu bisa mengulang.</p></div></div>
-            <div class="ci-step"><span class="ci-step-n">4</span><div><strong>Lanjut ke bab berikutnya</strong><p>Bab berikutnya terbuka setelah post-test lulus. Ulangi sampai semua bab selesai.</p></div></div>
-            <div class="ci-step"><span class="ci-step-n">5</span><div><strong>Selesaikan kelas</strong><p>Setelah semua bab tuntas, kamu akan melihat ringkasan nilai pre-test dan post-test di setiap bab.</p></div></div>
+            <div class="ci-step"><span class="ci-step-n">3</span><div><strong>Lulus post-test modul</strong><p>Kerjakan post-test di akhir modul dengan nilai minimal <strong>{{ $course->post_test_pass_score }}</strong>. Kalau belum lulus, kamu bisa mengulang.</p></div></div>
+            <div class="ci-step"><span class="ci-step-n">4</span><div><strong>Lanjut ke modul berikutnya</strong><p>Modul berikutnya terbuka setelah post-test lulus. Ulangi sampai semua modul selesai.</p></div></div>
+            <div class="ci-step"><span class="ci-step-n">5</span><div><strong>Selesaikan kelas</strong><p>Setelah semua modul tuntas, kamu akan melihat ringkasan nilai pre-test dan post-test di setiap modul.</p></div></div>
         </div>
     </div>
 
