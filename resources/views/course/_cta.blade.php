@@ -1,8 +1,12 @@
 {{-- The one call-to-action for a course, shared by the sticky card and the mobile bottom bar. --}}
-@php $isPending = $userEnrollment && $userEnrollment->payment_status === 'pending' && ! $course->isFreeClass(); @endphp
+@php
+    // A started checkout leaves the enrollment pending; "Mulai gratis" rows stay active until then.
+    $isPending = $userEnrollment && $userEnrollment->payment_status === 'pending' && $userEnrollment->status === 'pending' && ! $course->isFreeClass();
+    $partlyFree = $course->isPartlyFree();
+@endphp
 
 @guest
-    <a href="{{ route('login') }}" class="cta-btn">{{ $course->isFreeClass() ? 'Login untuk Daftar Gratis' : 'Login untuk Membeli' }}</a>
+    <a href="{{ route('login') }}" class="cta-btn">{{ $course->isFreeClass() ? 'Login untuk Daftar Gratis' : ($partlyFree ? 'Login untuk Mulai Gratis' : 'Login untuk Membeli') }}</a>
 @else
     @if($userHasAccess)
         @if($progress?->isCourseFinished())
@@ -15,6 +19,16 @@
             @csrf
             <button type="submit" class="cta-btn">Daftar Gratis</button>
         </form>
+    @elseif($partlyFree)
+        @if($progress)
+            <a href="{{ route('course.learn', $course->slug) }}" class="cta-btn"><i class="fas fa-play"></i> {{ $progress->percent() > 0 ? 'Lanjut Belajar' : 'Mulai Belajar' }}</a>
+        @else
+            <form method="POST" action="{{ route('course.enroll', $course->slug) }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="cta-btn">Mulai Gratis</button>
+            </form>
+        @endif
+        <button type="button" class="cta-btn cta-outline btn-pay" data-slug="{{ $course->slug }}">{{ $isPending ? 'Selesaikan Pembayaran' : 'Beli Kelas Lengkap' }}</button>
     @elseif($isPending)
         <button type="button" class="cta-btn cta-warn btn-pay" data-slug="{{ $course->slug }}"><i class="fas fa-credit-card"></i> Selesaikan Pembayaran</button>
     @else

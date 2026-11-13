@@ -84,6 +84,20 @@ class Course extends Model
     }
 
     /**
+     * "Sebagian gratis": a paid course with free chapters that anyone can study before buying the rest.
+     */
+    public function isPartlyFree(): bool
+    {
+        // shortcut: one count query per card when not preloaded with withCount('freeSections'); fine for 4-12 cards per page.
+        return $this->isPaidCourse() && ($this->free_sections_count ?? $this->freeSections()->count()) > 0;
+    }
+
+    public function freeSections()
+    {
+        return $this->sections()->where('is_free', true);
+    }
+
+    /**
      * Return the sluggable configuration array for this model.
      */
     public function sluggable(): array

@@ -25,10 +25,15 @@ class CourseProgress
 
     public readonly array $completedIds;
 
+    /** Paid (or free course, or admin). Without it only the free chapters of a partly free course are open. */
+    public readonly bool $fullAccess;
+
     private Collection $attempts;
 
     public function __construct(public readonly Course $course, public readonly User $user)
     {
+        $this->fullAccess = self::canAccessCourse($user, $course);
+
         $this->sections = $course->sections()
             ->with('lessons')
             ->withCount([
@@ -61,6 +66,29 @@ class CourseProgress
                 ->where('course_id', $course->id)
                 ->where('payment_status', 'completed')
                 ->exists());
+    }
+
+    /**
+     * Whether the learner can study at all: full access, or "Mulai gratis" on a partly free course
+     * (any enrollment row counts, so an abandoned or expired payment never takes the free chapters away).
+     */
+    public static function canStart(?User $user, Course $course): bool
+    {
+        return self::canAccessCourse($user, $course)
+            || ($user && $course->isPartlyFree() && $user->enrollments()->where('course_id', $course->id)->exists());
+    }
+
+    public function sectionOpen(CourseSection $section): bool
+    {
+        return $this->fullAccess || $section->is_free;
+    }
+
+    /** The next step sits in a chapter the learner hasn't paid for: time to offer the full course. */
+    public function needsPayment(): bool
+    {
+        $step = $this->nextStep();
+
+        return $step !== null && ! $this->sectionOpen($step['section']);
     }
 
     // ---------- Tests ----------
@@ -160,6 +188,10 @@ class CourseProgress
     private function stepUnlocked(callable $match): bool
     {
         foreach ($this->steps as $step) {
+            if (! $this->sectionOpen($step['section'])) {
+                return false;
+            }
+
             if ($match($step)) {
                 return true;
             }

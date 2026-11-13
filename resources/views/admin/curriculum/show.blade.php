@@ -82,6 +82,14 @@
                         </form>
                     </div>
                     <div x-show="!renaming" class="flex items-center gap-3 text-sm">
+                        @if($course->isPaidCourse())
+                            <form method="POST" action="{{ route('admin.sections.free', $section) }}">@csrf
+                                <button data-tour="section-free" class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $section->is_free ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-gray-500 border-gray-300 hover:border-gray-400' }}"
+                                    title="{{ $section->is_free ? 'Klik untuk jadikan berbayar' : 'Klik untuk jadikan gratis' }}">
+                                    <i class="fas {{ $section->is_free ? 'fa-gift' : 'fa-lock' }} mr-1"></i>{{ $section->is_free ? 'Bab gratis' : 'Berbayar' }}
+                                </button>
+                            </form>
+                        @endif
                         <button type="button" @click="renaming = true" class="text-gray-500 hover:text-primary-600" title="Ganti nama"><i class="fas fa-pen"></i></button>
                         <form method="POST" action="{{ route('admin.sections.destroy', $section) }}" onsubmit="return confirm('Hapus bab ini beserta semua materinya?')">
                             @csrf @method('DELETE')
@@ -108,7 +116,6 @@
                                     <div class="text-xs text-gray-500">
                                         {{ $lesson->isVideo() ? 'Video' : 'Tulisan' }}
                                         @if($lesson->duration) · {{ $lesson->duration }} menit @endif
-                                        @if($lesson->is_preview) · <span class="text-green-600 font-semibold">Preview gratis</span> @endif
                                     </div>
                                 </div>
                                 <button type="button" @click="editing = !editing" class="text-sm text-gray-500 hover:text-primary-600"><i class="fas fa-pen"></i></button>
@@ -162,8 +169,8 @@
         <div class="p-4 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center gap-4 justify-between">
             <p class="text-sm text-gray-600">
                 Setiap bab punya <strong>pre-test</strong> (pilihan ganda &amp; benar/salah, cukup dikerjakan) dan <strong>post-test</strong>
-                (boleh essay, harus lulus sebelum bab berikutnya terbuka). Soal muncul satu per satu, {{ \App\Models\QuizAttempt::SECONDS_PER_QUESTION }} detik per soal.
-                Essay dinilai AI berdasarkan kunci jawaban.
+                (boleh essay, harus lulus sebelum bab berikutnya terbuka). Soal muncul satu per satu: {{ \App\Models\QuizAttempt::SECONDS_PER_CHOICE }} detik per soal pilihan
+                dan {{ \App\Models\QuizAttempt::SECONDS_PER_ESSAY / 60 }} menit per essay. Essay dinilai AI berdasarkan kunci jawaban, atau kamu nilai sendiri di tab Jawaban.
             </p>
             <form data-tour="pass-score" method="POST" action="{{ route('admin.curriculum.settings', $course) }}" class="flex items-center gap-2 flex-shrink-0">
                 @csrf @method('PUT')
@@ -276,10 +283,11 @@
 @push('scripts')
 @include('partials.tour-assets')
 <script>
-KATour.page('admin-curriculum-v2', [
+KATour.page('admin-curriculum-v3', [
   { element: '[data-tour="flow"]', popover: { title: 'Alur yang dilihat peserta', description: 'Di setiap bab, peserta mengerjakan pre-test, lalu membuka materi satu per satu sesuai urutan di sini, lalu post-test. Bab berikutnya terbuka setelah post-test lulus. Setelah semua bab selesai muncul halaman Selamat.', side: 'bottom' } },
   { element: '[data-tour="add-section"]', popover: { title: 'Buat bab', description: 'Bab mengelompokkan materi (mis. "Bab 1: Dasar-dasar"). Urutan bab bisa diubah dengan panah naik/turun.', side: 'top' } },
-  { element: '[data-tour="add-lesson"]', popover: { title: 'Tambah materi', description: 'Pilih Video (tempel link YouTube) atau Tulisan (editor teks, bisa gambar). Centang "Preview gratis" agar bisa dicoba sebelum daftar.', side: 'top' } },
+  { element: '[data-tour="add-lesson"]', popover: { title: 'Tambah materi', description: 'Pilih Video (tempel link YouTube) atau Tulisan (editor teks, bisa gambar).', side: 'top' } },
+  { element: '[data-tour="section-free"]', popover: { title: 'Bab gratis atau berbayar', description: 'Klik untuk mengubah status bab. Kalau ada bab gratis, kelas berbayar menjadi "Sebagian Gratis": peserta bisa mempelajari bab itu tanpa bayar, lengkap dengan pre-test dan post-test, lalu diminta membeli kelas saat sampai di bab berbayar.', side: 'left' } },
   { element: '[data-tour="tab-tes"]', popover: { title: 'Soal tes per bab', description: 'Di tab ini atur pre-test dan post-test untuk tiap bab, serta nilai minimal lulus. Pre-test hanya pilihan ganda dan benar/salah. Post-test boleh berisi essay; isi kunci jawabannya supaya AI bisa menilai.', side: 'bottom' } },
   { element: '[data-tour="tab-jawaban"]', popover: { title: 'Periksa jawaban peserta', description: 'Semua hasil tes peserta ada di sini. Kalau AI gagal menilai essay, statusnya "Perlu dinilai" dan kamu tinggal memilih Benar, Sebagian, atau Salah. Nilai peserta langsung dihitung ulang.', side: 'bottom' } },
   { popover: { title: 'Cek hasilnya', description: 'Klik "Lihat halaman kelas" di kanan atas untuk melihat tampilan dari sisi peserta. Tombol Panduan di pojok kanan bawah bisa diklik kapan saja untuk mengulang tur ini.' } }

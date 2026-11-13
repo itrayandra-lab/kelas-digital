@@ -27,9 +27,10 @@ class DashboardController extends Controller
 
         [$finished, $ongoing] = $items->partition(fn ($item) => $item['progress']->isCourseFinished());
 
-        // Paid courses the learner started buying but has not paid for yet.
+        // Paid courses the learner started buying but has not paid for yet ("Mulai gratis" rows stay active until checkout).
         $unpaid = $user->enrollments()
             ->where('payment_status', 'pending')
+            ->where('status', 'pending')
             ->with('course.category')
             ->latest()
             ->get()

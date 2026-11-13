@@ -1,6 +1,7 @@
 {{-- Course card for the catalog, home and dashboard, in the same style as the search results. Expects $course; uses lessons_count / students_count when loaded. --}}
 @php
     $free = $course->isFreeClass();
+    $partlyFree = $course->isPartlyFree();
     $level = ['Beginner' => 'Pemula', 'Intermediate' => 'Menengah', 'Advanced' => 'Mahir'][$course->level] ?? null;
 @endphp
 <a href="{{ route('course.show', $course->slug) }}" class="cc">
@@ -8,7 +9,7 @@
         @if($course->thumbnail_url)
             <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" loading="lazy" onerror="this.remove()">
         @endif
-        <span class="cc-badge {{ $free ? 'free' : '' }}">{{ $free ? 'Kelas Gratis' : 'Premium' }}</span>
+        <span class="cc-badge {{ $free ? 'free' : ($partlyFree ? 'part' : '') }}">{{ $free ? 'Kelas Gratis' : ($partlyFree ? 'Sebagian Gratis' : 'Premium') }}</span>
     </div>
     <div class="cc-body">
         @if($course->category)<span class="cc-cat">{{ $course->category->name }}</span>@endif
@@ -36,6 +37,7 @@
 .cc:hover .cc-thumb img { transform:scale(1.04); }
 .cc-badge { position:absolute; top:.6rem; right:.6rem; font-size:.66rem; font-weight:700; padding:.2rem .6rem; border-radius:999px; border:1px solid #0056D2; background:#fff; color:#0056D2; }
 .cc-badge.free { border-color:#16a34a; color:#16a34a; }
+.cc-badge.part { border-color:#d97706; color:#b45309; }
 .cc-body { padding:.9rem 1rem 1rem; display:flex; flex-direction:column; flex:1; }
 .cc-cat { font-size:.64rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#0056D2; }
 .cc-title { font-family:'Sora',sans-serif; font-size:.92rem; font-weight:600; line-height:1.4; color:#0F1114; margin:.25rem 0 .2rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }

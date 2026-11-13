@@ -67,12 +67,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user's enrolled courses that have completed payment
+     * Courses the user studies: paid or free ones, plus partly free ones started with "Mulai gratis".
      */
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'enrollments')
-            ->wherePivot('payment_status', 'completed');
+            ->where(fn ($q) => $q->where('enrollments.payment_status', 'completed')->orWhere('enrollments.payment_method', 'trial'));
     }
 
     /**

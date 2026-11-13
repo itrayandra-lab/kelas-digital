@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
@@ -21,7 +22,26 @@ class PaymentController extends Controller
         Config::$is3ds = true;
     }
 
-    public function checkout(Course $course)
+    /**
+     * Checks a voucher code for the checkout panel without creating an order.
+     */
+    public function voucher(Request $request, Course $course)
+    {
+        $price = (int) $course->price;
+        $voucher = Voucher::findByCode($request->input('voucher'));
+        $problem = $voucher ? $voucher->problemFor($course) : 'Kode voucher tidak ditemukan.';
+        $discount = $problem ? 0 : $voucher->discountFor($price);
+        $rupiah = fn (int $amount) => 'Rp'.number_format($amount, 0, ',', '.');
+
+        return response()->json([
+            'ok' => $problem === null,
+            'message' => $problem ?? 'Voucher dipakai: potongan '.$voucher->label().'.',
+            'discount_label' => $rupiah($discount),
+            'total_label' => $rupiah($price - $discount),
+        ]);
+    }
+
+    public function checkout(Request $request, Course $course)
     {
         $user = Auth::user();
 
@@ -33,31 +53,50 @@ class PaymentController extends Controller
             return response()->json(['error' => 'free_course'], 400);
         }
 
+        // The voucher is checked again here: the checkout panel's check can be skipped or stale.
+        $voucher = null;
+        if (trim((string) $request->input('voucher')) !== '') {
+            $voucher = Voucher::findByCode($request->input('voucher'));
+            $problem = $voucher ? $voucher->problemFor($course) : 'Kode voucher tidak ditemukan.';
+
+            if ($problem) {
+                return response()->json(['error' => 'voucher', 'message' => $problem], 422);
+            }
+        }
+
+        $amount = (int) $course->price - ($voucher?->discountFor((int) $course->price) ?? 0);
         $existing = $user->enrollments()->where('course_id', $course->id)->first();
 
         if ($existing && $existing->payment_status === 'completed') {
             return response()->json(['error' => 'already_enrolled'], 400);
         }
 
+        $order = ['payment_status' => 'pending', 'status' => 'pending', 'voucher_id' => $voucher?->id, 'paid_amount' => $amount];
+
         if ($existing) {
             // Old tokens expire or belong to failed orders, so every checkout gets a fresh order.
+            // A "Mulai gratis" row keeps payment_method 'trial' until paid, so its free chapters stay open meanwhile.
             $enrollment = $existing;
-            $enrollment->update(['payment_status' => 'pending', 'status' => 'pending']);
+            $enrollment->update($order);
         } else {
-            $enrollment = Enrollment::create([
+            $enrollment = Enrollment::create($order + [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
-                'status' => 'pending',
                 'enrolled_at' => now(),
-                'payment_status' => 'pending',
                 'payment_method' => 'midtrans',
             ]);
+        }
+
+        if ($amount === 0) {
+            $enrollment->markPaid(['payment_method' => 'voucher']);
+
+            return response()->json(['paid_by_voucher' => true]);
         }
 
         $params = [
             'transaction_details' => [
                 'order_id' => 'ENR-'.$enrollment->id.'-'.time(),
-                'gross_amount' => (int) $course->price,
+                'gross_amount' => $amount,
             ],
             'customer_details' => [
                 'first_name' => $user->name,
@@ -66,7 +105,7 @@ class PaymentController extends Controller
             'item_details' => [
                 [
                     'id' => $course->id,
-                    'price' => (int) $course->price,
+                    'price' => $amount,
                     'quantity' => 1,
                     'name' => $course->title,
                 ],
@@ -106,10 +145,8 @@ class PaymentController extends Controller
             return response()->json(['success' => false], 422);
         }
 
-        $enrollment->update([
+        $enrollment->markPaid([
             'transaction_id' => $status->transaction_id ?? null,
-            'payment_status' => 'completed',
-            'status' => 'active',
             'payment_method' => 'midtrans',
         ]);
 
@@ -145,11 +182,7 @@ class PaymentController extends Controller
         ]);
 
         if (in_array($transactionStatus, ['capture', 'settlement'])) {
-            $enrollment->update([
-                'payment_status' => 'completed',
-                'status' => 'active',
-                'payment_method' => 'midtrans',
-            ]);
+            $enrollment->markPaid(['payment_method' => 'midtrans']);
         } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire']) && $enrollment->payment_status !== 'completed') {
             // An old abandoned order expiring must not revoke a course that was already paid.
             $enrollment->update([

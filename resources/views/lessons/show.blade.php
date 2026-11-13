@@ -19,6 +19,11 @@
 .lesson-text img { max-width:100%; border-radius:8px; margin:1rem 0; }
 .lesson-text a { color:var(--blue); text-decoration:underline; }
 .lesson-text blockquote { border-left:3px solid var(--blue); padding-left:1rem; color:var(--muted); margin:1rem 0; }
+.lesson-text h4 { font-size:1rem; font-weight:700; color:var(--ink); margin:1.1rem 0 .4rem; }
+.lesson-text p { margin:.6rem 0; }
+.lesson-text figure { margin:1.25rem 0; }
+.lesson-text figure img { margin:0 auto; border:1px solid var(--border); }
+.lesson-text figcaption { font-size:.8rem; color:var(--muted); text-align:center; margin-top:.4rem; }
 /* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
 .vid-ratio { aspect-ratio:16/9; }
@@ -66,7 +71,7 @@
 
         @if($preview)
             <div style="margin-top:1.5rem;padding:1rem;background:var(--blue-xl);border-radius:10px;font-size:.875rem;">
-                Ini materi preview. <a href="{{ route('course.show', $course->slug) }}" style="color:var(--blue);font-weight:700;">Daftar kelas</a> untuk membuka semua materi.
+                Ini materi dari bab gratis. <a href="{{ route('course.show', $course->slug) }}" style="color:var(--blue);font-weight:700;">Mulai gratis</a> supaya progresmu tersimpan dan pre-test serta post-test-nya terbuka.
             </div>
         @else
             <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">

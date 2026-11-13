@@ -80,6 +80,14 @@ class CurriculumController extends Controller
         return $this->back($section->course, 'Nama bab disimpan.');
     }
 
+    /** Free chapters turn a paid course into "sebagian gratis": learners study them before paying for the rest. */
+    public function toggleSectionFree(CourseSection $section)
+    {
+        $section->update(['is_free' => ! $section->is_free]);
+
+        return $this->back($section->course, $section->is_free ? 'Bab ini sekarang gratis.' : 'Bab ini sekarang berbayar.');
+    }
+
     public function destroySection(CourseSection $section)
     {
         $course = $section->course;
@@ -187,13 +195,10 @@ class CurriculumController extends Controller
             'youtube_video_id' => 'required_if:type,video|nullable|string|max:255',
             'content' => 'required_if:type,text|nullable|string',
             'duration' => 'nullable|integer|min:0|max:1000',
-            'is_preview' => 'nullable|boolean',
         ], [
             'youtube_video_id.required_if' => 'Link video YouTube wajib diisi untuk materi video.',
             'content.required_if' => 'Isi materi wajib diisi untuk materi tulisan.',
         ]);
-
-        $data['is_preview'] = $request->boolean('is_preview');
 
         if ($data['type'] === 'video') {
             $data['content'] = null;

@@ -17,7 +17,7 @@ class LessonController extends Controller
     {
         $course = Course::where('slug', $slug)->firstOrFail();
 
-        if (! CourseProgress::canAccessCourse(auth()->user(), $course)) {
+        if (! CourseProgress::canStart(auth()->user(), $course)) {
             return redirect()->route('course.show', $slug)->with('error', 'Daftar kelas ini dulu untuk mulai belajar.');
         }
 
@@ -27,6 +27,11 @@ class LessonController extends Controller
         // A learner who hasn't started yet sees the class introduction first.
         if ($progress->percent() === 0 && ! session()->has("intro_seen.{$course->id}")) {
             return redirect()->route('course.intro', $slug);
+        }
+
+        if ($progress->needsPayment()) {
+            return redirect()->route('course.show', $slug)
+                ->with('checkout', 'Bab gratis sudah kamu selesaikan. Beli kelas lengkap untuk lanjut ke '.$step['section']->title.'.');
         }
 
         if ($step && $step['type'] === 'lesson') {
@@ -51,7 +56,7 @@ class LessonController extends Controller
     {
         $course = Course::where('slug', $slug)->firstOrFail();
 
-        if (! CourseProgress::canAccessCourse(auth()->user(), $course)) {
+        if (! CourseProgress::canStart(auth()->user(), $course)) {
             return redirect()->route('course.show', $slug)->with('error', 'Daftar kelas ini dulu untuk mulai belajar.');
         }
 
@@ -70,9 +75,10 @@ class LessonController extends Controller
         }
 
         $user = auth()->user();
-        $hasAccess = CourseProgress::canAccessCourse($user, $course);
+        $hasAccess = CourseProgress::canStart($user, $course);
 
-        if (! $hasAccess && ! $lesson->is_preview) {
+        // Visitors who haven't started the course may look at lessons in its free chapters, without progress.
+        if (! $hasAccess && ! $lesson->section?->is_free) {
             return redirect()->route('course.show', $course->slug)
                 ->with('error', 'Daftar kelas ini dulu untuk membuka materi.');
         }
@@ -81,7 +87,7 @@ class LessonController extends Controller
 
         if ($progress && ! $progress->isUnlocked($lesson)) {
             return redirect()->route('course.learn', $course->slug)
-                ->with('error', 'Selesaikan langkah sebelumnya dulu.');
+                ->with('error', $progress->sectionOpen($lesson->section) ? 'Selesaikan langkah sebelumnya dulu.' : null);
         }
 
         $watch = null;
@@ -141,7 +147,7 @@ class LessonController extends Controller
         $course = Course::where('slug', $slug)->firstOrFail();
         $user = auth()->user();
 
-        abort_if($lesson->course_id !== $course->id || ! CourseProgress::canAccessCourse($user, $course), 403);
+        abort_if($lesson->course_id !== $course->id || ! CourseProgress::canStart($user, $course), 403);
         abort_unless((new CourseProgress($course, $user))->isUnlocked($lesson), 403);
 
         return LessonProgress::firstOrCreate(

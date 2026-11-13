@@ -50,6 +50,7 @@
                                 <span class="text-xs text-gray-500">— Kelas gratis / webinar</span>
                             </label>
                         </div>
+                        <p class="mt-2 text-xs text-gray-500" x-show="courseType === 'paid'"><i class="fas fa-gift text-amber-500 mr-1"></i> Mau <strong>kelas sebagian gratis</strong>? Pilih Paid Course, lalu tandai bab yang gratis lewat tombol <strong>Bab gratis</strong> di halaman Kurikulum &amp; Tes.</p>
                     </div>
 
                     <!-- Course Title -->

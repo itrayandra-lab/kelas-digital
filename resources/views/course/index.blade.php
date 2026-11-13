@@ -73,7 +73,7 @@
 @section('content')
 @php
     $levels = ['Beginner' => 'Pemula', 'Intermediate' => 'Menengah', 'Advanced' => 'Mahir'];
-    $types = ['free' => 'Gratis', 'paid' => 'Berbayar'];
+    $types = ['free' => 'Gratis', 'partial' => 'Sebagian gratis', 'paid' => 'Berbayar'];
     // Link that keeps the other filters and sets (or clears, with null) one of them.
     $link = fn (string $key, ?string $value) => route('course.index', array_filter([$key => $value] + Arr::except($filters, $key)));
 @endphp

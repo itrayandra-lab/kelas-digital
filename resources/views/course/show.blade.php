@@ -35,6 +35,18 @@
 .cta-btn:hover { background:#0048B0; }
 .cta-success { background:#10b981; } .cta-success:hover { background:#059669; }
 .cta-warn { background:#f59e0b; } .cta-warn:hover { background:#d97706; }
+.cta-outline { background:#fff; color:#0056D2; border:1.5px solid #0056D2; margin-top:.6rem; } .cta-outline:hover { background:#EEF4FF; }
+.cd-badge.part { background:#fef3c7; color:#b45309; border-color:#fde68a; }
+.cd-free { font-size:.68rem; font-weight:700; padding:.15rem .5rem; border-radius:999px; background:#dcfce7; color:#15803d; text-transform:uppercase; letter-spacing:.04em; }
+/* Checkout panel: price, voucher, then Midtrans */
+.co-modal { position:fixed; inset:0; z-index:60; background:rgba(10,22,40,.55); display:flex; align-items:center; justify-content:center; padding:1rem; }
+.co-box { background:#fff; border-radius:16px; width:100%; max-width:420px; padding:1.5rem; box-shadow:0 24px 60px rgba(10,22,40,.3); }
+.co-row { display:flex; justify-content:space-between; font-size:.9rem; color:var(--ink-2); padding:.35rem 0; }
+.co-row.total { border-top:1px solid var(--border); margin-top:.4rem; padding-top:.75rem; font-weight:800; color:var(--ink); font-size:1.05rem; }
+.co-voucher { display:flex; gap:.5rem; margin-top:1rem; }
+.co-voucher input { flex:1; min-width:0; padding:.65rem .8rem; border:1.5px solid var(--border); border-radius:8px; font-size:.9rem; text-transform:uppercase; }
+.co-voucher button { padding:.65rem 1rem; border:1.5px solid #0056D2; color:#0056D2; background:#fff; border-radius:8px; font-weight:700; cursor:pointer; }
+.co-modal[hidden] { display:none; }
 .cd-includes { margin-top:1.25rem; padding-top:1.1rem; border-top:1px solid var(--border); }
 .cd-includes h4 { font-size:.85rem; font-weight:700; color:var(--ink); margin-bottom:.6rem; }
 .cd-includes li { display:flex; gap:.6rem; font-size:.85rem; color:var(--ink-2); padding:.25rem 0; }
@@ -115,6 +127,8 @@
     $textCount = $lessons->count() - $videoCount;
     $hasThumb = (bool) $course->thumbnail_url;
     $priceLabel = $course->isFreeClass() ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.');
+    $partlyFree = $course->isPartlyFree();
+    $freeSectionCount = $sections->where('is_free', true)->count();
 @endphp
 
 @section('content')
@@ -134,6 +148,7 @@
                 <p class="cd-sub">{{ Str::limit(strip_tags($course->description), 180) }}</p>
                 <div class="cd-badges">
                     @if($course->isFreeClass())<span class="cd-badge free">Gratis</span>@endif
+                    @if($partlyFree)<span class="cd-badge part">Sebagian Gratis</span>@endif
                     <span class="cd-badge">{{ $course->level }}</span>
                     @if($questionCount)<span class="cd-badge">Pre &amp; Post Test</span>@endif
                 </div>
@@ -169,6 +184,9 @@
                 </button>
                 <div class="cd-card-body">
                     <div class="cd-price">{{ $priceLabel }}</div>
+                    @if($partlyFree && ! $userHasAccess)
+                        <p style="font-size:.82rem;color:#15803d;margin-top:.25rem;"><i class="fas fa-gift"></i> {{ $freeSectionCount }} bab bisa dipelajari gratis, lengkap dengan pre-test dan post-test.</p>
+                    @endif
 
                     @if($progress)
                         <div style="margin-top:.75rem;">
@@ -183,7 +201,7 @@
 
                     @include('course._cta')
 
-                    @if($userEnrollment && $userEnrollment->payment_status === 'pending' && ! $course->isFreeClass())
+                    @if($userEnrollment && $userEnrollment->payment_status === 'pending' && $userEnrollment->status === 'pending' && ! $course->isFreeClass())
                         <p style="font-size:.78rem;color:#b45309;margin-top:.5rem;text-align:center;">Pembayaranmu belum selesai.</p>
                     @endif
 
@@ -206,7 +224,7 @@
         {{-- ═════ MAIN ═════ --}}
         <main class="cd-main">
 
-            @foreach (['error' => 'background:#fef2f2;color:#b91c1c;border-color:#fecaca', 'message' => 'background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe', 'success' => 'background:#ecfdf5;color:#047857;border-color:#a7f3d0'] as $key => $style)
+            @foreach (['checkout' => 'background:#fffbeb;color:#92400e;border-color:#fde68a', 'error' => 'background:#fef2f2;color:#b91c1c;border-color:#fecaca', 'message' => 'background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe', 'success' => 'background:#ecfdf5;color:#047857;border-color:#a7f3d0'] as $key => $style)
                 @if(session($key))<div class="cd-flash" style="{{ $style }}">{{ session($key) }}</div>@endif
             @endforeach
             @if(request('payment') === 'success')
@@ -289,6 +307,7 @@
                             <div class="cd-sec-h" @click="open[{{ $loop->index }}] = !open[{{ $loop->index }}]">
                                 <i class="fas fa-chevron-down" style="font-size:.75rem;color:var(--muted);transition:transform .2s;" :style="open[{{ $loop->index }}] ? '' : 'transform:rotate(-90deg)'"></i>
                                 <strong>{{ $section->title }}</strong>
+                                @if($section->is_free && $partlyFree)<span class="cd-free">Gratis</span>@endif
                                 <small>{{ $section->lessons->count() }} materi{{ $mins ? ' · '.$fmtMinutes($mins) : '' }}</small>
                             </div>
                             <div x-show="open[{{ $loop->index }}]" x-collapse>
@@ -303,14 +322,13 @@
                                     <div class="cd-row">
                                         <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt') }} ic"></i>
                                         <span class="t">{{ $lesson->title }}</span>
-                                        @if($lesson->is_preview && ! $userHasAccess)
-                                            @if($lesson->isVideo())
-                                                <button type="button" class="lnk" onclick="openPreviewModal('{{ $lesson->youtube_video_id }}')">Preview</button>
+                                        @if(! $userHasAccess)
+                                            {{-- Lessons open in the framed lesson player only; the raw YouTube link is reserved for the trailer. --}}
+                                            @if($section->is_free && $partlyFree)
+                                                @unless($progress)<a href="{{ route('course.lesson', [$course->slug, $lesson]) }}">Coba</a>@endunless
                                             @else
-                                                <a href="{{ route('course.lesson', [$course->slug, $lesson]) }}">Preview</a>
+                                                <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
                                             @endif
-                                        @elseif(! $userHasAccess)
-                                            <i class="fas fa-lock" style="font-size:.75rem;color:var(--muted);"></i>
                                         @endif
                                         @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
                                     </div>
@@ -385,6 +403,37 @@
     <div style="flex:1;">@include('course._cta')</div>
 </div>
 
+@auth
+@if(! $userHasAccess && ! $course->isFreeClass())
+<div class="co-modal" id="co-modal" hidden onclick="if (event.target === this) closeCheckout()" role="dialog" aria-modal="true" aria-labelledby="co-title">
+    <div class="co-box">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+            <div>
+                <h3 id="co-title" style="font-family:'Sora',sans-serif;font-size:1.15rem;font-weight:700;color:var(--ink);">Beli kelas lengkap</h3>
+                <p style="font-size:.85rem;color:var(--muted);margin-top:.2rem;">{{ $course->title }}</p>
+            </div>
+            <button type="button" onclick="closeCheckout()" aria-label="Tutup" style="background:none;border:0;font-size:1.2rem;color:var(--muted);cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        @if(session('checkout'))
+            <p style="font-size:.85rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.6rem .8rem;margin-top:1rem;">{{ session('checkout') }}</p>
+        @endif
+        <div style="margin-top:1rem;">
+            <div class="co-row"><span>Harga kelas</span><span>{{ $priceLabel }}</span></div>
+            <div class="co-row" id="co-discount-row" hidden><span>Potongan voucher</span><span id="co-discount" style="color:#15803d;"></span></div>
+            <div class="co-row total"><span>Total bayar</span><span id="co-total">{{ $priceLabel }}</span></div>
+        </div>
+        <div class="co-voucher">
+            <input type="text" id="co-code" placeholder="Kode voucher (opsional)" maxlength="40" aria-label="Kode voucher">
+            <button type="button" id="co-apply">Pakai</button>
+        </div>
+        <p id="co-msg" style="font-size:.8rem;margin-top:.4rem;" aria-live="polite"></p>
+        <button type="button" class="cta-btn" id="co-pay" data-slug="{{ $course->slug }}">Bayar Sekarang</button>
+        <p style="font-size:.75rem;color:var(--muted);text-align:center;margin-top:.6rem;">Pembayaran lewat Midtrans: VA, QRIS, e-wallet, atau kartu.</p>
+    </div>
+</div>
+@endif
+@endauth
+
 {{-- Trailer / preview modal --}}
 <div id="preview-modal" onclick="if (event.target === this) closePreviewModal()"
      style="display:none;position:fixed;inset:0;z-index:60;background:rgba(10,22,40,.85);align-items:center;justify-content:center;padding:1rem;">
@@ -444,7 +493,7 @@ function setLoading(btn, loading) {
     }
 }
 
-function checkoutAndPay(slug, btn) {
+function checkoutAndPay(slug, btn, voucher) {
     setLoading(btn, true);
 
     fetch('{{ url('/payment/checkout') }}/' + slug, {
@@ -452,7 +501,9 @@ function checkoutAndPay(slug, btn) {
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ voucher: voucher || '' }),
     })
     .then(r => {
         if (r.status === 401) {
@@ -470,6 +521,14 @@ function checkoutAndPay(slug, btn) {
         }
         if (data.error === 'free_course') {
             window.location.reload();
+            return;
+        }
+        if (data.paid_by_voucher) {
+            window.location.href = '{{ route('course.show', $course->slug) }}?payment=success';
+            return;
+        }
+        if (data.error === 'voucher') {
+            showVoucherMessage(data.message, false);
             return;
         }
         if (data.snap_token) {
@@ -514,11 +573,47 @@ function checkoutAndPay(slug, btn) {
     });
 }
 
-document.querySelectorAll('.btn-pay').forEach(btn => {
-    btn.addEventListener('click', function () {
-        checkoutAndPay(this.dataset.slug, this);
+// Pay buttons open the checkout panel first, so a voucher can be entered before Midtrans.
+const coModal = document.getElementById('co-modal');
+let coVoucher = '';
+
+function openCheckout() { if (coModal) { coModal.hidden = false; document.getElementById('co-code').focus(); } }
+function closeCheckout() { if (coModal) coModal.hidden = true; }
+function showVoucherMessage(text, ok) {
+    const msg = document.getElementById('co-msg');
+    msg.textContent = text;
+    msg.style.color = ok ? '#15803d' : '#b91c1c';
+}
+
+document.querySelectorAll('.btn-pay').forEach(btn => btn.addEventListener('click', openCheckout));
+
+if (coModal) {
+    document.getElementById('co-apply').addEventListener('click', function () {
+        const code = document.getElementById('co-code').value.trim();
+        if (!code) { showVoucherMessage('Masukkan kode voucher dulu.', false); return; }
+        fetch({{ Js::from(route('payment.voucher', $course->slug)) }}, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ voucher: code }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            coVoucher = data.ok ? code : '';
+            showVoucherMessage(data.message, data.ok);
+            document.getElementById('co-discount-row').hidden = !data.ok;
+            document.getElementById('co-discount').textContent = data.ok ? '−' + data.discount_label : '';
+            document.getElementById('co-total').textContent = data.total_label;
+        })
+        .catch(() => showVoucherMessage('Gagal mengecek voucher, coba lagi.', false));
     });
-});
+    document.getElementById('co-pay').addEventListener('click', function () {
+        checkoutAndPay(this.dataset.slug, this, coVoucher);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCheckout(); });
+    @if(session('checkout'))
+    openCheckout();
+    @endif
+}
 
 // Handle ?payment=success query param
 const urlParams = new URLSearchParams(window.location.search);
@@ -546,7 +641,7 @@ KATour.page({{ Js::from($mustPay ? 'course-detail-paid' : 'course-detail') }}, [
   @endif
   { element: '.cd-bar .cta-btn', popover: { title: {{ Js::from($userHasAccess ? 'Mulai belajar' : 'Daftar kelas') }}, description: 'Tombol ini selalu ada di bawah layar.', side: 'top' } },
   { element: '.cd-steps', popover: { title: 'Alur belajar', description: 'Urutannya tetap: pre-test dulu, lalu materi satu per satu, lalu post-test. Materi berikutnya terbuka setelah yang sebelumnya selesai.', side: 'top' } },
-  { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: 'Lihat semua bab dan materi. Materi berlabel "Preview" bisa dicoba gratis sebelum daftar.', side: 'top' } }
+  { element: '.cd-cur-head', popover: { title: 'Kurikulum', description: {{ Js::from($partlyFree ? 'Lihat semua bab dan materi. Bab berlabel "Gratis" bisa dipelajari tanpa membayar, termasuk pre-test dan post-test-nya.' : 'Lihat semua bab dan materi yang akan kamu pelajari.') }}, side: 'top' } }
 ]);
 </script>
 @endpush

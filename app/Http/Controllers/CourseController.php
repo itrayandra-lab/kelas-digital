@@ -25,12 +25,14 @@ class CourseController extends Controller
         $sort = $filters['sort'] ?? null;
 
         $query = Course::with('category')
-            ->withCount(['lessons', 'enrollments as students_count' => fn ($q) => $q->where('payment_status', 'completed')])
+            ->withCount(['lessons', 'freeSections', 'enrollments as students_count' => fn ($q) => $q->where('payment_status', 'completed')])
             ->when($categorySlug, fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $categorySlug)))
             ->when($search !== '', fn ($q) => $q->where(fn ($w) => $w->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")
                 ->orWhere('instructor', 'like', "%{$search}%")))
-            ->when(in_array($type, ['free', 'paid'], true), fn ($q) => $q->where('course_type', $type))
+            ->when($type === 'free', fn ($q) => $q->where('course_type', 'free'))
+            ->when($type === 'partial', fn ($q) => $q->where('course_type', 'paid')->whereHas('freeSections'))
+            ->when($type === 'paid', fn ($q) => $q->where('course_type', 'paid')->whereDoesntHave('freeSections'))
             ->when(in_array($level, ['Beginner', 'Intermediate', 'Advanced'], true), fn ($q) => $q->where('level', $level));
 
         match ($sort) {
@@ -70,7 +72,8 @@ class CourseController extends Controller
             $userHasAccess = CourseProgress::canAccessCourse($user, $course);
         }
 
-        $progress = $userHasAccess ? new CourseProgress($course, $user) : null;
+        // Learners on the free chapters of a partly free course also get their progress shown.
+        $progress = CourseProgress::canStart($user, $course) ? new CourseProgress($course, $user) : null;
         $course->sections->loadCount([
             'questions as pre_count' => fn ($q) => $q->where('kind', 'pre'),
             'questions as post_count' => fn ($q) => $q->where('kind', 'post'),
@@ -115,6 +118,22 @@ class CourseController extends Controller
             ]);
 
             return redirect()->back()->with('message', 'Pendaftaran berhasil! Anda sudah terdaftar di kelas ini.');
+        }
+
+        // "Mulai gratis": any enrollment row opens the free chapters; paying later upgrades the same row.
+        if ($course->isPartlyFree()) {
+            if (! $existingEnrollment) {
+                Enrollment::create([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                    'status' => 'active',
+                    'enrolled_at' => now(),
+                    'payment_status' => 'pending',
+                    'payment_method' => 'trial',
+                ]);
+            }
+
+            return redirect()->route('course.learn', $course->slug);
         }
 
         if ($existingEnrollment) {

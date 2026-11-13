@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ShareDomainController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VoucherController as AdminVoucherController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
@@ -63,6 +64,7 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 // Midtrans payment routes
 Route::post('/payment/checkout/{course}', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::post('/payment/voucher/{course}', [PaymentController::class, 'voucher'])->middleware(['auth', 'throttle:20,1'])->name('payment.voucher');
 Route::post('/payment/complete/{enrollment}', [PaymentController::class, 'complete'])->name('payment.complete')->middleware('auth');
 Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('payment.notification');
 Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
@@ -125,6 +127,7 @@ Route::prefix('admin')
             Route::put('courses/{course}/curriculum/settings', 'updateSettings')->name('curriculum.settings');
             Route::post('courses/{course}/sections', 'storeSection')->name('sections.store');
             Route::put('sections/{section}', 'updateSection')->name('sections.update');
+            Route::post('sections/{section}/free', 'toggleSectionFree')->name('sections.free');
             Route::delete('sections/{section}', 'destroySection')->name('sections.destroy');
             Route::post('sections/{section}/move/{direction}', 'moveSection')->whereIn('direction', ['up', 'down'])->name('sections.move');
             Route::post('sections/{section}/lessons', 'storeLesson')->name('curriculum.lessons.store');
@@ -147,6 +150,7 @@ Route::prefix('admin')
         Route::middleware('can:manage enrollments')->group(function () {
             Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
             Route::post('payments/approve/{id}', [AdminPaymentController::class, 'approve'])->name('payments.approve');
+            Route::resource('vouchers', AdminVoucherController::class)->except(['show']);
         });
 
         // Article management

@@ -174,6 +174,11 @@
                             <i class="fas fa-credit-card mr-3 text-base"></i>
                             Manage Payments
                         </a>
+                        <a href="{{ route('admin.vouchers.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.vouchers.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-ticket-alt mr-3 text-base"></i>
+                            Voucher
+                        </a>
                         @endcan
                         
                         @can('view share domains')
