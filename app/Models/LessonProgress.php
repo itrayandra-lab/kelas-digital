@@ -59,11 +59,12 @@ class LessonProgress extends Model
 
     /**
      * Text lessons need the page open for a fraction of the estimated reading time (200 words/min).
+     * A PDF's length isn't known on the server, so it gets the same cap as a long text.
      */
     public function readLongEnough(Lesson $lesson): bool
     {
         $words = str_word_count(strip_tags((string) $lesson->content));
-        $required = min(120, max(10, (int) ($words / 200 * 60 * 0.3)));
+        $required = $lesson->isPdf() ? 120 : min(120, max(10, (int) ($words / 200 * 60 * 0.3)));
 
         return $this->started_at && $this->started_at->diffInSeconds(now(), true) >= $required;
     }

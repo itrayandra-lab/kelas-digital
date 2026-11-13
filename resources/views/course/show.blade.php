@@ -321,7 +321,7 @@
                                 @foreach($section->lessons as $lesson)
                                     @php $done = $progress?->isCompleted($lesson); @endphp
                                     <div class="cd-row">
-                                        <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt') }} ic"></i>
+                                        <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : ($lesson->isPdf() ? 'fa-file-pdf' : 'fa-file-alt')) }} ic"></i>
                                         <span class="t">{{ $lesson->title }}</span>
                                         {{-- Only the trailer is public; free chapters open after "Mulai Gratis". --}}
                                         @if($progress?->reviewer)

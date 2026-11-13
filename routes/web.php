@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/{slug}/learn', [LessonController::class, 'learn'])->name('course.learn');
     Route::get('/course/{slug}/pengenalan', [LessonController::class, 'intro'])->name('course.intro');
     Route::post('/course/{slug}/lesson/{lesson}/complete', [LessonController::class, 'complete'])->name('course.lesson.complete');
+    Route::get('/course/{slug}/lesson/{lesson}/pdf', [LessonController::class, 'pdf'])->name('course.lesson.pdf');
     Route::post('/course/{slug}/lesson/{lesson}/progress', [LessonController::class, 'ping'])->middleware('throttle:30,1')->name('course.lesson.progress');
     // Per-section pre-test and post-test, one question at a time with a server-side timer
     Route::controller(TestController::class)->prefix('/course/{slug}/bab/{section}/{kind}')->whereIn('kind', ['pre', 'post'])->group(function () {

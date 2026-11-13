@@ -1,5 +1,5 @@
 {{-- Expects: $action, $method, $lesson (nullable), $formId --}}
-<form action="{{ $action }}" method="POST" x-data="{ type: '{{ $lesson?->type ?? 'video' }}' }" class="space-y-4">
+<form action="{{ $action }}" method="POST" enctype="multipart/form-data" x-data="{ type: '{{ $lesson?->type ?? 'video' }}' }" class="space-y-4">
     @csrf
     @method($method)
 
@@ -18,7 +18,20 @@
             <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer" :class="type === 'text' ? 'border-primary-500 bg-primary-50' : 'border-gray-300'">
                 <input type="radio" name="type" value="text" x-model="type"> <i class="fas fa-file-alt text-primary-600"></i> Tulisan
             </label>
+            <label class="flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer" :class="type === 'pdf' ? 'border-primary-500 bg-primary-50' : 'border-gray-300'">
+                <input type="radio" name="type" value="pdf" x-model="type"> <i class="fas fa-file-pdf text-red-500"></i> PDF
+            </label>
         </div>
+    </div>
+
+    <div x-show="type === 'pdf'" x-cloak>
+        <label class="block text-sm font-medium text-gray-700 mb-1">File PDF</label>
+        @if($lesson?->pdf_path)
+            <p class="text-xs text-gray-600 mb-1"><i class="fas fa-file-pdf text-red-500 mr-1"></i> Sudah ada file PDF. Pilih file baru hanya kalau mau menggantinya.</p>
+        @endif
+        <input type="file" name="pdf" accept="application/pdf" :required="type === 'pdf' && {{ $lesson?->pdf_path ? 'false' : 'true' }}"
+            class="block w-full text-sm text-gray-700 file:mr-3 file:px-3 file:py-2 file:rounded-lg file:border-0 file:bg-primary-50 file:text-primary-700">
+        <p class="mt-1 text-xs text-gray-500">Maksimal 50 MB. Peserta membaca PDF langsung di halaman materi, tanpa tombol unduh, dan harus menggulir sampai halaman terakhir untuk lanjut.</p>
     </div>
 
     <div x-show="type === 'video'">

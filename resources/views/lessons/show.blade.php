@@ -23,6 +23,10 @@
 .lesson-text p { margin:.6rem 0; }
 .lesson-text figure { margin:1.25rem 0; }
 .lesson-text figure img { margin:0 auto; border:1px solid var(--border); }
+/* PDF lessons: pages are drawn as images, so there is no viewer toolbar and no download button. */
+.pdf-page { aspect-ratio:var(--ratio, .707); background:#f8fafc; border:1px solid var(--border); border-radius:8px; margin-bottom:.75rem; overflow:hidden; }
+.pdf-page img { width:100%; display:block; -webkit-user-drag:none; user-select:none; }
+.pdf-note { font-size:.85rem; color:var(--muted); text-align:center; padding:2rem 0; }
 .lesson-text figcaption { font-size:.8rem; color:var(--muted); text-align:center; margin-top:.4rem; }
 /* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
@@ -63,10 +67,15 @@
         <div style="font-size:.75rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem;">{{ $lesson->section?->title }}</div>
         <h1 style="font-family:'Sora',sans-serif;font-size:1.4rem;font-weight:800;color:var(--ink);margin-bottom:1rem;">{{ $lesson->title }}</h1>
 
-        @unless($lesson->isVideo())
+        @if($lesson->isPdf())
+            <div class="pdf-pages" id="pdf-pages" data-src="{{ route('course.lesson.pdf', [$course->slug, $lesson]) }}" oncontextmenu="return false">
+                <p class="pdf-note"><i class="fas fa-spinner fa-spin"></i> Memuat PDF...</p>
+            </div>
+            <div id="text-end" style="height:1px;"></div>
+        @elseif(! $lesson->isVideo())
             <div class="lesson-text">{!! $lesson->content !!}</div>
             <div id="text-end" style="height:1px;"></div>
-        @endunless
+        @endif
 
         <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
             @if($progress->reviewer)
@@ -179,6 +188,58 @@
 </script>
 @endif
 
+@if($lesson->isPdf())
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+// Draws each page as an image when it scrolls near, so a long PDF doesn't hold every page in memory at once.
+(function () {
+    const box = document.getElementById('pdf-pages');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // Started during page parsing, PDF.js's first document load could stall forever; after "load" it is reliable.
+    window.addEventListener('load', () => pdfjsLib.getDocument({ url: box.dataset.src, withCredentials: true }).promise.then(async function (pdf) {
+        const first = await pdf.getPage(1).then(p => p.getViewport({ scale: 1 }));
+        box.style.setProperty('--ratio', first.width / first.height);
+        box.innerHTML = '';
+
+        const draw = new IntersectionObserver(entries => entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            draw.unobserve(entry.target);
+            renderPage(pdf, entry.target);
+        }), { rootMargin: '800px 0px' });
+
+        for (let n = 1; n <= pdf.numPages; n++) {
+            const holder = document.createElement('div');
+            holder.className = 'pdf-page';
+            holder.dataset.page = n;
+            box.appendChild(holder);
+            draw.observe(holder);
+        }
+        document.dispatchEvent(new Event('pdf:ready'));
+    }).catch(function () {
+        box.innerHTML = '<p class="pdf-note">PDF gagal dimuat. Muat ulang halaman ini.</p>';
+    }));
+
+    async function renderPage(pdf, holder) {
+        const page = await pdf.getPage(Number(holder.dataset.page));
+        const scale = Math.min(2, window.devicePixelRatio || 1) * holder.clientWidth / page.getViewport({ scale: 1 }).width;
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        canvas.toBlob(blob => {
+            const img = new Image();
+            img.src = URL.createObjectURL(blob);
+            img.alt = 'Halaman ' + holder.dataset.page;
+            img.draggable = false;
+            holder.appendChild(img);
+        }, 'image/jpeg', 0.85);
+    }
+})();
+</script>
+@endif
+
 @if(! $progress->reviewer && ! $done)
 <script>
 (function () {
@@ -191,10 +252,12 @@
     };
 
     @unless($lesson->isVideo())
-    // Text lessons unlock once the end of the content has scrolled into view; the server also checks reading time.
-    new IntersectionObserver((entries, obs) => {
+    // Text and PDF lessons unlock once the end of the content has scrolled into view; the server also checks reading time.
+    const watchEnd = () => new IntersectionObserver((entries, obs) => {
         if (entries[0].isIntersecting) { window.lessonUnlock(); obs.disconnect(); }
     }).observe(document.getElementById('text-end'));
+    // A PDF's pages are added after it loads; before that the end marker would already be on screen.
+    @if($lesson->isPdf()) document.addEventListener('pdf:ready', watchEnd, { once: true }); @else watchEnd(); @endif
     @endunless
 
     btn.addEventListener('click', function () {

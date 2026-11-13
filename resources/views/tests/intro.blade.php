@@ -44,7 +44,7 @@
                     </div>
                     <ol style="font-size:.85rem;color:var(--ink-2);line-height:1.8;padding-left:1.2rem;list-style:decimal;">
                         @foreach($section->lessons as $lesson)
-                            <li>{{ $lesson->title }} <span style="color:var(--muted);">({{ $lesson->isVideo() ? 'video' : 'bacaan' }})</span></li>
+                            <li>{{ $lesson->title }} <span style="color:var(--muted);">({{ $lesson->isVideo() ? 'video' : ($lesson->isPdf() ? 'PDF' : 'bacaan') }})</span></li>
                         @endforeach
                     </ol>
                 </div>

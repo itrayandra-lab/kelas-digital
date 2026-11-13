@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Support\YouTube;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Lesson extends Model
 {
@@ -17,6 +18,7 @@ class Lesson extends Model
         'type',
         'youtube_video_id',
         'content',
+        'pdf_path',
         'module',
         'order',
         'duration',
@@ -46,6 +48,9 @@ class Lesson extends Model
                 )->id;
             }
         });
+
+        // shortcut: files of lessons removed with their whole chapter or course stay on disk; add cleanup if storage grows.
+        static::deleted(fn (Lesson $lesson) => $lesson->pdf_path && Storage::disk('local')->delete($lesson->pdf_path));
     }
 
     public function course()
@@ -60,6 +65,11 @@ class Lesson extends Model
 
     public function isVideo(): bool
     {
-        return $this->type !== 'text';
+        return $this->type === 'video';
+    }
+
+    public function isPdf(): bool
+    {
+        return $this->type === 'pdf';
     }
 }

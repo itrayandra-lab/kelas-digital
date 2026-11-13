@@ -10,6 +10,7 @@ use App\Models\Lesson;
 use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 /**
@@ -117,7 +118,7 @@ class CurriculumController extends Controller
 
     public function updateLesson(Request $request, Lesson $lesson)
     {
-        $lesson->update($this->lessonData($request));
+        $lesson->update($this->lessonData($request, $lesson));
 
         return $this->back($lesson->course, 'Materi disimpan.');
     }
@@ -187,23 +188,36 @@ class CurriculumController extends Controller
 
     // ---------- Helpers ----------
 
-    private function lessonData(Request $request): array
+    private function lessonData(Request $request, ?Lesson $lesson = null): array
     {
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'type' => ['required', Rule::in(['video', 'text'])],
+            'type' => ['required', Rule::in(['video', 'text', 'pdf'])],
             'youtube_video_id' => 'required_if:type,video|nullable|string|max:255',
             'content' => 'required_if:type,text|nullable|string',
+            // A PDF lesson that already has a file may be saved without uploading it again.
+            'pdf' => [Rule::requiredIf($request->input('type') === 'pdf' && ! $lesson?->pdf_path), 'nullable', 'file', 'mimes:pdf', 'max:51200'],
             'duration' => 'nullable|integer|min:0|max:1000',
         ], [
             'youtube_video_id.required_if' => 'Link video YouTube wajib diisi untuk materi video.',
             'content.required_if' => 'Isi materi wajib diisi untuk materi tulisan.',
+            'pdf.required' => 'Pilih file PDF untuk materi PDF.',
+            'pdf.mimes' => 'File harus berformat PDF.',
+            'pdf.max' => 'Ukuran PDF maksimal 50 MB.',
         ]);
+        unset($data['pdf']);
 
-        if ($data['type'] === 'video') {
-            $data['content'] = null;
-        } else {
-            $data['youtube_video_id'] = null;
+        $data['youtube_video_id'] = $data['type'] === 'video' ? $data['youtube_video_id'] : null;
+        $data['content'] = $data['type'] === 'text' ? $data['content'] : null;
+
+        // Private disk: the file is only streamed through the lesson page to learners allowed to open it.
+        $oldPdf = $lesson?->pdf_path;
+        $data['pdf_path'] = $data['type'] === 'pdf'
+            ? ($request->hasFile('pdf') ? $request->file('pdf')->store('lesson-pdfs', 'local') : $oldPdf)
+            : null;
+
+        if ($oldPdf && $oldPdf !== $data['pdf_path']) {
+            Storage::disk('local')->delete($oldPdf);
         }
 
         return $data;

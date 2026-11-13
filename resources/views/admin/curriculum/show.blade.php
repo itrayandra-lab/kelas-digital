@@ -110,11 +110,11 @@
                                         <button class="text-gray-300 hover:text-gray-700 disabled:opacity-30" @disabled($loop->last)><i class="fas fa-chevron-down text-xs"></i></button>
                                     </form>
                                 </div>
-                                <i class="fas {{ $lesson->isVideo() ? 'fa-play-circle text-red-500' : 'fa-file-alt text-blue-500' }}"></i>
+                                <i class="fas {{ $lesson->isVideo() ? 'fa-play-circle text-red-500' : ($lesson->isPdf() ? 'fa-file-pdf text-red-500' : 'fa-file-alt text-blue-500') }}"></i>
                                 <div class="flex-1 min-w-0">
                                     <div class="text-sm text-gray-900">{{ $loop->parent->iteration }}.{{ $loop->iteration }} {{ $lesson->title }}</div>
                                     <div class="text-xs text-gray-500">
-                                        {{ $lesson->isVideo() ? 'Video' : 'Tulisan' }}
+                                        {{ $lesson->isVideo() ? 'Video' : ($lesson->isPdf() ? 'PDF' : 'Tulisan') }}
                                         @if($lesson->duration) · {{ $lesson->duration }} menit @endif
                                     </div>
                                 </div>

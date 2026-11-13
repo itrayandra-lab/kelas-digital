@@ -38,7 +38,7 @@
             $items->push([
                 'key' => "lesson-{$lesson->id}", 'group' => $section, 'no' => $no,
                 'label' => $no.'.'.($lIndex + 1).' '.$lesson->title,
-                'icon' => $lesson->isVideo() ? 'fa-play-circle' : 'fa-file-alt',
+                'icon' => $lesson->isVideo() ? 'fa-play-circle' : ($lesson->isPdf() ? 'fa-file-pdf' : 'fa-file-alt'),
                 'url' => route('course.lesson', [$course->slug, $lesson]),
                 'open' => (bool) $progress?->isUnlocked($lesson),
                 'done' => (bool) $progress?->isCompleted($lesson),

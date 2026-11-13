@@ -7,6 +7,7 @@ use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Support\CourseProgress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LessonController extends Controller
 {
@@ -102,6 +103,26 @@ class LessonController extends Controller
         }
 
         return view('lessons.show', compact('course', 'lesson', 'progress', 'watch'));
+    }
+
+    /**
+     * Streams a PDF lesson's file to the in-page viewer. Same access rule as opening the lesson; the file
+     * lives on the private disk, so this route is the only way to it.
+     */
+    public function pdf(string $slug, Lesson $lesson)
+    {
+        $course = Course::where('slug', $slug)->firstOrFail();
+        $user = auth()->user();
+
+        abort_unless($lesson->course_id === $course->id && $lesson->isPdf() && $lesson->pdf_path, 404);
+        abort_unless(CourseProgress::canStart($user, $course) && (new CourseProgress($course, $user))->isUnlocked($lesson), 403);
+
+        return response()->file(Storage::disk('local')->path($lesson->pdf_path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline',
+            'Cache-Control' => 'private, no-store',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     /**
