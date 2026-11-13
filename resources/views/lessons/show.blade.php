@@ -99,7 +99,7 @@
         player = new YT.Player('player', {
             videoId: @json($lesson->youtube_video_id),
             // Resume a few seconds early so the learner gets context back.
-            playerVars: { rel: 0, fs: 0, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
+            playerVars: { rel: 0, fs: 0, cc_load_policy: 0, iv_load_policy: 3, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
             events: { onStateChange: onState },
         });
     };
@@ -128,7 +128,12 @@
 
     function onState(e) {
         clearInterval(timer);
-        if (e.data === YT.PlayerState.PLAYING) timer = setInterval(tick, 1000);
+        if (e.data === YT.PlayerState.PLAYING) {
+            timer = setInterval(tick, 1000);
+            // Learners can't reach YouTube's CC button behind the click shield, and cc_load_policy:0 doesn't stop
+            // captions a viewer's YouTube settings turn on; unloading the module is the only thing that does.
+            player.unloadModule && player.unloadModule('captions');
+        }
         if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) ping();
     }
 
