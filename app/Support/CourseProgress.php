@@ -28,7 +28,10 @@ class CourseProgress
     /** Paid (or free course, or admin). Without it only the free chapters of a partly free course are open. */
     public readonly bool $fullAccess;
 
-    /** Admins check a course's content in any order, so none of the learner's step locks apply to them. */
+    /** Roles that review courses: they open everything, in any order, without paying and without being recorded as learners. */
+    public const REVIEWER_ROLES = ['admin', 'Super-Admin', 'instructor'];
+
+    /** Admins and instructors check a course's content in any order, so none of the learner's step locks apply to them. */
     public readonly bool $reviewer;
 
     private Collection $attempts;
@@ -36,7 +39,7 @@ class CourseProgress
     public function __construct(public readonly Course $course, public readonly User $user)
     {
         $this->fullAccess = self::canAccessCourse($user, $course);
-        $this->reviewer = $user->hasAnyRole(['admin', 'Super-Admin']);
+        $this->reviewer = $user->hasAnyRole(self::REVIEWER_ROLES);
 
         $this->sections = $course->sections()
             ->with('lessons')
@@ -65,7 +68,7 @@ class CourseProgress
 
     public static function canAccessCourse(?User $user, Course $course): bool
     {
-        return $user && ($user->hasAnyRole(['admin', 'Super-Admin'])
+        return $user && ($user->hasAnyRole(self::REVIEWER_ROLES)
             || $user->enrollments()
                 ->where('course_id', $course->id)
                 ->where('payment_status', 'completed')

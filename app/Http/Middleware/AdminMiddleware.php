@@ -23,8 +23,8 @@ class AdminMiddleware
 
         $user = Auth::user();
 
-        // Check if user has admin or super-admin role
-        if (! $user->hasAnyRole(['admin', 'Super-Admin'])) {
+        // Instructors get in too; each page and menu item is still limited by its own permission.
+        if (! $user->hasAnyRole(['admin', 'Super-Admin', 'instructor'])) {
             // Log unauthorized access attempt (optional)
             \Log::warning('Unauthorized admin access attempt', [
                 'user_id' => $user->id,

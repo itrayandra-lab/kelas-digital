@@ -110,9 +110,6 @@ class RolePermissionSeeder extends Seeder
             'view enrolled courses',
             'access course content',
             'complete lessons',
-
-            // Site Settings Management
-            'manage site settings',
         ]);
 
         // Content Manager role - Limited to article management only
@@ -143,7 +140,7 @@ class RolePermissionSeeder extends Seeder
         // Instructor role - Limited to course management only
         $instructorRole = Role::updateOrCreate(['name' => 'instructor']);
         $instructorRole->syncPermissions([
-            // Course Management Only
+            // Courses, their curriculum and tests (incl. marking essays) only; no categories, users, payments or settings.
             'view courses',
             'create courses',
             'edit courses',
@@ -151,15 +148,8 @@ class RolePermissionSeeder extends Seeder
             'create lessons',
             'edit lessons',
             'delete lessons',
-            // Course Category Management Only
-            'view course categories',
-            'create course categories',
-            'edit course categories',
-            'delete course categories',
-            // Admin Panel Access (for dashboard)
             'access admin panel',
             'view dashboard',
-            'manage site settings',
         ]);
 
         // Admin role
