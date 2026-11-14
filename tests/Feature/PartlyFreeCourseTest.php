@@ -61,7 +61,7 @@ class PartlyFreeCourseTest extends TestCase
         // Only the trailer is public: visitors and users who haven't started can't open any lesson.
         $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertRedirect(route('course.show', $slug));
         $this->get(route('course.lesson', [$slug, $this->paidLesson]))->assertRedirect(route('course.show', $slug));
-        $this->get(route('course.show', $slug))->assertSee('Sebagian Gratis')->assertSee('Login untuk Mulai Gratis')
+        $this->get(route('course.show', $slug))->assertSee('Sebagian Gratis')->assertSee('Login untuk Mulai Gratis')->assertDontSee('Rp100.000')
             ->assertDontSee(route('course.lesson', [$slug, $this->freeLesson]));
 
         $this->actingAs($user = $this->student());
@@ -80,7 +80,7 @@ class PartlyFreeCourseTest extends TestCase
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.show', $slug))->assertSessionHas('checkout');
         $this->get(route('course.lesson', [$slug, $this->paidLesson]))->assertRedirect(route('course.learn', $slug));
         $this->postJson(route('course.lesson.complete', [$slug, $this->paidLesson]))->assertForbidden();
-        $this->get(route('course.show', $slug))->assertSee('Beli Kelas Lengkap')->assertSee('Lanjut Belajar');
+        $this->get(route('course.show', $slug))->assertSee('Lanjutkan ke Modul Berbayar')->assertSee('Lanjut Belajar');
         $this->get(route('dashboard'))->assertSee('Marketing di Era AI')->assertDontSee('Menunggu pembayaran (1)');
 
         // Paying opens the rest, continuing from where the learner stopped.

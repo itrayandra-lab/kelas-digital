@@ -30,7 +30,10 @@
                 <button type="submit" class="cta-btn">Mulai Gratis</button>
             </form>
         @endif
-        <button type="button" class="cta-btn cta-outline btn-pay" data-slug="{{ $course->slug }}">{{ $isPending ? 'Selesaikan Pembayaran' : 'Beli Kelas Lengkap' }}</button>
+        {{-- Buying shows up once the free modules are done (or a payment was started), not on first visit. --}}
+        @if($isPending || $progress?->needsPayment())
+            <button type="button" class="cta-btn cta-outline btn-pay" data-slug="{{ $course->slug }}">{{ $isPending ? 'Selesaikan Pembayaran' : 'Lanjutkan ke Modul Berbayar' }}</button>
+        @endif
     @elseif($isPending)
         <button type="button" class="cta-btn cta-warn btn-pay" data-slug="{{ $course->slug }}"><i class="fas fa-credit-card"></i> Selesaikan Pembayaran</button>
     @else

@@ -126,8 +126,10 @@
     $videoCount = $lessons->filter->isVideo()->count();
     $textCount = $lessons->count() - $videoCount;
     $hasThumb = (bool) $course->thumbnail_url;
-    $priceLabel = $course->isFreeClass() ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.');
     $partlyFree = $course->isPartlyFree();
+    // Partly free courses show their price only in the checkout panel, once the learner reaches a paid module.
+    $fullPrice = 'Rp'.number_format($course->price, 0, ',', '.');
+    $priceLabel = $course->isFreeClass() || ($partlyFree && ! $userHasAccess) ? 'Gratis' : $fullPrice;
     $freeSectionCount = $sections->where('is_free', true)->count();
 @endphp
 
@@ -418,9 +420,9 @@
             <p style="font-size:.85rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.6rem .8rem;margin-top:1rem;">{{ session('checkout') }}</p>
         @endif
         <div style="margin-top:1rem;">
-            <div class="co-row"><span>Harga kelas</span><span>{{ $priceLabel }}</span></div>
+            <div class="co-row"><span>Harga kelas</span><span>{{ $fullPrice }}</span></div>
             <div class="co-row" id="co-discount-row" hidden><span>Potongan voucher</span><span id="co-discount" style="color:#15803d;"></span></div>
-            <div class="co-row total"><span>Total bayar</span><span id="co-total">{{ $priceLabel }}</span></div>
+            <div class="co-row total"><span>Total bayar</span><span id="co-total">{{ $fullPrice }}</span></div>
         </div>
         <div class="co-voucher">
             <input type="text" id="co-code" placeholder="Kode voucher (opsional)" maxlength="40" aria-label="Kode voucher">

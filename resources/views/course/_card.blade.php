@@ -21,7 +21,7 @@
             @if($course->students_count >= \App\Models\Course::MIN_STUDENTS_SHOWN)<span>{{ $course->students_count }} peserta</span>@endif
         </div>
         <div class="cc-foot">
-            <span class="cc-price {{ $free ? 'free' : '' }}">{{ $free ? 'Gratis' : 'Rp'.number_format($course->price, 0, ',', '.') }}</span>
+            <span class="cc-price {{ $free || $partlyFree ? 'free' : '' }}">{{ $free ? 'Gratis' : ($partlyFree ? 'Mulai Gratis' : 'Rp'.number_format($course->price, 0, ',', '.')) }}</span>
             <span class="cc-go">Lihat kelas <i class="fas fa-arrow-right"></i></span>
         </div>
     </div>
