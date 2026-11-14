@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseSection;
 use App\Models\Lesson;
+use App\Models\QuizAttempt;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -92,6 +93,18 @@ class MarketingAiCourseSeeder extends Seeder
                 // Chapters were first seeded as "Bab N: ..."; the course calls them modules. Admin-renamed titles stay.
                 if (str_starts_with($section->title, 'Bab ') && $section->title !== $sectionData['title']) {
                     $section->update(['title' => $sectionData['title']]);
+                }
+
+                // Modul 02 first went out with placeholder summaries and its tests ahead of its videos and PDF;
+                // it is taken back out until it is ready. Tests stay if a learner already took one.
+                if ($order === 1) {
+                    $placeholders = $section->lessons()->where('type', 'text')->where('content', 'like', '%Naskah lengkap lesson ini sedang disiapkan%')->get();
+                    $placeholders->each->delete();
+                    $taken = QuizAttempt::where('section_id', $section->id)->exists();
+                    $questions = $taken ? 0 : $section->questions()->get()->each->delete()->count();
+                    if ($placeholders->isNotEmpty() || $questions) {
+                        $this->command?->info("{$section->title}: {$placeholders->count()} materi sementara dan {$questions} soal dikeluarkan.");
+                    }
                 }
 
                 if ($order === 0) {
