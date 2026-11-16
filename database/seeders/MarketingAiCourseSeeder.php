@@ -26,6 +26,8 @@ class MarketingAiCourseSeeder extends Seeder
 
     private const PRICE = 599000;
 
+    private const INSTRUCTOR = 'Wendra Wilendra M.MT.';
+
     /** The first seed went out with this placeholder; an admin-set price is never overwritten. */
     private const PLACEHOLDER_PRICE = 299000;
 
@@ -43,7 +45,7 @@ class MarketingAiCourseSeeder extends Seeder
             $course = Course::create([
                 'title' => $data['title'],
                 'slug' => $data['slug'],
-                'instructor' => 'Tim Ray Academy',
+                'instructor' => self::INSTRUCTOR,
                 'description' => $data['description'],
                 'benefits' => $data['benefits'],
                 'price' => self::PRICE,
@@ -82,6 +84,11 @@ class MarketingAiCourseSeeder extends Seeder
             if ((int) $course->price === self::PLACEHOLDER_PRICE) {
                 $course->update(['price' => self::PRICE]);
                 $this->command?->info('Harga kelas diubah jadi Rp'.number_format(self::PRICE, 0, ',', '.').'.');
+            }
+
+            if ($course->instructor === 'Tim Ray Academy') {
+                $course->update(['instructor' => self::INSTRUCTOR]);
+                $this->command?->info('Instruktur diubah jadi '.self::INSTRUCTOR);
             }
 
             foreach ($sections as $order => $sectionData) {

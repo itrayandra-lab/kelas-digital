@@ -362,7 +362,13 @@
             <div style="margin-bottom:2rem;">
                 <h2 class="cd-h2">Instruktur</h2>
                 <div class="cd-inst">
-                    <div class="cd-avatar">{{ strtoupper(substr($course->instructor, 0, 1)) }}</div>
+                    {{-- shortcut: instructor photos are the homepage assets matched by name; move to a course field when admins need to set them. --}}
+                    @php $instructorPhoto = ['Wendra Wilendra M.MT.' => 's-wendra_new.png'][$course->instructor] ?? null; @endphp
+                    @if($instructorPhoto)
+                        <img src="{{ asset('assets/'.$instructorPhoto) }}" alt="{{ $course->instructor }}" class="cd-avatar" style="object-fit:cover;object-position:center top;">
+                    @else
+                        <div class="cd-avatar">{{ strtoupper(substr($course->instructor, 0, 1)) }}</div>
+                    @endif
                     <div>
                         <div style="font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);font-size:1.05rem;">{{ $course->instructor }}</div>
                         <div style="font-size:.85rem;color:var(--muted);">Instruktur {{ $course->category?->name ?? 'Kelas Digital' }}</div>
