@@ -59,7 +59,7 @@ return [
      *
      * You can use the following filetypes: ico, png, gif, jpeg, svg.
      */
-    'favicon' => '/favicon.ico',
+    'favicon' => '/favicon.ico?v=2', // bump when the icon changes; Cloudflare caches the bare path
 
     'title' => [
         /**
