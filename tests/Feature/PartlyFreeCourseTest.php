@@ -68,7 +68,10 @@ class PartlyFreeCourseTest extends TestCase
         $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertRedirect(route('course.show', $slug));
         $this->post(route('course.enroll', $slug))->assertRedirect(route('course.learn', $slug));
         $this->assertSame('trial', Enrollment::firstOrFail()->payment_method);
-        session()->put("intro_seen.{$this->course->id}", true);
+
+        // A module released later (no lessons or tests yet) isn't listed.
+        CourseSection::create(['course_id' => $this->course->id, 'title' => 'Modul minggu depan', 'order' => 3]);
+        $this->get(route('course.intro', $slug))->assertOk()->assertSee('Bab berbayar')->assertDontSee('Modul minggu depan');
 
         // The free chapter runs like a paid course, with progress saved.
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.lesson', [$slug, $this->freeLesson]));

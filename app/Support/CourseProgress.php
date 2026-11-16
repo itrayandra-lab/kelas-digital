@@ -47,7 +47,10 @@ class CourseProgress
                 'questions as pre_count' => fn ($q) => $q->where('kind', 'pre'),
                 'questions as post_count' => fn ($q) => $q->where('kind', 'post'),
             ])
-            ->get();
+            ->get()
+            // Modules are released week by week; one with no lessons or tests yet stays hidden.
+            ->filter(fn (CourseSection $s) => $s->lessons->isNotEmpty() || $s->pre_count > 0 || $s->post_count > 0)
+            ->values();
         $this->lessons = $this->sections->flatMap->lessons->values();
 
         $this->completedIds = $user->completedLessons()
