@@ -30,7 +30,7 @@
 .lesson-text figcaption { font-size:.8rem; color:var(--muted); text-align:center; margin-top:.4rem; }
 /* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
-.vid-ratio { aspect-ratio:16/9; position:relative; overflow:hidden; }
+.vid-ratio { aspect-ratio:16/9; }
 /* Blocks clicks on YouTube's links and buttons; a click only plays/pauses via the API. */
 .vid-shield { position:absolute; inset:0; z-index:1; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
 .vid-wrap:fullscreen { border-radius:0; display:flex; align-items:center; }
@@ -126,21 +126,9 @@
             videoId: @json($lesson->youtube_video_id),
             // Resume a few seconds early so the learner gets context back.
             playerVars: { controls: 0, rel: 0, fs: 0, cc_load_policy: 0, iv_load_policy: 3, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
-            events: { onReady: fit, onStateChange: onState },
+            events: { onStateChange: onState },
         });
     };
-
-    // Past roughly 1000px wide, YouTube shows its title, share and logo on every play/pause even with controls:0.
-    // So the iframe never gets wider than 960px and is scaled up with CSS to fill the box (and fullscreen).
-    const BASE = 960;
-    function fit() {
-        const box = document.querySelector('.vid-ratio'), frame = document.getElementById('player');
-        const scale = box.clientWidth / BASE;
-        Object.assign(frame.style, scale > 1
-            ? { position: 'absolute', left: 0, top: 0, width: BASE + 'px', height: BASE * 9 / 16 + 'px', transformOrigin: '0 0', transform: 'scale(' + scale + ')' }
-            : { position: '', left: '', top: '', width: '100%', height: '100%', transformOrigin: '', transform: '' });
-    }
-    new ResizeObserver(fit).observe(document.querySelector('.vid-ratio'));
 
     @if($watch?->videoWatchedEnough())
     window.addEventListener('DOMContentLoaded', unlock);
