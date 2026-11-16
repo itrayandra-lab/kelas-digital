@@ -32,12 +32,28 @@
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
 .vid-ratio { aspect-ratio:16/9; }
 /* Blocks clicks on YouTube's links and buttons; a click only plays/pauses via the API. */
-.vid-shield { position:absolute; inset:0; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
+.vid-shield { position:absolute; inset:0; z-index:1; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
 .vid-wrap:fullscreen { border-radius:0; display:flex; align-items:center; }
 .vid-wrap:fullscreen .vid-ratio { width:100%; max-height:100%; }
-.vid-fs { position:absolute; right:12px; bottom:64px; width:38px; height:38px; border:0; border-radius:8px; cursor:pointer;
-  background:rgba(10,22,40,.55); color:#fff; font-size:15px; }
-.vid-fs:hover { background:rgba(10,22,40,.8); }
+/* Before the first play YouTube shows its title and "Watch on YouTube"; the cover hides them. */
+.vid-poster { position:absolute; inset:0; z-index:2; border:0; padding:0; cursor:pointer; background:#000 center/cover no-repeat;
+  display:flex; align-items:center; justify-content:center; }
+.vid-poster span { width:72px; height:72px; border-radius:50%; background:rgba(0,86,210,.92); color:#fff; font-size:26px;
+  display:flex; align-items:center; justify-content:center; padding-left:5px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .15s; }
+.vid-poster:hover span { transform:scale(1.06); }
+/* Our own control bar; YouTube's (share, watch later, logo, CC, settings) is off with controls:0. */
+.vc { position:absolute; left:0; right:0; bottom:0; z-index:3; display:flex; align-items:center; gap:.5rem; padding:1.5rem .75rem .5rem;
+  background:linear-gradient(transparent, rgba(0,0,0,.7)); color:#fff; opacity:0; transition:opacity .2s; }
+.vid-wrap:hover .vc, .vid-wrap.paused .vc, .vc:focus-within { opacity:1; }
+@media (hover:none) { .vc { opacity:1; } }
+.vid-poster:not([hidden]) ~ .vc { display:none; }
+.vc button { flex-shrink:0; width:36px; height:36px; border:0; border-radius:6px; background:none; color:#fff; font-size:15px; cursor:pointer; }
+.vc button:hover, .vc button:focus-visible { background:rgba(255,255,255,.15); }
+.vc input[type=range] { cursor:pointer; accent-color:#3B82F6; height:4px; }
+.vc-seek { flex:1; min-width:60px; }
+.vc-vol { width:80px; }
+.vc-time { font-size:.75rem; font-variant-numeric:tabular-nums; white-space:nowrap; }
+@media (max-width:560px) { .vc-vol { display:none; } }
 </style>
 
 @php
@@ -49,7 +65,16 @@
         <div class="vid-wrap" id="vid-wrap">
             <div class="vid-ratio"><div id="player" style="width:100%;height:100%;"></div></div>
             <button type="button" class="vid-shield" id="vid-shield" aria-label="Putar atau jeda video"></button>
-            <button type="button" class="vid-fs" id="vid-fs" aria-label="Layar penuh"><i class="fas fa-expand"></i></button>
+            <button type="button" class="vid-poster" id="vid-poster" aria-label="Putar video"
+                    style="background-image:url('https://img.youtube.com/vi/{{ $lesson->youtube_video_id }}/hqdefault.jpg')"><span><i class="fas fa-play"></i></span></button>
+            <div class="vc" id="vc">
+                <button type="button" id="vc-play" aria-label="Putar"><i class="fas fa-play"></i></button>
+                <span class="vc-time" id="vc-time">0:00 / 0:00</span>
+                <input type="range" class="vc-seek" id="vc-seek" min="0" max="0" step="1" value="0" aria-label="Posisi video">
+                <button type="button" id="vc-mute" aria-label="Bisukan"><i class="fas fa-volume-up"></i></button>
+                <input type="range" class="vc-vol" id="vc-vol" min="0" max="100" step="1" value="100" aria-label="Volume">
+                <button type="button" id="vc-fs" aria-label="Layar penuh"><i class="fas fa-expand"></i></button>
+            </div>
         </div>
     @endif
 
@@ -100,7 +125,7 @@
         player = new YT.Player('player', {
             videoId: @json($lesson->youtube_video_id),
             // Resume a few seconds early so the learner gets context back.
-            playerVars: { rel: 0, fs: 0, cc_load_policy: 0, iv_load_policy: 3, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
+            playerVars: { controls: 0, rel: 0, fs: 0, cc_load_policy: 0, iv_load_policy: 3, disablekb: canComplete ? 1 : 0, start: Math.max(0, resumeAt - 3) },
             events: { onStateChange: onState },
         });
     };
@@ -129,6 +154,15 @@
 
     function onState(e) {
         clearInterval(timer);
+        const playing = e.data === YT.PlayerState.PLAYING;
+        wrap.classList.toggle('paused', !playing);
+        playBtn.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        playBtn.setAttribute('aria-label', playing ? 'Jeda' : 'Putar');
+        if (playing) poster.hidden = true;
+        // On phones YouTube shows its title, share button and logo whenever the video is paused, even with controls:0.
+        if (e.data === YT.PlayerState.PAUSED && touchOnly) poster.hidden = false;
+        // At the end YouTube shows other videos; the cover goes back over them.
+        if (e.data === YT.PlayerState.ENDED) poster.hidden = false;
         if (e.data === YT.PlayerState.PLAYING) {
             timer = setInterval(tick, 1000);
             // Learners can't reach YouTube's CC button behind the click shield, and cc_load_policy:0 doesn't stop
@@ -156,16 +190,52 @@
         window.lessonUnlock && window.lessonUnlock();
     }
 
-    const wrap = document.getElementById('vid-wrap'), fsBtn = document.getElementById('vid-fs');
-    document.getElementById('vid-shield').addEventListener('click', () => {
-        if (!player || !player.getPlayerState) return;
-        player.getPlayerState() === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo();
+    const wrap = document.getElementById('vid-wrap'), fsBtn = document.getElementById('vc-fs'), poster = document.getElementById('vid-poster');
+    const playBtn = document.getElementById('vc-play'), seek = document.getElementById('vc-seek'), time = document.getElementById('vc-time');
+    const muteBtn = document.getElementById('vc-mute'), vol = document.getElementById('vc-vol');
+    const touchOnly = window.matchMedia('(hover: none)').matches;
+    const ready = () => player && player.getPlayerState;
+    const toggle = () => { if (ready()) player.getPlayerState() === YT.PlayerState.PLAYING ? player.pauseVideo() : player.playVideo(); };
+    const pad = n => String(n).padStart(2, '0');
+    const clock = t => { t = Math.floor(t || 0); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60; return (h ? h + ':' + pad(m) : m) + ':' + pad(t % 60); };
+
+    document.getElementById('vid-shield').addEventListener('click', toggle);
+    playBtn.addEventListener('click', toggle);
+    poster.addEventListener('click', () => { if (ready()) { if (player.getPlayerState() === YT.PlayerState.ENDED) player.seekTo(0, true); player.playVideo(); } });
+
+    let dragging = false;
+    seek.addEventListener('input', () => { dragging = true; time.textContent = clock(seek.value) + ' / ' + clock(seek.max); });
+    seek.addEventListener('change', () => {
+        dragging = false;
+        if (!ready()) return;
+        // Learners can only go back, or forward up to what they've watched; reviewers seek freely.
+        const to = canComplete ? Math.min(+seek.value, maxWatched) : +seek.value;
+        player.seekTo(to, true);
+        seek.value = to;
     });
+
+    function setVolumeIcon() {
+        const muted = player.isMuted() || player.getVolume() === 0;
+        muteBtn.innerHTML = muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        muteBtn.setAttribute('aria-label', muted ? 'Bunyikan' : 'Bisukan');
+    }
+    muteBtn.addEventListener('click', () => { if (!ready()) return; player.isMuted() ? player.unMute() : player.mute(); setTimeout(setVolumeIcon, 50); });
+    vol.addEventListener('input', () => { if (!ready()) return; player.setVolume(+vol.value); +vol.value > 0 ? player.unMute() : player.mute(); setTimeout(setVolumeIcon, 50); });
+
+    setInterval(() => {
+        if (!ready() || dragging || !player.getDuration) return;
+        const d = player.getDuration();
+        if (!d) return;
+        seek.max = Math.floor(d);
+        seek.value = Math.floor(player.getCurrentTime());
+        time.textContent = clock(player.getCurrentTime()) + ' / ' + clock(d);
+    }, 500);
     // iPhone Safari can't fullscreen a div; hide the button there.
     if (document.fullscreenEnabled) {
         fsBtn.addEventListener('click', () => document.fullscreenElement ? document.exitFullscreen() : wrap.requestFullscreen());
         document.addEventListener('fullscreenchange', () => {
             fsBtn.innerHTML = document.fullscreenElement ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+            fsBtn.setAttribute('aria-label', document.fullscreenElement ? 'Keluar layar penuh' : 'Layar penuh');
         });
     } else {
         fsBtn.hidden = true;
