@@ -223,10 +223,11 @@
 }
 .free-banner-text h2{
     font-family:'Sora',sans-serif;
-    font-size:clamp(1.6rem,3.2vw,2.2rem);
-    font-weight:600;color:#0F1114;
-    line-height:1.3;margin-bottom:1.75rem;
+    font-size:clamp(1.8rem,3.6vw,2.6rem);
+    font-weight:700;color:#0F1114;
+    line-height:1.2;letter-spacing:-.02em;margin-bottom:.9rem;text-wrap:balance;
 }
+.free-banner-text p{font-size:1rem;color:#6B7280;line-height:1.7;max-width:460px;margin-bottom:1.75rem;}
 .btn-outline-blue{
     display:inline-flex;align-items:center;gap:.4rem;
     padding:.75rem 1.5rem;border:1.5px solid #0056D2;border-radius:8px;
@@ -313,8 +314,7 @@
 .ins-header p{color:rgba(255,255,255,.5);margin-top:.6rem;font-size:.9rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7;}
 
 /* Staggered grid */
-.ins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;align-items:end;}
-.ins-row2{grid-column:1/-1;display:flex;justify-content:center;margin-top:.5rem;}
+.ins-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
 
 .ins-card{
     border-radius:18px;overflow:hidden;position:relative;
@@ -322,11 +322,6 @@
     display:flex;flex-direction:column;
 }
 .ins-card:hover{transform:translateY(-8px);box-shadow:0 24px 56px rgba(0,0,0,.4);}
-/* stagger heights */
-.ins-card:nth-child(1){margin-top:2.5rem;}
-.ins-card:nth-child(2){margin-top:0;}
-.ins-card:nth-child(3){margin-top:2rem;}
-.ins-card:nth-child(4){margin-top:0;}
 
 .ins-card-inner{padding:1.4rem 1.4rem 0;position:relative;z-index:1;flex:1;}
 .ins-card-logo{height:38px;object-fit:contain;margin-bottom:.8rem;display:block;}
@@ -340,51 +335,13 @@
 }
 .ins-card-btn:hover{opacity:.85;transform:translateX(3px);}
 .ins-card-photo{display:block;height:185px;width:100%;object-fit:contain;object-position:bottom;margin-top:1rem;}
-.ins-card-solo{width:255px;}
-.ins-card-solo .ins-card-photo{height:185px;}
 
-/* ═══ 7. ARTICLES — FIXED kategori lainnya ═══ */
-.articles-section{background:#fff;padding:3rem 0;}
-.articles-section h2{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:#0F1114;margin-bottom:1.25rem;}
-.art-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-.art-col{background:#EEF4FF;border-radius:12px;padding:1.1rem;display:flex;flex-direction:column;}
-.art-col-head{
-    display:flex;align-items:center;gap:.35rem;
-    font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;
-    color:#0F1114;margin-bottom:1rem;text-decoration:none;
-}
-.art-col-head:hover{color:#0056D2;}
-.art-col-head svg{width:13px;height:13px;flex-shrink:0;}
-
-.art-item{
-    background:#fff;border-radius:10px;padding:.65rem;
-    display:flex;gap:.65rem;align-items:flex-start;
-    margin-bottom:.6rem;text-decoration:none;color:inherit;
-    transition:box-shadow .2s,transform .2s;
-}
-.art-item:last-child{margin-bottom:0;}
-.art-item:hover{box-shadow:0 6px 20px rgba(0,0,0,.08);transform:translateX(3px);}
-.art-thumb{width:54px;height:54px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#dbeafe;}
-.art-thumb img{width:100%;height:100%;object-fit:cover;}
-.art-body{flex:1;min-width:0;}
-.art-cat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;}
-.art-title{font-family:'Sora',sans-serif;font-size:.73rem;font-weight:600;color:#0F1114;line-height:1.35;margin-top:.15rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.art-date{font-size:.61rem;color:#9CA3AF;margin-top:.2rem;}
-
-/* Placeholder saat artikel kosong */
-.art-placeholder{
-    background:#fff;border-radius:10px;padding:1.5rem;
-    text-align:center;flex:1;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;gap:.75rem;
-    border:1.5px dashed rgba(0,86,210,.2);
-}
-.art-placeholder-icon{
-    width:40px;height:40px;border-radius:10px;
-    background:#EEF4FF;display:flex;align-items:center;justify-content:center;
-}
-.art-placeholder p{font-size:.75rem;color:#9CA3AF;line-height:1.5;margin:0;}
-.art-placeholder a{font-size:.72rem;font-weight:600;color:#0056D2;text-decoration:none;}
-.art-placeholder a:hover{text-decoration:underline;}
+/* ═══ 7. ARTICLES ═══ */
+.articles-section{background:#fff;padding:3.5rem 0;}
+.art-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.art-head h2{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,3vw,1.75rem);font-weight:700;color:#0F1114;}
+.art-head p{font-size:.9rem;color:#6B7280;margin-top:.25rem;}
+.art-head a{font-size:.85rem;font-weight:600;color:#0056D2;text-decoration:none;}
 
 /* ═══ 9. FAQ ═══ */
 .faq-section{background:#fff;padding:3rem 0;border-top:1px solid #F1F5F9;}
@@ -412,26 +369,26 @@
 .faq-ans p{padding:.25rem 1.25rem 1.1rem;font-size:.82rem;color:#6B7280;line-height:1.7;margin:0;}
 
 /* ═══ 10. PARTNERS ═══ */
-.partners-section{background:#F8FAFF;padding:2.5rem 0;}
-.partners-section h2{font-family:'Sora',sans-serif;font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:600;color:#0F1114;margin-bottom:1.5rem;}
-.partners-logos{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
-.partners-logos img{height:56px;object-fit:contain;filter:grayscale(20%);opacity:.85;transition:all .2s;}
-.partners-logos img:hover{filter:grayscale(0);opacity:1;}
+.partners-section{background:#F8FAFF;padding:3rem 0;border-top:1px solid #F1F5F9;}
+.partners-section h2{font-family:'Sora',sans-serif;font-size:clamp(1rem,2.2vw,1.2rem);font-weight:600;color:#6B7280;text-align:center;margin-bottom:1.5rem;}
+.partners-logos{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;}
+.partners-logos img{width:160px;height:88px;padding:.9rem 1.25rem;object-fit:contain;background:#fff;border:1px solid #E2E8F0;border-radius:12px;}
 
 /* ═══ 11. CTA BOTTOM ═══ */
-.cta-section{background:#EEF4FF;padding:3.5rem 0;}
-.cta-inner{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1rem;}
-.cta-logo-img{height:28px;object-fit:contain;}
-.cta-inner p{font-size:.9rem;color:#374151;max-width:400px;margin:0;}
-.cta-subtext{font-size:.75rem;color:#9CA3AF;margin:0!important;}
+.cta-section{background:#fff;padding:3.5rem 0;}
+.cta-inner{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1rem;padding:3rem 1.5rem;border-radius:20px;background:linear-gradient(135deg,#0056D2,#1E3A8A);position:relative;overflow:hidden;}
+.cta-inner::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+.cta-inner > *{position:relative;}
+.cta-inner h2{font-family:'Sora',sans-serif;font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:700;color:#fff;letter-spacing:-.02em;margin:0;}
+.cta-inner p{font-size:.95rem;color:rgba(255,255,255,.8);max-width:480px;margin:0;line-height:1.7;}
+.cta-inner .btn-primary-ra{background:#fff;color:#0056D2;box-shadow:none;}
+.cta-inner .btn-primary-ra:hover{background:#EEF4FF;color:#0056D2;}
+.cta-subtext{font-size:.78rem;color:rgba(255,255,255,.65)!important;}
 
 /* ═══ RESPONSIVE ═══ */
+@media(max-width:1100px){ .ins-grid{grid-template-columns:repeat(3,1fr);} }
 @media(max-width:900px){
-    .art-grid{grid-template-columns:repeat(2,1fr);}
     .ins-grid{grid-template-columns:repeat(2,1fr);}
-    .ins-card:nth-child(1),.ins-card:nth-child(2),.ins-card:nth-child(3),.ins-card:nth-child(4){margin-top:0;}
-    .ins-row2{justify-content:flex-start;}
-    .ins-card-solo{width:100%;}
 }
 @media(max-width:768px){
     .hero-ra-inner{grid-template-columns:1fr;min-height:auto;}
@@ -446,9 +403,7 @@
     html,body{overflow-x:hidden!important;max-width:100vw!important;}
     .promo-grid{grid-template-columns:1fr;}
     .promo-card-img{width:120px;}
-    .art-grid{grid-template-columns:1fr;}
     .ins-grid{grid-template-columns:1fr;}
-    .ins-row2{justify-content:center;}
     .hero-stats-row{gap:.85rem;}
 }
 </style>
@@ -463,7 +418,7 @@
     <div class="hero-ra-inner">
         <div class="hero-ra-left rv" id="hero-left">
             <h1>Wujudkan karier impian Anda bersama <strong>{{ config('app.name', 'Ray Academy') }}</strong></h1>
-            <p>Tingkatkan kompetensi dan Kuasai keterampilan yang dibutuhkan industri dengan dukungan praktisi dan ahli berpengalaman. Belajar fleksibel, kapan saja, di mana saja.</p>
+            <p>Tingkatkan kompetensi dan kuasai keterampilan yang dibutuhkan industri dengan dukungan praktisi dan ahli berpengalaman. Belajar fleksibel, kapan saja, di mana saja.</p>
             <div class="hero-btns-row">
                 <a href="{{ route('course.index') }}" class="btn-primary-ra">
                     Mulai Gratis
@@ -534,13 +489,13 @@
                 </div>
                 <img src="{{ asset('img/content-course1.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
-            <a href="{{ route('course.index') }}" class="promo-card" style="background:#CEFFCC;">
+            <a href="{{ route('course.index', ['category' => 'business-strategy']) }}" class="promo-card" style="background:#CEFFCC;">
                 <div class="promo-card-content">
                     <div>
                         <div class="promo-logo-txt">RAY ACADEMY</div>
                         <div class="promo-title">Memajukan bisnis Anda dan memberdayakan tim Anda</div>
                     </div>
-                    <span class="promo-link-txt">Coba Ray Academy untuk Bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+                    <span class="promo-link-txt">Lihat kelas bisnis <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
                 </div>
                 <img src="{{ asset('img/content-course2.jpg') }}" alt="" class="promo-card-img" onerror="this.style.display='none'">
             </a>
@@ -575,7 +530,8 @@
     <div class="wrap">
         <div class="free-banner-inner rv">
             <div class="free-banner-text">
-                <h2>Bingung harus mulai dari mana? Mulailah dengan kursus gratis di Ray Academy hari ini. Akses materi berkualitas dan kembangkan keterampilan yang membuka lebih banyak peluang karier.</h2>
+                <h2>Bingung harus mulai dari mana?</h2>
+                <p>Mulai dari kelas gratis di Ray Academy. Pelajari materinya, kerjakan tesnya, lalu lanjutkan ke topik yang membuka peluang karier baru.</p>
                 <a href="{{ route('course.index') }}" class="btn-outline-blue">Mulai Kursus Gratis</a>
             </div>
             <div class="free-banner-img-wrap">
@@ -637,7 +593,7 @@
         <form action="{{ route('search') }}" method="GET">
             <div class="search-box-ra">
                 <svg style="width:18px;height:18px;color:#94A3B8;margin-left:.85rem;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                <input type="search" name="q" placeholder="misalnya Pembelajaran Mesin" autocomplete="off">
+                <input type="search" name="q" placeholder="misalnya Digital Marketing" autocomplete="off">
                 <button type="submit" aria-label="Cari">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
                 </button>
@@ -723,19 +679,16 @@
                 <img src="{{ asset('assets/s-wendra_new.png') }}" alt="Wendra Wilendra M.MT." class="ins-card-photo" onerror="this.style.display='none'">
             </div>
 
-            {{-- Row 2: 1 card centered --}}
-            <div class="ins-row2">
-                <div class="ins-card ins-card-solo rv" style="background:linear-gradient(135deg,#0891b2,#0e7490);">
-                    <div class="ins-card-inner">
-                        <img src="{{ asset('assets/logo-sobat-anak.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-logo" onerror="this.style.display='none'">
-                        <h3 class="ins-card-name">dr. Frecillia Regina, Sp.A</h3>
-                        <p class="ins-card-tag">Kesehatan Anak</p>
-                        <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#0891b2;">
-                            Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
-                        </a>
-                    </div>
-                    <img src="{{ asset('assets/s-fricil-1.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-photo" onerror="this.style.display='none'">
+            <div class="ins-card rv rv-d4" style="background:linear-gradient(135deg,#0891b2,#0e7490);">
+                <div class="ins-card-inner">
+                    <img src="{{ asset('assets/logo-sobat-anak.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-logo" onerror="this.style.display='none'">
+                    <h3 class="ins-card-name">dr. Frecillia Regina, Sp.A</h3>
+                    <p class="ins-card-tag">Kesehatan Anak</p>
+                    <a href="{{ route('course.index') }}" class="ins-card-btn" style="color:#0891b2;">
+                        Mulai Belajar <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+                    </a>
                 </div>
+                <img src="{{ asset('assets/s-fricil-1.png') }}" alt="dr. Frecillia Regina, Sp.A" class="ins-card-photo" onerror="this.style.display='none'">
             </div>
         </div>
     </div>
@@ -746,65 +699,16 @@
 ═══════════════════════════════ --}}
 <section class="articles-section">
     <div class="wrap">
-        <h2>Artikel</h2>
-        <div class="art-grid">
-            @php
-                /* Ambil semua artikel, bagi ke 3 kolom */
-                $allArts  = $latestArticles ?? collect();
-                $perCol   = max(1, (int) ceil($allArts->count() / 3));
-                $chunks   = $allArts->chunk($perCol);
-
-                $colDefs = [
-                    ['label'=>'Tentang Kosmetik', 'route'=> route('article.index')],
-                    ['label'=>'Tentang Bisnis',   'route'=> route('article.index')],
-                    ['label'=>'Kategori Lainnya', 'route'=> route('article.index')],
-                ];
-
-                /* Konten fallback untuk kolom kosong */
-                $fallbacks = [
-                    ['title'=>'Tips Memilih Bahan Kosmetik yang Aman','cat'=>'KOSMETIK','date'=>'Apr'],
-                    ['title'=>'Strategi Membangun Bisnis Digital di 2025','cat'=>'BISNIS','date'=>'Apr'],
-                    ['title'=>'Cara Belajar Efektif dengan Metode Spaced Repetition','cat'=>'TIPS BELAJAR','date'=>'Apr'],
-                ];
-            @endphp
-
-            @foreach($colDefs as $ci => $col)
-            @php $colArts = $chunks->get($ci, collect()); @endphp
-            <div class="art-col rv rv-d{{ $ci + 1 }}">
-                <a href="{{ $col['route'] }}" class="art-col-head">
-                    {{ $col['label'] }}
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-
-                @if($colArts->isNotEmpty())
-                    {{-- Real articles --}}
-                    @foreach($colArts->take(3) as $art)
-                    <a href="{{ route('article.show', $art->slug) }}" class="art-item">
-                        <div class="art-thumb">
-                            @if($art->thumbnail ?? $art->cover_image ?? null)
-                                <img src="{{ asset('storage/' . ($art->thumbnail ?? $art->cover_image)) }}" alt="{{ $art->title }}">
-                            @else
-                                <div style="width:100%;height:100%;background:linear-gradient(135deg,#DBEAFE,#EFF6FF);display:flex;align-items:center;justify-content:center;"><i class="fas fa-file-alt" style="font-size:.9rem;color:#0056D2;opacity:.35;"></i></div>
-                            @endif
-                        </div>
-                        <div class="art-body">
-                            @if($art->categories->first())<div class="art-cat">{{ $art->categories->first()->name }}</div>@endif
-                            <div class="art-title">{{ $art->title }}</div>
-                            <div class="art-date">@if($art->published_at){{ $art->published_at->isoFormat('D MMM') }}@endif</div>
-                        </div>
-                    </a>
-                    @endforeach
-                @else
-                    {{-- Placeholder — jangan kosong --}}
-                    <div class="art-placeholder">
-                        <div class="art-placeholder-icon">
-                            <i class="fas fa-newspaper" style="font-size:1rem;color:#0056D2;opacity:.6;"></i>
-                        </div>
-                        <p>Konten artikel untuk kategori ini segera hadir. Yuk, jelajahi artikel lainnya!</p>
-                        <a href="{{ route('article.index') }}">Lihat semua artikel &rarr;</a>
-                    </div>
-                @endif
+        <div class="art-head">
+            <div>
+                <h2>Artikel terbaru</h2>
+                <p>Tips dan wawasan dari instruktur Ray Academy.</p>
             </div>
+            <a href="{{ route('article.index') }}">Lihat semua artikel <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ac-grid">
+            @foreach($latestArticles as $article)
+                @include('article._card')
             @endforeach
         </div>
     </div>
@@ -845,7 +749,7 @@
 ═══════════════════════════════ --}}
 <section class="partners-section">
     <div class="wrap rv">
-        <h2>Bekerjasama dengan Universitas dan Lembaga Pelatihan</h2>
+        <h2>Bekerja sama dengan universitas dan lembaga pelatihan</h2>
         <div class="partners-logos">
             <img src="{{ asset('img/logo-unpad.png') }}" alt="Universitas Padjadjaran" onerror="this.style.display='none'">
             <img src="{{ asset('img/logo-farmasi-unpad.jpg') }}" alt="Farmasi Unpad" onerror="this.style.display='none'">
@@ -860,8 +764,8 @@
 <section class="cta-section">
     <div class="wrap">
         <div class="cta-inner rv">
-            <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }}" class="cta-logo-img" onerror="this.style.display='none'">
-            <p>Wujudkan karier impian Anda bersama Ray Academy</p>
+            <h2>Siap mulai belajar hari ini?</h2>
+            <p>Daftar gratis, pilih kelas, dan mulai dari modul pertama. Progresmu tersimpan dan bisa dilanjutkan kapan saja.</p>
             @guest
             <a href="{{ route('register') }}" class="btn-primary-ra">Daftar Gratis Sekarang</a>
             <p class="cta-subtext">Gratis daftar &middot; Ada kelas gratis untuk mulai</p>

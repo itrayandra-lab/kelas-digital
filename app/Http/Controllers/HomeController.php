@@ -65,11 +65,10 @@ class HomeController extends Controller
             ->unique('instructor')
             ->take(5);
 
-        // 5. Latest Articles - ONE section only (4 articles)
         $latestArticles = Article::published()
-            ->with('categories', 'tags')
+            ->with('categories')
             ->orderBy('published_at', 'desc')
-            ->limit(4)
+            ->limit(3)
             ->get();
 
         // 6. Site stats
