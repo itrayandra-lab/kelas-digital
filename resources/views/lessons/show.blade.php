@@ -31,12 +31,6 @@
 /* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }
 .vid-ratio { aspect-ratio:16/9; }
-/* Branded bottom band from the 1920x1080 frame design, over YouTube's Share / More videos row.
-   Logo and URL are separate images so the band can grow to 56px on phones (enough to cover that row) without stretching. */
-.vid-frame { position:absolute; left:0; right:0; bottom:0; height:max(13.7%, 56px); padding:0 9.9% 0 5%; pointer-events:none;
-  display:flex; align-items:center; justify-content:space-between; background:#000; }
-.vf-logo { height:40.5%; width:auto; }
-.vf-url { height:27%; width:auto; position:relative; top:-6%; }
 /* Blocks clicks on YouTube's links and buttons; a click only plays/pauses via the API. */
 .vid-shield { position:absolute; inset:0; width:100%; border:0; padding:0; background:transparent; cursor:pointer; }
 .vid-wrap:fullscreen { border-radius:0; display:flex; align-items:center; }
@@ -54,10 +48,6 @@
     @if($lesson->isVideo())
         <div class="vid-wrap" id="vid-wrap">
             <div class="vid-ratio"><div id="player" style="width:100%;height:100%;"></div></div>
-            <div class="vid-frame" aria-hidden="true">
-                <img class="vf-logo" src="{{ asset('img/lesson/video-frame-logo.webp') }}" alt="">
-                <img class="vf-url" src="{{ asset('img/lesson/video-frame-url.webp') }}" alt="">
-            </div>
             <button type="button" class="vid-shield" id="vid-shield" aria-label="Putar atau jeda video"></button>
             <button type="button" class="vid-fs" id="vid-fs" aria-label="Layar penuh"><i class="fas fa-expand"></i></button>
         </div>
