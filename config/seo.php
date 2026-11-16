@@ -109,7 +109,7 @@ return [
          * Use this setting to specify a fallback author, which will be used on places where you
          * don't have an author set via an associated ->seo model or via the ->getDynamicSEOData() method.
          */
-        'fallback' => 'Beautyversity.id Team',
+        'fallback' => 'Ray Academy',
     ],
 
     'twitter' => [

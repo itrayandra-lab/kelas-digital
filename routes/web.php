@@ -25,7 +25,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,7 +57,6 @@ Route::middleware('auth')->group(function () {
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->middleware('throttle:10,1')->name('course.enroll');
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
-Route::get('/articles/load-more', [ArticleController::class, 'loadMore'])->name('article.load-more');
 Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category');
 Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
@@ -74,8 +72,9 @@ Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('p
 Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
 
 // Tag browsing routes
-Route::get('/articles/tags', [TagController::class, 'index'])->name('tag.index');
-Route::get('/articles/tag/{tag:slug}', [TagController::class, 'show'])->name('tag.show');
+// Tags are listed in the article sidebar; the old topics page sends visitors there.
+Route::redirect('/articles/tags', '/articles', 301)->name('tag.index');
+Route::get('/articles/tag/{tag:slug}', [ArticleController::class, 'showByTag'])->name('tag.show');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

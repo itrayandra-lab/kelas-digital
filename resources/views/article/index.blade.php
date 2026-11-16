@@ -1,475 +1,128 @@
 @extends('layouts.app')
 
-@section('title', 'Semua Artikel — Ray Academy')
+@section('seo')
+    <title>{{ $activeCategory ? 'Artikel '.$activeCategory->name : ($activeTag ? 'Artikel tentang '.$activeTag->name : 'Artikel') }} - Ray Academy</title>
+@endsection
+
+@include('partials.catalog-styles')
 
 @push('styles')
 <style>
-/* ══════ ARTICLES INDEX - CLEAN & CONSISTENT ══════ */
-
-/* Page Hero - SAMA dengan courses */
-.page-hero {
-    background: #F5F5F4;
-    border-bottom: 1px solid #E2E8F0;
-    padding: 2.25rem 0 2rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.page-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(0,86,210,.03) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0,86,210,.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-}
-
-.page-hero-inner {
-    position: relative;
-    z-index: 1;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
-.page-hero-label {
-    display: inline-flex;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #0056D2;
-    background: #EEF4FF;
-    border: 1px solid rgba(0,86,210,.15);
-    padding: 0.3rem 0.85rem;
-    border-radius: 999px;
-    margin-bottom: 0.85rem;
-}
-
-.page-hero h1 {
-    font-family: 'Sora', sans-serif;
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    font-weight: 700;
-    color: #0F1114;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.25rem;
-}
-
-.page-hero p {
-    font-size: 0.875rem;
-    color: #6B7280;
-    max-width: 620px;
-}
-
-/* Category Chips */
-.cat-chips {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-}
-
-.cat-chip {
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 0.45rem 1rem;
-    border-radius: 999px;
-    border: 1px solid rgba(0,86,210,.18);
-    background: #fff;
-    color: #0048B0;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.cat-chip:hover {
-    background: #F1F5FF;
-}
-
-.cat-chip.active {
-    background: #0056D2;
-    color: #fff;
-    border-color: #0056D2;
-}
-
-/* Article Card - SAMA dengan home article cards */
-.art-card {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform .3s ease, box-shadow .3s ease, border-color .25s;
-}
-
-.art-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 48px rgba(10,22,40,.09);
-    border-color: #BFDBFE;
-}
-
-.art-card-thumb-wrap {
-    position: relative;
-    overflow: hidden;
-    height: 200px;
-    background: linear-gradient(135deg, #dbeafe, #eff6ff);
-    flex-shrink: 0;
-}
-
-.art-card-thumb-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform .45s ease;
-}
-
-.art-card:hover .art-card-thumb-img {
-    transform: scale(1.06);
-}
-
-.art-card-thumb-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #dbeafe, #eff6ff);
-}
-
-.art-card-badge {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 1;
-    font-size: 0.63rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    background: #fff;
-    color: #0056D2;
-    padding: 0.3rem 0.7rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.18s;
-}
-
-.art-card-badge:hover {
-    background: #EEF4FF;
-}
-
-.art-card-body {
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.art-card-date {
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-bottom: 0.4rem;
-}
-
-.art-card-title {
-    font-family: 'Sora', sans-serif;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    transition: color 0.18s;
-}
-
-.art-card:hover .art-card-title {
-    color: #0056D2;
-}
-
-.art-card-excerpt {
-    font-size: 0.8rem;
-    color: var(--muted);
-    line-height: 1.65;
-    margin-top: 0.5rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    flex: 1;
-}
-
-.art-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 0.9rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--border);
-}
-
-.art-card-read {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #0056D2;
-}
-
-.art-card-views {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: 0.72rem;
-    color: var(--muted);
-}
-
-/* Grid */
-.articles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-}
-
-/* Mobile Responsive */
-@media (max-width: 640px) {
-    .articles-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .page-hero {
-        padding: 3rem 0 2rem;
-    }
-}
-
-/* Load More Button */
-.btn-load-more {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.875rem 2rem;
-    background: #0056D2;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 6px 20px rgba(0,86,210,.3);
-}
-
-.btn-load-more:hover {
-    background: #0048B0;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0,86,210,.4);
-}
-
-.btn-load-more:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* Breadcrumb */
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    margin-bottom: 2rem;
-}
-
-.breadcrumb a {
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.18s;
-}
-
-.breadcrumb a:hover {
-    color: #0056D2;
-}
-
-.breadcrumb span {
-    color: var(--ink);
-    font-weight: 600;
-}
-
-.breadcrumb svg {
-    color: var(--muted);
-    width: 14px;
-    height: 14px;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-}
-
-.empty-state svg {
-    width: 64px;
-    height: 64px;
-    color: var(--muted);
-    opacity: 0.3;
-    margin: 0 auto 1.5rem;
-}
-
-.empty-state h3 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 0.5rem;
-}
-
-.empty-state p {
-    color: var(--muted);
-    font-size: 0.95rem;
-}
-
-/* Scroll Reveal */
-.rv {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.rv.in {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.rv-d1 { transition-delay: 0.08s; }
-.rv-d2 { transition-delay: 0.16s; }
-.rv-d3 { transition-delay: 0.24s; }
-.rv-d4 { transition-delay: 0.32s; }
-
-/* Spin Animation */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+.ct-tagcloud { padding:.75rem; display:flex; flex-wrap:wrap; gap:.4rem; }
+.ct-tagcloud a { font-size:.74rem; color:#374151; border:1px solid #E2E8F0; border-radius:999px; padding:.25rem .65rem; text-decoration:none; transition:border-color .15s, color .15s; }
+.ct-tagcloud a:hover, .ct-tagcloud a.on { border-color:#0056D2; color:#0056D2; }
+.ct-tagcloud a.on { background:#EEF4FF; font-weight:600; }
 </style>
 @endpush
 
 @section('content')
+@php
+    // The search and sort forms submit to the page they are on, so a category or tag stays applied.
+    $here = url()->current();
+    $filtered = $activeCategory || $activeTag || $search !== '' || $sort;
+@endphp
 
-{{-- Hero --}}
-<section class="page-hero">
-    <div class="page-hero-inner">
-        <span class="page-hero-label">Artikel & Tips</span>
-        <h1>Semua Artikel</h1>
-        <p>Konten berkualitas dari instruktur & ahli kami untuk tingkatkan pengetahuanmu setiap hari.</p>
-    </div>
-</section>
-
-{{-- Content --}}
-<section style="background:#fff; padding:2rem 0 5rem;">
-    <div style="max-width:1280px;margin:0 auto;padding:0 1.5rem;">
-
-        {{-- Breadcrumb --}}
-        <nav class="breadcrumb rv">
-            <a href="{{ route('home') }}">Beranda</a>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-            <span>Artikel</span>
-        </nav>
-
-        {{-- Category Filter --}}
-        @if(isset($articleCategories) && $articleCategories->count())
-        <div class="cat-chips rv">
-            <a href="{{ route('article.index') }}" class="cat-chip {{ !request('category') ? 'active' : '' }}">
-                Semua
-            </a>
-            @foreach($articleCategories as $cat)
-                <a href="{{ route('article.category', $cat->slug) }}"
-                   class="cat-chip {{ request()->is('*/'.$cat->slug.'*') ? 'active' : '' }}">
-                    {{ $cat->name }}
-                </a>
-            @endforeach
+<section class="ct-hero">
+    <div class="ct-wrap ct-hero-inner">
+        <div class="ct-hero-left">
+            <div class="ct-crumb">
+                <a href="{{ route('home') }}">Beranda</a> › <a href="{{ route('article.index') }}">Artikel</a>
+                @if($activeCategory) › {{ $activeCategory->name }}@elseif($activeTag) › #{{ $activeTag->name }}@endif
+            </div>
+            @if($activeCategory)
+                <h1>Artikel <span>{{ $activeCategory->name }}</span></h1>
+                <p>{{ $activeCategory->description && $activeCategory->description !== $activeCategory->name ? $activeCategory->description : 'Bacaan seputar '.$activeCategory->name.' dari instruktur dan tim Ray Academy.' }}</p>
+            @elseif($activeTag)
+                <h1>Artikel tentang <span>{{ $activeTag->name }}</span></h1>
+                <p>Semua artikel dengan topik {{ $activeTag->name }}.</p>
+            @elseif($search !== '')
+                <h1>Artikel untuk <span>"{{ $search }}"</span></h1>
+                <p>Ditemukan {{ $articles->total() }} artikel</p>
+            @else
+                <h1>Baca, <span>pahami</span>, lalu praktikkan</h1>
+                <p>Tips dan wawasan dari instruktur Ray Academy tentang marketing, bisnis, teknologi, dan pengembangan diri.</p>
+            @endif
         </div>
-        @endif
-
-        @if($articles->isEmpty())
-            <div class="empty-state rv">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <h3>Belum ada artikel</h3>
-                <p>Kembali lagi nanti untuk membaca artikel terbaru kami.</p>
-            </div>
-        @else
-            <div x-data="articleLoader()" class="space-y-8">
-                <div id="articles-container" class="articles-grid">
-                    @include('article.partials.articles', ['articles' => $articles])
-                </div>
-
-                {{-- Load More --}}
-                @if($articles->hasMorePages())
-                <div style="text-align:center;margin-top:3rem;" class="rv">
-                    <button @click="loadMore()" :disabled="loading" class="btn-load-more">
-                        <svg x-show="loading" style="width:16px;height:16px;animation:spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                        </svg>
-                        <span x-show="!loading">Muat Lebih Banyak</span>
-                        <span x-show="loading">Memuat...</span>
-                    </button>
-                </div>
-                @endif
-            </div>
-        @endif
-
+        <img src="{{ asset('img/search/hero.png') }}" alt="" class="ct-hero-img" onerror="this.style.display='none'">
     </div>
 </section>
 
+<div class="ct-bar">
+    <div class="ct-wrap">
+        <form action="{{ $here }}" method="GET" class="ct-search" role="search">
+            @if($sort)<input type="hidden" name="sort" value="{{ $sort }}">@endif
+            <div class="ct-search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="search" name="q" value="{{ $search }}" placeholder="Cari judul atau isi artikel..." aria-label="Cari artikel" autocomplete="off">
+            </div>
+            <button type="submit"><i class="fas fa-search"></i> Cari</button>
+        </form>
+    </div>
+</div>
+
+<section class="ct-body" x-data="{ showFilters: false }">
+    <div class="ct-wrap ct-layout">
+        <aside class="ct-side" :class="showFilters && 'open'">
+            <div class="ct-box">
+                <div class="ct-box-head">Kategori @if($filtered)<a href="{{ route('article.index') }}">Reset</a>@endif</div>
+                <div class="ct-box-body">
+                    <a href="{{ route('article.index', $query) }}" class="ct-chip {{ $activeCategory || $activeTag ? '' : 'on' }}"><i class="fas fa-th-large"></i> Semua artikel</a>
+                    @foreach($categories as $cat)
+                        <a href="{{ route('article.category', [$cat->slug] + $query) }}" class="ct-chip {{ $activeCategory?->is($cat) ? 'on' : '' }}">{{ $cat->name }} <em>{{ $cat->articles_count }}</em></a>
+                    @endforeach
+                </div>
+            </div>
+            @if($tags->isNotEmpty())
+                <div class="ct-box">
+                    <div class="ct-box-head">Topik populer</div>
+                    <div class="ct-tagcloud">
+                        @foreach($tags as $t)
+                            <a href="{{ route('tag.show', [$t->slug] + $query) }}" class="{{ $activeTag?->is($t) ? 'on' : '' }}">#{{ $t->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </aside>
+
+        <div>
+            <div class="ct-head">
+                <h2>{{ $articles->total() }} artikel</h2>
+                <div class="ct-head-right">
+                    <button type="button" class="ct-filter-btn" @click="showFilters = !showFilters"><i class="fas fa-sliders-h"></i> Filter</button>
+                    <form action="{{ $here }}" method="GET">
+                        @if($search !== '')<input type="hidden" name="q" value="{{ $search }}">@endif
+                        <select name="sort" class="ct-sort" onchange="this.form.submit()" aria-label="Urutkan">
+                            <option value="">Terbaru</option>
+                            <option value="popular" @selected($sort === 'popular')>Paling banyak dibaca</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            @if($search !== '' || $activeTag)
+                <div class="ct-tags">
+                    @if($search !== '')<a href="{{ $here.($sort ? '?sort='.$sort : '') }}" class="ct-tag">"{{ $search }}" <i class="fas fa-times"></i></a>@endif
+                    @if($activeTag)<a href="{{ route('article.index', $query) }}" class="ct-tag">#{{ $activeTag->name }} <i class="fas fa-times"></i></a>@endif
+                </div>
+            @endif
+
+            @if($articles->isNotEmpty())
+                <div class="ac-grid">
+                    @foreach($articles as $article)
+                        @include('article._card')
+                    @endforeach
+                </div>
+                @if($articles->hasPages())
+                    <div style="margin-top:2.5rem;">{{ $articles->links() }}</div>
+                @endif
+            @else
+                <div class="ct-empty">
+                    <i class="far fa-file-alt"></i>
+                    <h3>Artikel yang kamu cari belum ada</h3>
+                    <p>Coba kata kunci lain atau <a href="{{ route('article.index') }}">lihat semua artikel</a>.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
 @endsection
-
-@push('scripts')
-<script>
-function articleLoader(categorySlug = null) {
-    return {
-        loading: false,
-        page: {{ $articles->currentPage() + 1 }},
-        hasMore: {{ $articles->hasMorePages() ? 'true' : 'false' }},
-        categorySlug: categorySlug,
-        async loadMore() {
-            if (this.loading || !this.hasMore) return;
-            this.loading = true;
-            try {
-                const params = { page: this.page };
-                if (this.categorySlug) params.category_slug = this.categorySlug;
-                const response = await axios.get('{{ route("article.load-more") }}', { params });
-                const data = response.data;
-                document.getElementById('articles-container').insertAdjacentHTML('beforeend', data.articles_html);
-                document.querySelectorAll('#articles-container .rv:not(.in)').forEach(el => obs.observe(el));
-                if (data.has_more) {
-                    this.page++;
-                } else {
-                    this.hasMore = false;
-                }
-            } catch(e) {
-                console.error(e);
-            } finally {
-                this.loading = false;
-            }
-        }
-    }
-}
-
-// Scroll reveal
-const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            e.target.classList.add('in');
-            obs.unobserve(e.target);
-        }
-    });
-}, { threshold: 0.07, rootMargin:'0px 0px -40px 0px' });
-
-document.querySelectorAll('.rv').forEach(el => obs.observe(el));
-</script>
-@endpush

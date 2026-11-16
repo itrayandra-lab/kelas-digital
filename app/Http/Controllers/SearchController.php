@@ -29,7 +29,7 @@ class SearchController extends Controller
         $popularCategories = collect();
 
         if ($keyword !== '') {
-            $courses = Course::with('category')
+            $courses = Course::with('category')->withCount(['lessons', 'freeSections'])
                 ->where(function ($q) use ($keyword) {
                     $q->where('title', 'like', "%{$keyword}%")
                         ->orWhere('description', 'like', "%{$keyword}%")
@@ -66,7 +66,7 @@ class SearchController extends Controller
 
         } else {
             // No keyword — show popular/featured content
-            $popularCourses = Course::with('category')
+            $popularCourses = Course::with('category')->withCount(['lessons', 'freeSections'])
                 ->orderByDesc('created_at')
                 ->limit(8)
                 ->get();

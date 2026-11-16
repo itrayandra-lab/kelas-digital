@@ -180,49 +180,6 @@
 .sp-section-label:first-child{margin-top:0;}
 .sp-section-label svg{width:15px;height:15px;color:#0056D2;}
 
-/* ── COURSE CARD (Coursera style) ── */
-.sp-course-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-.sp-crs-card{
-    background:#fff;border:1px solid #E2E8F0;border-radius:12px;
-    overflow:hidden;text-decoration:none;color:inherit;
-    transition:box-shadow .2s,transform .2s;
-    display:flex;flex-direction:column;
-}
-.sp-crs-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-3px);}
-.sp-crs-thumb{
-    aspect-ratio:16/9;overflow:hidden;background:#DBEAFE;
-    position:relative;
-}
-.sp-crs-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
-.sp-crs-card:hover .sp-crs-thumb img{transform:scale(1.04);}
-.sp-crs-thumb-ph{
-    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#EEF4FF,#DBEAFE);
-}
-.sp-crs-thumb-ph svg{width:28px;height:28px;color:#0056D2;opacity:.35;}
-.sp-crs-badge{
-    position:absolute;top:.5rem;right:.5rem;
-    font-size:.6rem;font-weight:700;padding:.2rem .55rem;border-radius:999px;
-    border:1px solid;
-}
-.sp-crs-badge.free{background:#fff;color:#16a34a;border-color:#16a34a;}
-.sp-crs-badge.paid{background:#fff;color:#0056D2;border-color:#0056D2;}
-.sp-crs-body{padding:.75rem;flex:1;display:flex;flex-direction:column;}
-.sp-crs-cat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;margin-bottom:.2rem;}
-.sp-crs-title{
-    font-family:'Sora',sans-serif;font-size:.76rem;font-weight:600;color:#0F1114;
-    line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    flex:1;
-}
-.sp-crs-instructor{font-size:.65rem;color:#6B7280;margin-top:.3rem;}
-.sp-crs-footer{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-top:.5rem;padding-top:.5rem;border-top:1px solid #F1F5F9;
-}
-.sp-crs-price{font-size:.72rem;font-weight:700;color:#0056D2;}
-.sp-crs-price.free{color:#16a34a;}
-.sp-crs-rating{font-size:.65rem;color:#6B7280;display:flex;align-items:center;gap:.2rem;}
-.sp-crs-rating svg{color:#FBBF24;fill:#FBBF24;width:11px;height:11px;}
 
 /* ── ARTICLE CARD ── */
 .sp-art-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;}
@@ -323,15 +280,12 @@
 .sp-related-list a:hover{background:#DBEAFE;}
 
 /* ── RESPONSIVE ── */
-@media(max-width:1024px){ .sp-course-grid{grid-template-columns:repeat(3,1fr);} }
 @media(max-width:900px){
     .sp-layout{grid-template-columns:1fr;}
     .sp-sidebar{position:static;}
-    .sp-course-grid{grid-template-columns:repeat(2,1fr);}
     .sp-landing-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:640px){
-    .sp-course-grid{grid-template-columns:1fr;}
     .sp-landing-grid{grid-template-columns:1fr;}
     .sp-hero-img{display:none;}
     .sp-cta-banner{flex-direction:column;text-align:center;}
@@ -434,37 +388,9 @@
                     </div>
                     <a href="{{ route('course.index') }}" style="font-size:.78rem;color:#0056D2;text-decoration:none;font-weight:600;">Lihat semua →</a>
                 </div>
-                <div class="sp-course-grid" style="margin-top:.75rem;">
+                <div class="cc-grid" style="margin-top:.75rem;">
                     @foreach($popularCourses as $course)
-                    <a href="{{ route('course.show', $course->slug) }}" class="sp-crs-card">
-                        <div class="sp-crs-thumb">
-                            @if($course->thumbnail)
-                                <img src="{{ asset('storage/'.$course->thumbnail) }}" alt="{{ $course->title }}" loading="lazy"
-                                     onerror="this.parentElement.innerHTML='<div class=sp-crs-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z\'/></svg></div>'">
-                            @else
-                                <div class="sp-crs-thumb-ph">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                </div>
-                            @endif
-                            <span class="sp-crs-badge {{ ($course->price ?? 0) == 0 ? 'free' : 'paid' }}">
-                                {{ ($course->price ?? 0) == 0 ? 'Gratis' : 'Premium' }}
-                            </span>
-                        </div>
-                        <div class="sp-crs-body">
-                            @if($course->category)<div class="sp-crs-cat">{{ $course->category->name }}</div>@endif
-                            <div class="sp-crs-title">{{ $course->title }}</div>
-                            <div class="sp-crs-instructor">{{ is_string($course->instructor ?? null) ? $course->instructor : ($course->instructor->name ?? 'Ray Academy') }}</div>
-                            <div class="sp-crs-footer">
-                                <span class="sp-crs-price {{ ($course->price ?? 0) == 0 ? 'free' : '' }}">
-                                    {{ ($course->price ?? 0) == 0 ? 'Gratis' : 'Rp '.number_format($course->price,0,',','.') }}
-                                </span>
-                                <span class="sp-crs-rating">
-                                    <svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    4.8
-                                </span>
-                            </div>
-                        </div>
-                    </a>
+                        @include('course._card')
                     @endforeach
                 </div>
             </div>
@@ -512,8 +438,8 @@
                     @foreach($popularArticles as $article)
                     <a href="{{ route('article.show', $article->slug) }}" class="sp-art-card">
                         <div class="sp-art-thumb">
-                            @if($article->thumbnail ?? $article->cover_image ?? null)
-                                <img src="{{ asset('storage/' . ($article->thumbnail ?? $article->cover_image)) }}"
+                            @if($article->thumbnail_url)
+                                <img src="{{ $article->thumbnail_url }}"
                                      alt="{{ $article->title }}" loading="lazy"
                                      onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
                             @else
@@ -679,39 +605,9 @@
                         Lihat semua →
                     </a>
                 </div>
-                <div class="sp-course-grid">
+                <div class="cc-grid">
                     @foreach($courses as $course)
-                    <a href="{{ route('course.show', $course->slug) }}" class="sp-crs-card">
-                        <div class="sp-crs-thumb">
-                            @if($course->thumbnail)
-                                <img src="{{ asset('storage/'.$course->thumbnail) }}" alt="{{ $course->title }}"
-                                     loading="lazy" onerror="this.parentElement.innerHTML='<div class=sp-crs-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\' style=\'width:28px;height:28px;color:#0056D2;opacity:.35\'><path stroke-linecap=round stroke-linejoin=round stroke-width=2 d=\'M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z\'/></svg></div>'">
-                            @else
-                                <div class="sp-crs-thumb-ph">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                                </div>
-                            @endif
-                            <span class="sp-crs-badge {{ ($course->price ?? 0) == 0 ? 'free' : 'paid' }}">
-                                {{ ($course->price ?? 0) == 0 ? 'Gratis' : 'Premium' }}
-                            </span>
-                        </div>
-                        <div class="sp-crs-body">
-                            @if($course->category)<div class="sp-crs-cat">{{ $course->category->name }}</div>@endif
-                            <div class="sp-crs-title">{{ $course->title }}</div>
-                            <div class="sp-crs-instructor">
-                                {{ is_string($course->instructor ?? null) ? $course->instructor : ($course->instructor->name ?? 'Ray Academy') }}
-                            </div>
-                            <div class="sp-crs-footer">
-                                <span class="sp-crs-price {{ ($course->price ?? 0) == 0 ? 'free' : '' }}">
-                                    {{ ($course->price ?? 0) == 0 ? 'Gratis' : 'Rp '.number_format($course->price,0,',','.') }}
-                                </span>
-                                <span class="sp-crs-rating">
-                                    <svg viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                    4.8
-                                </span>
-                            </div>
-                        </div>
-                    </a>
+                        @include('course._card')
                     @endforeach
                 </div>
                 @endif
@@ -730,8 +626,8 @@
                     @foreach($articles as $article)
                     <a href="{{ route('article.show', $article->slug) }}" class="sp-art-card">
                         <div class="sp-art-thumb">
-                            @if($article->thumbnail ?? $article->cover_image ?? null)
-                                <img src="{{ asset('storage/' . ($article->thumbnail ?? $article->cover_image)) }}"
+                            @if($article->thumbnail_url)
+                                <img src="{{ $article->thumbnail_url }}"
                                      alt="{{ $article->title }}" loading="lazy"
                                      onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\' style=\'width:22px;height:22px;color:#0056D2;opacity:.35\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
                             @else

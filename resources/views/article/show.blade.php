@@ -115,23 +115,7 @@
 
 /* ── Related articles section ── */
 .related-section { background:#fff; padding:4rem 0; border-top:1.5px solid var(--border); }
-.related-section .articles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.25rem; }
 
-.art-card { display:flex; flex-direction:column; background:#fff; border:1.5px solid var(--border); border-radius:16px; overflow:hidden; text-decoration:none; color:inherit; transition:transform .3s ease, box-shadow .3s ease, border-color .25s; }
-.art-card:hover { transform:translateY(-5px); box-shadow:0 20px 48px rgba(10,22,40,.09); border-color:#93c5fd; }
-.art-card-thumb-wrap { position:relative; overflow:hidden; height:180px; background:linear-gradient(135deg,#dbeafe,#eff6ff); flex-shrink:0; }
-.art-card-thumb-img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .45s; }
-.art-card:hover .art-card-thumb-img { transform:scale(1.06); }
-.art-card-thumb-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
-.art-card-badge { position:absolute; top:.65rem; left:.65rem; z-index:1; font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; background:#fff; color:var(--blue); padding:.25rem .65rem; border-radius:5px; cursor:pointer; }
-.art-card-body { padding:1.1rem; display:flex; flex-direction:column; flex:1; }
-.art-card-date { font-size:.7rem; color:var(--muted); margin-bottom:.35rem; }
-.art-card-title { font-family:'Sora',sans-serif; font-size:.875rem; font-weight:700; color:var(--ink); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; transition:color .18s; }
-.art-card:hover .art-card-title { color:var(--blue); }
-.art-card-excerpt { font-size:.78rem; color:var(--muted); line-height:1.6; margin-top:.4rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; flex:1; }
-.art-card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:.85rem; padding-top:.85rem; border-top:1px solid var(--border); }
-.art-card-read { font-size:.75rem; font-weight:700; color:var(--blue); }
-.art-card-views { display:flex; align-items:center; gap:.25rem; font-size:.7rem; color:var(--muted); }
 </style>
 @endpush
 
@@ -187,7 +171,7 @@
                 {{-- Thumbnail --}}
                 @if($article->thumbnail)
                     <div class="art-thumb-wrap" style="margin-top:2rem;">
-                        <img src="{{ asset('storage/' . $article->thumbnail) }}"
+                        <img src="{{ $article->thumbnail_url }}"
                              alt="{{ $article->title }}"
                              onerror="this.parentElement.style.display='none'">
                     </div>
@@ -289,8 +273,10 @@
             <span class="stag">Artikel Terkait</span>
             <h2 style="font-family:'Sora',sans-serif;font-size:1.6rem;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:.4rem;">Baca Juga</h2>
         </div>
-        <div class="articles-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.25rem;">
-            @include('article.partials.articles', ['articles' => $relatedArticles])
+        <div class="ac-grid">
+            @foreach($relatedArticles as $related)
+                @include('article._card', ['article' => $related])
+            @endforeach
         </div>
     </div>
 </section>

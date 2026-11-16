@@ -86,6 +86,16 @@ class Article extends Model
         return $this->tags->pluck('name');
     }
 
+    /** Uploaded thumbnails are paths on the public disk; imported ones are already full URLs. */
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if (! $this->thumbnail) {
+            return null;
+        }
+
+        return str_starts_with($this->thumbnail, 'http') ? $this->thumbnail : asset('storage/'.$this->thumbnail);
+    }
+
     /**
      * Get the article content with WordPress blocks processed
      */
