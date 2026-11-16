@@ -34,6 +34,13 @@
 }
 .ka-tour-btn span { width: 20px; height: 20px; border-radius: 50%; background: #0056D2; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
 .ka-tour-btn:hover { background: #0056D2; }
+.ka-tour-btn em { font-style: normal; }
+/* On phones the label would cover buttons and text near the bottom; the "?" circle alone stays. */
+@media (max-width: 640px) {
+  .ka-tour-btn { width: 44px; height: 44px; padding: 0; justify-content: center; right: 14px; bottom: 14px; }
+  .ka-tour-btn em { display: none; }
+  .ka-tour-btn span { width: 30px; height: 30px; font-size: 15px; }
+}
 /* Keep clear of the course page's mobile buy bar */
 @media (max-width: 1024px) { .cd-bar ~ .ka-tour-btn, body:has(.cd-bar) .ka-tour-btn { bottom: 84px; } }
 @media (max-width: 480px) { .driver-popover.ka-tour { max-width: calc(100vw - 32px); padding: 18px 16px 14px; } }

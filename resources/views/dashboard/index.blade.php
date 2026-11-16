@@ -20,11 +20,11 @@
 .db-stat strong { display:block; font-family:'Sora',sans-serif; font-size:1.45rem; line-height:1.1; margin-top:.45rem; color:#0F1114; }
 .db-stat span { font-size:.75rem; color:#6B7280; }
 
-.db-body { display:grid; grid-template-columns:1fr 340px; gap:1.75rem; align-items:start; padding:2rem 0 1rem; }
+.db-body { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:1.75rem; align-items:start; padding:2rem 0 1rem; }
 .db-h2 { font-family:'Sora',sans-serif; font-size:1.15rem; font-weight:700; color:var(--ink); margin:0 0 .9rem; }
 .db-box { background:#fff; border:1px solid var(--border); border-radius:16px; }
 
-.db-resume { display:grid; grid-template-columns:280px 1fr; overflow:hidden; box-shadow:0 8px 24px rgba(10,22,40,.06); margin-bottom:2rem; }
+.db-resume { display:grid; grid-template-columns:280px minmax(0,1fr); overflow:hidden; box-shadow:0 8px 24px rgba(10,22,40,.06); margin-bottom:2rem; }
 .db-resume .db-thumb { aspect-ratio:auto; min-height:100%; }
 .db-resume-body { padding:1.4rem 1.5rem; display:flex; flex-direction:column; gap:.5rem; }
 .db-babs { display:flex; flex-direction:column; gap:.4rem; margin-top:.5rem; }
@@ -42,7 +42,7 @@
 .db-tab.warn { border-color:#f59e0b; color:#b45309; }
 .db-tab.warn.on { background:#f59e0b; color:#fff; }
 
-.db-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; }
+.db-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.1rem; }
 .db-card { background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; transition:box-shadow .2s; }
 .db-card:hover { box-shadow:0 10px 28px rgba(10,22,40,.1); }
 .db-thumb { position:relative; display:block; aspect-ratio:16/9; background:linear-gradient(135deg,#1474bc,#10b981); }
@@ -86,11 +86,11 @@
 .db-steps li::before { counter-increment:s; content:counter(s); width:22px; height:22px; flex-shrink:0; border-radius:50%; background:#EEF4FF; color:#0056D2; font-size:.72rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
 
 @media (max-width: 1024px) {
-    .db-hero-grid, .db-body { grid-template-columns:1fr; }
+    .db-hero-grid, .db-body { grid-template-columns:minmax(0,1fr); }
 }
 @media (max-width: 720px) {
     .db-stats { grid-template-columns:1fr 1fr; }
-    .db-grid, .db-resume { grid-template-columns:1fr; }
+    .db-grid, .db-resume { grid-template-columns:minmax(0,1fr); }
     .db-resume .db-thumb { aspect-ratio:16/9; }
 }
 </style>

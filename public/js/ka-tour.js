@@ -62,7 +62,8 @@
     var btn = d.createElement('button');
     btn.type = 'button';
     btn.className = 'ka-tour-btn';
-    btn.innerHTML = '<span aria-hidden="true">?</span> Panduan';
+    btn.setAttribute('aria-label', 'Panduan');
+    btn.innerHTML = '<span aria-hidden="true">?</span><em>Panduan</em>';
     btn.addEventListener('click', function () { start(key, steps); });
     d.body.appendChild(btn);
     if (!opts || opts.auto !== false) { auto(key, steps); }

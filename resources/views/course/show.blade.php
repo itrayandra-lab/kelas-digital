@@ -59,7 +59,7 @@
 .cd-learn li { display:flex; gap:.6rem; font-size:.9rem; color:var(--ink-2); line-height:1.5; }
 .cd-learn i { color:#10b981; margin-top:.25rem; }
 
-.cd-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; }
+.cd-steps { display:grid; grid-template-columns:repeat(var(--steps, 4),1fr); gap:.75rem; }
 .cd-step { text-align:center; padding:1rem .5rem; border-radius:12px; background:var(--surf); }
 .cd-step-n { width:36px; height:36px; border-radius:50%; background:#0056D2; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto .5rem; font-size:.9rem; }
 .cd-step strong { display:block; font-size:.85rem; color:var(--ink); }
@@ -280,7 +280,7 @@
                 @endphp
                 <div style="margin-bottom:2rem;">
                     <h2 class="cd-h2">Alur belajar</h2>
-                    <div class="cd-steps" style="grid-template-columns:repeat({{ $steps->count() }},1fr);">
+                    <div class="cd-steps" style="--steps:{{ $steps->count() }};">
                         @foreach($steps as [$icon, $label, $hint])
                             <div class="cd-step">
                                 <div class="cd-step-n"><i class="fas {{ $icon }}"></i></div>
