@@ -133,6 +133,12 @@ class CourseProgress
         return $this->attemptsFor($section, $kind)->where('status', 'graded')->max('score');
     }
 
+    /** The first graded score: a learner's starting point, which stays put when a pre-test is retaken for practice. */
+    public function firstScore(CourseSection $section, string $kind): ?int
+    {
+        return $this->attemptsFor($section, $kind)->where('status', 'graded')->sortBy('id')->first()?->score;
+    }
+
     public function testUnlocked(CourseSection $section, string $kind): bool
     {
         return $this->stepUnlocked(fn ($step) => $step['type'] === $kind && $step['section']->id === $section->id);

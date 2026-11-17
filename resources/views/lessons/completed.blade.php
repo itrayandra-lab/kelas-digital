@@ -27,13 +27,18 @@
                 @foreach($progress->sections as $section)
                     @continue(! $progress->sectionHasTest($section, 'pre') && ! $progress->sectionHasTest($section, 'post'))
                     @php
-                        $pre = $progress->bestScore($section, 'pre');
+                        $pre = $progress->firstScore($section, 'pre');
                         $post = $progress->bestScore($section, 'post');
                     @endphp
                     <div style="display:grid;grid-template-columns:1fr 90px 90px;padding:.75rem 1rem;border-top:1px solid var(--border);font-size:.9rem;align-items:center;">
                         <span style="color:var(--ink);">{{ $section->title }}</span>
                         <span style="text-align:center;font-family:'Sora',sans-serif;font-weight:700;color:var(--ink);">{{ $pre ?? '-' }}</span>
-                        <span style="text-align:center;font-family:'Sora',sans-serif;font-weight:700;color:#16a34a;">{{ $post ?? '-' }}</span>
+                        <span style="text-align:center;font-family:'Sora',sans-serif;font-weight:700;color:#16a34a;">
+                            {{ $post ?? '-' }}
+                            @if($progress->sectionHasTest($section, 'post'))
+                                <a href="{{ route('course.test', [$course->slug, $section, 'post']) }}" style="display:block;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;color:var(--blue);text-decoration:none;">Ulangi</a>
+                            @endif
+                        </span>
                     </div>
                 @endforeach
             </div>

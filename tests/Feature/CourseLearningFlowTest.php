@@ -11,6 +11,7 @@ use App\Models\Lesson;
 use App\Models\QuizAttempt;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
+use App\Support\CourseProgress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -177,9 +178,11 @@ class CourseLearningFlowTest extends TestCase
         $this->get(route('course.lesson', [$slug, $this->video]))->assertRedirect(route('course.learn', $slug));
         $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertRedirect(route('course.learn', $slug));
 
-        // A wrong pre-test still counts as done, and can't be taken again.
+        // A wrong pre-test still counts as done. It can be retaken for practice, but the first score stays the starting point.
         $this->takeTest($this->bab1, 'pre', $this->answersFor($this->bab1, 'pre', false))->assertRedirect(route('course.learn', $slug));
-        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertRedirect(route('course.learn', $slug));
+        $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('Riwayat percobaan')->assertSee('Ulangi Pre-test');
+        $this->takeTest($this->bab1, 'pre', $this->answersFor($this->bab1, 'pre', true))->assertRedirect(route('course.test', [$slug, $this->bab1, 'pre']));
+        $this->assertSame(0, (new CourseProgress($this->course, auth()->user()))->firstScore($this->bab1, 'pre'));
 
         // Lessons of bab 1 in order; bab 2 stays locked.
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.lesson', [$slug, $this->video]));
@@ -202,8 +205,16 @@ class CourseLearningFlowTest extends TestCase
         $this->takeTest($this->bab2, 'post', $this->answersFor($this->bab2, 'post', true))->assertRedirect(route('course.learn', $slug));
 
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.completed', $slug));
-        $this->get(route('course.completed', $slug))->assertOk()->assertSee('Selamat')->assertSee('Bab 2');
+        $this->get(route('course.completed', $slug))->assertOk()->assertSee('Selamat')->assertSee('Bab 2')->assertSee('Ulangi');
         $this->get(route('dashboard'))->assertSee('100%');
+
+        // A finished course's post-test can be retaken; a worse retake lowers neither the best score nor progress.
+        $this->takeTest($this->bab1, 'post', $this->answersFor($this->bab1, 'post', false))
+            ->assertRedirect(route('course.test', [$slug, $this->bab1, 'post']));
+        $progress = new CourseProgress($this->course, auth()->user());
+        $this->assertSame(100, $progress->bestScore($this->bab1, 'post'));
+        $this->assertTrue($progress->isCourseFinished());
+        $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertSee('Kamu sudah lulus post-test ini')->assertSee('Belum lulus');
     }
 
     public function test_pre_tests_cannot_contain_essays_and_post_essays_need_an_answer_key(): void

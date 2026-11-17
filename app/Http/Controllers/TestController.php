@@ -56,11 +56,12 @@ class TestController extends Controller
             ]);
         }
 
-        $lastAttempt = QuizAttempt::where('user_id', auth()->id())->where('section_id', $section->id)
-            ->where('kind', $kind)->latest()->first();
+        $history = QuizAttempt::where('user_id', auth()->id())->where('section_id', $section->id)
+            ->where('kind', $kind)->where('status', '!=', 'in_progress')->latest('id')->get();
+        $lastAttempt = $history->first();
         $pending = $kind === 'post' && $progress->postTestPending($section);
 
-        return view('tests.intro', compact('course', 'section', 'kind', 'questions', 'progress', 'lastAttempt', 'pending'));
+        return view('tests.intro', compact('course', 'section', 'kind', 'questions', 'progress', 'lastAttempt', 'pending', 'history'));
     }
 
     public function start(string $slug, CourseSection $section, string $kind)
@@ -136,6 +137,15 @@ class TestController extends Controller
             return redirect()->route('course.test', [$course->slug, $section, $attempt->kind]);
         }
 
+        // A retake of a test already done (Dicoding-style practice) returns to the test page and its history.
+        $retake = QuizAttempt::where('user_id', $attempt->user_id)->where('section_id', $section->id)->where('kind', $attempt->kind)
+            ->where('id', '<', $attempt->id)->where('status', 'graded')
+            ->when($attempt->kind === 'post', fn ($q) => $q->where('passed', true))->exists();
+        if ($retake) {
+            return redirect()->route('course.test', [$course->slug, $section, $attempt->kind])
+                ->with('message', "{$label}: skor percobaan ini {$attempt->score}.");
+        }
+
         if ($attempt->kind === 'pre') {
             return redirect()->route('course.learn', $course->slug)
                 ->with('message', "{$label} selesai. Skor awal kamu: {$attempt->score}. Selamat belajar!");
@@ -182,13 +192,8 @@ class TestController extends Controller
             abort(redirect()->route('course.learn', $slug)->with('error', 'Selesaikan langkah sebelumnya dulu.'));
         }
 
-        $done = $kind === 'pre' ? $progress->preTestDone($section) : $progress->postTestPassed($section);
-
-        // Learners take a finished test once (pre) or until passed (post); admins only preview tests.
-        if ($done && ! $progress->reviewer && ! $this->openAttempt($course, $section, $kind)) {
-            abort(redirect()->route('course.learn', $slug));
-        }
-
+        // A finished test can be retaken any time, like a Dicoding exam: the best post-test score counts and the
+        // first pre-test score stays the starting point, so a retake never lowers progress or skews the gain.
         return [$course, $progress];
     }
 }

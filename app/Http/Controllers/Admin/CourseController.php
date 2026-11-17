@@ -157,7 +157,7 @@ class CourseController extends Controller
                     $r['last_active']?->format('Y-m-d H:i'),
                 ];
                 foreach ($sections as $section) {
-                    $line[] = $r['progress']->bestScore($section, 'pre');
+                    $line[] = $r['progress']->firstScore($section, 'pre');
                     $line[] = $r['progress']->bestScore($section, 'post');
                 }
                 fputcsv($out, $line);

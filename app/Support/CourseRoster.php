@@ -72,7 +72,7 @@ class CourseRoster
             'started' => $progresses->filter(fn (CourseProgress $p) => $p->preTestDone($section)
                 || $section->lessons->contains(fn ($lesson) => $p->isCompleted($lesson)))->count(),
             'passed' => $progresses->filter(fn (CourseProgress $p) => $p->postTestPassed($section))->count(),
-            'pre_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->bestScore($section, 'pre'))->reject(fn ($v) => $v === null)),
+            'pre_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->firstScore($section, 'pre'))->reject(fn ($v) => $v === null)),
             'post_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->bestScore($section, 'post'))->reject(fn ($v) => $v === null)),
         ]);
     }

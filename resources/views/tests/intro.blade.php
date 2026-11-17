@@ -74,9 +74,38 @@
                     @endif
                 </ul>
 
-                @if($kind === 'post' && $lastAttempt && ! $lastAttempt->isInProgress() && ! $lastAttempt->isPending())
-                    <div style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
-                        Skor percobaan terakhirmu: <strong>{{ $lastAttempt->score }}</strong>. Kamu bisa mencoba lagi.
+                @if($history->isNotEmpty())
+                    @php $passedBefore = $kind === 'post' && $progress->postTestPassed($section); @endphp
+                    @if($kind === 'pre')
+                        <div style="background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
+                            Nilai pre-test pertamamu, <strong>{{ $progress->firstScore($section, 'pre') ?? '-' }}</strong>, tetap tercatat sebagai nilai awal. Mengulang pre-test hanya untuk latihan.
+                        </div>
+                    @elseif($passedBefore)
+                        <div style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
+                            Kamu sudah lulus post-test ini. Yang dipakai nilai terbaikmu, <strong>{{ $progress->bestScore($section, 'post') }}</strong>, jadi mengulang tidak akan menurunkan nilai atau progresmu.
+                        </div>
+                    @elseif(! $lastAttempt->isPending())
+                        <div style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
+                            Skor percobaan terakhirmu: <strong>{{ $lastAttempt->score }}</strong>. Kamu bisa mencoba lagi.
+                        </div>
+                    @endif
+
+                    <div style="margin-top:1rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                        <div style="padding:.6rem 1rem;background:var(--surf);font-size:.8rem;font-weight:700;color:var(--ink);">Riwayat percobaan</div>
+                        @foreach($history as $past)
+                            <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;border-top:1px solid var(--border);font-size:.85rem;">
+                                <span style="color:var(--muted);width:1.5rem;">#{{ $history->count() - $loop->index }}</span>
+                                <span style="flex:1;color:var(--ink-2);">{{ $past->created_at->locale('id')->translatedFormat('d M Y, H:i') }}</span>
+                                @if($past->isPending())
+                                    <span style="color:#b45309;font-weight:600;">Menunggu penilaian</span>
+                                @else
+                                    <strong style="font-family:'Sora',sans-serif;color:var(--ink);">{{ $past->score }}</strong>
+                                    @if($kind === 'post')
+                                        <span style="font-size:.75rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;{{ $past->passed ? 'background:#dcfce7;color:#166534' : 'background:#fee2e2;color:#991b1b' }}">{{ $past->passed ? 'Lulus' : 'Belum lulus' }}</span>
+                                    @endif
+                                @endif
+                            </div>
+                        @endforeach
                     </div>
                 @endif
 
@@ -84,7 +113,7 @@
                       onsubmit="const b = this.querySelector('button'); if (b.disabled) return false; b.disabled = true; b.textContent = 'Memulai...';">
                     @csrf
                     <button type="submit" data-tour="test-start" style="width:100%;padding:.9rem;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;">
-                        Mulai {{ $kind === 'pre' ? 'Pre-test' : 'Post-test' }}
+                        {{ $history->isNotEmpty() ? 'Ulangi' : 'Mulai' }} {{ $kind === 'pre' ? 'Pre-test' : 'Post-test' }}
                     </button>
                 </form>
             </div>
