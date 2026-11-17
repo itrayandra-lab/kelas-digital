@@ -92,6 +92,23 @@ class PartlyFreeCourseTest extends TestCase
         $this->assertTrue($user->fresh()->enrolledCourses->contains($this->course));
     }
 
+    public function test_finishing_every_released_module_shows_results_and_lessons_stay_open_for_review(): void
+    {
+        $slug = $this->course->slug;
+        // Only the free module is released; the paid one has no lessons yet.
+        $this->paidLesson->delete();
+        $this->actingAs($user = $this->student());
+        $this->post(route('course.enroll', $slug));
+        $user->completedLessons()->attach($this->freeLesson->id, ['completed_at' => now()]);
+
+        $this->get(route('course.learn', $slug))->assertRedirect(route('course.completed', $slug));
+        $this->get(route('course.completed', $slug))->assertOk()
+            ->assertSee('Modul berikutnya dibuka bertahap')
+            ->assertSee(route('course.lesson', [$slug, $this->freeLesson]));
+        $this->get(route('course.lesson', [$slug, $this->freeLesson]))->assertOk();
+        $this->get(route('course.show', $slug))->assertSee('Lihat Hasil')->assertDontSee('Lanjutkan ke Modul Berbayar');
+    }
+
     public function test_vouchers_discount_the_price_and_count_each_payment_once(): void
     {
         $slug = $this->course->slug;

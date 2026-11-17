@@ -184,7 +184,8 @@ class LessonController extends Controller
         $course = Course::where('slug', $slug)->firstOrFail();
         $user = auth()->user();
 
-        if (! CourseProgress::canAccessCourse($user, $course)) {
+        // Learners on the free modules of a partly free course finish too, once those are all that's open.
+        if (! CourseProgress::canStart($user, $course)) {
             return redirect()->route('course.show', $slug);
         }
 
@@ -194,7 +195,11 @@ class LessonController extends Controller
             return redirect()->route('course.learn', $slug);
         }
 
-        return view('lessons.completed', compact('course', 'progress'));
+        // Modules are released week by week; empty ones are hidden, so more may still come.
+        $moreComing = $course->sections()->count() > $progress->sections->count();
+        $firstLesson = $progress->lessons->first();
+
+        return view('lessons.completed', compact('course', 'progress', 'moreComing', 'firstLesson'));
     }
 
 }

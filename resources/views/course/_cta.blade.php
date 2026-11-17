@@ -22,7 +22,9 @@
             <button type="submit" class="cta-btn">Daftar Gratis</button>
         </form>
     @elseif($partlyFree)
-        @if($progress)
+        @if($progress?->isCourseFinished())
+            <a href="{{ route('course.completed', $course->slug) }}" class="cta-btn cta-success"><i class="fas fa-trophy"></i> Lihat Hasil</a>
+        @elseif($progress)
             <a href="{{ route('course.learn', $course->slug) }}" class="cta-btn"><i class="fas fa-play"></i> {{ $progress->percent() > 0 ? 'Lanjut Belajar' : 'Mulai Belajar' }}</a>
         @else
             <form method="POST" action="{{ route('course.enroll', $course->slug) }}" style="margin:0;">

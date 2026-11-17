@@ -13,7 +13,11 @@
             <i class="fas fa-trophy" style="font-size:2.4rem;color:#16a34a;"></i>
         </div>
         <h1 style="font-family:'Sora',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:var(--ink);">Selamat, {{ auth()->user()->name }}!</h1>
-        <p style="font-size:1rem;color:var(--muted);margin-top:.75rem;">Kamu telah menyelesaikan kelas <strong style="color:var(--ink);">{{ $course->title }}</strong>.</p>
+        @if($moreComing)
+            <p style="font-size:1rem;color:var(--muted);margin-top:.75rem;">Semua modul <strong style="color:var(--ink);">{{ $course->title }}</strong> yang tersedia saat ini sudah kamu selesaikan. Modul berikutnya dibuka bertahap, jadi cek lagi kelas ini nanti.</p>
+        @else
+            <p style="font-size:1rem;color:var(--muted);margin-top:.75rem;">Kamu telah menyelesaikan kelas <strong style="color:var(--ink);">{{ $course->title }}</strong>.</p>
+        @endif
 
         @if($progress->hasTests())
             <div style="background:#fff;border:1.5px solid var(--border);border-radius:14px;margin-top:2rem;overflow:hidden;text-align:left;">
@@ -36,7 +40,10 @@
         @endif
 
         <div style="display:flex;gap:.75rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;">
-            <a href="{{ route('dashboard') }}" style="padding:.8rem 1.5rem;background:var(--blue);color:#fff;font-weight:700;border-radius:10px;text-decoration:none;">Kursus Saya</a>
+            @if($firstLesson)
+                <a href="{{ route('course.lesson', [$course->slug, $firstLesson]) }}" style="padding:.8rem 1.5rem;background:var(--blue);color:#fff;font-weight:700;border-radius:10px;text-decoration:none;"><i class="fas fa-book-open" style="margin-right:.4rem;"></i>Ulas Materi</a>
+            @endif
+            <a href="{{ route('dashboard') }}" style="padding:.8rem 1.5rem;background:#fff;border:1.5px solid var(--border);color:var(--ink);font-weight:700;border-radius:10px;text-decoration:none;">Kursus Saya</a>
             <a href="{{ route('course.index') }}" style="padding:.8rem 1.5rem;background:#fff;border:1.5px solid var(--border);color:var(--ink);font-weight:700;border-radius:10px;text-decoration:none;">Jelajahi Kelas Lain</a>
         </div>
     </div>
