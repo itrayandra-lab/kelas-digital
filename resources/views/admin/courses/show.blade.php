@@ -73,7 +73,7 @@
     <div class="bg-white rounded-xl border border-gray-200 mb-6">
         <div class="px-5 py-4 border-b border-gray-100">
             <h2 class="font-bold text-gray-900">Perkembangan per modul</h2>
-            <p class="text-xs text-gray-500 mt-0.5">Nilai memakai skor terbaik tiap peserta. Selisih pre-test dan post-test menunjukkan seberapa banyak peserta belajar di modul itu.</p>
+            <p class="text-xs text-gray-500 mt-0.5">Pre-test memakai nilai pertama tiap peserta dan post-test memakai nilai pertama yang lulus. Selisih keduanya menunjukkan seberapa banyak peserta belajar di modul itu.</p>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">

@@ -28,7 +28,7 @@
                     @continue(! $progress->sectionHasTest($section, 'pre') && ! $progress->sectionHasTest($section, 'post'))
                     @php
                         $pre = $progress->firstScore($section, 'pre');
-                        $post = $progress->bestScore($section, 'post');
+                        $post = $progress->postScore($section);
                     @endphp
                     <div style="display:grid;grid-template-columns:1fr 90px 90px;padding:.75rem 1rem;border-top:1px solid var(--border);font-size:.9rem;align-items:center;">
                         <span style="color:var(--ink);">{{ $section->title }}</span>

@@ -69,6 +69,7 @@
                     <li>Setiap soal pilihan punya waktu {{ $choiceSeconds }} detik{{ $hasEssay ? ', dan setiap soal essay '.$essayMinutes.' menit' : '' }}. Kalau waktunya habis, soal itu dianggap kosong dan langsung lanjut.</li>
                     <li>Sudah yakin dengan jawabanmu? Klik <strong>Lanjut</strong> tanpa menunggu waktu habis.</li>
                     <li>Me-refresh atau menutup halaman tidak menghentikan waktu.</li>
+                    <li>Tes bisa diulang {{ \App\Models\QuizAttempt::RETAKE_WAIT_SECONDS / 60 }} menit setelah percobaan terakhir selesai.{{ $kind === 'post' ? ' Nilai resminya diambil dari percobaan pertama yang lulus.' : ' Nilai awalnya tetap dari pre-test pertama.' }}</li>
                     @if($hasEssay)
                         <li>Jawaban essay diperiksa berdasarkan ketepatan konsep dan kualitas argumen, jadi nilainya bisa muncul setelah diverifikasi.</li>
                     @endif
@@ -82,7 +83,8 @@
                         </div>
                     @elseif($passedBefore)
                         <div style="background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
-                            Kamu sudah lulus post-test ini. Yang dipakai nilai terbaikmu, <strong>{{ $progress->bestScore($section, 'post') }}</strong>, jadi mengulang tidak akan menurunkan nilai atau progresmu.
+                            Kamu sudah lulus post-test ini. Nilai resmimu <strong>{{ $progress->postScore($section) }}</strong>, dari percobaan pertama yang lulus.
+                            Percobaan berikutnya dihitung sebagai latihan, jadi tidak mengubah nilai resmi maupun progresmu.
                         </div>
                     @elseif(! $lastAttempt->isPending())
                         <div style="background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:10px;padding:.75rem 1rem;font-size:.875rem;margin-top:1rem;">
@@ -109,10 +111,15 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('course.test.start', [$course->slug, $section, $kind]) }}" style="margin-top:1.5rem;"
+                @if($waitSeconds)
+                    <p id="retake-wait" style="font-size:.85rem;color:var(--muted);text-align:center;margin-top:1.25rem;">
+                        <i class="fas fa-hourglass-half"></i> Kamu bisa mengulang dalam <strong id="retake-clock">{{ intdiv($waitSeconds, 60) }}:{{ str_pad($waitSeconds % 60, 2, '0', STR_PAD_LEFT) }}</strong>
+                    </p>
+                @endif
+                <form method="POST" action="{{ route('course.test.start', [$course->slug, $section, $kind]) }}" style="margin-top:{{ $waitSeconds ? '.6rem' : '1.5rem' }};"
                       onsubmit="const b = this.querySelector('button'); if (b.disabled) return false; b.disabled = true; b.textContent = 'Memulai...';">
                     @csrf
-                    <button type="submit" data-tour="test-start" style="width:100%;padding:.9rem;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;">
+                    <button type="submit" data-tour="test-start" @disabled($waitSeconds) style="width:100%;padding:.9rem;background:var(--blue);color:#fff;font-weight:700;font-size:.95rem;border:none;border-radius:12px;cursor:pointer;{{ $waitSeconds ? 'opacity:.5;cursor:not-allowed;' : '' }}">
                         {{ $history->isNotEmpty() ? 'Ulangi' : 'Mulai' }} {{ $kind === 'pre' ? 'Pre-test' : 'Post-test' }}
                     </button>
                 </form>
@@ -120,6 +127,25 @@
         @endif
 </x-classroom>
 @endsection
+
+@if($waitSeconds)
+@push('scripts')
+<script>
+// Counts down the pause between attempts and enables the button when it ends (the server checks it again).
+(function () {
+    let left = {{ $waitSeconds }};
+    const clock = document.getElementById('retake-clock'), btn = document.querySelector('[data-tour="test-start"]');
+    const timer = setInterval(() => {
+        left--;
+        if (left > 0) { clock.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0'); return; }
+        clearInterval(timer);
+        document.getElementById('retake-wait').remove();
+        btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = 'pointer';
+    }, 1000);
+})();
+</script>
+@endpush
+@endif
 
 @unless($pending)
 @push('scripts')

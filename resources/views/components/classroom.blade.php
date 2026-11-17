@@ -19,7 +19,7 @@
         $no = $sIndex + 1;
         $test = function (string $kind) use ($progress, $section, $course, $no) {
             $done = $kind === 'pre' ? $progress?->preTestDone($section) : $progress?->postTestPassed($section);
-            $score = $done ? ($kind === 'pre' ? $progress->firstScore($section, 'pre') : $progress->bestScore($section, 'post')) : null;
+            $score = $done ? ($kind === 'pre' ? $progress->firstScore($section, 'pre') : $progress->postScore($section)) : null;
 
             return [
                 'key' => "{$kind}-{$section->id}", 'group' => $section, 'no' => $no,

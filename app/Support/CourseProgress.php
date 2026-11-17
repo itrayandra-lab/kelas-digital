@@ -133,6 +133,16 @@ class CourseProgress
         return $this->attemptsFor($section, $kind)->where('status', 'graded')->max('score');
     }
 
+    /**
+     * The official post-test score: the first passing attempt; retakes after that are practice. Before passing it is
+     * the best score so far, so admins still see how close a learner is.
+     */
+    public function postScore(CourseSection $section): ?int
+    {
+        return $this->attemptsFor($section, 'post')->where('status', 'graded')->where('passed', true)->sortBy('id')->first()?->score
+            ?? $this->bestScore($section, 'post');
+    }
+
     /** The first graded score: a learner's starting point, which stays put when a pre-test is retaken for practice. */
     public function firstScore(CourseSection $section, string $kind): ?int
     {

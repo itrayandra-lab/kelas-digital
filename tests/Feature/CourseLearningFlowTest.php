@@ -181,6 +181,9 @@ class CourseLearningFlowTest extends TestCase
         // A wrong pre-test still counts as done. It can be retaken for practice, but the first score stays the starting point.
         $this->takeTest($this->bab1, 'pre', $this->answersFor($this->bab1, 'pre', false))->assertRedirect(route('course.learn', $slug));
         $this->get(route('course.test', [$slug, $this->bab1, 'pre']))->assertOk()->assertSee('Riwayat percobaan')->assertSee('Ulangi Pre-test');
+        // A retake waits 5 minutes after the last attempt.
+        $this->post(route('course.test.start', [$slug, $this->bab1, 'pre']))->assertSessionHas('error');
+        $this->travel(5)->minutes();
         $this->takeTest($this->bab1, 'pre', $this->answersFor($this->bab1, 'pre', true))->assertRedirect(route('course.test', [$slug, $this->bab1, 'pre']));
         $this->assertSame(0, (new CourseProgress($this->course, auth()->user()))->firstScore($this->bab1, 'pre'));
 
@@ -196,6 +199,7 @@ class CourseLearningFlowTest extends TestCase
         $this->takeTest($this->bab1, 'post', $this->answersFor($this->bab1, 'post', false))
             ->assertRedirect(route('course.test', [$slug, $this->bab1, 'post']));
         $this->get(route('course.learn', $slug))->assertRedirect(route('course.test', [$slug, $this->bab1, 'post']));
+        $this->travel(5)->minutes();
         $this->takeTest($this->bab1, 'post', $this->answersFor($this->bab1, 'post', true))->assertRedirect(route('course.learn', $slug));
 
         // Bab 2: pre-test, lesson, post-test with an AI-graded essay.
@@ -208,13 +212,14 @@ class CourseLearningFlowTest extends TestCase
         $this->get(route('course.completed', $slug))->assertOk()->assertSee('Selamat')->assertSee('Bab 2')->assertSee('Ulangi');
         $this->get(route('dashboard'))->assertSee('100%');
 
-        // A finished course's post-test can be retaken; a worse retake lowers neither the best score nor progress.
+        // A finished course's post-test can be retaken as practice: the first passing score stays the official one.
+        $this->travel(5)->minutes();
         $this->takeTest($this->bab1, 'post', $this->answersFor($this->bab1, 'post', false))
             ->assertRedirect(route('course.test', [$slug, $this->bab1, 'post']));
         $progress = new CourseProgress($this->course, auth()->user());
-        $this->assertSame(100, $progress->bestScore($this->bab1, 'post'));
+        $this->assertSame(100, $progress->postScore($this->bab1));
         $this->assertTrue($progress->isCourseFinished());
-        $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertSee('Kamu sudah lulus post-test ini')->assertSee('Belum lulus');
+        $this->get(route('course.test', [$slug, $this->bab1, 'post']))->assertSee('Kamu sudah lulus post-test ini')->assertSee('Belum lulus')->assertSee('Kamu bisa mengulang dalam');
     }
 
     public function test_pre_tests_cannot_contain_essays_and_post_essays_need_an_answer_key(): void
@@ -334,6 +339,7 @@ class CourseLearningFlowTest extends TestCase
 
         // Both down: the attempt waits for an admin, and the learner sees it's being verified.
         $deepseekUp = false;
+        $this->travel(5)->minutes();
         $this->takeTest($this->bab2, 'post', $this->answersFor($this->bab2, 'post', true));
         $pending = QuizAttempt::where('section_id', $this->bab2->id)->where('kind', 'post')->latest('id')->first();
         $this->assertTrue($pending->isPending());

@@ -158,7 +158,7 @@ class CourseController extends Controller
                 ];
                 foreach ($sections as $section) {
                     $line[] = $r['progress']->firstScore($section, 'pre');
-                    $line[] = $r['progress']->bestScore($section, 'post');
+                    $line[] = $r['progress']->postScore($section);
                 }
                 fputcsv($out, $line);
             }

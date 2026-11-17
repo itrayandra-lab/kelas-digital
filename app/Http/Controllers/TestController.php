@@ -60,8 +60,9 @@ class TestController extends Controller
             ->where('kind', $kind)->where('status', '!=', 'in_progress')->latest('id')->get();
         $lastAttempt = $history->first();
         $pending = $kind === 'post' && $progress->postTestPending($section);
+        $waitSeconds = $this->retakeWait($lastAttempt);
 
-        return view('tests.intro', compact('course', 'section', 'kind', 'questions', 'progress', 'lastAttempt', 'pending', 'history'));
+        return view('tests.intro', compact('course', 'section', 'kind', 'questions', 'progress', 'lastAttempt', 'pending', 'history', 'waitSeconds'));
     }
 
     public function start(string $slug, CourseSection $section, string $kind)
@@ -70,6 +71,13 @@ class TestController extends Controller
 
         if ($progress->reviewer || ($kind === 'post' && $progress->postTestPending($section))) {
             return redirect()->route('course.test', [$slug, $section, $kind]);
+        }
+
+        $last = QuizAttempt::where('user_id', auth()->id())->where('section_id', $section->id)
+            ->where('kind', $kind)->where('status', '!=', 'in_progress')->latest('id')->first();
+        if ($wait = $this->retakeWait($last)) {
+            return redirect()->route('course.test', [$slug, $section, $kind])
+                ->with('error', 'Tunggu '.ceil($wait / 60).' menit lagi sebelum mengulang tes ini.');
         }
 
         $this->withLock($slug, function () use ($course, $section, $kind) {
@@ -158,6 +166,16 @@ class TestController extends Controller
 
         return redirect()->route('course.test', [$course->slug, $section, 'post'])
             ->with('error', "Skor kamu {$attempt->score}, minimal {$course->post_test_pass_score} untuk lulus. Pelajari lagi materi modul ini lalu coba lagi.");
+    }
+
+    /** Seconds left before the test may be taken again (Dicoding-style pause between attempts). */
+    private function retakeWait(?QuizAttempt $last): int
+    {
+        if (! $last) {
+            return 0;
+        }
+
+        return max(0, QuizAttempt::RETAKE_WAIT_SECONDS - (int) $last->updated_at->diffInSeconds(now(), true));
     }
 
     private function openAttempt(Course $course, CourseSection $section, string $kind): ?QuizAttempt

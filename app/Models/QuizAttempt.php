@@ -17,6 +17,9 @@ class QuizAttempt extends Model
 
     public const SECONDS_PER_ESSAY = 180;
 
+    /** A test can be taken again this long after the previous attempt finished. */
+    public const RETAKE_WAIT_SECONDS = 300;
+
     /** Allowance for network delay between the timer running out and the answer arriving. */
     public const GRACE_SECONDS = 3;
 

@@ -40,7 +40,7 @@ class CourseRoster
 
         return $enrollments->map(function (Enrollment $e) use ($course, $lastLesson, $lastTest) {
             $progress = new CourseProgress($course, $e->user);
-            $postScores = $progress->sections->map(fn ($s) => $progress->bestScore($s, 'post'))->reject(fn ($v) => $v === null);
+            $postScores = $progress->sections->map(fn ($s) => $progress->postScore($s))->reject(fn ($v) => $v === null);
 
             return [
                 'enrollment' => $e,
@@ -73,7 +73,7 @@ class CourseRoster
                 || $section->lessons->contains(fn ($lesson) => $p->isCompleted($lesson)))->count(),
             'passed' => $progresses->filter(fn (CourseProgress $p) => $p->postTestPassed($section))->count(),
             'pre_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->firstScore($section, 'pre'))->reject(fn ($v) => $v === null)),
-            'post_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->bestScore($section, 'post'))->reject(fn ($v) => $v === null)),
+            'post_avg' => $average($progresses->map(fn (CourseProgress $p) => $p->postScore($section))->reject(fn ($v) => $v === null)),
         ]);
     }
 
