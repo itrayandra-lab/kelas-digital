@@ -11,7 +11,7 @@
 
     // Every module in study order, with where it links and whether the learner may open it.
     $items = collect([[
-        'key' => 'intro', 'group' => null, 'label' => 'Pengenalan Kelas', 'icon' => 'fa-flag',
+        'key' => 'intro', 'group' => null, 'label' => 'Pengenalan Kelas', 'icon' => 'fa-flag', 'sub' => 'Mulai di sini',
         'url' => route('course.intro', $course->slug), 'open' => (bool) $progress, 'done' => $progress && $progress->percent() > 0,
     ]]);
 
@@ -23,7 +23,8 @@
 
             return [
                 'key' => "{$kind}-{$section->id}", 'group' => $section, 'no' => $no,
-                'label' => ($kind === 'pre' ? 'Pre-test' : 'Post-test').($score !== null ? " · skor {$score}" : ''),
+                'label' => $kind === 'pre' ? 'Pre-test' : 'Post-test',
+                'sub' => ($kind === 'pre' ? 'Ukur pemahaman awal' : 'Lulus untuk lanjut').($score !== null ? " · Skor {$score}" : ''),
                 'icon' => $kind === 'pre' ? 'fa-clipboard-list' : 'fa-clipboard-check',
                 'url' => route('course.test', [$course->slug, $section, $kind]),
                 'open' => (bool) $progress?->testUnlocked($section, $kind), 'done' => (bool) $done,
@@ -37,7 +38,8 @@
         foreach ($section->lessons as $lIndex => $lesson) {
             $items->push([
                 'key' => "lesson-{$lesson->id}", 'group' => $section, 'no' => $no,
-                'label' => $no.'.'.($lIndex + 1).' '.$lesson->title,
+                'label' => $lesson->title,
+                'sub' => $lesson->isVideo() ? 'Video' : ($lesson->isPdf() ? 'Bacaan PDF' : 'Bacaan'),
                 'icon' => $lesson->isVideo() ? 'fa-play-circle' : ($lesson->isPdf() ? 'fa-file-pdf' : 'fa-file-alt'),
                 'url' => route('course.lesson', [$course->slug, $lesson]),
                 'open' => (bool) $progress?->isUnlocked($lesson),
@@ -51,6 +53,15 @@
         }
     }
 
+    // Number every step within its module (1.1, 1.2, ...), tests included.
+    $items = $items->map(function ($item) use ($items) {
+        $siblings = $items->filter(fn ($i) => $i['group'] === $item['group'])->values();
+        $item['num'] = $item['group'] ? $item['no'].'.'.($siblings->search(fn ($i) => $i['key'] === $item['key']) + 1) : null;
+
+        return $item;
+    });
+    $doneCount = $items->where('done', true)->count();
+
     $position = $items->search(fn ($i) => $i['key'] === $current);
     $prev = $position > 0 ? $items->get($position - 1) : null;
     $next = $position !== false ? $items->get($position + 1) : null;
@@ -61,21 +72,32 @@
 @push('styles')
 <style>
 .cr { display:grid; grid-template-columns:320px minmax(0,1fr); min-height:calc(100vh - 72px); background:var(--surf); }
-.cr-side { background:#fff; border-right:1px solid var(--border); position:sticky; top:72px; height:calc(100vh - 72px); overflow-y:auto; }
-.cr-side-head { padding:1.1rem 1.1rem 1rem; border-bottom:1px solid var(--border); }
-.cr-side-head a { font-size:.78rem; color:var(--muted); text-decoration:none; }
-.cr-side-title { font-family:'Sora',sans-serif; font-weight:700; color:var(--ink); font-size:.95rem; line-height:1.35; margin:.4rem 0 .75rem; }
-.cr-bar { height:6px; background:var(--surf); border-radius:999px; overflow:hidden; }
-.cr-bar div { height:100%; background:var(--blue); }
-.cr-group { padding:.75rem 1.1rem .4rem; display:flex; justify-content:space-between; gap:.5rem; font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
-.cr-item { display:flex; align-items:flex-start; gap:.6rem; padding:.6rem 1.1rem; font-size:.83rem; color:var(--ink-2); text-decoration:none; border-left:3px solid transparent; line-height:1.4; }
+.cr-side { background:#fff; border-right:1px solid var(--border); position:sticky; top:72px; height:calc(100vh - 72px); height:calc(100dvh - 72px); overflow-y:auto; overscroll-behavior:contain; padding-bottom:5rem; scroll-padding:5rem 0; }
+.cr-side-head { padding:1rem .9rem .9rem; border-bottom:1px solid var(--border); }
+.cr-side-head > a { font-size:.78rem; color:var(--muted); text-decoration:none; }
+.cr-side-head > a:hover { color:var(--blue); }
+.cr-active { margin-top:.7rem; padding:.9rem 1rem; border-radius:14px; background:linear-gradient(135deg,#eef5ff,#e8f4fd); border:1px solid #d6e6fb; }
+.cr-active-label { font-size:.66rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); }
+.cr-side-title { font-family:'Sora',sans-serif; font-weight:700; color:var(--ink); font-size:.95rem; line-height:1.35; margin:.3rem 0 .7rem; }
+.cr-bar { height:6px; background:rgba(255,255,255,.9); border-radius:999px; overflow:hidden; }
+.cr-bar div { height:100%; background:var(--blue); border-radius:999px; }
+.cr-bar.is-done div { background:#16a34a; }
+.cr-active-meta { display:flex; justify-content:space-between; margin-top:.5rem; font-size:.75rem; color:var(--muted); }
+.cr-active-meta strong { color:var(--ink); }
+.cr-group { padding:1rem 1.1rem .4rem; display:flex; justify-content:space-between; align-items:center; gap:.5rem; font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+.cr-group .fa-check-circle { color:#16a34a; font-size:.9rem; }
+.cr-item { display:flex; align-items:flex-start; gap:.7rem; margin:.1rem .55rem; padding:.6rem .6rem; border-radius:10px; font-size:.84rem; color:var(--ink-2); text-decoration:none; line-height:1.4; transition:background .15s; }
 .cr-item:hover { background:var(--surf); }
-.cr-item.is-current { background:var(--blue-xl); border-left-color:var(--blue); color:var(--blue); font-weight:700; }
+.cr-item.is-current { background:var(--blue-xl); color:var(--ink); box-shadow:inset 0 0 0 1px #d6e6fb; }
+.cr-item.is-current .cr-item-title { font-weight:700; }
 .cr-item.is-locked { color:#a0aec0; cursor:not-allowed; }
-.cr-item i.st { width:16px; text-align:center; margin-top:.15rem; color:var(--blue); }
+.cr-item i.st { width:18px; text-align:center; margin-top:.15rem; color:var(--blue); font-size:.95rem; }
 .cr-item.is-done i.st { color:#16a34a; }
 .cr-item.is-locked i.st { color:#cbd5e1; }
-.cr-item small { margin-left:auto; color:var(--muted); font-weight:400; white-space:nowrap; }
+.cr-item-body { min-width:0; flex:1; }
+.cr-item-title { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cr-item-sub { display:block; margin-top:.15rem; font-size:.72rem; color:var(--muted); font-weight:400; }
+.cr-item.is-locked .cr-item-sub { color:#c0cad6; }
 .cr-main { min-width:0; padding:1.75rem 2rem 3rem; }
 .cr-inner { max-width:820px; margin:0 auto; }
 .cr-nav { display:flex; justify-content:space-between; gap:1rem; margin-top:2rem; padding-top:1.25rem; border-top:1px solid var(--border); }
@@ -101,13 +123,14 @@
     <aside class="cr-side" :class="menu && 'open'" aria-label="Daftar modul">
         <div class="cr-side-head">
             <a href="{{ route('course.show', $course->slug) }}"><i class="fas fa-arrow-left mr-1"></i> Halaman kelas</a>
-            <div class="cr-side-title">{{ $course->title }}</div>
-            @if($progress)
-                <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:.35rem;">
-                    <span>Progress belajar</span><strong style="color:var(--blue);">{{ $percent }}% selesai</strong>
-                </div>
-                <div class="cr-bar"><div style="width:{{ $percent }}%"></div></div>
-            @endif
+            <div class="cr-active">
+                <div class="cr-active-label">{{ $progress && $percent === 100 ? 'Kelas selesai' : 'Kelas aktif' }}</div>
+                <div class="cr-side-title">{{ $course->title }}</div>
+                @if($progress)
+                    <div class="cr-bar {{ $percent === 100 ? 'is-done' : '' }}" role="progressbar" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100" aria-label="Progres belajar"><div style="width:{{ $percent }}%"></div></div>
+                    <div class="cr-active-meta"><span>{{ $doneCount }} / {{ $items->count() }} langkah</span><strong>{{ $percent }}%</strong></div>
+                @endif
+            </div>
         </div>
 
         @php $lastGroup = false; @endphp
@@ -119,7 +142,13 @@
                 @endphp
                 <div class="cr-group">
                     <span>{{ $item['group'] ? $item['group']->title : 'Persiapan Belajar' }}</span>
-                    @if($item['group'] && $progress)<span>{{ $groupItems->where('done', true)->count() }}/{{ $groupItems->count() }}</span>@endif
+                    @if($item['group'] && $progress)
+                        @if($groupItems->every('done'))
+                            <i class="fas fa-check-circle" aria-label="Modul selesai"></i>
+                        @else
+                            <span>{{ $groupItems->where('done', true)->count() }}/{{ $groupItems->count() }}</span>
+                        @endif
+                    @endif
                 </div>
             @endif
 
@@ -132,12 +161,21 @@
             @else
                 <div class="cr-item {{ $state }}">
             @endif
-                <i class="fas {{ $icon }} st"></i>
-                <span>{{ $item['label'] }}</span>
-                @if(! empty($item['meta']))<small>{{ $item['meta'] }}</small>@endif
+                <i class="fas {{ $icon }} st" aria-hidden="true"></i>
+                <span class="cr-item-body">
+                    <span class="cr-item-title">{{ $item['label'] }}</span>
+                    <span class="cr-item-sub">{{ $item['num'] ? $item['num'].' · ' : '' }}{{ $item['sub'] }}{{ ! empty($item['meta']) ? ' · '.$item['meta'] : '' }}</span>
+                </span>
             @if($item['open'] || $item['done'])</a>@else</div>@endif
         @endforeach
     </aside>
+    <script>
+        // Open the list at the current step, like Dicoding, instead of at the top.
+        (function () {
+            const side = document.querySelector('.cr-side'), cur = side && side.querySelector('.is-current');
+            if (cur) side.scrollTop = cur.offsetTop - side.clientHeight / 2 + cur.offsetHeight / 2;
+        })();
+    </script>
     <div x-show="menu" x-cloak @click="menu = false" style="position:fixed;inset:0;background:rgba(10,22,40,.4);z-index:999;"></div>
 
     <main class="cr-main">
