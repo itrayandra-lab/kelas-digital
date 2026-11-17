@@ -89,7 +89,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/attachments', function (Request $request) {
         $request->validate([
-            'attachment' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp,svg', 'max:5120'],
+            // No SVG: it can carry scripts that would run on this domain.
+            'attachment' => ['required', 'file', 'mimes:jpg,jpeg,png,gif,webp', 'max:5120'],
         ]);
 
         $path = $request->file('attachment')->store('trix-attachments', 'public');
@@ -97,7 +98,7 @@ Route::middleware('auth')->group(function () {
         return [
             'image_url' => '/storage/'.$path,
         ];
-    })->name('attachments.store');
+    })->middleware('admin')->name('attachments.store');
 });
 
 // ═══════════════════════════════════════════════════════════════
