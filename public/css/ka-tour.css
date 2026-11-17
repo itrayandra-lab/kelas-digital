@@ -29,7 +29,8 @@
 .ka-tour-btn {
   position: fixed; right: 18px; bottom: 18px; z-index: 45;
   display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
-  background: #0a1628; color: #fff; border: 0; border-radius: 999px; cursor: pointer;
+  background: rgba(10, 22, 40, .78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  color: #fff; border: 1px solid rgba(255, 255, 255, .14); border-radius: 999px; cursor: pointer;
   font: 600 13px 'DM Sans', system-ui, sans-serif; box-shadow: 0 8px 24px rgba(10, 22, 40, .25);
 }
 .ka-tour-btn span { width: 20px; height: 20px; border-radius: 50%; background: #0056D2; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }

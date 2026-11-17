@@ -123,7 +123,7 @@
 .hero-points i{width:18px;height:18px;border-radius:50%;background:#0056D2;color:#fff;font-size:.55rem;display:inline-flex;align-items:center;justify-content:center;}
 
 /* floating cards on the hero photo */
-.hero-float{position:absolute;z-index:4;display:flex;align-items:center;gap:.65rem;background:#fff;border-radius:14px;padding:.7rem .95rem;box-shadow:0 12px 32px rgba(15,17,20,.12);animation:hero-bob 5s ease-in-out infinite;}
+.hero-float{position:absolute;z-index:4;display:flex;align-items:center;gap:.65rem;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:.7rem .95rem;box-shadow:0 12px 32px rgba(15,17,20,.12);animation:hero-bob 5s ease-in-out infinite;}
 .hero-float strong{display:block;font-family:'Sora',sans-serif;font-size:.78rem;font-weight:600;color:#0F1114;}
 .hero-float small{display:block;font-size:.68rem;color:#6B7280;margin-top:.1rem;}
 .hero-float b{font-family:'Sora',sans-serif;font-size:.85rem;color:#0056D2;}

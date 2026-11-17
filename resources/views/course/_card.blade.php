@@ -35,7 +35,7 @@
 .cc-thumb { position:relative; aspect-ratio:16/9; overflow:hidden; background:linear-gradient(135deg,#EEF4FF,#DBEAFE); }
 .cc-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s; }
 .cc:hover .cc-thumb img { transform:scale(1.04); }
-.cc-badge { position:absolute; top:.6rem; right:.6rem; font-size:.66rem; font-weight:700; padding:.2rem .6rem; border-radius:999px; border:1px solid #0056D2; background:#fff; color:#0056D2; }
+.cc-badge { position:absolute; top:.6rem; right:.6rem; font-size:.66rem; font-weight:700; padding:.2rem .6rem; border-radius:999px; border:1px solid #0056D2; background:rgba(255,255,255,.85); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); color:#0056D2; }
 .cc-badge.free { border-color:#16a34a; color:#16a34a; }
 .cc-badge.part { border-color:#d97706; color:#b45309; }
 .cc-body { padding:.9rem 1rem 1rem; display:flex; flex-direction:column; flex:1; }

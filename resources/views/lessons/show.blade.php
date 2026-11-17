@@ -38,7 +38,7 @@
 /* Before the first play YouTube shows its title and "Watch on YouTube"; the cover hides them. */
 .vid-poster { position:absolute; inset:0; z-index:2; border:0; padding:0; cursor:pointer; background:#000 center/cover no-repeat;
   display:flex; align-items:center; justify-content:center; }
-.vid-poster span { width:72px; height:72px; border-radius:50%; background:rgba(0,86,210,.92); color:#fff; font-size:26px;
+.vid-poster span { width:72px; height:72px; border-radius:50%; background:rgba(0,86,210,.78); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.3); color:#fff; font-size:26px;
   display:flex; align-items:center; justify-content:center; padding-left:5px; box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .15s; }
 .vid-poster:hover span { transform:scale(1.06); }
 /* Our own control bar; YouTube's (share, watch later, logo, CC, settings) is off with controls:0. */
@@ -47,6 +47,7 @@
 .vid-wrap:hover .vc, .vid-wrap.paused .vc, .vc:focus-within { opacity:1; }
 @media (hover:none) { .vc { opacity:1; } }
 .vid-poster:not([hidden]) ~ .vc { display:none; }
+.vc { touch-action:manipulation; }
 .vc button { flex-shrink:0; width:36px; height:36px; border:0; border-radius:6px; background:none; color:#fff; font-size:15px; cursor:pointer; }
 .vc button:hover, .vc button:focus-visible { background:rgba(255,255,255,.15); }
 .vc input[type=range] { cursor:pointer; accent-color:#3B82F6; height:4px; }
@@ -199,7 +200,10 @@
     const pad = n => String(n).padStart(2, '0');
     const clock = t => { t = Math.floor(t || 0); const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60; return (h ? h + ':' + pad(m) : m) + ':' + pad(t % 60); };
 
-    document.getElementById('vid-shield').addEventListener('click', toggle);
+    // On phones a stray tap on the video shouldn't pause it; play/pause is the button in the always-visible bar.
+    const shield = document.getElementById('vid-shield');
+    if (touchOnly) { shield.style.cursor = 'default'; shield.tabIndex = -1; shield.setAttribute('aria-hidden', 'true'); }
+    else shield.addEventListener('click', toggle);
     playBtn.addEventListener('click', toggle);
     poster.addEventListener('click', () => { if (ready()) { if (player.getPlayerState() === YT.PlayerState.ENDED) player.seekTo(0, true); player.playVideo(); } });
 

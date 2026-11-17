@@ -28,7 +28,7 @@
 .cd-thumb { position:relative; aspect-ratio:16/9; background:linear-gradient(135deg,#1474bc,#10b981); cursor:pointer; display:block; width:100%; border:0; padding:0; }
 .cd-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 .cd-play { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; background:rgba(10,22,40,.35); color:#fff; font-weight:700; font-size:.85rem; }
-.cd-play span:first-child { width:58px; height:58px; border-radius:50%; background:#fff; color:var(--ink); display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+.cd-play span:first-child { width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,.22); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.45); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
 .cd-card-body { padding:1.4rem; }
 .cd-price { font-family:'Sora',sans-serif; font-size:1.9rem; font-weight:700; color:var(--ink); }
 .cta-btn { display:flex; width:100%; align-items:center; justify-content:center; gap:.5rem; padding:.9rem 1rem; margin-top:1rem; background:#0056D2; color:#fff; font-weight:700; font-size:.95rem; border:0; border-radius:8px; cursor:pointer; text-decoration:none; }
@@ -105,7 +105,7 @@
     .cd-aside { margin-top:1.5rem; }
     .cd-card { position:static; }
     .cd-main { padding-bottom:6rem; }
-    .cd-bar { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:40; background:#fff; border-top:1px solid var(--border); padding:.7rem 1rem; gap:1rem; align-items:center; box-shadow:0 -6px 20px rgba(10,22,40,.08); }
+    .cd-bar { display:flex; position:fixed; left:0; right:0; bottom:0; z-index:40; background:rgba(255,255,255,.86); -webkit-backdrop-filter:blur(16px) saturate(180%); backdrop-filter:blur(16px) saturate(180%); border-top:1px solid var(--border); padding:.7rem 1rem; gap:1rem; align-items:center; box-shadow:0 -6px 20px rgba(10,22,40,.08); }
     .cd-bar .cta-btn { margin-top:0; }
     .cd-related { grid-template-columns:1fr 1fr; }
 }
