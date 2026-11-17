@@ -114,6 +114,7 @@ Route::prefix('admin')
         // Course management routes
         Route::middleware('can:view courses')->group(function () {
             Route::resource('courses', AdminCourseController::class);
+            Route::get('courses/{course}/learners.csv', [AdminCourseController::class, 'exportLearners'])->name('courses.learners.export');
         });
 
         // Course category management

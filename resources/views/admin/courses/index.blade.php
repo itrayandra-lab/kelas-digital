@@ -65,8 +65,8 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-4">
-                                <a href="{{ route('admin.courses.show', $course->id) }}"
-                                    class="text-gray-500 hover:text-gray-800">View</a>
+                                <a href="{{ route('admin.courses.show', $course->id) }}" data-tour="learners-btn"
+                                    class="inline-flex items-center px-2.5 py-1 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"><i class="fas fa-users mr-1"></i> Peserta ({{ $course->enrollments_count }})</a>
                                 @can('edit courses')
                                 <a href="{{ route('admin.curriculum.show', $course) }}" data-tour="curriculum-btn"
                                     class="inline-flex items-center px-2.5 py-1 bg-primary-600 text-white rounded-md hover:bg-primary-700"><i class="fas fa-list-ol mr-1"></i> Kurikulum &amp; Tes</a>
@@ -109,6 +109,7 @@ KATour.page('admin-courses', [
   { popover: { title: 'Kelola Kelas', description: 'Di sini semua kelas dibuat dan diatur. Alurnya cuma 2 langkah: isi detail kelas, lalu susun kurikulum & soal tesnya.' } },
   { element: '[data-tour="add-course"]', popover: { title: '1. Buat kelas baru', description: 'Isi judul, deskripsi, harga (atau gratis), trailer YouTube, dan thumbnail. Ini yang dilihat calon peserta di halaman kelas.', side: 'bottom' } },
   { element: '[data-tour="curriculum-btn"]', popover: { title: '2. Kurikulum & Tes', description: 'Setelah kelas dibuat, klik ini untuk menyusun modul, materi video/tulisan, dan soal pre-test & post-test.', side: 'left' } },
+  { element: '[data-tour="learners-btn"]', popover: { title: 'Peserta kelas', description: 'Lihat siapa saja yang mendaftar, progres belajar masing-masing, nilai tes per modul, dan ekspor datanya ke CSV.', side: 'left' } },
   { element: '[data-tour="edit-course"]', popover: { title: 'Ubah detail kelas', description: 'Klik Edit kalau mau mengganti judul, harga, thumbnail, atau deskripsi.', side: 'left' } },
   { popover: { title: 'Kategori kelas', description: 'Menu "Course Categories" di samping dipakai untuk mengelompokkan kelas (mis. Personal Branding, Digital Marketing). Kategori muncul sebagai filter di halaman Kursus.' } }
 ]);

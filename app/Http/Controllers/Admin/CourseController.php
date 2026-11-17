@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Support\CourseRoster;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CourseController extends Controller
 {
@@ -22,7 +25,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('category')->latest()->paginate(10);
+        $courses = Course::with('category')->withCount('enrollments')->latest()->paginate(10);
 
         return view('admin.courses.index', compact('courses'));
     }
@@ -93,11 +96,74 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    /** The course's class overview: who enrolled, how far each learner got, and how each module went. */
+    public function show(Request $request, string $id)
     {
         $course = Course::with('category')->findOrFail($id);
+        $rows = CourseRoster::rows($course);
 
-        return view('admin.courses.show', compact('course'));
+        $stats = [
+            'total' => $rows->count(),
+            'statuses' => $rows->countBy('status'),
+            'finished' => $rows->where('finished', true)->count(),
+            'avg_percent' => (int) round($rows->avg('percent') ?? 0),
+            'new_week' => $rows->filter(fn ($r) => $r['enrollment']->created_at->gt(now()->subWeek()))->count(),
+            'revenue' => $rows->where('status', 'paid')->sum(fn ($r) => (int) $r['enrollment']->paid_amount),
+        ];
+        $modules = CourseRoster::modules($rows);
+
+        $search = is_string($request->query('q')) ? trim($request->query('q')) : '';
+        $status = array_key_exists($request->query('status'), CourseRoster::STATUSES) ? $request->query('status') : null;
+        $sort = in_array($request->query('sort'), ['progress', 'progress_low', 'active'], true) ? $request->query('sort') : null;
+
+        $filtered = $rows
+            ->when($search !== '', fn ($c) => $c->filter(fn ($r) => str_contains(mb_strtolower($r['user']->name.' '.$r['user']->email.' '.$r['user']->username), mb_strtolower($search))))
+            ->when($status, fn ($c) => $c->where('status', $status))
+            ->when($sort === 'progress', fn ($c) => $c->sortByDesc('percent'))
+            ->when($sort === 'progress_low', fn ($c) => $c->sortBy('percent'))
+            ->when($sort === 'active', fn ($c) => $c->sortByDesc('last_active'))
+            ->values();
+
+        $perPage = 25;
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $learners = new LengthAwarePaginator($filtered->forPage($page, $perPage)->values(), $filtered->count(), $perPage, $page, [
+            'path' => $request->url(),
+            'query' => $request->query(),
+        ]);
+
+        return view('admin.courses.show', compact('course', 'stats', 'modules', 'learners', 'search', 'status', 'sort'));
+    }
+
+    /** Learner list as CSV (opens in Excel / Google Sheets), with the best pre- and post-test score per module. */
+    public function exportLearners(Course $course): StreamedResponse
+    {
+        $rows = CourseRoster::rows($course);
+        $sections = CourseRoster::modules($rows)->pluck('section');
+
+        return response()->streamDownload(function () use ($rows, $sections) {
+            $out = fopen('php://output', 'w');
+            fwrite($out, "\xEF\xBB\xBF"); // BOM so Excel reads the names as UTF-8
+            $header = ['Nama', 'Email', 'Username', 'Status', 'Tanggal daftar', 'Progres (%)', 'Langkah berikutnya', 'Rata-rata post-test', 'Aktivitas terakhir'];
+            foreach ($sections as $section) {
+                $header[] = 'Pre-test '.$section->title;
+                $header[] = 'Post-test '.$section->title;
+            }
+            fputcsv($out, $header);
+
+            foreach ($rows as $r) {
+                $line = [
+                    $r['user']->name, $r['user']->email, $r['user']->username, CourseRoster::STATUSES[$r['status']],
+                    $r['enrollment']->created_at->format('Y-m-d H:i'), $r['percent'], $r['next'], $r['post_avg'],
+                    $r['last_active']?->format('Y-m-d H:i'),
+                ];
+                foreach ($sections as $section) {
+                    $line[] = $r['progress']->bestScore($section, 'pre');
+                    $line[] = $r['progress']->bestScore($section, 'post');
+                }
+                fputcsv($out, $line);
+            }
+            fclose($out);
+        }, 'peserta-'.$course->slug.'-'.now()->format('Ymd').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     /**
