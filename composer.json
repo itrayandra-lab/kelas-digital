@@ -16,6 +16,7 @@
         "ralphjsmit/laravel-seo": "^1.7",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-permission": "^6.21",
+        "symfony/html-sanitizer": "^7.0",
         "tonysm/rich-text-laravel": "^3.3"
     },
     "require-dev": {

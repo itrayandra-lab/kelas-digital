@@ -180,7 +180,7 @@ class Course extends Model
         return new SEOData(
             title: $this->title,
             description: $this->description ?: 'Kursus online berkualitas tinggi di Kelas Digital. Pelajari dengan instruktur berpengalaman dan dapatkan sertifikat setelah menyelesaikan kursus.',
-            author: $this->instructor ?: 'Kelas Digital Team',
+            author: $this->instructor ?: 'Ray Academy',
             image: $this->thumbnail_url ?: '/logo.webp',
             url: route('course.show', $this->slug),
             published_time: $this->created_at,

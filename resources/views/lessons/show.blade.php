@@ -89,7 +89,7 @@
             </div>
             <div id="text-end" style="height:1px;"></div>
         @elseif(! $lesson->isVideo())
-            <div class="lesson-text">{!! $lesson->content !!}</div>
+            <div class="lesson-text">{!! $lesson->safeContent() !!}</div>
             <div id="text-end" style="height:1px;"></div>
         @endif
 

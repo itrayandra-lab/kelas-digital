@@ -24,3 +24,8 @@ Homestead.yaml
 Thumbs.db
 
 /.claude
+.env.*
+!.env.example
+*.save
+*.bak
+*.sql

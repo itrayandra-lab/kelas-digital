@@ -6,6 +6,8 @@ use App\Support\YouTube;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class Lesson extends Model
 {
@@ -71,5 +73,18 @@ class Lesson extends Model
     public function isPdf(): bool
     {
         return $this->type === 'pdf';
+    }
+
+    /** Lesson text written by instructors, stripped of scripts and event handlers before it reaches the page. */
+    public function safeContent(): string
+    {
+        $config = (new HtmlSanitizerConfig)
+            ->allowSafeElements()
+            ->allowLinkSchemes(['https', 'http', 'mailto'])
+            ->allowMediaSchemes(['https', 'http'])
+            ->allowRelativeLinks()
+            ->allowRelativeMedias();
+
+        return (new HtmlSanitizer($config))->sanitize((string) $this->content);
     }
 }

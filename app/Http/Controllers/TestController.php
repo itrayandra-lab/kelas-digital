@@ -210,7 +210,7 @@ class TestController extends Controller
             abort(redirect()->route('course.learn', $slug)->with('error', 'Selesaikan langkah sebelumnya dulu.'));
         }
 
-        // A finished test can be retaken any time, like a Dicoding exam: the best post-test score counts and the
+        // A finished test can be retaken, like a Dicoding exam: the first passing post-test score counts and the
         // first pre-test score stays the starting point, so a retake never lowers progress or skews the gain.
         return [$course, $progress];
     }

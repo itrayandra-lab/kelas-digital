@@ -213,8 +213,8 @@ class Article extends Model
         return new SEOData(
             title: $this->title,
             description: $this->excerpt ?: \Str::limit(strip_tags($this->content ?? ''), 160),
-            author: $this->author ?: 'Kelas Digital Team',
-            image: $this->thumbnail ?: '/logo.webp',
+            author: $this->author ?: 'Ray Academy',
+            image: $this->thumbnail_url ?: '/logo.webp',
             url: route('article.show', $this->slug),
             published_time: $this->published_at ?? $this->created_at,
             modified_time: $this->updated_at,
