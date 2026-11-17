@@ -200,20 +200,33 @@
     transition:transform .25s,box-shadow .25s;position:relative;
 }
 .promo-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.12);}
+/* Glass look on the pastel cards: a soft light reflection and a thin white rim. */
+.promo-card::before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+    background:radial-gradient(120% 90% at 0% 0%,rgba(255,255,255,.55),rgba(255,255,255,0) 55%);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.65);}
 .promo-card-content{
     flex:1;padding:1.5rem;
     display:flex;flex-direction:column;justify-content:space-between;
-    z-index:1;min-width:0;
+    z-index:3;min-width:0;
 }
-.promo-logo-txt{font-family:'Sora',sans-serif;font-size:.62rem;font-weight:800;letter-spacing:.1em;color:#0F1114;margin-bottom:.6rem;}
+.promo-logo-txt{display:inline-block;font-family:'Sora',sans-serif;font-size:.6rem;font-weight:800;letter-spacing:.1em;color:#0F1114;margin-bottom:.7rem;
+    padding:.28rem .65rem;border-radius:999px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
 .promo-title{font-family:'Sora',sans-serif;font-size:.88rem;font-weight:600;color:#0F1114;line-height:1.4;flex:1;}
 .promo-link-txt{
-    display:inline-flex;align-items:center;gap:.3rem;
+    align-self:flex-start;display:inline-flex;align-items:center;gap:.35rem;
     font-size:.75rem;font-weight:600;color:#0F1114;
-    margin-top:.8rem;text-decoration:none;
+    margin-top:.9rem;padding:.45rem .9rem;border-radius:999px;
+    background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    box-shadow:0 4px 14px rgba(15,17,20,.06);transition:background .2s;
 }
-.promo-link-txt:hover{opacity:.7;}
-.promo-card-img{width:180px;flex-shrink:0;object-fit:cover;object-position:center;}
+.promo-link-txt svg{transition:transform .2s;}
+.promo-card:hover .promo-link-txt{background:rgba(255,255,255,.92);}
+.promo-card:hover .promo-link-txt svg{transform:translateX(3px);}
+/* The photo's left edge fades into the card colour instead of a hard line. */
+.promo-card-img{width:180px;flex-shrink:0;object-fit:cover;object-position:center;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 22%);mask-image:linear-gradient(to right,transparent,#000 22%);}
 
 /* ═══ 3. FREE COURSE BANNER — FIXED ═══ */
 .free-banner{background:#fff;padding:3.5rem 0;border-top:1px solid #F1F5F9;}
