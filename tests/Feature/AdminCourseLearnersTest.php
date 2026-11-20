@@ -61,7 +61,7 @@ class AdminCourseLearnersTest extends TestCase
         $this->get(route('admin.courses.show', [$course->id, 'q' => 'citra']))->assertSee('Citra')->assertDontSee('Budi');
 
         $csv = $this->get(route('admin.courses.learners.export', $course))->assertOk()->streamedContent();
-        $lines = array_map('str_getcsv', array_filter(explode("\n", substr($csv, 3)))); // skip the UTF-8 BOM
+        $lines = array_map(fn ($l) => str_getcsv($l, ';'),array_filter(explode("\n", substr($csv, 3)))); // skip the UTF-8 BOM
         $this->assertSame("\xEF\xBB\xBF", substr($csv, 0, 3));
         $this->assertSame(['Pre-test Modul Satu', 'Post-test Modul Satu'], array_slice($lines[0], -2));
         $ani = collect($lines)->firstWhere(0, 'Ani');

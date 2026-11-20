@@ -154,7 +154,8 @@ class CourseController extends Controller
                 $header[] = 'Pre-test '.$section->title;
                 $header[] = 'Post-test '.$section->title;
             }
-            fputcsv($out, $header);
+            // Semicolons: Excel with Indonesian regional settings splits columns on ";" and puts a comma-separated file in one column.
+            fputcsv($out, $header, ';');
 
             foreach ($rows as $r) {
                 $line = [
@@ -167,7 +168,7 @@ class CourseController extends Controller
                     $line[] = $r['progress']->firstScore($section, 'pre');
                     $line[] = $r['progress']->postScore($section);
                 }
-                fputcsv($out, $line);
+                fputcsv($out, $line, ';');
             }
             fclose($out);
         }, 'peserta-'.$course->slug.'-'.now()->format('Ymd').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
