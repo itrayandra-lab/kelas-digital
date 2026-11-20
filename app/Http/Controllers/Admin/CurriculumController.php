@@ -8,10 +8,15 @@ use App\Models\CourseQuestion;
 use App\Models\CourseSection;
 use App\Models\Lesson;
 use App\Models\QuizAttempt;
+use App\Support\QuestionImport;
+use App\Support\WordDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * One page per course where admins build the whole curriculum: sections, lessons and test questions.
@@ -171,6 +176,42 @@ class CurriculumController extends Controller
         return $this->back($question->course, 'Soal disimpan.', 'tes');
     }
 
+    /**
+     * Fills an empty pre-test or post-test from a Word file in the RayAcademy test template (see QuestionImport).
+     * Only into an empty test, so a second click can't duplicate questions.
+     */
+    public function importQuestions(Request $request, CourseSection $section, string $kind)
+    {
+        $request->validate(['docx' => ['required', 'file', 'extensions:docx', 'max:10240']], [
+            'docx.required' => 'Pilih file Word (.docx) berisi soal.',
+            'docx.extensions' => 'File soal harus berformat Word (.docx).',
+        ]);
+
+        if ($section->testQuestions($kind)->exists()) {
+            throw ValidationException::withMessages(['docx' => 'Tes ini sudah punya soal. Hapus soal lama dulu kalau mau menggantinya dengan file ini.']);
+        }
+
+        try {
+            $questions = QuestionImport::parse((new WordDocument($request->file('docx')->getRealPath()))->paragraphs(), $kind);
+        } catch (InvalidArgumentException|RuntimeException $e) {
+            throw ValidationException::withMessages(['docx' => $e->getMessage()]);
+        }
+
+        DB::transaction(function () use ($questions, $section, $kind) {
+            foreach ($questions as $i => $q) {
+                $question = $section->questions()->create([
+                    'course_id' => $section->course_id, 'kind' => $kind, 'type' => $q['type'],
+                    'question' => $q['question'], 'answer_key' => $q['answer_key'] ?? null, 'order' => $i + 1,
+                ]);
+                $question->options()->createMany($q['options'] ?? []);
+            }
+        });
+
+        $essays = collect($questions)->where('type', 'essay')->count();
+
+        return $this->back($section->course, count($questions).' soal diimpor'.($essays ? " ({$essays} essay)" : '').'. Cek lagi kunci jawabannya sebelum peserta mengerjakan.', 'tes');
+    }
+
     public function destroyQuestion(CourseQuestion $question)
     {
         $course = $question->course;
@@ -194,21 +235,27 @@ class CurriculumController extends Controller
             'title' => 'required|string|max:255',
             'type' => ['required', Rule::in(['video', 'text', 'pdf'])],
             'youtube_video_id' => 'required_if:type,video|nullable|string|max:255',
-            'content' => 'required_if:type,text|nullable|string',
+            // Text comes from the editor or from an uploaded Word file; an edit with neither keeps the current text.
+            'content' => [Rule::requiredIf($request->input('type') === 'text' && ! $request->hasFile('docx') && ! $lesson?->content), 'nullable', 'string'],
+            'docx' => ['nullable', 'file', 'extensions:docx', 'max:10240'],
             // A PDF lesson that already has a file may be saved without uploading it again.
             'pdf' => [Rule::requiredIf($request->input('type') === 'pdf' && ! $lesson?->pdf_path), 'nullable', 'file', 'mimes:pdf', 'max:51200'],
             'duration' => 'nullable|integer|min:0|max:1000',
         ], [
             'youtube_video_id.required_if' => 'Link video YouTube wajib diisi untuk materi video.',
-            'content.required_if' => 'Isi materi wajib diisi untuk materi tulisan.',
+            'content.required' => 'Isi materi wajib diisi, atau upload file Word, untuk materi tulisan.',
+            'docx.extensions' => 'File materi harus berformat Word (.docx).',
+            'docx.max' => 'Ukuran file Word maksimal 10 MB.',
             'pdf.required' => 'Pilih file PDF untuk materi PDF.',
             'pdf.mimes' => 'File harus berformat PDF.',
             'pdf.max' => 'Ukuran PDF maksimal 50 MB.',
         ]);
-        unset($data['pdf']);
+        unset($data['pdf'], $data['docx']);
 
         $data['youtube_video_id'] = $data['type'] === 'video' ? $data['youtube_video_id'] : null;
-        $data['content'] = $data['type'] === 'text' ? $data['content'] : null;
+        $data['content'] = $data['type'] === 'text'
+            ? ($request->hasFile('docx') ? $this->wordHtml($request) : (($data['content'] ?? null) ?: $lesson?->content))
+            : null;
 
         // Private disk: the file is only streamed through the lesson page to learners allowed to open it.
         $oldPdf = $lesson?->pdf_path;
@@ -221,6 +268,15 @@ class CurriculumController extends Controller
         }
 
         return $data;
+    }
+
+    private function wordHtml(Request $request): string
+    {
+        try {
+            return (new WordDocument($request->file('docx')->getRealPath()))->toHtml();
+        } catch (RuntimeException $e) {
+            throw ValidationException::withMessages(['docx' => $e->getMessage()]);
+        }
     }
 
     private function questionData(Request $request, string $kind): array

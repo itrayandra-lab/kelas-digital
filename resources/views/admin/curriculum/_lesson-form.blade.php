@@ -43,10 +43,27 @@
         <p class="mt-1 text-xs text-amber-700"><i class="fas fa-eye-slash mr-1"></i> Upload video materi sebagai <strong>Unlisted</strong> (Tidak publik) di YouTube supaya tidak bisa dicari, dan pastikan "Izinkan penyematan" aktif. Video Private tidak bisa diputar di sini.</p>
     </div>
 
-    <div x-show="type === 'text'">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Isi materi</label>
-        <x-trix-input :id="$formId.'_content'" name="content" :value="$lesson?->content ?? ''" class="min-h-[220px]" />
-        <p class="mt-1 text-xs text-gray-500">Bisa berisi judul, daftar, link, dan gambar. Peserta harus membaca sampai bawah untuk lanjut.</p>
+    <div x-show="type === 'text'" class="space-y-3">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Upload file Word (.docx)</label>
+            <input type="file" name="docx" accept=".docx"
+                class="block w-full text-sm text-gray-700 file:mr-3 file:px-3 file:py-2 file:rounded-lg file:border-0 file:bg-primary-50 file:text-primary-700">
+            <p class="mt-1 text-xs text-gray-500">Cara paling mudah untuk materi bacaan. Judul (style Heading 1–3), bullet, huruf tebal/miring, dan tabel ikut terbawa. Gambar di dalam Word belum ikut. Maksimal 10 MB.</p>
+        </div>
+
+        @if($lesson?->hasRichLayout())
+            <p class="text-xs text-gray-700 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                <i class="fas fa-file-word text-blue-600 mr-1"></i> Isi materi ini berasal dari file Word (ada judul bertingkat atau tabel), jadi tidak dibuka di editor supaya formatnya tidak rusak.
+                Untuk mengubah isinya, perbaiki file Word-nya lalu upload ulang di atas. Kalau tidak upload apa-apa, isi lama tetap dipakai.
+            </p>
+        @else
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Atau tulis langsung di editor</label>
+                <x-trix-input :id="$formId.'_content'" name="content" :value="$lesson?->content ?? ''" class="min-h-[220px]" />
+                <p class="mt-1 text-xs text-gray-500">Untuk tulisan pendek. Kalau file Word di atas diisi, isi editor ini diganti dengan isi file tersebut.</p>
+            </div>
+        @endif
+        <p class="text-xs text-gray-500">Peserta harus membaca sampai bawah untuk lanjut.</p>
     </div>
 
     <div>

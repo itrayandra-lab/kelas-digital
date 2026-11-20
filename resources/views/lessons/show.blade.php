@@ -27,6 +27,11 @@
 .pdf-page { aspect-ratio:var(--ratio, .707); background:#f8fafc; border:1px solid var(--border); border-radius:8px; margin-bottom:.75rem; overflow:hidden; }
 .pdf-page img { width:100%; display:block; -webkit-user-drag:none; user-select:none; }
 .pdf-note { font-size:.85rem; color:var(--muted); text-align:center; padding:2rem 0; }
+/* Tables come from Word imports; on phones they scroll sideways instead of squeezing the text. */
+.lesson-text table { display:block; overflow-x:auto; border-collapse:collapse; margin:1rem 0; font-size:.88rem; line-height:1.6; }
+.lesson-text th, .lesson-text td { border:1px solid var(--border); padding:.55rem .7rem; vertical-align:top; min-width:9rem; text-align:left; }
+.lesson-text th { background:var(--surf); color:var(--ink); font-weight:700; }
+.lesson-text td p, .lesson-text th p { margin:.25rem 0; }
 .lesson-text figcaption { font-size:.8rem; color:var(--muted); text-align:center; margin-top:.4rem; }
 /* YouTube's own fullscreen is off (fs:0) so our overlay stays on top in fullscreen. */
 .vid-wrap { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 8px 32px rgba(10,22,40,.12); background:#000; }

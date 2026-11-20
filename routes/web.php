@@ -137,6 +137,7 @@ Route::prefix('admin')
             Route::put('curriculum/lessons/{lesson}', 'updateLesson')->name('curriculum.lessons.update');
             Route::delete('curriculum/lessons/{lesson}', 'destroyLesson')->name('curriculum.lessons.destroy');
             Route::post('curriculum/lessons/{lesson}/move/{direction}', 'moveLesson')->whereIn('direction', ['up', 'down'])->name('curriculum.lessons.move');
+            Route::post('sections/{section}/questions/{kind}/import', 'importQuestions')->whereIn('kind', ['pre', 'post'])->name('questions.import');
             Route::post('sections/{section}/questions/{kind}', 'storeQuestion')->whereIn('kind', ['pre', 'post'])->name('questions.store');
             Route::put('questions/{question}', 'updateQuestion')->name('questions.update');
             Route::delete('questions/{question}', 'destroyQuestion')->name('questions.destroy');

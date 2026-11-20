@@ -75,6 +75,12 @@ class Lesson extends Model
         return $this->type === 'pdf';
     }
 
+    /** Headings below h1 and tables come from Word imports; the admin text editor can't keep them, so it must not touch this text. */
+    public function hasRichLayout(): bool
+    {
+        return (bool) preg_match('/<(h[2-6]|table)\b/i', (string) $this->content);
+    }
+
     /** Lesson text written by instructors, stripped of scripts and event handlers before it reaches the page. */
     public function safeContent(): string
     {
