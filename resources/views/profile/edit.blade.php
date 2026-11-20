@@ -106,6 +106,30 @@
                             <div class="form-error"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="form-field">
+                        <label for="origin_type">Kamu saat ini</label>
+                        <select id="origin_type" name="origin_type" class="form-input {{ $errors->has('origin_type') ? 'error' : '' }}">
+                            <option value="" @selected(! old('origin_type', $user->origin_type))>Belum diisi</option>
+                            @foreach(\App\Models\User::ORIGINS as $value => $label)
+                                <option value="{{ $value }}" @selected(old('origin_type', $user->origin_type) === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="institution">Nama universitas atau kantor</label>
+                        <input type="text" id="institution" name="institution" value="{{ old('institution', $user->institution) }}" maxlength="150"
+                               list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau RayCorp"
+                               class="form-input {{ $errors->has('institution') ? 'error' : '' }}">
+                        <datalist id="institution-list">
+                            @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
+                        </datalist>
+                        <p class="form-hint">Kosongkan kalau kamu memilih Umum.</p>
+                        @error('institution')
+                            <div class="form-error"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="form-card-foot">

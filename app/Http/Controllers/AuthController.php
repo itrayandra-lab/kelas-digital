@@ -65,6 +65,9 @@ class AuthController extends Controller
             'username' => ['required', 'string', 'min:3', 'max:20', 'unique:users', 'regex:/^[a-zA-Z0-9_-]+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'indisposable'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ] + User::originRules(true), [
+            'origin_type.required' => 'Pilih asal kamu: mahasiswa, karyawan, atau umum.',
+            'institution.required_if' => 'Tulis nama universitas atau kantor kamu.',
         ]);
 
         $user = User::create([
@@ -72,6 +75,8 @@ class AuthController extends Controller
             'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'origin_type' => $validated['origin_type'],
+            'institution' => $validated['origin_type'] === 'umum' ? null : $validated['institution'],
         ]);
 
         // Assign student role

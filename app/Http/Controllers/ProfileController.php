@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,13 +55,18 @@ class ProfileController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+        ] + User::originRules(false), [
+            'institution.required_if' => 'Tulis nama universitas atau kantor kamu.',
         ]);
 
         $user->update([
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
-        ]);
+        ] + ($request->filled('origin_type') ? [
+            'origin_type' => $request->origin_type,
+            'institution' => $request->origin_type === 'umum' ? null : $request->institution,
+        ] : []));
 
         return redirect()->route('profile.index')
             ->with('success', 'Profile updated successfully.');

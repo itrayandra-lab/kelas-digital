@@ -76,6 +76,27 @@
                     </div>
 
                     <div>
+                        <label for="origin_type" class="block text-sm font-medium text-gray-700 mb-2">Kamu saat ini</label>
+                        <select id="origin_type" name="origin_type" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition bg-white">
+                            <option value="" disabled @selected(! old('origin_type'))>Pilih salah satu</option>
+                            @foreach(\App\Models\User::ORIGINS as $value => $label)
+                                <option value="{{ $value }}" @selected(old('origin_type') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="institution" class="block text-sm font-medium text-gray-700 mb-2">Nama universitas atau kantor</label>
+                        <input type="text" id="institution" name="institution" value="{{ old('institution') }}" maxlength="150"
+                            list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau RayCorp"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                        <datalist id="institution-list">
+                            @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
+                        </datalist>
+                        <p class="mt-1 text-sm text-gray-500">Tulis nama lengkapnya, atau pilih dari saran yang muncul. Kosongkan kalau kamu memilih Umum.</p>
+                    </div>
+
+                    <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <input type="password" id="password" name="password" required autocomplete="new-password"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">

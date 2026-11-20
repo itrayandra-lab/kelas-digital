@@ -30,16 +30,16 @@ class AdminCourseLearnersTest extends TestCase
         $section->questions()->create(['course_id' => $course->id, 'kind' => 'pre', 'type' => 'single', 'question' => 'A?', 'order' => 1]);
         $section->questions()->create(['course_id' => $course->id, 'kind' => 'post', 'type' => 'single', 'question' => 'B?', 'order' => 1]);
 
-        $learner = fn (string $name) => User::factory()->create(['name' => $name, 'username' => strtolower($name)])->assignRole('student');
+        $learner = fn (string $name, array $origin = []) => User::factory()->create(['name' => $name, 'username' => strtolower($name)] + $origin)->assignRole('student');
         $enroll = fn (User $u, array $attrs) => Enrollment::create(['user_id' => $u->id, 'course_id' => $course->id, 'status' => 'active'] + $attrs);
 
         // Paid and finished: pre 40, lesson done, post 90.
-        $enroll($ani = $learner('Ani'), ['payment_status' => 'completed', 'payment_method' => 'midtrans', 'paid_amount' => 100000]);
+        $enroll($ani = $learner('Ani', ['origin_type' => 'mahasiswa', 'institution' => '  Universitas   Padjadjaran ']), ['payment_status' => 'completed', 'payment_method' => 'midtrans', 'paid_amount' => 100000]);
         $ani->completedLessons()->attach($lesson->id, ['completed_at' => now()]);
         foreach ([['pre', 40, false], ['post', 90, true]] as [$kind, $score, $passed]) {
             QuizAttempt::create(['user_id' => $ani->id, 'course_id' => $course->id, 'section_id' => $section->id, 'kind' => $kind, 'status' => 'graded', 'score' => $score, 'passed' => $passed, 'answers' => []]);
         }
-        $enroll($learner('Budi'), ['payment_status' => 'pending', 'payment_method' => 'trial']);
+        $enroll($learner('Budi', ['origin_type' => 'karyawan', 'institution' => 'RayCorp']), ['payment_status' => 'pending', 'payment_method' => 'trial']);
         $enroll($learner('Citra'), ['payment_status' => 'pending', 'status' => 'pending']);
         // An instructor who enrolled to check the course isn't a learner.
         $enroll(User::factory()->create(['name' => 'Pak Pengecek', 'username' => 'pengecek'])->assignRole('instructor'), ['payment_status' => 'completed']);
@@ -52,6 +52,11 @@ class AdminCourseLearnersTest extends TestCase
             ->assertSee('Rp100.000')                 // revenue, visible to admins
             ->assertSeeInOrder(['Modul Satu', '40', '90', '+50']);
 
+        // Where learners come from: one chip per university or company, filterable, and searchable by name.
+        $this->get(route('admin.courses.show', $course->id))
+            ->assertSeeInOrder(['Asal peserta', 'RayCorp (1)', 'Universitas Padjadjaran (1)', 'Belum diisi (1)']);
+        $this->get(route('admin.courses.show', [$course->id, 'origin' => 'Universitas Padjadjaran']))->assertSee('Ani')->assertDontSee('Budi');
+        $this->get(route('admin.courses.show', [$course->id, 'q' => 'raycorp']))->assertSee('Budi')->assertDontSee('Citra');
         $this->get(route('admin.courses.show', [$course->id, 'status' => 'trial']))->assertSee('Budi')->assertDontSee('Ani');
         $this->get(route('admin.courses.show', [$course->id, 'q' => 'citra']))->assertSee('Citra')->assertDontSee('Budi');
 
@@ -60,7 +65,8 @@ class AdminCourseLearnersTest extends TestCase
         $this->assertSame("\xEF\xBB\xBF", substr($csv, 0, 3));
         $this->assertSame(['Pre-test Modul Satu', 'Post-test Modul Satu'], array_slice($lines[0], -2));
         $ani = collect($lines)->firstWhere(0, 'Ani');
-        $this->assertSame(['Lunas', '100'], [$ani[3], $ani[5]]);
+        $this->assertSame(['Mahasiswa / Universitas', 'Universitas Padjadjaran', 'Lunas', '100'], [$ani[3], $ani[4], $ani[5], $ani[7]]);
+        $this->assertSame(['Belum diisi', ''], array_slice(collect($lines)->firstWhere(0, 'Citra'), 3, 2));
         $this->assertSame(['40', '90'], array_slice($ani, -2));
         $this->assertCount(4, $lines); // header + 3 learners, no instructor
 

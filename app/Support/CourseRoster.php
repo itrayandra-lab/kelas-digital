@@ -24,6 +24,9 @@ class CourseRoster
         'failed' => 'Pembayaran gagal',
     ];
 
+    /** Shown for accounts made before sign-up asked where learners come from. */
+    public const NO_ORIGIN = 'Belum diisi';
+
     /** One row per learner, newest enrollment first. Admins and instructors who enrolled to check the course are left out. */
     public static function rows(Course $course): Collection
     {
@@ -45,6 +48,7 @@ class CourseRoster
             return [
                 'enrollment' => $e,
                 'user' => $e->user,
+                'origin' => $e->user->origin() ?? self::NO_ORIGIN,
                 'progress' => $progress,
                 'status' => self::status($e, $course),
                 'percent' => $progress->percent(),

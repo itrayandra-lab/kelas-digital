@@ -25,7 +25,43 @@ class User extends Authenticatable
         'email',
         'password',
         'last_login',
+        'origin_type',
+        'institution',
     ];
+
+    /** Where a learner comes from; the institution name is asked for everyone except the general public. */
+    public const ORIGINS = [
+        'mahasiswa' => 'Mahasiswa / Universitas',
+        'karyawan' => 'Karyawan / Perusahaan',
+        'umum' => 'Umum / Pribadi',
+    ];
+
+    /** Shared by sign-up (required) and the profile page (optional, for accounts made before it was asked). */
+    public static function originRules(bool $required): array
+    {
+        return [
+            'origin_type' => [$required ? 'required' : 'nullable', 'in:'.implode(',', array_keys(self::ORIGINS))],
+            'institution' => ['nullable', 'required_if:origin_type,mahasiswa,karyawan', 'string', 'max:150'],
+        ];
+    }
+
+    /** "Universitas Padjadjaran", "RayCorp", "Umum", or null when the learner never said. */
+    public function origin(): ?string
+    {
+        return $this->origin_type === 'umum' ? 'Umum' : $this->institution;
+    }
+
+    /** Suggestions for the sign-up form; only names several people share, so a one-off entry is never shown to others. */
+    public static function knownInstitutions(): array
+    {
+        return self::whereNotNull('institution')->groupBy('institution')->havingRaw('count(*) >= 3')
+            ->orderBy('institution')->limit(300)->pluck('institution')->all();
+    }
+
+    protected function setInstitutionAttribute(?string $value): void
+    {
+        $this->attributes['institution'] = $value === null ? null : (\Illuminate\Support\Str::squish($value) ?: null);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

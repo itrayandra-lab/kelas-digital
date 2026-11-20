@@ -26,7 +26,10 @@ class AuthAjaxTest extends TestCase
 
         auth()->logout();
         $this->postJson(route('register'), ['name' => 'Baru', 'username' => 'peserta', 'email' => 'x@gmail.com', 'password' => 'a', 'password_confirmation' => 'b'])
-            ->assertStatus(422)->assertJsonValidationErrors(['username', 'password']);
+            ->assertStatus(422)->assertJsonValidationErrors(['username', 'password', 'origin_type']);
+        // Students and employees name their university or company; the general public doesn't have to.
+        $this->postJson(route('register'), ['origin_type' => 'karyawan', 'institution' => ''])->assertJsonValidationErrors('institution');
+        $this->postJson(route('register'), ['origin_type' => 'umum', 'institution' => ''])->assertJsonMissingValidationErrors('institution');
 
         // The plain form post still redirects, for browsers without JavaScript.
         $this->post(route('login'), ['login' => 'peserta', 'password' => 'salah'])->assertSessionHasErrors('login');

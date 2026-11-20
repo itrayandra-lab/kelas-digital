@@ -12,7 +12,7 @@
         'failed' => 'bg-red-50 text-red-700 ring-red-200',
     ];
     $statuses = \App\Support\CourseRoster::STATUSES;
-    $filterLink = fn (array $set) => route('admin.courses.show', [$course->id] + array_filter(array_merge(['q' => $search ?: null, 'status' => $status, 'sort' => $sort], $set)));
+    $filterLink = fn (array $set) => route('admin.courses.show', [$course->id] + array_filter(array_merge(['q' => $search ?: null, 'status' => $status, 'origin' => $origin, 'sort' => $sort], $set)));
     $score = fn (?int $v) => $v === null ? '–' : $v;
     $scoreClass = fn (?int $v) => $v === null ? 'text-gray-400' : ($v >= $course->post_test_pass_score ? 'text-green-700' : 'text-red-600');
 @endphp
@@ -119,8 +119,9 @@
         </div>
         <form method="GET" action="{{ route('admin.courses.show', $course->id) }}" class="flex flex-wrap gap-2" role="search">
             @if($status)<input type="hidden" name="status" value="{{ $status }}">@endif
+            @if($origin)<input type="hidden" name="origin" value="{{ $origin }}">@endif
             <label class="sr-only" for="learner-q">Cari peserta</label>
-            <input id="learner-q" type="search" name="q" value="{{ $search }}" placeholder="Cari nama atau email…" autocomplete="off"
+            <input id="learner-q" type="search" name="q" value="{{ $search }}" placeholder="Cari nama, email, atau kampus/kantor…" autocomplete="off"
                 class="w-56 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:border-primary-600 focus:ring-2 focus:ring-blue-100 focus:outline-none">
             <label class="sr-only" for="learner-sort">Urutkan</label>
             <select id="learner-sort" name="sort" onchange="this.form.submit()" class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white">
@@ -128,6 +129,7 @@
                 <option value="active" @selected($sort === 'active')>Aktivitas terakhir</option>
                 <option value="progress" @selected($sort === 'progress')>Progres tertinggi</option>
                 <option value="progress_low" @selected($sort === 'progress_low')>Progres terendah</option>
+                <option value="origin" @selected($sort === 'origin')>Kelompokkan per asal</option>
             </select>
             <button class="px-3 py-2 text-sm font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-700">Cari</button>
             <a href="{{ route('admin.courses.learners.export', $course) }}" class="inline-flex items-center px-3 py-2 text-sm font-semibold border border-gray-300 rounded-lg hover:bg-gray-50"><i class="fas fa-file-csv mr-2 text-green-700"></i> Ekspor CSV</a>
@@ -143,6 +145,17 @@
             @endif
         @endforeach
     </div>
+
+    {{-- Where learners come from: university, company, or general public --}}
+    @if($stats['origins']->isNotEmpty())
+        <div class="px-5 py-3 flex flex-wrap items-center gap-2 border-b border-gray-100">
+            <span class="text-xs font-semibold text-gray-500 mr-1"><i class="fas fa-building mr-1"></i> Asal peserta</span>
+            @if($origin)<a href="{{ $filterLink(['origin' => null]) }}" class="px-3 py-1 text-xs font-semibold rounded-full ring-1 ring-gray-200 text-gray-600 hover:bg-gray-50">Semua asal</a>@endif
+            @foreach($stats['origins'] as $name => $count)
+                <a href="{{ $filterLink(['origin' => $name]) }}" class="px-3 py-1 text-xs font-semibold rounded-full ring-1 {{ $origin === $name ? 'ring-primary-600 bg-primary-600 text-white' : ($name === \App\Support\CourseRoster::NO_ORIGIN ? 'ring-gray-200 text-gray-400 hover:bg-gray-50' : 'ring-gray-200 text-gray-700 hover:bg-gray-50') }}">{{ $name }} ({{ $count }})</a>
+            @endforeach
+        </div>
+    @endif
 
     <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
@@ -165,6 +178,10 @@
                                 <div class="min-w-0">
                                     <div class="font-semibold text-gray-900">{{ $r['user']->name }}</div>
                                     <div class="text-xs text-gray-500">{{ $r['user']->email }}</div>
+                                    @php $originIcon = ['mahasiswa' => 'fa-graduation-cap', 'karyawan' => 'fa-briefcase', 'umum' => 'fa-user'][$r['user']->origin_type] ?? null; @endphp
+                                    <div class="text-xs mt-0.5 {{ $originIcon ? 'text-gray-700' : 'text-gray-400' }}">
+                                        @if($originIcon)<i class="fas {{ $originIcon }} mr-1 text-primary-600" aria-hidden="true"></i>@endif{{ $r['origin'] }}
+                                    </div>
                                 </div>
                             </div>
                         </td>
