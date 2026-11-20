@@ -88,7 +88,7 @@
                     <div>
                         <label for="institution" class="block text-sm font-medium text-gray-700 mb-2">Nama universitas atau kantor</label>
                         <input type="text" id="institution" name="institution" value="{{ old('institution') }}" maxlength="150"
-                            list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau RayCorp"
+                            list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau PT Sinar Jaya"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
                         <datalist id="institution-list">
                             @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach

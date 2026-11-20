@@ -120,7 +120,7 @@
                     <div class="form-field">
                         <label for="institution">Nama universitas atau kantor</label>
                         <input type="text" id="institution" name="institution" value="{{ old('institution', $user->institution) }}" maxlength="150"
-                               list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau RayCorp"
+                               list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau PT Sinar Jaya"
                                class="form-input {{ $errors->has('institution') ? 'error' : '' }}">
                         <datalist id="institution-list">
                             @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
