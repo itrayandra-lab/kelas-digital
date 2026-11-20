@@ -1,126 +1,85 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.auth')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Ray Academy</title>
+@section('title', 'Daftar')
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+@section('side')
+    <h1>Mulai belajar bersama Ray Academy</h1>
+    <p>Buat akun gratis, lalu pilih kelas yang sesuai dengan kebutuhanmu, dari marketing, branding, sampai bisnis.</p>
+@endsection
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@section('form')
+    <h2>Buat akun baru</h2>
+    <p class="au-switch">Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a></p>
 
-<body class="font-sans antialiased text-gray-800">
-    <div class="min-h-screen flex">
-        <div class="hidden lg:flex w-1/2 bg-cover bg-center"
-            style="background-image: url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1974&auto=format&fit=crop');">
-            <div
-                class="flex flex-col items-center justify-center w-full h-full bg-primary-600 bg-opacity-70 p-12 text-white text-center">
-                <a href="{{ route('home') }}" class="mb-6">
-                    <img src="{{ asset('logo-white.png') }}" alt="Ray Academy" class="h-16 md:h-20 mb-4">
-                </a>
-                <h1 class="text-4xl font-bold leading-tight mb-4">Mulai Perjalanan Kecantikan Anda</h1>
-                <p class="text-lg opacity-90">
-                    Daftar sekarang untuk mendapatkan akses ke kursus kecantikan berbasis ilmiah dan mulai pelajari ilmu kecantikan yang benar.
-                </p>
-            </div>
-        </div>
-
-        <div class="w-full lg:w-1/2 flex items-center justify-center bg-white p-8">
-            <div class="max-w-md w-full">
-                <div>
-                    <h2 class="text-3xl font-bold text-gray-900">Buat Akun Baru</h2>
-                    <p class="mt-2 text-gray-600">
-                        Sudah punya akun? <a href="{{ route('login') }}"
-                            class="font-medium text-primary-600 hover:underline">Login di sini</a>
-                    </p>
-                </div>
-
-                <div id="form-errors" role="alert" aria-live="polite" @if (! $errors->any()) hidden @endif
-                    class="mt-6 bg-red-50 border border-red-200 text-sm text-red-700 px-4 py-3 rounded-lg">
-                    @if ($errors->any())
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-
-                <form data-ajax class="mt-8 space-y-6" method="POST" action="{{ route('register') }}">
-                    @csrf
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                        <input type="text" id="name" name="name" value="{{ old('name') }}" required
-                            autocomplete="name"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                    </div>
-
-                    <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
-                        <input type="text" id="username" name="username" value="{{ old('username') }}" required
-                            autocomplete="username"
-                            placeholder="Pilih username unik (3-20 karakter, huruf, angka, _ atau -)"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                        <p class="mt-1 text-sm text-gray-500">Hanya huruf, angka, underscore (_) dan dash (-) yang diperbolehkan</p>
-                    </div>
-
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Alamat Email</label>
-                        <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                            autocomplete="email"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                    </div>
-
-                    <div>
-                        <label for="origin_type" class="block text-sm font-medium text-gray-700 mb-2">Kamu saat ini</label>
-                        <select id="origin_type" name="origin_type" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition bg-white">
-                            <option value="" disabled @selected(! old('origin_type'))>Pilih salah satu</option>
-                            @foreach(\App\Models\User::ORIGINS as $value => $label)
-                                <option value="{{ $value }}" @selected(old('origin_type') === $value)>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="institution" class="block text-sm font-medium text-gray-700 mb-2">Nama universitas atau kantor</label>
-                        <input type="text" id="institution" name="institution" value="{{ old('institution') }}" maxlength="150"
-                            list="institution-list" autocomplete="organization" placeholder="mis. Universitas Padjadjaran atau PT Sinar Jaya"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                        <datalist id="institution-list">
-                            @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
-                        </datalist>
-                        <p class="mt-1 text-sm text-gray-500">Tulis nama lengkapnya, atau pilih dari saran yang muncul. Kosongkan kalau kamu memilih Umum.</p>
-                    </div>
-
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="password" name="password" required autocomplete="new-password"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                    </div>
-
-                    <div>
-                        <label for="password_confirmation"
-                            class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation" required
-                            autocomplete="new-password"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                    </div>
-
-                    <div>
-                        <button type="submit"
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-bold text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300">
-                            Daftar Sekarang
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div id="form-errors" role="alert" aria-live="polite" @if (! $errors->any()) hidden @endif class="au-alert">
+        @if ($errors->any())
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
     </div>
-    @include('auth._ajax-form')
-</body>
 
-</html>
+    <form data-ajax class="au-fields" method="POST" action="{{ route('register') }}" x-data="{ type: @js(old('origin_type', '')), show: false }">
+        @csrf
+        <div>
+            <label for="name" class="au-label">Nama lengkap</label>
+            <input type="text" id="name" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="mis. Budi Santoso" class="au-input">
+        </div>
+
+        <div class="au-row">
+            <div>
+                <label for="username" class="au-label">Username</label>
+                <input type="text" id="username" name="username" value="{{ old('username') }}" required autocomplete="username" spellcheck="false"
+                    minlength="3" maxlength="20" pattern="[A-Za-z0-9_\-]+" placeholder="mis. budi_santoso" class="au-input" aria-describedby="username-hint">
+                <p class="au-hint" id="username-hint">3–20 karakter: huruf, angka, _ atau -</p>
+            </div>
+            <div>
+                <label for="email" class="au-label">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required autocomplete="email" spellcheck="false" placeholder="budi@gmail.com" class="au-input">
+            </div>
+        </div>
+
+        <fieldset class="au-group">
+            <legend>Asal kamu</legend>
+            <div>
+                <label for="origin_type" class="au-label">Kamu saat ini</label>
+                <select id="origin_type" name="origin_type" required x-model="type" class="au-input">
+                    <option value="" disabled>Pilih salah satu</option>
+                    @foreach(\App\Models\User::ORIGINS as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div x-show="type !== 'umum'">
+                <label for="institution" class="au-label">Nama universitas atau kantor</label>
+                <input type="text" id="institution" name="institution" value="{{ old('institution') }}" maxlength="150"
+                    list="institution-list" autocomplete="organization" placeholder="Nama kampus atau kantor" class="au-input" aria-describedby="institution-hint">
+                <datalist id="institution-list">
+                    @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
+                </datalist>
+                <p class="au-hint" id="institution-hint">Contoh: Universitas Padjadjaran atau PT Sinar Jaya. Tulis nama lengkapnya, atau pilih dari saran yang muncul.</p>
+            </div>
+        </fieldset>
+
+        <div class="au-row">
+            <div>
+                <label for="password" class="au-label">Password</label>
+                <div class="au-pass">
+                    <input :type="show ? 'text' : 'password'" type="password" id="password" name="password" required minlength="8" autocomplete="new-password" class="au-input" aria-describedby="password-hint">
+                    <button type="button" class="au-eye" @click="show = !show" :aria-label="show ? 'Sembunyikan password' : 'Tampilkan password'" aria-label="Tampilkan password">
+                        <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <p class="au-hint" id="password-hint">Minimal 8 karakter.</p>
+            </div>
+            <div>
+                <label for="password_confirmation" class="au-label">Ulangi password</label>
+                <input :type="show ? 'text' : 'password'" type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" class="au-input">
+            </div>
+        </div>
+
+        <button type="submit" class="au-btn">Daftar sekarang</button>
+    </form>
+@endsection

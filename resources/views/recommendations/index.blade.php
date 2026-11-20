@@ -9,7 +9,7 @@
                 Recommendation for You
             </h1>
             <p class="text-lg text-white opacity-90 max-w-2xl mx-auto">
-                Artikel pilihan editor khusus untuk Anda. Konten berkualitas yang dipilih dengan cermat untuk memberikan wawasan terbaik tentang kecantikan.
+                Artikel pilihan editor khusus untuk Anda. Konten berkualitas yang dipilih dengan cermat untuk menambah wawasanmu seputar marketing, branding, dan bisnis.
             </p>
         </div>
     </div>
