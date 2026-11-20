@@ -156,7 +156,7 @@ class CourseTypeTest extends TestCase
         $this->createFreeClass($category);
         $this->createPaidCourse($category);
 
-        $response = $this->get(route('course.index'));
+        $response = $this->get(route('course.index', ['all' => 1]));
 
         $response->assertStatus(200);
         $response->assertSee('Kelas Gratis');

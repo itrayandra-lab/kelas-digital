@@ -31,6 +31,11 @@ class CourseCatalogTest extends TestCase
         $this->course($marketing, 'SEO Dasar', 'free', 'Intermediate');
         $this->course($tech, 'Belajar Laravel', 'paid');
 
+        // The catalog opens on its categories; classes show once one is picked.
+        $this->get(route('course.index'))->assertOk()->assertSee('Pilih bidang belajar')
+            ->assertSee(route('course.index', ['category' => 'digital-marketing']), false)->assertSeeText('2 kelas · 1 bisa dicoba gratis')
+            ->assertDontSee('Iklan Instagram');
+        $this->get(route('course.index', ['all' => 1]))->assertSee('Iklan Instagram')->assertSee('Belajar Laravel');
         $this->get(route('course.index', ['category' => 'digital-marketing']))
             ->assertOk()->assertSeeText('Belajar Digital Marketing')->assertSee('Iklan Instagram')->assertDontSee('Belajar Laravel');
         $this->get(route('course.index', ['q' => 'laravel']))->assertSee('Belajar Laravel')->assertDontSee('SEO Dasar');
@@ -38,7 +43,7 @@ class CourseCatalogTest extends TestCase
         $this->get(route('course.index', ['level' => 'Intermediate']))->assertSee('SEO Dasar')->assertDontSee('Belajar Laravel');
         $this->get(route('course.index', ['q' => 'tidak-ada']))->assertSee('Kelas yang kamu cari belum ada');
         // Array values are ignored instead of crashing the page (the header search box reads q on every page).
-        $this->get('/courses?category[]=x&type[]=free&q[]=y')->assertOk()->assertSee('Belajar Laravel');
+        $this->get('/courses?category[]=x&type[]=free&q[]=y')->assertOk()->assertSee('Pilih bidang belajar');
         $this->get('/?q[]=y')->assertOk();
     }
 
