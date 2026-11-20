@@ -98,8 +98,10 @@
                     </div>
                 </div>
 
+                @php $preCount = $section->questions->where('kind', 'pre')->count(); @endphp
                 <div class="divide-y divide-gray-100">
                     @foreach($section->lessons as $lesson)
+                        @if($preCount && $loop->index === $section->pretest_after)@include('admin.curriculum._pretest-marker')@endif
                         <div x-data="{ editing: false }" @close-form="editing = false">
                             <div class="flex items-center gap-3 px-4 py-3">
                                 <div class="flex flex-col">
@@ -134,7 +136,23 @@
                             </div>
                         </div>
                     @endforeach
+                    @if($preCount && $section->pretest_after >= $section->lessons->count())@include('admin.curriculum._pretest-marker')@endif
                 </div>
+
+                @if($preCount && $section->lessons->isNotEmpty())
+                    <form method="POST" action="{{ route('admin.sections.update', $section) }}" class="flex flex-wrap items-center gap-2 px-4 py-3 border-t border-gray-100 text-sm">
+                        @csrf @method('PUT')
+                        <label for="pretest_after_{{ $section->id }}" class="text-gray-700"><i class="fas fa-clipboard-list text-blue-600 mr-1"></i> Urutan pre-test:</label>
+                        <select id="pretest_after_{{ $section->id }}" name="pretest_after" onchange="this.form.submit()" class="px-2 py-1.5 border border-gray-300 rounded-lg text-sm max-w-full">
+                            <option value="0" @selected($section->pretest_after === 0)>Di awal modul, sebelum semua materi</option>
+                            @foreach($section->lessons as $lesson)
+                                <option value="{{ $loop->iteration }}" @selected(min($section->pretest_after, $section->lessons->count()) === $loop->iteration)>Setelah materi {{ $loop->parent->iteration }}.{{ $loop->iteration }}: {{ Str::limit($lesson->title, 50) }}</option>
+                            @endforeach
+                        </select>
+                        <noscript><button class="px-3 py-1.5 bg-primary-600 text-white rounded-lg">Simpan</button></noscript>
+                        <span class="w-full text-xs text-gray-500">Misalnya pilih "setelah materi 1" kalau materi pertama adalah video overview. Post-test selalu di akhir modul.</span>
+                    </form>
+                @endif
 
                 <div class="px-4 py-3 border-t border-gray-100" @close-form="adding = false">
                     <button type="button" data-tour="add-lesson" x-show="!adding" @click="adding = true" class="text-sm font-semibold text-primary-600 hover:text-primary-700">

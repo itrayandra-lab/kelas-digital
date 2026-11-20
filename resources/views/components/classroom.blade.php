@@ -31,11 +31,10 @@
             ];
         };
 
-        if ($progress?->sectionHasTest($section, 'pre')) {
-            $items->push($test('pre'));
-        }
-
-        foreach ($section->lessons as $lIndex => $lesson) {
+        foreach ($section->lessons->values() as $lIndex => $lesson) {
+            if ($lIndex === $section->pretest_after && $progress?->sectionHasTest($section, 'pre')) {
+                $items->push($test('pre'));
+            }
             $items->push([
                 'key' => "lesson-{$lesson->id}", 'group' => $section, 'no' => $no,
                 'label' => $lesson->title,
@@ -48,6 +47,9 @@
             ]);
         }
 
+        if ($section->pretest_after >= $section->lessons->count() && $progress?->sectionHasTest($section, 'pre')) {
+            $items->push($test('pre'));
+        }
         if ($progress?->sectionHasTest($section, 'post')) {
             $items->push($test('post'));
         }

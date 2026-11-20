@@ -62,9 +62,12 @@ class CourseProgress
             ->where('course_id', $course->id)
             ->get(['id', 'section_id', 'kind', 'status', 'score', 'passed', 'created_at']);
 
+        // Per module: the lessons admins put before the pre-test (e.g. an overview video), the pre-test, the rest, the post-test.
+        $lessonSteps = fn (CourseSection $s, $lessons) => $lessons->map(fn ($l) => ['type' => 'lesson', 'section' => $s, 'lesson' => $l]);
         $this->steps = $this->sections->flatMap(fn (CourseSection $s) => collect()
+            ->merge($lessonSteps($s, $s->lessons->take($s->pretest_after)))
             ->when($s->pre_count > 0, fn ($c) => $c->push(['type' => 'pre', 'section' => $s, 'lesson' => null]))
-            ->merge($s->lessons->map(fn ($l) => ['type' => 'lesson', 'section' => $s, 'lesson' => $l]))
+            ->merge($lessonSteps($s, $s->lessons->skip($s->pretest_after)))
             ->when($s->post_count > 0, fn ($c) => $c->push(['type' => 'post', 'section' => $s, 'lesson' => null]))
         )->values();
     }

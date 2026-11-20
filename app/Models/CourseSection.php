@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseSection extends Model
 {
-    protected $fillable = ['course_id', 'title', 'order', 'is_free'];
+    protected $fillable = ['course_id', 'title', 'order', 'is_free', 'pretest_after'];
 
-    protected $casts = ['is_free' => 'boolean'];
+    protected $casts = ['is_free' => 'boolean', 'pretest_after' => 'integer'];
 
     public function course()
     {

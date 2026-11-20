@@ -81,9 +81,12 @@ class CurriculumController extends Controller
 
     public function updateSection(Request $request, CourseSection $section)
     {
-        $section->update($request->validate(['title' => 'required|string|max:255']));
+        $section->update($request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'pretest_after' => 'sometimes|integer|min:0|max:1000',
+        ]));
 
-        return $this->back($section->course, 'Nama modul disimpan.');
+        return $this->back($section->course, $request->has('pretest_after') ? 'Urutan pre-test disimpan.' : 'Nama modul disimpan.');
     }
 
     /** Free chapters turn a paid course into "sebagian gratis": learners study them before paying for the rest. */

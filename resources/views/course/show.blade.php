@@ -313,14 +313,8 @@
                                 <small>{{ $section->lessons->count() }} materi{{ $mins ? ' · '.$fmtMinutes($mins) : '' }}</small>
                             </div>
                             <div x-show="open[{{ $loop->index }}]" x-collapse>
-                                @if($section->pre_count)
-                                    <div class="cd-row">
-                                        <i class="fas {{ $progress?->preTestDone($section) ? 'fa-check-circle ok' : 'fa-clipboard-list' }} ic"></i>
-                                        <span class="t"><strong>Pre-test</strong> · {{ $section->pre_count }} soal</span>
-                                        @if($progress?->reviewer)<a href="{{ route('course.test', [$course->slug, $section, 'pre']) }}">Buka</a>@endif
-                                    </div>
-                                @endif
                                 @foreach($section->lessons as $lesson)
+                                    @if($section->pre_count && $loop->index === $section->pretest_after)@include('course._pretest-row')@endif
                                     @php $done = $progress?->isCompleted($lesson); @endphp
                                     <div class="cd-row">
                                         <i class="fas {{ $done ? 'fa-check-circle ok' : ($lesson->isVideo() ? 'fa-play-circle' : ($lesson->isPdf() ? 'fa-file-pdf' : 'fa-file-alt')) }} ic"></i>
@@ -334,6 +328,7 @@
                                         @if($lesson->duration)<span class="dur">{{ $lesson->duration }} mnt</span>@endif
                                     </div>
                                 @endforeach
+                                @if($section->pre_count && $section->pretest_after >= $section->lessons->count())@include('course._pretest-row')@endif
                                 @if($section->post_count)
                                     <div class="cd-row">
                                         <i class="fas {{ $progress?->postTestPassed($section) ? 'fa-check-circle ok' : 'fa-clipboard-check' }} ic"></i>
