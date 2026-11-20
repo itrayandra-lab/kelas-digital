@@ -60,7 +60,7 @@ class CourseCatalogTest extends TestCase
 
         $this->actingAs($user)->get(route('dashboard'))
             ->assertOk()
-            ->assertSee('Menunggu pembayaran (1)')
+            ->assertSee('Menunggu pembayaran<b>1</b>', false)
             ->assertSee('Selesaikan Pembayaran');
     }
 }
