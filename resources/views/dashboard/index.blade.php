@@ -23,6 +23,12 @@
 .db-body { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:1.75rem; align-items:start; padding:2rem 0 1rem; }
 .db-h2 { font-family:'Sora',sans-serif; font-size:1.15rem; font-weight:700; color:var(--ink); margin:0 0 .9rem; }
 .db-box { background:#fff; border:1px solid var(--border); border-radius:16px; }
+.db-origin { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding:1.1rem 1.25rem; margin:1.5rem 0 0; border-color:var(--blue); }
+.db-origin-fields { display:flex; flex-wrap:wrap; gap:.5rem; flex:1 1 22rem; justify-content:flex-end; }
+.db-origin-fields select, .db-origin-fields input { padding:.6rem .8rem; border:1px solid var(--border); border-radius:10px; font:inherit; font-size:.9rem; background:#fff; min-width:0; flex:1 1 10rem; }
+.db-origin-fields button { padding:.6rem 1.2rem; border:0; border-radius:10px; background:var(--blue); color:#fff; font-weight:600; cursor:pointer; }
+.db-origin-fields :focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+.db-origin-error { flex-basis:100%; margin:0; color:#dc2626; font-size:.85rem; }
 
 .db-resume { display:grid; grid-template-columns:280px minmax(0,1fr); overflow:hidden; box-shadow:0 8px 24px rgba(10,22,40,.06); margin-bottom:2rem; }
 .db-resume .db-thumb { aspect-ratio:auto; min-height:100%; }
@@ -127,6 +133,36 @@
 </section>
 
 <div class="db-wrap" style="padding-bottom:4rem;" x-data="{ tab: '{{ $ongoing->isNotEmpty() ? 'ongoing' : ($unpaid->isNotEmpty() ? 'unpaid' : ($finished->isNotEmpty() ? 'finished' : 'ongoing')) }}' }">
+    @unless($user->origin_type)
+        {{-- Accounts made before sign-up asked this; the box goes away once answered. --}}
+        <form method="POST" action="{{ route('profile.origin') }}" class="db-box db-origin" x-data="{ type: @js(old('origin_type', '')) }">
+            @csrf @method('PUT')
+            <div>
+                <h2 class="db-h2" style="margin-bottom:.25rem;">Kamu belajar dari mana?</h2>
+                <p class="db-sub" style="margin:0;">Isi sekali saja, supaya kami tahu asal kampus atau kantor peserta.</p>
+            </div>
+            <div class="db-origin-fields">
+                <label class="sr-only" for="db-origin-type">Kamu saat ini</label>
+                <select id="db-origin-type" name="origin_type" x-model="type" required>
+                    <option value="" disabled>Kamu saat ini…</option>
+                    @foreach(\App\Models\User::ORIGINS as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+                <label class="sr-only" for="db-institution">Nama universitas atau kantor</label>
+                <input id="db-institution" name="institution" value="{{ old('institution') }}" maxlength="150" list="db-institution-list"
+                    autocomplete="organization" placeholder="Nama universitas atau kantor" x-show="type !== 'umum'" :required="type !== 'umum'">
+                <datalist id="db-institution-list">
+                    @foreach(\App\Models\User::knownInstitutions() as $name)<option value="{{ $name }}">@endforeach
+                </datalist>
+                <button type="submit">Simpan</button>
+            </div>
+            @if($errors->has('origin_type') || $errors->has('institution'))
+                <p class="db-origin-error" role="alert">{{ $errors->first('origin_type') ?: $errors->first('institution') }}</p>
+            @endif
+        </form>
+    @endunless
+
     <div class="db-body">
         <div>
             @if($resume)

@@ -72,6 +72,22 @@ class ProfileController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 
+    /** The dashboard prompt for learners who signed up before sign-up asked where they come from. */
+    public function updateOrigin(Request $request)
+    {
+        $data = $request->validate(User::originRules(true), [
+            'origin_type.required' => 'Pilih salah satu dulu.',
+            'institution.required_if' => 'Tulis nama universitas atau kantor kamu.',
+        ]);
+
+        $request->user()->update([
+            'origin_type' => $data['origin_type'],
+            'institution' => $data['origin_type'] === 'umum' ? null : $data['institution'],
+        ]);
+
+        return back();
+    }
+
     /**
      * Update the user's password.
      */
