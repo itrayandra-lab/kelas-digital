@@ -46,6 +46,20 @@
 .ct-tags { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
 .ct-tag { display:inline-flex; align-items:center; gap:.4rem; padding:.3rem .75rem; background:#EEF4FF; color:#0056D2; font-size:.73rem; font-weight:600; border-radius:999px; border:1px solid rgba(0,86,210,.2); text-decoration:none; }
 .ct-tag:hover { color:#c00; }
+/* Category gate on the course catalog */
+.cg-all { font-size:.85rem; font-weight:600; color:#0056D2; text-decoration:none; }
+.cg-all:hover { text-decoration:underline; }
+.cg-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap:1rem; }
+.cg-card { display:flex; flex-direction:column; gap:.5rem; padding:1.4rem; background:#fff; border:1.5px solid #E2E8F0; border-radius:16px; text-decoration:none; color:#0F1114; transition:border-color .2s, box-shadow .2s, transform .2s; }
+.cg-card:hover { border-color:#0056D2; box-shadow:0 10px 28px rgba(0,86,210,.1); transform:translateY(-2px); }
+.cg-card:focus-visible { outline:3px solid rgba(0,86,210,.35); outline-offset:2px; }
+.cg-icon { width:48px; height:48px; border-radius:12px; display:grid; place-items:center; background:#EEF4FF; color:#0056D2; font-size:1.2rem; margin-bottom:.35rem; }
+.cg-name { font-family:'Sora',sans-serif; font-weight:700; font-size:1.05rem; }
+.cg-desc { font-size:.85rem; color:#6B7280; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.cg-meta { margin-top:auto; padding-top:.6rem; display:flex; justify-content:space-between; align-items:center; gap:.5rem; font-size:.8rem; font-weight:600; color:#0056D2; }
+.cg-card:hover .cg-meta i { transform:translateX(3px); }
+.cg-meta i { transition:transform .2s; }
+@media (prefers-reduced-motion: reduce) { .cg-card, .cg-meta i { transition:none; } .cg-card:hover { transform:none; } }
 .ct-empty { text-align:center; padding:3.5rem 1.5rem; }
 .ct-empty i { font-size:2.5rem; color:#CBD5E1; }
 .ct-empty h3 { font-family:'Sora',sans-serif; font-size:1.1rem; font-weight:700; color:#0F1114; margin:1rem 0 .4rem; }

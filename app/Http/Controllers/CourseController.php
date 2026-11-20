@@ -14,7 +14,7 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         // Only plain strings; "?category[]=x" would otherwise break the queries and hidden inputs.
-        $filters = collect($request->only(['q', 'category', 'type', 'level', 'sort']))
+        $filters = collect($request->only(['q', 'category', 'type', 'level', 'sort', 'all']))
             ->map(fn ($v) => is_string($v) ? trim($v) : '')
             ->filter(fn ($v) => $v !== '')
             ->all();
@@ -44,7 +44,7 @@ class CourseController extends Controller
         $courses = $query->paginate(12)->withQueryString();
 
         $courseCategories = CourseCategory::whereHas('courses')
-            ->withCount('courses')
+            ->withCount(['courses', 'courses as free_courses_count' => fn ($q) => $q->where(fn ($w) => $w->where('course_type', 'free')->orWhereHas('freeSections'))])
             ->orderBy('name')
             ->get();
 

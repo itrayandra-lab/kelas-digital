@@ -48,13 +48,37 @@
     </div>
 </div>
 
+@if(! $filters)
+{{-- The catalog opens on its categories; picking one (or searching) shows the classes. --}}
+<section class="ct-body">
+    <div class="ct-wrap">
+        <div class="ct-head">
+            <h2>Pilih bidang belajar</h2>
+            <a href="{{ route('course.index', ['all' => 1]) }}" class="cg-all">Lihat semua kelas <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cg-grid">
+            @foreach($courseCategories as $cat)
+                <a href="{{ route('course.index', ['category' => $cat->slug]) }}" class="cg-card">
+                    <span class="cg-icon"><i class="fas {{ $cat->icon }}"></i></span>
+                    <span class="cg-name">{{ $cat->name }}</span>
+                    @if($cat->description && $cat->description !== $cat->name)<span class="cg-desc">{{ $cat->description }}</span>@endif
+                    <span class="cg-meta">
+                        {{ $cat->courses_count }} kelas{{ $cat->free_courses_count ? ' · '.$cat->free_courses_count.' bisa dicoba gratis' : '' }}
+                        <i class="fas fa-arrow-right"></i>
+                    </span>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@else
 <section class="ct-body" x-data="{ showFilters: false }">
     <div class="ct-wrap ct-layout">
         <aside class="ct-side" :class="showFilters && 'open'">
             <div class="ct-box">
                 <div class="ct-box-head">Kategori @if($filters)<a href="{{ route('course.index') }}">Reset</a>@endif</div>
                 <div class="ct-box-body">
-                    <a href="{{ $link('category', null) }}" class="ct-chip {{ $categorySlug ? '' : 'on' }}"><i class="fas fa-th-large"></i> Semua kategori <em>{{ $courseCategories->sum('courses_count') }}</em></a>
+                    <a href="{{ route('course.index') }}" class="ct-chip {{ $categorySlug ? '' : 'on' }}"><i class="fas fa-th-large"></i> Semua kategori <em>{{ $courseCategories->sum('courses_count') }}</em></a>
                     @foreach($courseCategories as $cat)
                         <a href="{{ $link('category', $cat->slug) }}" class="ct-chip {{ $categorySlug === $cat->slug ? 'on' : '' }}"><i class="fas {{ $cat->icon }}"></i> {{ $cat->name }} <em>{{ $cat->courses_count }}</em></a>
                     @endforeach
@@ -125,4 +149,5 @@
         </div>
     </div>
 </section>
+@endif
 @endsection
