@@ -155,7 +155,7 @@
                                 <form method="POST" action="{{ route('admin.events.registrations.destroy', $r) }}" x-data
                                     @submit="if (!confirm('Hapus pendaftaran {{ addslashes($r->name) }}? Kursinya akan terbuka lagi.')) $event.preventDefault()">
                                     @csrf @method('DELETE')
-                                    <button class="text-xs font-semibold text-red-600 hover:underline">Hapus</button>
+                                    <button class="text-xs font-semibold text-red-600 hover:underline">Hapus peserta</button>
                                 </form>
                             </td>
                         </tr>

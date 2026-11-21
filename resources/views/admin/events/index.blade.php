@@ -11,6 +11,9 @@
         </a>
     </div>
 
+    @if (session('error'))
+        <div class="bg-amber-50 border border-amber-200 text-sm text-amber-800 px-4 py-3 rounded-lg mb-6">{{ session('error') }}</div>
+    @endif
     @if (session('success'))
         <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">{{ session('success') }}</div>
     @endif
@@ -109,9 +112,10 @@
                                         <button type="submit" @if($loop->first) data-tour="salin-btn" @endif class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100" title="Buat event baru dari event ini">Salin</button>
                                     </form>
                                     <form method="POST" action="{{ route('admin.events.destroy', $event) }}" x-data
-                                        @submit="if (!confirm('Hapus event {{ addslashes($event->title) }} beserta semua pendaftarnya?')) $event.preventDefault()">
+                                        @submit="const v = prompt(@js('Menghapus event "'.$event->title.'" juga menghapus '.$event->registrations_count.' pendaftar dan tiketnya, dan tidak bisa dibatalkan. Ketik HAPUS untuk melanjutkan:')); if ((v || '').trim().toUpperCase() !== 'HAPUS') { $event.preventDefault(); } else { $el.querySelector('[name=konfirmasi]').value = 'HAPUS'; }">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded-md text-red-600 hover:bg-red-50">Hapus</button>
+                                        <input type="hidden" name="konfirmasi" value="">
+                                        <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded-md text-red-600 hover:bg-red-50">Hapus event</button>
                                     </form>
                                 </div>
                             </td>

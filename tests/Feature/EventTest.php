@@ -302,5 +302,18 @@ baris dua
         $this->assertNull($event->fresh()->whatsapp_template);
         $this->get(route('admin.events.registrations', $event))->assertSee('Kirim pesan')->assertSee('wa.me/6281234567890?text=', false);
     }
+
+    public function test_deleting_an_event_needs_typing_hapus(): void
+    {
+        $event = $this->event();
+        $admin = User::factory()->create(['username' => 'adm'])->assignRole('admin');
+
+        $this->actingAs($admin)->delete(route('admin.events.destroy', $event))->assertSessionHas('error');
+        $this->delete(route('admin.events.destroy', $event), ['konfirmasi' => 'ya'])->assertSessionHas('error');
+        $this->assertModelExists($event);
+
+        $this->delete(route('admin.events.destroy', $event), ['konfirmasi' => 'hapus'])->assertSessionHas('success');
+        $this->assertModelMissing($event);
+    }
 }
 

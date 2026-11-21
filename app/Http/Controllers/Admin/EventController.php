@@ -137,8 +137,12 @@ class EventController extends Controller
         return redirect()->route('admin.events.edit', $copy)->with('success', 'Event disalin sebagai draf. Ganti judul, tanggal, dan sesinya, lalu centang "Tampilkan di website".');
     }
 
-    public function destroy(Event $event)
+    public function destroy(Request $request, Event $event)
     {
+        // Deleting an event also deletes everyone who signed up, so it takes typing HAPUS, not just one click.
+        if (strtoupper(trim((string) $request->input('konfirmasi'))) !== 'HAPUS') {
+            return redirect()->route('admin.events.index')->with('error', 'Event tidak dihapus. Untuk menghapus, ketik HAPUS saat diminta.');
+        }
         if ($event->cover) {
             Storage::disk('public')->delete($event->cover);
         }
