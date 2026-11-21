@@ -35,11 +35,15 @@
         </div>
     @endif
 
+    <div class="bg-blue-50 border border-blue-100 text-sm text-blue-900 px-4 py-3 rounded-lg mb-6">
+        <i class="fas fa-circle-info mr-1"></i> Isi langkah 1 sampai 4 dari atas ke bawah, lalu tekan <b>{{ $event->exists ? 'Simpan perubahan' : 'Buat event' }}</b>. Kolom bertanda <i>(opsional)</i> boleh dikosongkan. Event baru tampil di website setelah kamu centang <b>Tampilkan di website</b>.
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             {{-- Basic info --}}
             <section class="bg-white rounded-lg shadow-sm p-6 space-y-5">
-                <h2 class="font-semibold text-gray-900">Informasi event</h2>
+                <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">1</span> Judul dan deskripsi</h2>
                 <div>
                     <label for="title" class="{{ $label }}">Judul event</label>
                     <input id="title" name="title" value="{{ old('title', $event->title) }}" required maxlength="255" class="{{ $input }}" placeholder="mis. Kelas Formulasi">
@@ -63,7 +67,7 @@
 
             {{-- When & where --}}
             <section class="bg-white rounded-lg shadow-sm p-6 space-y-5">
-                <h2 class="font-semibold text-gray-900">Waktu dan tempat</h2>
+                <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">2</span> Kapan dan di mana</h2>
                 <div>
                     <span class="{{ $label }}">Jenis event</span>
                     <div class="flex flex-wrap gap-3">
@@ -116,7 +120,7 @@
             {{-- Sessions --}}
             <section class="bg-white rounded-lg shadow-sm p-6">
                 <div class="flex items-center justify-between gap-3 mb-1">
-                    <h2 class="font-semibold text-gray-900">Sesi dan kuota</h2>
+                    <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">3</span> Sesi dan kuota peserta</h2>
                     <button type="button" @click="sessions.push({ id: null, label: 'Sesi ' + (sessions.length + 1), starts_at: '', ends_at: '', capacity: sessions.length ? sessions[sessions.length - 1].capacity : 15, registered: 0 })"
                         class="px-3 py-1.5 text-xs font-semibold rounded-md bg-primary-50 text-primary-700 hover:bg-primary-100">
                         <i class="fas fa-plus mr-1"></i> Tambah sesi
@@ -160,7 +164,7 @@
         {{-- Sidebar --}}
         <div class="space-y-6">
             <section class="bg-white rounded-lg shadow-sm p-6">
-                <h2 class="font-semibold text-gray-900 mb-3">Gambar cover</h2>
+                <h2 class="font-semibold text-gray-900 mb-3">Poster / gambar cover</h2>
                 <div class="aspect-[4/5] rounded-lg overflow-hidden bg-gray-100 mb-3 flex items-center justify-center">
                     <img x-show="preview" :src="preview" alt="" class="w-full h-full object-cover" x-cloak>
                     @if($event->cover_url)
@@ -177,7 +181,7 @@
             </section>
 
             <section class="bg-white rounded-lg shadow-sm p-6 space-y-4">
-                <h2 class="font-semibold text-gray-900">Publikasi</h2>
+                <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">4</span> Terbitkan</h2>
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="hidden" name="is_published" value="0">
                     <input type="checkbox" name="is_published" value="1" @checked(old('is_published', $event->is_published)) class="mt-0.5 w-4 h-4 rounded text-primary-600">

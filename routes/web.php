@@ -28,6 +28,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,16 @@ Route::get('/events/{event}/daftar', [EventController::class, 'join'])->name('ev
 Route::middleware('auth')->controller(EventController::class)->group(function () {
     Route::post('/events/{event}/daftar', 'register')->middleware('throttle:10,1')->name('events.register');
     Route::delete('/events/{event}/daftar', 'cancel')->name('events.cancel');
+    Route::get('/events/{event}/berhasil', 'success')->name('events.success');
+});
+// Tickets: the QR opens the ticket page; event staff check people in from it.
+Route::get('/tiket/{registration}', [TicketController::class, 'show'])->middleware('throttle:60,1')->name('tickets.show');
+Route::middleware('auth')->controller(TicketController::class)->group(function () {
+    Route::get('/tiket/{registration}/unduh', 'download')->name('tickets.download');
+    Route::middleware('can:manage events')->group(function () {
+        Route::post('/tiket/{registration}/hadir', 'checkIn')->name('tickets.checkin');
+        Route::get('/cek-tiket', 'lookup')->name('tickets.lookup');
+    });
 });
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
@@ -160,6 +171,7 @@ Route::prefix('admin')
         Route::middleware('can:manage events')->group(function () {
             Route::resource('events', AdminEventController::class)->except(['show']);
             Route::get('events/{event}/peserta', [AdminEventController::class, 'registrations'])->name('events.registrations');
+            Route::post('events/{event}/salin', [AdminEventController::class, 'duplicate'])->name('events.duplicate');
             Route::get('events/{event}/peserta.csv', [AdminEventController::class, 'exportRegistrations'])->name('events.registrations.export');
             Route::delete('event-registrations/{registration}', [AdminEventController::class, 'destroyRegistration'])->name('events.registrations.destroy');
         });

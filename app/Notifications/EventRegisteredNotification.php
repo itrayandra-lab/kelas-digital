@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Http\Controllers\TicketController;
 use App\Models\EventRegistration;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -27,7 +28,8 @@ class EventRegisteredNotification extends Notification
             ->greeting('Halo '.$this->registration->name.'!')
             ->line('Kamu sudah terdaftar di **'.$event->title.'**.')
             ->line('**Tanggal:** '.$event->dateLabel())
-            ->line('**Sesi:** '.$session->label.', pukul '.$session->timeLabel().' '.$event->timezone);
+            ->line('**Sesi:** '.$session->label.', pukul '.$session->timeLabel().' '.$event->timezone)
+            ->line('**Kode tiket:** '.$this->registration->code);
 
         if ($event->isOnline()) {
             $mail->line($event->meeting_url
@@ -38,8 +40,10 @@ class EventRegisteredNotification extends Notification
         }
 
         return $mail
-            ->action('Lihat detail event', route('events.show', $event))
-            ->line('Kalau berhalangan hadir, batalkan pendaftaranmu di halaman event supaya kursinya bisa dipakai peserta lain.')
+            ->line('Tiketmu terlampir sebagai PDF. Tunjukkan QR di tiket ke panitia saat datang, dari HP atau hasil cetak.')
+            ->action('Lihat tiket saya', route('tickets.show', $this->registration))
+            ->line('Kalau berhalangan hadir, batalkan pendaftaranmu dari halaman tiket supaya kursinya bisa dipakai peserta lain.')
+            ->attachData(TicketController::pdf($this->registration)->output(), 'tiket-'.$this->registration->code.'.pdf', ['mime' => 'application/pdf'])
             ->salutation('Sampai jumpa, '.config('app.name'));
     }
 }

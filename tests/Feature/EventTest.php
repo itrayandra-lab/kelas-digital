@@ -66,13 +66,14 @@ class EventTest extends TestCase
         $this->actingAs($ani)->get(route('events.join', $event))->assertOk()->assertSee($ani->email)->assertSee('Sisa 15 kursi');
 
         $this->post(route('events.register', $event), ['event_session_id' => $session->id, 'whatsapp' => '0812-3456-7890', 'age' => 22])
-            ->assertRedirect(route('events.show', $event).'#tiket');
+            ->assertRedirect(route('events.success', $event));
 
         $this->assertDatabaseHas('event_registrations', ['user_id' => $ani->id, 'name' => 'Ani', 'email' => $ani->email, 'whatsapp' => '081234567890', 'age' => 22]);
         $this->assertSame('081234567890', $ani->fresh()->phone);
         Notification::assertSentTo($ani, EventRegisteredNotification::class);
 
-        $this->get(route('events.show', $event))->assertSee('Pendaftaran berhasil')->assertSee('Batalkan pendaftaran');
+        $this->get(route('events.success', $event))->assertSee('Hore, kamu terdaftar!')->assertSee($event->registrations()->value('code'));
+        $this->get(route('events.show', $event))->assertSee('Kamu sudah terdaftar')->assertSee('Lihat tiket saya');
         // Once signed up, the form page sends the learner back to their ticket.
         $this->get(route('events.join', $event))->assertRedirect(route('events.show', $event).'#tiket');
         $this->get(route('dashboard'))->assertSee('Kelas Formulasi')->assertSee('Sesi 1');
@@ -193,5 +194,55 @@ baris dua
             $event->descriptionHtml()
         );
         $this->assertSame('Halo <b>semua</b> baris dua Cocok untuk Pemula Mahasiswa', $event->plainDescription());
+    }
+
+    public function test_ticket_has_a_qr_code_that_staff_scan_to_check_people_in(): void
+    {
+        $event = $this->event();
+        $ani = $this->learner();
+        $reg = $event->registrations()->create(['event_session_id' => $event->sessions->first()->id, 'user_id' => $ani->id, 'name' => 'Ani Lestari', 'email' => 'ani@x.id', 'whatsapp' => '081234567890', 'age' => 30]);
+        $this->assertMatchesRegularExpression('/^RA-[2-9A-HJKMNP-Z]{6}$/', $reg->code);
+        $url = route('tickets.show', $reg);
+
+        // The owner sees the full ticket with its QR and can download it as a PDF.
+        $this->actingAs($ani)->get($url)->assertOk()->assertSee('Tiket kamu')->assertSee('<svg', false)->assertSee('Ani Lestari')->assertSee('calendar.google.com', false);
+        $pdf = $this->get(route('tickets.download', $reg))->assertOk();
+        $this->assertSame('application/pdf', $pdf->headers->get('content-type'));
+
+        // Anyone else who scans it only learns that the ticket is real.
+        $budi = $this->learner('Budi');
+        $this->actingAs($budi)->get($url)->assertOk()->assertSee('Tiket sah')->assertSee('A** L*****')->assertDontSee('081234567890')->assertDontSee('ani@x.id');
+        $this->get(route('tickets.download', $reg))->assertForbidden();
+        $this->post(route('tickets.checkin', $reg))->assertForbidden();
+        auth()->logout();
+        $this->get($url)->assertOk()->assertSee('Tiket sah');
+
+        // Staff at the door: scan, check in, or type the code when the camera can't read it.
+        $admin = User::factory()->create(['username' => 'adm'])->assignRole('admin');
+        $this->actingAs($admin)->get($url)->assertSee('Mode panitia')->assertSee('Tandai hadir');
+        $this->post(route('tickets.checkin', $reg))->assertRedirect();
+        $this->assertNotNull($reg->fresh()->checked_in_at);
+        $this->get(route('admin.events.registrations', $event))->assertSee($reg->code)->assertSee('1 sudah hadir');
+        $this->get(route('tickets.lookup', ['kode' => strtolower(substr($reg->code, 3))]))->assertRedirect($url);
+        $this->from(route('admin.events.registrations', $event))->get(route('tickets.lookup', ['kode' => 'RA-XXXXXX']))->assertSessionHas('lookup_error');
+
+        // The confirmation email carries the PDF ticket.
+        $mail = (new EventRegisteredNotification($reg->load('event', 'session')))->toMail($ani);
+        $this->assertCount(1, $mail->rawAttachments);
+        $this->assertStringStartsWith('%PDF', $mail->rawAttachments[0]['data']);
+    }
+
+    public function test_admin_copies_an_event_for_the_next_edition(): void
+    {
+        $event = $this->event();
+        $admin = User::factory()->create(['username' => 'adm'])->assignRole('admin');
+
+        $this->actingAs($admin)->post(route('admin.events.duplicate', $event));
+        $copy = Event::latest('id')->first();
+
+        $this->assertNotSame($event->id, $copy->id);
+        $this->assertSame('Kelas Formulasi (salinan)', $copy->title);
+        $this->assertFalse($copy->is_published);
+        $this->assertSame(['Sesi 1', 'Sesi 2'], $copy->sessions->pluck('label')->all());
     }
 }

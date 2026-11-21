@@ -69,6 +69,10 @@
                                     <a href="{{ route('admin.events.registrations', $event) }}" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-primary-50 text-primary-700 hover:bg-primary-100">Peserta</a>
                                     <a href="{{ route('admin.events.edit', $event) }}" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100">Edit</a>
                                     <a href="{{ route('events.show', $event) }}" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100">Lihat</a>
+                                    <form method="POST" action="{{ route('admin.events.duplicate', $event) }}">
+                                        @csrf
+                                        <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100" title="Buat event baru dari event ini">Salin</button>
+                                    </form>
                                     <form method="POST" action="{{ route('admin.events.destroy', $event) }}" x-data
                                         @submit="if (!confirm('Hapus event {{ addslashes($event->title) }} beserta semua pendaftarnya?')) $event.preventDefault()">
                                         @csrf @method('DELETE')

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -70,6 +71,27 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', "Event \"{$event->title}\" disimpan.");
     }
 
+    /** Next month's edition in one click: same details and sessions, saved as a hidden draft to adjust. */
+    public function duplicate(Event $event)
+    {
+        $copy = DB::transaction(function () use ($event) {
+            $copy = $event->replicate(['slug']);
+            $copy->title = $event->title.' (salinan)';
+            $copy->is_published = false;
+            $copy->registration_open = true;
+            if ($event->cover && Storage::disk('public')->exists($event->cover)) {
+                $copy->cover = 'events/'.Str::random(40).'.'.pathinfo($event->cover, PATHINFO_EXTENSION);
+                Storage::disk('public')->copy($event->cover, $copy->cover);
+            }
+            $copy->save();
+            $event->sessions->each(fn ($s) => $copy->sessions()->create($s->only(['label', 'starts_at', 'ends_at', 'capacity', 'order'])));
+
+            return $copy;
+        });
+
+        return redirect()->route('admin.events.edit', $copy)->with('success', 'Event disalin sebagai draf. Ganti judul, tanggal, dan sesinya, lalu centang "Tampilkan di website".');
+    }
+
     public function destroy(Event $event)
     {
         if ($event->cover) {
@@ -92,7 +114,9 @@ class EventController extends Controller
             ->oldest()
             ->get();
 
-        return view('admin.events.registrations', compact('event', 'registrations', 'session', 'search'));
+        $checkedIn = $event->registrations()->whereNotNull('checked_in_at')->count();
+
+        return view('admin.events.registrations', compact('event', 'registrations', 'session', 'search', 'checkedIn'));
     }
 
     public function exportRegistrations(Event $event): StreamedResponse
@@ -103,12 +127,13 @@ class EventController extends Controller
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // BOM so Excel reads the names as UTF-8
             // Semicolons: Excel with Indonesian regional settings splits columns on ";".
-            fputcsv($out, ['Nama', 'Email', 'WhatsApp', 'Usia', 'Asal', 'Universitas / kantor', 'Sesi', 'Jam', 'Waktu daftar'], ';');
+            fputcsv($out, ['Kode tiket', 'Nama', 'Email', 'WhatsApp', 'Usia', 'Asal', 'Universitas / kantor', 'Sesi', 'Jam', 'Waktu daftar', 'Hadir'], ';');
             foreach ($rows as $r) {
                 fputcsv($out, [
-                    $r->name, $r->email, $r->whatsapp, $r->age,
+                    $r->code, $r->name, $r->email, $r->whatsapp, $r->age,
                     User::ORIGINS[$r->user?->origin_type] ?? '', $r->user?->institution,
                     $r->session->label, $r->session->timeLabel().' '.$event->timezone, $r->created_at->format('Y-m-d H:i'),
+                    $r->checked_in_at?->timezone(config('app.timezone'))->format('Y-m-d H:i') ?? '',
                 ], ';');
             }
             fclose($out);

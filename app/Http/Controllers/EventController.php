@@ -109,7 +109,18 @@ class EventController extends Controller
             logger('Gagal kirim email pendaftaran event ke '.$user->email.': '.$e->getMessage());
         }
 
-        return redirect()->to(route('events.show', $event).'#tiket')->with('event_success', true);
+        return redirect()->route('events.success', $event);
+    }
+
+    /** The "you're in" page right after signing up: a celebration, the ticket, and plain next steps. */
+    public function success(Request $request, Event $event)
+    {
+        $registration = $event->registrations()->with('session')->where('user_id', $request->user()->id)->first();
+        if (! $registration) {
+            return redirect()->route('events.show', $event);
+        }
+
+        return view('events.success', compact('event', 'registration'));
     }
 
     public function cancel(Request $request, Event $event)

@@ -22,11 +22,33 @@
         <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">{{ session('success') }}</div>
     @endif
 
+    {{-- Door check-in --}}
+    <div class="bg-white rounded-lg shadow-sm p-5 mb-6 grid md:grid-cols-2 gap-5 items-center">
+        <div>
+            <h2 class="font-semibold text-gray-900"><i class="fas fa-qrcode text-primary-600 mr-1"></i> Cek tiket di pintu masuk</h2>
+            <ol class="mt-2 text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                <li>Login sebagai admin di HP panitia.</li>
+                <li>Buka kamera HP, arahkan ke QR di tiket peserta, lalu buka link yang muncul.</li>
+                <li>Tekan tombol hijau <b>Tandai hadir</b>.</li>
+            </ol>
+        </div>
+        <form method="GET" action="{{ route('tickets.lookup') }}">
+            <label for="kode" class="block text-sm font-medium text-gray-700 mb-1.5">QR tidak terbaca? Ketik kode tiketnya</label>
+            <div class="flex gap-2">
+                <input id="kode" name="kode" required placeholder="RA-7K3P9Q" autocomplete="off" autocapitalize="characters"
+                    class="flex-1 min-w-0 px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <button class="px-5 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700">Cek</button>
+            </div>
+            @if(session('lookup_error'))<p class="mt-2 text-sm text-red-600">{{ session('lookup_error') }}</p>@endif
+        </form>
+    </div>
+
     {{-- Seats per session --}}
     <div class="grid gap-4 mb-6" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
         <div class="bg-white rounded-lg shadow-sm p-4">
             <p class="text-xs text-gray-500">Total pendaftar</p>
             <p class="text-2xl font-bold text-gray-900 tabular-nums">{{ $event->sessions->sum('registrations_count') }} <span class="text-sm font-medium text-gray-400">/ {{ $event->sessions->sum('capacity') }}</span></p>
+            <p class="text-xs mt-1 text-green-700 font-semibold"><i class="fas fa-user-check mr-1"></i>{{ $checkedIn }} sudah hadir</p>
         </div>
         @foreach($event->sessions as $s)
             @php $full = $s->registrations_count >= $s->capacity; $pct = min(100, round($s->registrations_count / max(1, $s->capacity) * 100)); @endphp
@@ -57,6 +79,8 @@
                     <tr>
                         <th class="px-5 py-3 text-left">#</th>
                         <th class="px-5 py-3 text-left">Peserta</th>
+                        <th class="px-5 py-3 text-left">Tiket</th>
+                        <th class="px-5 py-3 text-left">Kehadiran</th>
                         <th class="px-5 py-3 text-left">WhatsApp</th>
                         <th class="px-5 py-3 text-left">Usia</th>
                         <th class="px-5 py-3 text-left">Asal</th>
@@ -72,6 +96,21 @@
                             <td class="px-5 py-3">
                                 <div class="font-semibold text-gray-900">{{ $r->name }}</div>
                                 <div class="text-xs text-gray-500">{{ $r->email }}</div>
+                            </td>
+                            <td class="px-5 py-3 whitespace-nowrap">
+                                <a href="{{ route('tickets.show', $r) }}" class="font-mono font-semibold text-primary-700 hover:underline">{{ $r->code }}</a>
+                            </td>
+                            <td class="px-5 py-3 whitespace-nowrap">
+                                <form method="POST" action="{{ route('tickets.checkin', $r) }}">
+                                    @csrf
+                                    @if($r->checked_in_at)
+                                        <button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 hover:bg-green-200" title="Klik untuk membatalkan">
+                                            <i class="fas fa-check"></i> Hadir {{ $r->checked_in_at->timezone(config('app.timezone'))->format('H.i') }}
+                                        </button>
+                                    @else
+                                        <button class="px-3 py-1.5 rounded-full text-xs font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50">Tandai hadir</button>
+                                    @endif
+                                </form>
                             </td>
                             <td class="px-5 py-3 whitespace-nowrap">
                                 <a href="{{ $r->whatsappLink() }}" target="_blank" rel="noopener" class="text-green-700 font-medium hover:underline">
@@ -91,7 +130,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="px-5 py-10 text-center text-gray-500">{{ $search !== '' || $session ? 'Tidak ada peserta yang cocok.' : 'Belum ada pendaftar.' }}</td></tr>
+                        <tr><td colspan="10" class="px-5 py-10 text-center text-gray-500">{{ $search !== '' || $session ? 'Tidak ada peserta yang cocok.' : 'Belum ada pendaftar.' }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

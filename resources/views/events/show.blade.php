@@ -39,16 +39,6 @@
 /* Ticket */
 .evt { text-align:center; }
 .evt-ck { width:60px; height:60px; margin:0 auto .75rem; border-radius:50%; background:#dcfce7; color:#15803d; font-size:1.5rem; display:flex; align-items:center; justify-content:center; }
-.evt-box { text-align:left; margin-top:1.1rem; border-radius:16px; overflow:hidden; border:1px solid var(--border); }
-.evt-head { background:linear-gradient(135deg,#0d5a96,#1474bc); color:#fff; padding:.85rem 1rem; }
-.evt-head small { display:block; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; opacity:.8; }
-.evt-head b { font-family:'Sora',sans-serif; font-size:1rem; }
-.evt-rows { padding:.9rem 1rem; display:grid; gap:.55rem; font-size:.88rem; background:#fff; border-top:2px dashed #dbe4ef; }
-.evt-rows div { display:flex; justify-content:space-between; gap:1rem; }
-.evt-rows span { color:var(--muted); }
-.evt-rows b { text-align:right; }
-.evt-cancel { background:none; border:0; color:#b91c1c; font:inherit; font-size:.84rem; font-weight:600; cursor:pointer; margin-top:.8rem; padding:.5rem; min-height:44px; }
-.evt-cancel:hover { text-decoration:underline; }
 
 /* Bottom bar on phones */
 .evd-bar { display:none; }
@@ -125,31 +115,12 @@
                 @if($registration)
                     <div class="evt">
                         <div class="evt-ck"><i class="fas fa-check" aria-hidden="true"></i></div>
-                        <h2 class="evd-h2">{{ session('event_success') ? 'Pendaftaran berhasil!' : 'Kamu sudah terdaftar' }}</h2>
-                        <p class="evd-note">Simpan tiket ini. Detailnya juga kami kirim ke {{ $registration->email }}.</p>
-                        <div class="evt-box">
-                            <div class="evt-head"><small>Tiket event</small><b>{{ $event->title }}</b></div>
-                            <div class="evt-rows">
-                                <div><span>Nama</span><b>{{ $registration->name }}</b></div>
-                                <div><span>Tanggal</span><b>{{ $event->dateLabel() }}</b></div>
-                                <div><span>Sesi</span><b>{{ $registration->session->label }}, {{ $registration->session->timeLabel() }} {{ $event->timezone }}</b></div>
-                                <div><span>{{ $event->isOnline() ? 'Tempat' : 'Lokasi' }}</span><b>{{ $event->isOnline() ? 'Online' : $event->venue }}</b></div>
-                            </div>
-                        </div>
-                        @if($event->isOnline())
-                            @if($event->meeting_url)
-                                <a href="{{ $event->meeting_url }}" target="_blank" rel="noopener" class="evf-btn violet"><i class="fas fa-video" aria-hidden="true"></i> Masuk ke acara online</a>
-                            @else
-                                <p class="evd-note" style="margin-top:1rem;">Link acara belum tersedia. Cek lagi di sini atau di dashboard menjelang acara.</p>
-                            @endif
+                        <h2 class="evd-h2">Kamu sudah terdaftar</h2>
+                        <p class="evd-note">{{ $registration->session->label }}, pukul {{ $registration->session->timeLabel() }} {{ $event->timezone }} · kode tiket <b>{{ $registration->code }}</b></p>
+                        @if($event->isOnline() && $event->meeting_url)
+                            <a href="{{ $event->meeting_url }}" target="_blank" rel="noopener" class="evf-btn violet"><i class="fas fa-video" aria-hidden="true"></i> Masuk ke acara online</a>
                         @endif
-                        <a href="{{ route('dashboard') }}" class="evf-btn ghost">Lihat di dashboard</a>
-                        @unless($event->isPast())
-                            <form method="POST" action="{{ route('events.cancel', $event) }}" x-data @submit="if (!$el.dataset.ok) { $event.preventDefault(); $el.dataset.ok = 1; $el.querySelector('button').textContent = 'Yakin? Klik sekali lagi untuk membatalkan'; }">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="evt-cancel">Batalkan pendaftaran</button>
-                            </form>
-                        @endunless
+                        <a href="{{ route('tickets.show', $registration) }}" class="evf-btn {{ $event->isOnline() && $event->meeting_url ? 'ghost' : '' }}"><i class="fas fa-ticket" aria-hidden="true"></i> Lihat tiket saya</a>
                     </div>
                 @elseif(! $open)
                     <div style="text-align:center;">

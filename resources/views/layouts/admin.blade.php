@@ -205,7 +205,7 @@
             </nav>
         </aside>
 
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 min-w-0 flex flex-col">
             <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex justify-between items-center h-20 px-4 sm:px-6 lg:px-8">
                     <h1 class="text-2xl font-bold text-gray-900">

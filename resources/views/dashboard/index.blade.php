@@ -240,7 +240,7 @@
                     @if($next->event->isOnline() && $next->event->meeting_url)
                         <a href="{{ $next->event->meeting_url }}" target="_blank" rel="noopener" class="db-btn" style="background:#6d4ed8;"><i class="fas fa-video" aria-hidden="true"></i> Masuk acara</a>
                     @else
-                        <a href="{{ route('events.show', $next->event) }}#tiket" class="db-btn ghost">Lihat tiket</a>
+                        <a href="{{ route('tickets.show', $next) }}" class="db-btn ghost">Lihat tiket</a>
                     @endif
                 </div>
             @endif
@@ -344,7 +344,7 @@
                     <div class="db-ev">
                         <div class="db-ev-date"><b>{{ $reg->event->event_date->format('j') }}</b><span>{{ $reg->event->event_date->locale('id')->translatedFormat('M') }}</span></div>
                         <div class="db-ev-info">
-                            <a class="t" href="{{ route('events.show', $reg->event) }}">{{ $reg->event->title }}</a>
+                            <a class="t" href="{{ route('tickets.show', $reg) }}">{{ $reg->event->title }}</a>
                             <small>{{ $reg->session->label }} · {{ $reg->session->timeLabel() }} {{ $reg->event->timezone }}</small>
                             <small>{{ $reg->event->isOnline() ? 'Online' : $reg->event->venue }}</small>
                             @if($reg->event->isOnline() && $reg->event->meeting_url)
