@@ -89,6 +89,55 @@ class Event extends Model
         return $this->sessions->map->timeLabel()->implode(' · ').' '.$this->timezone;
     }
 
+    /**
+     * The admin writes plain text: blank lines split paragraphs, "## " starts a heading and "- " a bullet.
+     * Everything is escaped, so no HTML from the form reaches the page.
+     */
+    public function descriptionHtml(): string
+    {
+        $html = '';
+        $list = [];
+        $paragraph = [];
+        $flush = function () use (&$html, &$list, &$paragraph) {
+            if ($paragraph) {
+                $html .= '<p>'.implode('<br>', array_map('e', $paragraph)).'</p>';
+            }
+            if ($list) {
+                $html .= '<ul>'.implode('', array_map(fn ($item) => '<li>'.e($item).'</li>', $list)).'</ul>';
+            }
+            $list = $paragraph = [];
+        };
+
+        foreach (preg_split('/\R/', trim((string) $this->description)) as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                $flush();
+            } elseif (str_starts_with($line, '## ')) {
+                $flush();
+                $html .= '<h3>'.e(substr($line, 3)).'</h3>';
+            } elseif (preg_match('/^[-•*]\s+(.+)$/u', $line, $m)) {
+                if ($paragraph) {
+                    $flush();
+                }
+                $list[] = $m[1];
+            } else {
+                if ($list) {
+                    $flush();
+                }
+                $paragraph[] = $line;
+            }
+        }
+        $flush();
+
+        return $html;
+    }
+
+    /** Plain-text summary for meta descriptions, without the "## " and "- " markers. */
+    public function plainDescription(): string
+    {
+        return trim(preg_replace(['/^##\s+/m', '/^[-•*]\s+/m', '/\s+/'], ['', '', ' '], (string) $this->description));
+    }
+
     public function seatsLeft(): int
     {
         return $this->sessions->sum(fn (EventSession $s) => $s->seatsLeft());

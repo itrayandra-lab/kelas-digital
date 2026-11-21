@@ -57,7 +57,7 @@
                 <div>
                     <label for="description" class="{{ $label }}">Deskripsi</label>
                     <textarea id="description" name="description" rows="7" maxlength="10000" class="{{ $input }}" placeholder="Ceritakan isi acara, siapa yang cocok ikut, dan apa yang perlu dibawa.">{{ old('description', $event->description) }}</textarea>
-                    <p class="mt-1 text-xs text-gray-500">Tekan Enter untuk membuat baris atau paragraf baru.</p>
+                    <p class="mt-1 text-xs text-gray-500">Kosongkan satu baris untuk paragraf baru. Awali baris dengan <code>## </code> untuk judul kecil, dan <code>- </code> untuk daftar poin.</p>
                 </div>
             </section>
 

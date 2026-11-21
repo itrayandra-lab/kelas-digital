@@ -119,6 +119,15 @@
 .db-steps li { list-style:none; display:flex; gap:.75rem; align-items:flex-start; font-size:.85rem; color:#4b5b73; line-height:1.45; }
 .db-steps li i { width:34px; height:34px; flex-shrink:0; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
 .db-steps li b { display:block; color:var(--ink); font-size:.88rem; }
+.db-evnext { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; padding:1rem 1.15rem; margin-bottom:2rem; border-radius:18px; background:linear-gradient(135deg,#eef4ff,#f3efff); border:1px solid #dcd3fb; }
+.db-evnext-date { width:56px; flex-shrink:0; border-radius:14px; background:#fff; text-align:center; padding:.45rem 0; line-height:1.1; box-shadow:0 2px 8px rgba(10,22,40,.06); }
+.db-evnext-date b { display:block; font-family:'Sora',sans-serif; font-size:1.35rem; color:var(--ink); }
+.db-evnext-date span { font-size:.68rem; font-weight:700; text-transform:uppercase; color:#6d4ed8; }
+.db-evnext-info { flex:1 1 14rem; min-width:0; }
+.db-evnext-info small { display:block; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6d4ed8; }
+.db-evnext-info b { display:block; font-family:'Sora',sans-serif; font-size:1.02rem; color:var(--ink); margin:.1rem 0; }
+.db-evnext-info span { font-size:.82rem; color:var(--muted); }
+@media (max-width:720px) { .db-evnext .db-btn { width:100%; } }
 .db-ev { display:flex; gap:.8rem; padding:.75rem 0; border-top:1px solid var(--border); }
 .db-ev:first-of-type { border-top:0; padding-top:0; }
 .db-ev-date { width:48px; flex-shrink:0; border-radius:12px; background:var(--blue-xl); text-align:center; padding:.35rem 0; line-height:1.1; }
@@ -169,6 +178,8 @@
                         Kamu sedang belajar <strong>{{ $resume['course']->title }}</strong>{{ $resume['progress']->percent() > 0 ? ', sudah '.$resume['progress']->percent().'%. Ayo lanjutkan!' : '. Yuk, mulai hari ini!' }}
                     @elseif($total)
                         Semua kelasmu sudah selesai. Saatnya pilih kelas baru.
+                    @elseif($myEvents->isNotEmpty())
+                        Sampai jumpa di <strong>{{ $myEvents->first()->event->title }}</strong>, {{ $myEvents->first()->event->event_date->locale('id')->translatedFormat('j F') }}.
                     @else
                         Ayo mulai kelas pertamamu hari ini.
                     @endif
@@ -217,6 +228,23 @@
 
     <div class="db-body">
         <div>
+            @if($next = $myEvents->first())
+                {{-- The nearest event goes on top: on phones the sidebar list sits below the courses. --}}
+                <div class="db-evnext">
+                    <div class="db-evnext-date"><b>{{ $next->event->event_date->format('j') }}</b><span>{{ $next->event->event_date->locale('id')->translatedFormat('M') }}</span></div>
+                    <div class="db-evnext-info">
+                        <small>{{ $next->event->event_date->isToday() ? 'Event hari ini' : 'Event berikutnya' }}</small>
+                        <b>{{ $next->event->title }}</b>
+                        <span>{{ $next->session->label }} · {{ $next->session->timeLabel() }} {{ $next->event->timezone }} · {{ $next->event->isOnline() ? 'Online' : $next->event->venue }}</span>
+                    </div>
+                    @if($next->event->isOnline() && $next->event->meeting_url)
+                        <a href="{{ $next->event->meeting_url }}" target="_blank" rel="noopener" class="db-btn" style="background:#6d4ed8;"><i class="fas fa-video" aria-hidden="true"></i> Masuk acara</a>
+                    @else
+                        <a href="{{ route('events.show', $next->event) }}#tiket" class="db-btn ghost">Lihat tiket</a>
+                    @endif
+                </div>
+            @endif
+
             @if($resume)
                 @php
                     $p = $resume['progress'];

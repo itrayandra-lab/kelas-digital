@@ -45,11 +45,11 @@ class EventTest extends TestCase
         $event = $this->event();
 
         $this->get(route('events.index'))->assertOk()->assertSee('Kelas Formulasi');
-        $this->get(route('events.show', $event))->assertOk()->assertSee('EGO Corner Cafe')->assertSee('Masuk untuk mendaftar');
+        $this->get(route('events.show', $event))->assertOk()->assertSee('EGO Corner Cafe')->assertSee('Daftar sekarang')->assertSee('Sisa 15');
 
         // "Masuk" and "Buat akun" both come back to the form after signing in.
         $this->get(route('events.join', $event))->assertRedirect(route('login'));
-        $this->assertSame(route('events.show', $event).'#daftar', session('url.intended'));
+        $this->assertSame(route('events.join', $event), session('url.intended'));
         $this->get(route('events.join', [$event, 'baru' => 1]))->assertRedirect(route('register'));
 
         $this->post(route('events.register', $event), [])->assertRedirect(route('login'));
@@ -62,16 +62,19 @@ class EventTest extends TestCase
         $session = $event->sessions->first();
         $ani = $this->learner();
 
-        $this->actingAs($ani)->get(route('events.show', $event))->assertSee($ani->email)->assertSee('Sisa 15 kursi');
+        // The form has its own page with the account's name and email already filled in.
+        $this->actingAs($ani)->get(route('events.join', $event))->assertOk()->assertSee($ani->email)->assertSee('Sisa 15 kursi');
 
         $this->post(route('events.register', $event), ['event_session_id' => $session->id, 'whatsapp' => '0812-3456-7890', 'age' => 22])
-            ->assertRedirect(route('events.show', $event).'#daftar');
+            ->assertRedirect(route('events.show', $event).'#tiket');
 
         $this->assertDatabaseHas('event_registrations', ['user_id' => $ani->id, 'name' => 'Ani', 'email' => $ani->email, 'whatsapp' => '081234567890', 'age' => 22]);
         $this->assertSame('081234567890', $ani->fresh()->phone);
         Notification::assertSentTo($ani, EventRegisteredNotification::class);
 
         $this->get(route('events.show', $event))->assertSee('Pendaftaran berhasil')->assertSee('Batalkan pendaftaran');
+        // Once signed up, the form page sends the learner back to their ticket.
+        $this->get(route('events.join', $event))->assertRedirect(route('events.show', $event).'#tiket');
         $this->get(route('dashboard'))->assertSee('Kelas Formulasi')->assertSee('Sesi 1');
 
         // One registration per person per event.
@@ -174,5 +177,21 @@ class EventTest extends TestCase
         $this->get(route('admin.events.registrations', $event))->assertOk()->assertSee('Budi')->assertSee('wa.me/6281234567890', false);
         $csv = $this->get(route('admin.events.registrations.export', $event))->streamedContent();
         $this->assertStringContainsString('Budi;b@x.id;081234567890;30', $csv);
+    }
+
+    public function test_description_formatting_is_escaped(): void
+    {
+        $event = new Event(['description' => "Halo <b>semua</b>
+baris dua
+
+## Cocok untuk
+- Pemula
+- Mahasiswa"]);
+
+        $this->assertSame(
+            '<p>Halo &lt;b&gt;semua&lt;/b&gt;<br>baris dua</p><h3>Cocok untuk</h3><ul><li>Pemula</li><li>Mahasiswa</li></ul>',
+            $event->descriptionHtml()
+        );
+        $this->assertSame('Halo <b>semua</b> baris dua Cocok untuk Pemula Mahasiswa', $event->plainDescription());
     }
 }

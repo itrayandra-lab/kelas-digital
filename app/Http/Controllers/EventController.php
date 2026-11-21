@@ -34,16 +34,27 @@ class EventController extends Controller
         return view('events.show', compact('event', 'registration'));
     }
 
-    /** "Masuk" and "Buat akun" on the event page: after logging in or signing up the learner comes straight back to the form. */
+    /**
+     * The sign-up form, on its own page. Guests are sent to log in (or create an account with ?baru=1)
+     * and land back here afterwards; people already signed up see their ticket on the event page instead.
+     */
     public function join(Request $request, Event $event)
     {
-        $form = route('events.show', $event).'#daftar';
-        if ($request->user()) {
-            return redirect()->to($form);
-        }
-        redirect()->setIntendedUrl($form);
+        abort_unless($event->is_published || $request->user()?->can('manage events'), 404);
+        $user = $request->user();
 
-        return redirect()->route($request->boolean('baru') ? 'register' : 'login');
+        if (! $user) {
+            redirect()->setIntendedUrl(route('events.join', $event));
+
+            return redirect()->route($request->boolean('baru') ? 'register' : 'login');
+        }
+        if (! $event->acceptsRegistrations() || $event->registrations()->where('user_id', $user->id)->exists()) {
+            return redirect()->to(route('events.show', $event).'#tiket');
+        }
+
+        $event->load(['sessions' => fn ($q) => $q->withCount('registrations')]);
+
+        return view('events.register', compact('event', 'user'));
     }
 
     public function register(Request $request, Event $event)
@@ -98,7 +109,7 @@ class EventController extends Controller
             logger('Gagal kirim email pendaftaran event ke '.$user->email.': '.$e->getMessage());
         }
 
-        return redirect()->to(route('events.show', $event).'#daftar')->with('event_success', true);
+        return redirect()->to(route('events.show', $event).'#tiket')->with('event_success', true);
     }
 
     public function cancel(Request $request, Event $event)
@@ -106,6 +117,6 @@ class EventController extends Controller
         abort_if($event->isPast(), 403, 'Event sudah selesai.');
         EventRegistration::where('event_id', $event->id)->where('user_id', $request->user()->id)->delete();
 
-        return redirect()->to(route('events.show', $event).'#daftar')->with('event_cancelled', true);
+        return redirect()->to(route('events.show', $event).'#tiket')->with('event_cancelled', true);
     }
 }
