@@ -18,7 +18,33 @@ class Event extends Model
 
     protected $fillable = [
         'title', 'subtitle', 'badge', 'cover', 'description', 'format', 'event_date', 'timezone',
-        'venue', 'address', 'maps_url', 'meeting_url', 'is_published', 'registration_open',
+        'venue', 'address', 'maps_url', 'meeting_url', 'whatsapp_template', 'is_published', 'registration_open',
+    ];
+
+    /** Used until the admin writes their own; the {...} parts are filled in per participant. */
+    public const DEFAULT_WHATSAPP_TEMPLATE = <<<'TXT'
+        Halo {nama}, terima kasih sudah mendaftar *{event}* di Ray Academy.
+
+        Tanggal: {tanggal}
+        Sesi: {sesi}
+        Tempat: {lokasi}
+        Kode tiket: {kode}
+
+        Tiketmu bisa dibuka di {link_tiket}
+        Tunjukkan QR di tiket itu ke panitia saat datang.
+
+        Mohon balas *YA* untuk konfirmasi kehadiran. Sampai jumpa!
+        TXT;
+
+    /** Placeholders the admin can use, with what each becomes. */
+    public const WHATSAPP_PLACEHOLDERS = [
+        '{nama}' => 'nama peserta',
+        '{event}' => 'judul event',
+        '{tanggal}' => 'tanggal event',
+        '{sesi}' => 'sesi dan jamnya',
+        '{lokasi}' => 'tempat, atau "Online"',
+        '{kode}' => 'kode tiket',
+        '{link_tiket}' => 'link tiket berisi QR',
     ];
 
     protected $casts = [

@@ -275,5 +275,32 @@ baris dua
         $other->delete();
         $this->get(route('admin.events.scan-picker'))->assertRedirect(route('admin.events.scan', $event));
     }
+
+    public function test_whatsapp_button_opens_a_ready_to_send_message(): void
+    {
+        $event = $this->event();
+        $reg = $event->registrations()->create(['event_session_id' => $event->sessions->first()->id, 'user_id' => $this->learner()->id, 'name' => 'Ani Lestari', 'email' => 'a@x.id', 'whatsapp' => '081234567890', 'age' => 30]);
+
+        // The default message fills in the participant's own details.
+        $message = $reg->whatsappMessage();
+        foreach (['Halo Ani Lestari', '*Kelas Formulasi*', 'Sesi 1, pukul 14.00 WITA', 'EGO Corner Cafe', $reg->code, route('tickets.show', $reg), 'balas *YA*'] as $part) {
+            $this->assertStringContainsString($part, $message);
+        }
+        $this->assertStringStartsWith('https://wa.me/6281234567890?text=Halo%20Ani%20Lestari', $reg->whatsappLink());
+
+        // The admin writes their own; leaving the default untouched stores nothing.
+        $event->update(['cover' => 'events/poster.jpg']);
+        $admin = User::factory()->create(['username' => 'adm'])->assignRole('admin');
+        $form = fn (string $template) => ['title' => $event->title, 'format' => 'offline', 'event_date' => $event->event_date->format('Y-m-d'), 'timezone' => 'WITA', 'venue' => 'EGO Corner Cafe',
+            'is_published' => 1, 'registration_open' => 1, 'whatsapp_template' => $template,
+            'sessions' => $event->sessions->map(fn ($s) => ['id' => $s->id, 'label' => $s->label, 'starts_at' => substr($s->starts_at, 0, 5), 'capacity' => $s->capacity])->all()];
+
+        $this->actingAs($admin)->put(route('admin.events.update', $event), $form("Pengingat: besok {sesi} ya, {nama}!"))->assertSessionHasNoErrors();
+        $this->assertSame('Pengingat: besok Sesi 1, pukul 14.00 WITA ya, Ani Lestari!', $reg->fresh()->whatsappMessage());
+
+        $this->put(route('admin.events.update', $event), $form(Event::DEFAULT_WHATSAPP_TEMPLATE));
+        $this->assertNull($event->fresh()->whatsapp_template);
+        $this->get(route('admin.events.registrations', $event))->assertSee('Kirim pesan')->assertSee('wa.me/6281234567890?text=', false);
+    }
 }
 

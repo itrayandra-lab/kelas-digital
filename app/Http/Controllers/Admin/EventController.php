@@ -208,6 +208,7 @@ class EventController extends Controller
             'address' => 'nullable|string|max:500',
             'maps_url' => 'nullable|url|max:500',
             'meeting_url' => 'nullable|url|max:500',
+            'whatsapp_template' => 'nullable|string|max:2000',
             'is_published' => 'boolean',
             'registration_open' => 'boolean',
             'sessions' => 'required|array|min:1|max:20',
@@ -227,6 +228,9 @@ class EventController extends Controller
         ]);
 
         unset($data['sessions']);
+        // Left as the default text: keep it empty so improvements to the default reach this event too.
+        $template = trim(str_replace("\r\n", "\n", (string) ($data['whatsapp_template'] ?? '')));
+        $data['whatsapp_template'] = $template === '' || $template === trim(Event::DEFAULT_WHATSAPP_TEMPLATE) ? null : $template;
         $data['is_published'] = $request->boolean('is_published');
         $data['registration_open'] = $request->boolean('registration_open');
         if ($request->hasFile('cover')) {

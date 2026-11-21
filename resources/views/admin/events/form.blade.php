@@ -159,6 +159,25 @@
                     </template>
                 </div>
             </section>
+
+            {{-- WhatsApp message --}}
+            <section class="bg-white rounded-lg shadow-sm p-6" data-tour="wa"
+                x-data="{ text: @js(old('whatsapp_template', $event->whatsapp_template ?: \App\Models\Event::DEFAULT_WHATSAPP_TEMPLATE)), base: @js(\App\Models\Event::DEFAULT_WHATSAPP_TEMPLATE),
+                          add(tag) { const el = this.$refs.wa; const at = el.selectionStart ?? this.text.length; this.text = this.text.slice(0, at) + tag + this.text.slice(at); this.$nextTick(() => { el.focus(); el.selectionStart = el.selectionEnd = at + tag.length; }); } }">
+                <div class="flex items-center justify-between gap-3">
+                    <h2 class="flex items-center gap-2 font-semibold text-gray-900"><i class="fab fa-whatsapp text-green-600 text-xl"></i> Pesan WhatsApp untuk peserta</h2>
+                    <button type="button" x-show="text !== base" @click="text = base" class="text-xs font-semibold text-gray-500 hover:text-gray-800">Kembalikan ke bawaan</button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1 mb-3">Dipakai tombol <b>Kirim pesan</b> di halaman Peserta: WhatsApp terbuka dengan pesan ini sudah terisi, tinggal tekan kirim. Klik kotak abu-abu untuk menyisipkan data peserta.</p>
+                <div class="flex flex-wrap gap-1.5 mb-2">
+                    @foreach(\App\Models\Event::WHATSAPP_PLACEHOLDERS as $tag => $meaning)
+                        <button type="button" @click="add(@js($tag))" title="{{ $meaning }}" class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-xs font-mono text-gray-700">{{ $tag }}</button>
+                    @endforeach
+                </div>
+                <label for="whatsapp_template" class="sr-only">Isi pesan WhatsApp</label>
+                <textarea id="whatsapp_template" name="whatsapp_template" x-ref="wa" x-model="text" rows="12" maxlength="2000" class="{{ $input }} font-mono text-[13px] leading-relaxed"></textarea>
+                <p class="mt-1 text-xs text-gray-500">Tulis *teks* untuk huruf tebal di WhatsApp.</p>
+            </section>
         </div>
 
         {{-- Sidebar --}}

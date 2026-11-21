@@ -52,9 +52,27 @@ class EventRegistration extends Model
     }
 
     /** wa.me wants the number in international form: 0812… becomes 62812…. */
-    public function whatsappLink(): string
+    /** Opens WhatsApp to this participant with the event's message already typed; the admin only presses send. */
+    public function whatsappLink(bool $withMessage = true): string
     {
-        return 'https://wa.me/'.preg_replace('/^0/', '62', ltrim($this->whatsapp, '+'));
+        $link = 'https://wa.me/'.preg_replace('/^0/', '62', ltrim($this->whatsapp, '+'));
+
+        return $withMessage ? $link.'?text='.rawurlencode($this->whatsappMessage()) : $link;
+    }
+
+    public function whatsappMessage(): string
+    {
+        $event = $this->event;
+
+        return strtr($event->whatsapp_template ?: Event::DEFAULT_WHATSAPP_TEMPLATE, [
+            '{nama}' => $this->name,
+            '{event}' => $event->title,
+            '{tanggal}' => $event->dateLabel(),
+            '{sesi}' => $this->session->label.', pukul '.$this->session->timeLabel().' '.$event->timezone,
+            '{lokasi}' => $event->isOnline() ? 'Online (link ada di halaman tiket)' : trim($event->venue.', '.$event->address, ', '),
+            '{kode}' => $this->code,
+            '{link_tiket}' => route('tickets.show', $this),
+        ]);
     }
 
     /** "Sari Uji Coba" becomes "S*** U** C***", for people checking a ticket they don't own. */

@@ -112,8 +112,10 @@
                                 </form>
                             </td>
                             <td class="px-5 py-3 whitespace-nowrap">
-                                <a href="{{ $r->whatsappLink() }}" target="_blank" rel="noopener" class="text-green-700 font-medium hover:underline">
-                                    <i class="fab fa-whatsapp mr-1"></i>{{ $r->whatsapp }}
+                                <div class="text-gray-700 tabular-nums">{{ $r->whatsapp }}</div>
+                                <a href="{{ $r->whatsappLink() }}" target="_blank" rel="noopener" @if($loop->first) data-tour="wa-btn" @endif
+                                    class="mt-1 inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-green-600 text-white text-xs font-semibold hover:bg-green-700">
+                                    <i class="fab fa-whatsapp"></i> Kirim pesan
                                 </a>
                             </td>
                             <td class="px-5 py-3 tabular-nums">{{ $r->age }}</td>
@@ -143,7 +145,8 @@
 KATour.page('admin-event-peserta', [
   { element: '[data-tour="kuota"]', popover: { title: 'Sisa kursi', description: 'Jumlah pendaftar dan sisa kursi tiap sesi. Klik kotak sesi untuk melihat peserta sesi itu saja.', side: 'bottom' } },
   { element: '[data-tour="cek-tiket"]', popover: { title: 'Di hari acara', description: 'Tekan Buka pemindai di HP panitia, lalu arahkan kamera ke QR tiket peserta. Kehadiran langsung tercatat. Kalau QR tidak terbaca, ketik kodenya di sini.', side: 'bottom' } },
-  { element: '[data-tour="tabel"]', popover: { title: 'Daftar peserta', description: 'Klik nomor WhatsApp untuk langsung chat. Tombol Tandai hadir juga bisa ditekan dari sini.', side: 'top' } },
+  { element: '[data-tour="tabel"]', popover: { title: 'Daftar peserta', description: 'Tombol Tandai hadir juga bisa ditekan dari sini.', side: 'top' } },
+  { element: '[data-tour="wa-btn"]', popover: { title: 'Kirim pesan WhatsApp', description: 'WhatsApp terbuka dengan pesan konfirmasi yang sudah terisi nama, sesi, dan link tiket peserta. Tinggal tekan kirim. Isi pesannya bisa diubah di Edit event.', side: 'left' } },
   { element: '[data-tour="csv"]', popover: { title: 'Unduh data', description: 'Data peserta lengkap dengan kode tiket dan jam hadir, langsung rapi saat dibuka di Excel.', side: 'left' } }
 ]);
 </script>
