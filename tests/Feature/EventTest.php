@@ -245,4 +245,35 @@ baris dua
         $this->assertFalse($copy->is_published);
         $this->assertSame(['Sesi 1', 'Sesi 2'], $copy->sessions->pluck('label')->all());
     }
+
+    public function test_door_scanner_checks_tickets_in(): void
+    {
+        $event = $this->event();
+        $other = $this->event(['title' => 'Event Lain']);
+        $ani = $this->learner();
+        $reg = $event->registrations()->create(['event_session_id' => $event->sessions->first()->id, 'user_id' => $ani->id, 'name' => 'Ani', 'email' => 'ani@x.id', 'whatsapp' => '081234567890', 'age' => 30]);
+        $elsewhere = $other->registrations()->create(['event_session_id' => $other->sessions->first()->id, 'user_id' => $this->learner('Budi')->id, 'name' => 'Budi', 'email' => 'b@x.id', 'whatsapp' => '081234567890', 'age' => 30]);
+        $scan = fn (string $code) => $this->postJson(route('admin.events.scan.checkin', $event), ['code' => $code]);
+
+        $this->actingAs($ani)->get(route('admin.events.scan', $event))->assertForbidden();
+        $this->actingAs($ani)->postJson(route('admin.events.scan.checkin', $event), ['code' => $reg->code])->assertForbidden();
+
+        $admin = User::factory()->create(['username' => 'adm'])->assignRole('admin');
+        $this->actingAs($admin)->get(route('admin.events.scan', $event))->assertOk()->assertSee('Buka kamera')->assertSee('0/1');
+
+        // The QR holds the full ticket link; the scanner reads the code out of it.
+        $scan(route('tickets.show', $reg))->assertJson(['status' => 'ok', 'name' => 'Ani', 'checked_in' => 1, 'total' => 1]);
+        $this->assertNotNull($reg->fresh()->checked_in_at);
+        $scan(strtolower($reg->code))->assertJson(['status' => 'already']);
+        $scan($elsewhere->code)->assertJson(['status' => 'wrong_event']);
+        $this->assertNull($elsewhere->fresh()->checked_in_at);
+        $scan('RA-XXXXXX')->assertJson(['status' => 'invalid']);
+        $scan('https://example.com/bukan-tiket')->assertJson(['status' => 'invalid']);
+
+        // Two upcoming events: the sidebar link asks which one; with one, it opens the scanner directly.
+        $this->get(route('admin.events.scan-picker'))->assertOk()->assertSee('Event Lain');
+        $other->delete();
+        $this->get(route('admin.events.scan-picker'))->assertRedirect(route('admin.events.scan', $event));
+    }
 }
+

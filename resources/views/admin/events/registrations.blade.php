@@ -26,11 +26,10 @@
     <div class="bg-white rounded-lg shadow-sm p-5 mb-6 grid md:grid-cols-2 gap-5 items-center" data-tour="cek-tiket">
         <div>
             <h2 class="font-semibold text-gray-900"><i class="fas fa-qrcode text-primary-600 mr-1"></i> Cek tiket di pintu masuk</h2>
-            <ol class="mt-2 text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                <li>Login sebagai admin di HP panitia.</li>
-                <li>Buka kamera HP, arahkan ke QR di tiket peserta, lalu buka link yang muncul.</li>
-                <li>Tekan tombol hijau <b>Tandai hadir</b>.</li>
-            </ol>
+            <p class="mt-1 text-sm text-gray-600">Buka dari HP panitia, tekan <b>Buka kamera</b>, lalu arahkan ke QR tiket peserta. Hijau berarti hadir tercatat, kuning berarti sudah check-in sebelumnya, merah berarti tiket tidak valid.</p>
+            <a href="{{ route('admin.events.scan', $event) }}" class="mt-3 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">
+                <i class="fas fa-camera"></i> Buka pemindai
+            </a>
         </div>
         <form method="GET" action="{{ route('tickets.lookup') }}">
             <label for="kode" class="block text-sm font-medium text-gray-700 mb-1.5">QR tidak terbaca? Ketik kode tiketnya</label>
@@ -143,7 +142,7 @@
 <script>
 KATour.page('admin-event-peserta', [
   { element: '[data-tour="kuota"]', popover: { title: 'Sisa kursi', description: 'Jumlah pendaftar dan sisa kursi tiap sesi. Klik kotak sesi untuk melihat peserta sesi itu saja.', side: 'bottom' } },
-  { element: '[data-tour="cek-tiket"]', popover: { title: 'Di hari acara', description: 'Pindai QR tiket peserta pakai kamera HP (login sebagai admin dulu), lalu tekan Tandai hadir. Kalau QR tidak terbaca, ketik kodenya di sini.', side: 'bottom' } },
+  { element: '[data-tour="cek-tiket"]', popover: { title: 'Di hari acara', description: 'Tekan Buka pemindai di HP panitia, lalu arahkan kamera ke QR tiket peserta. Kehadiran langsung tercatat. Kalau QR tidak terbaca, ketik kodenya di sini.', side: 'bottom' } },
   { element: '[data-tour="tabel"]', popover: { title: 'Daftar peserta', description: 'Klik nomor WhatsApp untuk langsung chat. Tombol Tandai hadir juga bisa ditekan dari sini.', side: 'top' } },
   { element: '[data-tour="csv"]', popover: { title: 'Unduh data', description: 'Data peserta lengkap dengan kode tiket dan jam hadir, langsung rapi saat dibuka di Excel.', side: 'left' } }
 ]);

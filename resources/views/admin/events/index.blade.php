@@ -66,6 +66,7 @@
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap text-right">
                                 <div class="inline-flex items-center gap-1">
+                                    <a href="{{ route('admin.events.scan', $event) }}" @if($loop->first) data-tour="scan-btn" @endif class="px-3 py-1.5 text-xs font-semibold rounded-md bg-green-600 text-white hover:bg-green-700"><i class="fas fa-qrcode mr-1"></i>Scan</a>
                                     <a href="{{ route('admin.events.registrations', $event) }}" @if($loop->first) data-tour="peserta-btn" @endif class="px-3 py-1.5 text-xs font-semibold rounded-md bg-primary-50 text-primary-700 hover:bg-primary-100">Peserta</a>
                                     <a href="{{ route('admin.events.edit', $event) }}" @if($loop->first) data-tour="edit-btn" @endif class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100">Edit</a>
                                     <a href="{{ route('events.show', $event) }}" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-md text-gray-700 hover:bg-gray-100">Lihat</a>
@@ -98,6 +99,7 @@ KATour.page('admin-events', [
   { popover: { title: 'Kelola Event', description: 'Semua event gratis (offline atau online) dibuat dan dipantau dari sini. Peserta mendaftar sendiri lewat website dengan akun Ray Academy mereka.' } },
   { element: '[data-tour="add-event"]', popover: { title: '1. Buat event baru', description: 'Isi poster, judul, deskripsi, tanggal, lokasi atau link Zoom, lalu sesi dan kuotanya.', side: 'bottom' } },
   { element: '[data-tour="salin-btn"]', popover: { title: 'Event berikutnya? Salin saja', description: 'Membuat event baru dari event ini, lengkap dengan sesinya. Hasilnya tersimpan sebagai draf, tinggal ganti tanggal dan judul.', side: 'left' } },
+  { element: '[data-tour="scan-btn"]', popover: { title: 'Hari acara: Scan', description: 'Buka dari HP panitia, tekan Buka kamera, lalu arahkan ke QR tiket peserta. Kehadiran langsung tercatat.', side: 'left' } },
   { element: '[data-tour="peserta-btn"]', popover: { title: 'Peserta dan check-in', description: 'Lihat siapa saja yang mendaftar, sisa kursi tiap sesi, unduh CSV, dan tandai kehadiran di hari acara.', side: 'left' } },
   { element: '[data-tour="edit-btn"]', popover: { title: 'Ubah event', description: 'Ganti info, tambah sesi, atau tutup pendaftaran lebih awal.', side: 'left' } }
 ]);

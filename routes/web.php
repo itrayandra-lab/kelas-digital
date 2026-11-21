@@ -172,6 +172,9 @@ Route::prefix('admin')
             Route::resource('events', AdminEventController::class)->except(['show']);
             Route::get('events/{event}/peserta', [AdminEventController::class, 'registrations'])->name('events.registrations');
             Route::post('events/{event}/salin', [AdminEventController::class, 'duplicate'])->name('events.duplicate');
+            Route::get('scan-tiket', [AdminEventController::class, 'scanPicker'])->name('events.scan-picker');
+            Route::get('events/{event}/scan', [AdminEventController::class, 'scanner'])->name('events.scan');
+            Route::post('events/{event}/scan', [AdminEventController::class, 'scanCheckIn'])->middleware('throttle:120,1')->name('events.scan.checkin');
             Route::get('events/{event}/peserta.csv', [AdminEventController::class, 'exportRegistrations'])->name('events.registrations.export');
             Route::delete('event-registrations/{registration}', [AdminEventController::class, 'destroyRegistration'])->name('events.registrations.destroy');
         });

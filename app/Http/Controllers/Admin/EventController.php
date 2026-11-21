@@ -71,6 +71,51 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with('success', "Event \"{$event->title}\" disimpan.");
     }
 
+    /** "Scan Tiket" in the sidebar: straight to the scanner when only one event is on, otherwise a short list to pick from. */
+    public function scanPicker()
+    {
+        $events = Event::whereDate('event_date', '>=', today()->subDay())->orderBy('event_date')->withCount('registrations')->get();
+
+        return $events->count() === 1
+            ? redirect()->route('admin.events.scan', $events->first())
+            : view('admin.events.scan-picker', compact('events'));
+    }
+
+    /** Full-screen camera page for the door: point the phone at a ticket and it is checked in. */
+    public function scanner(Event $event)
+    {
+        $total = $event->registrations()->count();
+        $checkedIn = $event->registrations()->whereNotNull('checked_in_at')->count();
+
+        return view('admin.events.scan', compact('event', 'total', 'checkedIn'));
+    }
+
+    /** Called by the scanner for every QR it reads (or code typed in). Only ever marks people present, never undoes it. */
+    public function scanCheckIn(Request $request, Event $event)
+    {
+        $code = preg_match('/RA-[A-Z0-9]{6}/', strtoupper((string) $request->input('code')), $m) ? $m[0] : null;
+        $registration = $code ? EventRegistration::with('session', 'event')->where('code', $code)->first() : null;
+
+        $result = match (true) {
+            ! $registration => ['status' => 'invalid', 'message' => $code ? "Kode {$code} tidak terdaftar." : 'QR ini bukan tiket Ray Academy.'],
+            $registration->event_id !== $event->id => ['status' => 'wrong_event', 'message' => 'Tiket ini untuk event lain: '.$registration->event->title.'.'],
+            (bool) $registration->checked_in_at => ['status' => 'already', 'message' => 'Sudah check-in pukul '.$registration->checked_in_at->timezone(config('app.timezone'))->format('H.i').'.'],
+            default => ['status' => 'ok', 'message' => 'Hadir tercatat.'],
+        };
+
+        if ($result['status'] === 'ok') {
+            $registration->update(['checked_in_at' => now()]);
+        }
+
+        return response()->json($result + [
+            'code' => $code,
+            'name' => $registration?->name,
+            'session' => $registration && $registration->event_id === $event->id ? $registration->session->label.' · '.$registration->session->timeLabel().' '.$event->timezone : null,
+            'checked_in' => $event->registrations()->whereNotNull('checked_in_at')->count(),
+            'total' => $event->registrations()->count(),
+        ]);
+    }
+
     /** Next month's edition in one click: same details and sessions, saved as a hidden draft to adjust. */
     public function duplicate(Event $event)
     {
