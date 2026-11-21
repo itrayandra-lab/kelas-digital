@@ -6,7 +6,7 @@
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
         <p class="text-sm text-gray-600">Event gratis, offline maupun online. Peserta mendaftar dengan akun Ray Academy mereka.</p>
         <a href="{{ route('admin.events.create') }}" data-tour="add-event"
-            class="inline-flex items-center justify-center px-5 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors">
+            class="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700 transition-colors">
             <i class="fas fa-plus mr-2"></i> Buat Event
         </a>
     </div>
@@ -15,7 +15,41 @@
         <div class="bg-green-50 border border-green-200 text-sm text-green-700 px-4 py-3 rounded-lg mb-6">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    {{-- Phones: one card per event with big buttons --}}
+    <div class="md:hidden space-y-4">
+        @forelse($events as $event)
+            @php $fill = $event->capacity_total ? min(100, round($event->registrations_count / $event->capacity_total * 100)) : 0; @endphp
+            <div class="bg-white rounded-xl shadow-sm p-4">
+                <div class="flex gap-3">
+                    <div class="w-16 h-20 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+                        @if($event->cover_url)<img src="{{ $event->cover_url }}" alt="" class="w-full h-full object-cover">@endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-semibold text-gray-900 leading-snug">{{ $event->title }}</div>
+                        <div class="text-sm text-gray-500 mt-0.5">{{ $event->event_date->locale('id')->translatedFormat('j M Y') }} · {{ $event->isOnline() ? 'Online' : $event->venue }}</div>
+                        <div class="flex flex-wrap gap-1.5 mt-1.5 text-xs">
+                            <span class="px-2 py-0.5 rounded-full font-semibold {{ $event->is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600' }}">{{ $event->is_published ? 'Tampil' : 'Draf' }}</span>
+                            @if($event->isPast())<span class="px-2 py-0.5 rounded-full font-semibold bg-gray-100 text-gray-500">Sudah lewat</span>@endif
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center gap-3 text-sm">
+                    <span class="font-semibold text-gray-900 tabular-nums">{{ $event->registrations_count }} / {{ (int) $event->capacity_total }} pendaftar</span>
+                    <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full {{ $fill >= 100 ? 'bg-red-500' : 'bg-primary-600' }}" style="width:{{ $fill }}%"></div></div>
+                </div>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <a href="{{ route('admin.events.scan', $event) }}" class="flex items-center justify-center gap-2 h-12 rounded-lg bg-green-600 text-white font-semibold"><i class="fas fa-qrcode"></i> Scan</a>
+                    <a href="{{ route('admin.events.registrations', $event) }}" class="flex items-center justify-center gap-2 h-12 rounded-lg bg-primary-50 text-primary-700 font-semibold"><i class="fas fa-users"></i> Peserta</a>
+                    <a href="{{ route('admin.events.edit', $event) }}" class="flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 text-gray-700 font-semibold text-sm"><i class="fas fa-pen"></i> Edit</a>
+                    <a href="{{ route('events.show', $event) }}" target="_blank" class="flex items-center justify-center gap-2 h-11 rounded-lg border border-gray-200 text-gray-700 font-semibold text-sm"><i class="fas fa-eye"></i> Lihat</a>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm p-8 text-center text-gray-500">Belum ada event. Tekan <b>Buat Event</b> untuk mulai.</div>
+        @endforelse
+    </div>
+
+    <div class="hidden md:block bg-white rounded-lg shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider">

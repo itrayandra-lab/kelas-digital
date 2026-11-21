@@ -24,18 +24,18 @@
 
     {{-- Door check-in --}}
     <div class="bg-white rounded-lg shadow-sm p-5 mb-6 grid md:grid-cols-2 gap-5 items-center" data-tour="cek-tiket">
-        <div>
+        <div class="min-w-0">
             <h2 class="font-semibold text-gray-900"><i class="fas fa-qrcode text-primary-600 mr-1"></i> Cek tiket di pintu masuk</h2>
             <p class="mt-1 text-sm text-gray-600">Buka dari HP panitia, tekan <b>Buka kamera</b>, lalu arahkan ke QR tiket peserta. Hijau berarti hadir tercatat, kuning berarti sudah check-in sebelumnya, merah berarti tiket tidak valid.</p>
             <a href="{{ route('admin.events.scan', $event) }}" class="mt-3 inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">
                 <i class="fas fa-camera"></i> Buka pemindai
             </a>
         </div>
-        <form method="GET" action="{{ route('tickets.lookup') }}">
+        <form method="GET" action="{{ route('tickets.lookup') }}" class="min-w-0">
             <label for="kode" class="block text-sm font-medium text-gray-700 mb-1.5">QR tidak terbaca? Ketik kode tiketnya</label>
             <div class="flex gap-2">
                 <input id="kode" name="kode" required placeholder="RA-7K3P9Q" autocomplete="off" autocapitalize="characters"
-                    class="flex-1 min-w-0 px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    size="10" class="flex-1 min-w-0 px-4 py-3 border border-gray-300 rounded-lg text-lg font-semibold tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <button class="px-5 py-3 rounded-lg bg-primary-600 text-white font-semibold hover:bg-primary-700">Cek</button>
             </div>
             @if(session('lookup_error'))<p class="mt-2 text-sm text-red-600">{{ session('lookup_error') }}</p>@endif
@@ -72,7 +72,36 @@
                 <a href="{{ route('admin.events.registrations', $event) }}" class="px-3 py-2 text-sm text-gray-600 hover:text-gray-900">Reset</a>
             @endif
         </form>
-        <div class="overflow-x-auto">
+        {{-- Phones: one card per participant --}}
+        <ul class="md:hidden divide-y divide-gray-100">
+            @forelse($registrations as $r)
+                <li class="p-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="font-semibold text-gray-900">{{ $r->name }}</div>
+                            <div class="text-sm text-gray-500">{{ $r->session->label }} · usia {{ $r->age }}{{ $r->user?->origin() ? ' · '.$r->user->origin() : '' }}</div>
+                            <a href="{{ route('tickets.show', $r) }}" class="text-sm font-mono font-semibold text-primary-700">{{ $r->code }}</a>
+                        </div>
+                        @if($r->checked_in_at)
+                            <span class="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"><i class="fas fa-check mr-1"></i>Hadir {{ $r->checked_in_at->timezone(config('app.timezone'))->format('H.i') }}</span>
+                        @endif
+                    </div>
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <a href="{{ $r->whatsappLink() }}" target="_blank" rel="noopener" class="flex items-center justify-center gap-2 h-11 rounded-lg bg-green-600 text-white text-sm font-semibold"><i class="fab fa-whatsapp"></i> Kirim pesan</a>
+                        <form method="POST" action="{{ route('tickets.checkin', $r) }}">
+                            @csrf
+                            <button class="w-full h-11 rounded-lg text-sm font-semibold {{ $r->checked_in_at ? 'border border-gray-200 text-gray-500' : 'border border-primary-200 bg-primary-50 text-primary-700' }}">
+                                {{ $r->checked_in_at ? 'Batalkan hadir' : 'Tandai hadir' }}
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            @empty
+                <li class="p-8 text-center text-gray-500">{{ $search !== '' || $session ? 'Tidak ada peserta yang cocok.' : 'Belum ada pendaftar.' }}</li>
+            @endforelse
+        </ul>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                     <tr>

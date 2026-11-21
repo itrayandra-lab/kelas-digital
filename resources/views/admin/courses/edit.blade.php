@@ -34,7 +34,7 @@
                     <!-- Course Type -->
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kelas</label>
-                        <div class="flex gap-4">
+                        <div class="flex flex-wrap gap-3">
                             <label class="flex items-center gap-2 cursor-pointer px-4 py-3 border-2 rounded-lg transition-all"
                                 :class="courseType === 'paid' ? 'border-primary-500 bg-primary-50' : 'border-gray-200'">
                                 <input type="radio" name="course_type" value="paid" x-model="courseType" class="sr-only">

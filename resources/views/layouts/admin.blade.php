@@ -21,15 +21,37 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <x-rich-text::styles theme="richtextlaravel" />
+    <style>
+        /* Phones: admin tables turn into one card per row (labels filled in by the script at the bottom). */
+        @media (max-width: 767px) {
+            table.ra-stack { min-width: 0 !important; width: 100%; }
+            table.ra-stack thead { display: none; }
+            table.ra-stack tbody, table.ra-stack tr { display: block; }
+            table.ra-stack tr { padding: .8rem 1rem; border-bottom: 1px solid #eef2f7; }
+            table.ra-stack td { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .3rem 0 !important; border: 0 !important; white-space: normal !important; text-align: right; min-width: 0; max-width: none !important; }
+            table.ra-stack td::before { content: attr(data-label); flex-shrink: 0; font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #6b7280; text-align: left; }
+            table.ra-stack td:first-child { display: block; text-align: left; padding-bottom: .45rem !important; }
+            table.ra-stack td:first-child::before, table.ra-stack td[data-label=""]::before, table.ra-stack td[colspan]::before { display: none; }
+            table.ra-stack td[data-label=""] { justify-content: flex-start; flex-wrap: wrap; padding-top: .55rem !important; }
+            table.ra-stack td[colspan] { display: block; text-align: center; }
+            table.ra-stack td > * { min-width: 0; }
+        }
+    </style>
 </head>
 
 <body class="h-full font-sans">
-    <div x-data="{ open: false }" class="flex min-h-screen">
-        <aside class="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
-            <div class="h-20 flex items-center justify-center px-6 border-b border-gray-200">
+    <div x-data="{ nav: false }" @keydown.escape.window="nav = false" class="flex min-h-screen">
+        {{-- On phones the menu is a drawer opened from the header; on large screens it is always visible. --}}
+        <div x-show="nav" x-cloak @click="nav = false" class="fixed inset-0 z-30 bg-gray-900/50 lg:hidden" aria-hidden="true"></div>
+        <aside :class="nav ? 'translate-x-0' : '-translate-x-full'"
+            class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full transition-transform duration-200 lg:static lg:z-auto lg:w-64 lg:translate-x-0 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
+            <div class="h-16 lg:h-20 flex items-center justify-between lg:justify-center px-6 border-b border-gray-200">
                 <a href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-14">
+                    <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="h-11 lg:h-14">
                 </a>
+                <button type="button" @click="nav = false" class="lg:hidden w-11 h-11 -mr-2 rounded-lg text-gray-500 hover:bg-gray-100" aria-label="Tutup menu">
+                    <i class="fas fa-xmark text-xl"></i>
+                </button>
             </div>
             <nav class="flex-1 px-4 py-4 space-y-6 overflow-y-auto">
                 <!-- Dashboard -->
@@ -211,21 +233,24 @@
         </aside>
 
         <div class="flex-1 min-w-0 flex flex-col">
-            <header class="bg-white shadow-sm border-b border-gray-200">
-                <div class="flex justify-between items-center h-20 px-4 sm:px-6 lg:px-8">
-                    <h1 class="text-2xl font-bold text-gray-900">
+            <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-20 lg:static">
+                <div class="flex justify-between items-center gap-3 h-16 lg:h-20 px-4 sm:px-6 lg:px-8">
+                    <button type="button" @click="nav = true" class="lg:hidden w-11 h-11 -ml-2 rounded-lg text-gray-700 hover:bg-gray-100 flex-shrink-0" aria-label="Buka menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <h1 class="flex-1 min-w-0 truncate text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
                         @yield('title')
                     </h1>
                     <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="flex items-center space-x-2 text-left">
+                        <button @click="open = !open" class="flex items-center space-x-2 text-left" aria-label="Menu akun">
                             <img class="h-10 w-10 rounded-full object-cover"
                                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=1474bc&color=ffffff"
-                                alt="User Avatar">
-                            <div>
+                                alt="">
+                            <div class="hidden md:block">
                                 <span class="font-semibold text-gray-800 text-sm">{{ Auth::user()->name }}</span>
                                 <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-500 text-sm transition-transform duration-200" 
+                            <i class="hidden sm:inline fas fa-chevron-down text-gray-500 text-sm transition-transform duration-200" 
                                :class="{ 'rotate-180': open }"></i>
                         </button>
                         <div x-show="open" 
@@ -266,6 +291,21 @@
     <!-- Alpine.js -->
     <script defer src="{{ asset('vendor/alpinejs/alpine.min.js') }}"></script>
 
+    <script>
+    document.querySelectorAll('main table:not(.no-stack)').forEach(function (table) {
+        var heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function (th) {
+            var text = th.textContent.trim();
+            return /^(aksi|actions?|#)$/i.test(text) ? '' : text;
+        });
+        if (!heads.length) return;
+        table.classList.add('ra-stack');
+        table.querySelectorAll('tbody tr').forEach(function (tr) {
+            Array.prototype.forEach.call(tr.children, function (td, i) {
+                if (td.colSpan === 1) td.setAttribute('data-label', heads[i] || '');
+            });
+        });
+    });
+    </script>
     @stack('scripts')
 </body>
 

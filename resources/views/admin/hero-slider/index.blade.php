@@ -35,16 +35,16 @@
             @else
                 <div class="space-y-4">
                     @foreach($heroArticles as $article)
-                        <div class="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
+                        <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 p-4 border border-gray-200 rounded-lg">
                             <div class="flex-shrink-0 w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
                                 {{ $article->hero_slider_order }}
                             </div>
 
                             <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://via.placeholder.com/100' }}"
                                  alt="{{ $article->title }}"
-                                 class="w-20 h-20 object-cover rounded">
+                                 class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0">
 
-                            <div class="flex-1">
+                            <div class="flex-1 min-w-0 basis-40">
                                 <h3 class="font-semibold text-gray-900">{{ $article->title }}</h3>
                                 <p class="text-sm text-gray-500">
                                     {{ $article->categories->first()->name ?? 'Uncategorized' }} •
@@ -52,7 +52,7 @@
                                 </p>
                             </div>
 
-                            <div class="flex gap-2">
+                            <div class="flex gap-2 w-full sm:w-auto justify-end">
                                 <a href="{{ route('admin.articles.edit', $article->id) }}"
                                    class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
                                     Edit
