@@ -60,6 +60,14 @@ class DashboardController extends Controller
             ->sortBy(fn (Course $course) => $categoryIds->contains($course->course_category_id) ? 0 : 1)
             ->take(4);
 
-        return view('dashboard.index', compact('user', 'ongoing', 'finished', 'unpaid', 'recentTests', 'stats', 'recommended'));
+        // Events the learner signed up for that haven't happened yet, soonest first.
+        $myEvents = $user->eventRegistrations()
+            ->with(['event', 'session'])
+            ->whereHas('event', fn ($q) => $q->whereDate('event_date', '>=', today()))
+            ->get()
+            ->sortBy(fn ($r) => $r->event->event_date->format('Y-m-d').$r->session->starts_at)
+            ->values();
+
+        return view('dashboard.index', compact('user', 'ongoing', 'finished', 'unpaid', 'recentTests', 'stats', 'recommended', 'myEvents'));
     }
 }

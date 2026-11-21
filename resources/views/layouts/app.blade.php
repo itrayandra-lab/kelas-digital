@@ -300,10 +300,10 @@
         </a>
 
         {{-- Desktop Links --}}
-        {{-- Desktop Links --}}
         <ul class="nav-links">
             <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a></li>
             <li><a href="{{ route('course.index') }}" class="{{ request()->routeIs('course.*') ? 'active' : '' }}">Kursus</a></li>
+            <li><a href="{{ route('events.index') }}" class="{{ request()->routeIs('events.*') ? 'active' : '' }}">Event</a></li>
             
             @if(isset($articleCategories) && $articleCategories->count() > 0)
             <li class="nav-dropdown" x-data="{ open: false }" style="position: relative;">
@@ -405,6 +405,7 @@
 
     <a href="{{ route('home') }}" class="nav-mobile-link">Beranda</a>
     <a href="{{ route('course.index') }}" class="nav-mobile-link">Kursus</a>
+    <a href="{{ route('events.index') }}" class="nav-mobile-link">Event</a>
     <a href="{{ route('article.index') }}" class="nav-mobile-link">Artikel</a>
 
     @if(isset($articleCategories) && $articleCategories->count() > 0)
@@ -474,6 +475,7 @@
                 <ul>
                     <li><a href="{{ route('home') }}">Beranda</a></li>
                     <li><a href="{{ route('course.index') }}">Semua Kursus</a></li>
+                    <li><a href="{{ route('events.index') }}">Event</a></li>
                     <li><a href="{{ route('article.index') }}">Artikel & Tips</a></li>
                     @guest
                     <li><a href="{{ route('register') }}">Daftar Gratis</a></li>

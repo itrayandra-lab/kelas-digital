@@ -77,6 +77,7 @@ class RolePermissionSeeder extends Seeder
             'view dashboard',
             'manage site settings',
             'view reports',
+            'manage events',
 
             // System Management (Super-Admin only)
             'manage roles',
@@ -196,6 +197,7 @@ class RolePermissionSeeder extends Seeder
             'view dashboard',
             'manage site settings',
             'view reports',
+            'manage events',
         ]);
 
         // Super Admin role - gets all permissions via Gate::before rule + specific system permissions

@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -78,7 +79,10 @@ class HomeController extends Controller
             'total_articles' => Article::published()->count(),
         ];
 
+        $events = Event::published()->upcoming()->with(['sessions' => fn ($q) => $q->withCount('registrations')])->limit(3)->get();
+
         return view('home', compact(
+            'events',
             'heroArticles',
             'featuredCourses',
             'isFeaturedFallback',

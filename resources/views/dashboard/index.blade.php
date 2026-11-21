@@ -119,6 +119,19 @@
 .db-steps li { list-style:none; display:flex; gap:.75rem; align-items:flex-start; font-size:.85rem; color:#4b5b73; line-height:1.45; }
 .db-steps li i { width:34px; height:34px; flex-shrink:0; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
 .db-steps li b { display:block; color:var(--ink); font-size:.88rem; }
+.db-ev { display:flex; gap:.8rem; padding:.75rem 0; border-top:1px solid var(--border); }
+.db-ev:first-of-type { border-top:0; padding-top:0; }
+.db-ev-date { width:48px; flex-shrink:0; border-radius:12px; background:var(--blue-xl); text-align:center; padding:.35rem 0; line-height:1.1; }
+.db-ev-date b { display:block; font-family:'Sora',sans-serif; font-size:1.15rem; color:var(--ink); }
+.db-ev-date span { font-size:.64rem; font-weight:700; text-transform:uppercase; color:var(--blue); }
+.db-ev-info { flex:1; min-width:0; }
+.db-ev-info a.t { display:block; font-weight:700; font-size:.88rem; color:var(--ink); text-decoration:none; line-height:1.35; }
+.db-ev-info a.t:hover { color:var(--blue); }
+.db-ev-info small { display:block; font-size:.76rem; color:var(--muted); margin-top:.15rem; }
+.db-ev-go { display:inline-flex; align-items:center; gap:.35rem; margin-top:.45rem; min-height:36px; padding:.35rem .8rem; border-radius:10px; background:#6d4ed8; color:#fff; font-size:.78rem; font-weight:700; text-decoration:none; }
+.db-ev-go:hover { background:#5b3cc4; color:#fff; }
+.db-ev-more { display:inline-block; margin-top:.8rem; font-size:.82rem; font-weight:700; color:var(--blue); text-decoration:none; }
+.db-ev-more:hover { text-decoration:underline; }
 
 @media (prefers-reduced-motion: reduce) { .db-row, .db-btn { transition:none; } }
 @media (max-width: 1024px) {
@@ -297,6 +310,26 @@
         </div>
 
         <aside class="db-side">
+            <div class="db-box" data-tour="events">
+                <h3><i class="fas fa-calendar-days" aria-hidden="true"></i> Event saya</h3>
+                @forelse($myEvents as $reg)
+                    <div class="db-ev">
+                        <div class="db-ev-date"><b>{{ $reg->event->event_date->format('j') }}</b><span>{{ $reg->event->event_date->locale('id')->translatedFormat('M') }}</span></div>
+                        <div class="db-ev-info">
+                            <a class="t" href="{{ route('events.show', $reg->event) }}">{{ $reg->event->title }}</a>
+                            <small>{{ $reg->session->label }} · {{ $reg->session->timeLabel() }} {{ $reg->event->timezone }}</small>
+                            <small>{{ $reg->event->isOnline() ? 'Online' : $reg->event->venue }}</small>
+                            @if($reg->event->isOnline() && $reg->event->meeting_url)
+                                <a class="db-ev-go" href="{{ $reg->event->meeting_url }}" target="_blank" rel="noopener"><i class="fas fa-video" aria-hidden="true"></i> Masuk acara</a>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <p class="db-note" style="font-size:.85rem;margin:0;">Kamu belum mendaftar event. Ada kelas praktik dan workshop gratis, offline maupun online.</p>
+                @endforelse
+                <a href="{{ route('events.index') }}" class="db-ev-more">{{ $myEvents->isEmpty() ? 'Lihat event mendatang' : 'Lihat event lainnya' }} <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+
             <div class="db-box">
                 <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Nilai tes terakhir</h3>
                 @forelse($recentTests as $attempt)

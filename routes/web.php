@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryCo
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\HeroSliderController as AdminHeroSliderController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\RoleController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\PaymentController;
@@ -55,6 +57,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/{slug}/completed', [LessonController::class, 'completed'])->name('course.completed');
 });
 Route::post('/course/{slug}/enroll', [CourseController::class, 'enroll'])->middleware('throttle:10,1')->name('course.enroll');
+// Events: anyone can look; signing up needs an account so name and email come from the profile.
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{event}/daftar', [EventController::class, 'join'])->name('events.join');
+Route::middleware('auth')->controller(EventController::class)->group(function () {
+    Route::post('/events/{event}/daftar', 'register')->middleware('throttle:10,1')->name('events.register');
+    Route::delete('/events/{event}/daftar', 'cancel')->name('events.cancel');
+});
 Route::get('/article/{slug}', [HomeController::class, 'showArticle'])->name('article.show');
 Route::get('/articles', [ArticleController::class, 'index'])->name('article.index');
 Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category');
@@ -144,6 +154,14 @@ Route::prefix('admin')
             Route::delete('questions/{question}', 'destroyQuestion')->name('questions.destroy');
             Route::post('questions/{question}/move/{direction}', 'moveQuestion')->whereIn('direction', ['up', 'down'])->name('questions.move');
             Route::put('attempts/{attempt}/review', 'reviewAttempt')->name('attempts.review');
+        });
+
+        // Events and their registrations
+        Route::middleware('can:manage events')->group(function () {
+            Route::resource('events', AdminEventController::class)->except(['show']);
+            Route::get('events/{event}/peserta', [AdminEventController::class, 'registrations'])->name('events.registrations');
+            Route::get('events/{event}/peserta.csv', [AdminEventController::class, 'exportRegistrations'])->name('events.registrations.export');
+            Route::delete('event-registrations/{registration}', [AdminEventController::class, 'destroyRegistration'])->name('events.registrations.destroy');
         });
 
         // User management

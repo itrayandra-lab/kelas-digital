@@ -27,6 +27,7 @@ class User extends Authenticatable
         'last_login',
         'origin_type',
         'institution',
+        'phone',
     ];
 
     /** Where a learner comes from; the institution name is asked for everyone except the general public. */
@@ -93,6 +94,11 @@ class User extends Authenticatable
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function eventRegistrations()
+    {
+        return $this->hasMany(EventRegistration::class);
     }
 
     public function completedLessons()

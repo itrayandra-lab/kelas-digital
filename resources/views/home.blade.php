@@ -422,6 +422,16 @@
 </style>
 @endpush
 
+@include('partials.event-styles')
+@push('styles')
+<style>
+.ev-home { padding:3.5rem 0; background:linear-gradient(180deg,#f3f8ff 0%,#fff 100%); }
+.ev-home-head { display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.ev-home-head h2 { font-family:'Sora',sans-serif; font-size:clamp(1.4rem,3vw,1.9rem); font-weight:700; letter-spacing:-.02em; margin:0 0 .3rem; }
+.ev-home-head p { color:var(--muted); margin:0; }
+</style>
+@endpush
+
 @section('content')
 
 {{-- ═══════════════════════════════
@@ -535,6 +545,26 @@
         </div>
     </div>
 </section>
+
+{{-- Upcoming events --}}
+@if($events->isNotEmpty())
+<section class="ev-home">
+    <div class="wrap">
+        <div class="ev-home-head rv">
+            <div>
+                <h2>Event mendatang</h2>
+                <p>Kelas praktik dan workshop gratis, offline maupun online. Kursinya terbatas.</p>
+            </div>
+            <a href="{{ route('events.index') }}" class="browse-all">Lihat semua event <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="ev-grid">
+            @foreach($events as $event)
+                @include('events._card')
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- ═══════════════════════════════
      3. FREE COURSE BANNER — FIXED
