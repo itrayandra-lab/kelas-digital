@@ -1,5 +1,5 @@
 {{-- Guided tour assets (Driver.js kept locally in public/vendor/driverjs) --}}
 <link rel="stylesheet" href="{{ asset('vendor/driverjs/driver.css') }}">
-<link rel="stylesheet" href="{{ asset('css/ka-tour.css') }}?v=5">
+<link rel="stylesheet" href="{{ asset('css/ka-tour.css') }}?v=6">
 <script src="{{ asset('vendor/driverjs/driver.js.iife.js') }}"></script>
 <script src="{{ asset('js/ka-tour.js') }}?v=3"></script>

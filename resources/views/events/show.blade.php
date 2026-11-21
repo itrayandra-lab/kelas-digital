@@ -86,7 +86,7 @@
             <h1>{{ $event->title }}</h1>
             @if($event->subtitle)<p class="evd-sub">{{ $event->subtitle }}</p>@endif
 
-            <div class="evd-facts">
+            <div class="evd-facts" data-tour="info">
                 <div class="evd-fact">
                     <div class="evd-ic c1"><i class="fas fa-calendar-days" aria-hidden="true"></i></div>
                     <div><small>Tanggal</small><b>{{ $event->dateLabel() }}</b></div>
@@ -111,7 +111,7 @@
             </div>
 
             {{-- Sign-up status: ticket, closed, or the sessions with a button to the form --}}
-            <div class="evd-card evd-status" id="tiket">
+            <div class="evd-card evd-status" id="tiket" data-tour="status">
                 @if($registration)
                     <div class="evt">
                         <div class="evt-ck"><i class="fas fa-check" aria-hidden="true"></i></div>
@@ -134,7 +134,7 @@
                     @if(session('event_cancelled'))<div class="evf-alert ok">Pendaftaranmu sudah dibatalkan.</div>@endif
                     @include('events._sessions')
                     @if($seatsLeft > 0)
-                        <a href="{{ route('events.join', $event) }}" class="evf-btn">Daftar sekarang <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                        <a href="{{ route('events.join', $event) }}" class="evf-btn" data-tour="daftar">Daftar sekarang <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                         @guest<p class="evd-guest">Pakai akun Ray Academy. Belum punya? <a href="{{ route('events.join', [$event, 'baru' => 1]) }}" style="color:var(--blue);font-weight:600;">Buat akun gratis</a></p>@endguest
                     @else
                         <div class="evf-alert warn">Semua sesi sudah penuh. Kursi bisa terbuka lagi kalau ada peserta yang membatalkan.</div>
@@ -143,7 +143,7 @@
             </div>
 
             @if($event->description)
-                <div class="evd-desc">
+                <div class="evd-desc" data-tour="tentang">
                     <h2>Tentang event ini</h2>
                     {!! $event->descriptionHtml() !!}
                 </div>
@@ -159,3 +159,16 @@
     </div>
 @endif
 @endsection
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('event-page', [
+  { popover: { title: 'Cara ikut event ini', description: 'Cukup tiga langkah: lihat info acaranya, pilih sesi, lalu daftar. Gratis, pakai akun Ray Academy.' } },
+  { element: '[data-tour="info"]', popover: { title: 'Kapan dan di mana', description: 'Tanggal, jam setiap sesi, dan lokasi acara ada di sini.', side: 'bottom' } },
+  { element: '[data-tour="status"]', popover: { title: @js($registration ? 'Kamu sudah terdaftar' : 'Sisa kursi'), description: @js($registration ? 'Tekan "Lihat tiket saya" untuk membuka tiket dan QR-mu.' : 'Kursi setiap sesi terbatas. Angka "Sisa" berkurang setiap ada yang mendaftar.'), side: 'top' } },
+  { element: '[data-tour="daftar"]', popover: { title: 'Daftar di sini', description: 'Tekan tombol ini. Kalau belum masuk, kamu diminta login atau buat akun dulu, lalu langsung kembali ke form pendaftaran.', side: 'top' } },
+  { element: '[data-tour="tentang"]', popover: { title: 'Isi acara', description: 'Baca dulu apa yang akan kamu pelajari dan apa yang perlu disiapkan.', side: 'top' } }
+]);
+</script>
+@endpush

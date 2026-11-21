@@ -78,7 +78,7 @@
                 {{ session('checkin') === 'hadir' ? $registration->name.' sudah ditandai hadir.' : 'Tanda hadir dibatalkan.' }}
             </div>
         @endif
-        <div class="tk-staff">
+        <div class="tk-staff" data-tour="checkin">
             <small>Mode panitia · {{ $event->title }}</small>
             <b>{{ $registration->name }}</b>
             <p>{{ $session->label }} · {{ $session->timeLabel() }} {{ $event->timezone }} · usia {{ $registration->age }}</p>
@@ -114,7 +114,7 @@
                 <b>{{ $event->title }}</b>
                 @if($event->subtitle)<span>{{ $event->subtitle }}</span>@endif
             </div>
-            <div class="tk-qr">
+            <div class="tk-qr" data-tour="qr">
                 <div role="img" aria-label="QR code tiket {{ $registration->code }}">{!! $qr !!}</div>
                 <div class="tk-code">{{ $registration->code }}</div>
                 <p>Kode tiket, kalau QR tidak bisa dipindai</p>
@@ -143,9 +143,9 @@
             @if($event->isOnline() && $event->meeting_url)
                 <a href="{{ $event->meeting_url }}" target="_blank" rel="noopener" class="evf-btn violet"><i class="fas fa-video" aria-hidden="true"></i> Masuk ke acara online</a>
             @endif
-            <a href="{{ route('tickets.download', $registration) }}" class="evf-btn"><i class="fas fa-download" aria-hidden="true"></i> Unduh tiket (PDF)</a>
+            <a href="{{ route('tickets.download', $registration) }}" class="evf-btn" data-tour="unduh"><i class="fas fa-download" aria-hidden="true"></i> Unduh tiket (PDF)</a>
             @unless($past)
-                <a href="{{ $registration->calendarUrl() }}" target="_blank" rel="noopener" class="evf-btn ghost"><i class="far fa-calendar-plus" aria-hidden="true"></i> Simpan ke Google Calendar</a>
+                <a href="{{ $registration->calendarUrl() }}" target="_blank" rel="noopener" class="evf-btn ghost" data-tour="kalender"><i class="far fa-calendar-plus" aria-hidden="true"></i> Simpan ke Google Calendar</a>
             @endunless
             @if(! $event->isOnline() && $event->maps_url)
                 <a href="{{ $event->maps_url }}" target="_blank" rel="noopener" class="evf-btn ghost"><i class="fas fa-map-location-dot" aria-hidden="true"></i> Petunjuk arah ke lokasi</a>
@@ -155,7 +155,7 @@
         @unless($past)
             <form method="POST" action="{{ route('events.cancel', $event) }}" x-data @submit="if (!$el.dataset.ok) { $event.preventDefault(); $el.dataset.ok = 1; $el.querySelector('button').textContent = 'Yakin batal? Tekan sekali lagi'; }">
                 @csrf @method('DELETE')
-                <button type="submit" class="tk-cancel">Tidak jadi ikut? Batalkan pendaftaran</button>
+                <button type="submit" class="tk-cancel" data-tour="batal">Tidak jadi ikut? Batalkan pendaftaran</button>
             </form>
         @endunless
     @elseif(! $isStaff)
@@ -171,3 +171,24 @@
     @endif
 </div>
 @endsection
+
+@if($isStaff || $isOwner)
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+@if($isStaff)
+KATour.page('event-checkin', [
+  { element: '[data-tour="checkin"]', popover: { title: 'Mode panitia', description: 'Halaman ini terbuka setelah kamu memindai QR peserta. Pastikan nama dan sesinya cocok.', side: 'bottom' } },
+  { element: '[data-tour="checkin"] form', popover: { title: 'Tandai hadir', description: 'Tekan tombol hijau ini. Status peserta langsung berubah jadi hadir di daftar peserta admin. Salah tekan? Tombolnya bisa dibatalkan.', side: 'top' } }
+]);
+@else
+KATour.page('event-ticket', [
+  { element: '[data-tour="qr"]', popover: { title: 'Ini tiketmu', description: 'Saat datang, tunjukkan QR ini ke panitia. Kalau QR tidak terbaca, sebutkan kode di bawahnya.', side: 'bottom' } },
+  { element: '[data-tour="unduh"]', popover: { title: 'Simpan tiket', description: 'Unduh PDF-nya supaya tetap bisa dibuka tanpa internet. Screenshot halaman ini juga boleh.', side: 'top' } },
+  { element: '[data-tour="kalender"]', popover: { title: 'Biar tidak lupa', description: 'Simpan jadwalnya ke Google Calendar, nanti HP-mu memberi pengingat.', side: 'top' } },
+  { element: '[data-tour="batal"]', popover: { title: 'Berhalangan?', description: 'Batalkan di sini supaya kursimu bisa dipakai orang lain.', side: 'top' } }
+]);
+@endif
+</script>
+@endpush
+@endif

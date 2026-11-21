@@ -44,4 +44,6 @@
 }
 /* Keep clear of the course page's mobile buy bar */
 @media (max-width: 1024px) { .cd-bar ~ .ka-tour-btn, body:has(.cd-bar) .ka-tour-btn { bottom: 84px; } }
+/* ...and the event page's sign-up bar */
+@media (max-width: 900px) { body:has(.evd-bar) .ka-tour-btn { bottom: 88px; } }
 @media (max-width: 480px) { .driver-popover.ka-tour { max-width: calc(100vw - 32px); padding: 18px 16px 14px; } }

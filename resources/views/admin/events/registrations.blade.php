@@ -12,7 +12,7 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('admin.events.edit', $event) }}" class="px-4 py-2 text-sm font-semibold rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Edit event</a>
-            <a href="{{ route('admin.events.registrations.export', $event) }}" class="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700">
+            <a href="{{ route('admin.events.registrations.export', $event) }}" data-tour="csv" class="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700">
                 <i class="fas fa-download mr-1"></i> Unduh CSV
             </a>
         </div>
@@ -23,7 +23,7 @@
     @endif
 
     {{-- Door check-in --}}
-    <div class="bg-white rounded-lg shadow-sm p-5 mb-6 grid md:grid-cols-2 gap-5 items-center">
+    <div class="bg-white rounded-lg shadow-sm p-5 mb-6 grid md:grid-cols-2 gap-5 items-center" data-tour="cek-tiket">
         <div>
             <h2 class="font-semibold text-gray-900"><i class="fas fa-qrcode text-primary-600 mr-1"></i> Cek tiket di pintu masuk</h2>
             <ol class="mt-2 text-sm text-gray-600 space-y-1 list-decimal list-inside">
@@ -44,7 +44,7 @@
     </div>
 
     {{-- Seats per session --}}
-    <div class="grid gap-4 mb-6" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+    <div class="grid gap-4 mb-6" data-tour="kuota" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
         <div class="bg-white rounded-lg shadow-sm p-4">
             <p class="text-xs text-gray-500">Total pendaftar</p>
             <p class="text-2xl font-bold text-gray-900 tabular-nums">{{ $event->sessions->sum('registrations_count') }} <span class="text-sm font-medium text-gray-400">/ {{ $event->sessions->sum('capacity') }}</span></p>
@@ -62,7 +62,7 @@
         @endforeach
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden" data-tour="tabel">
         <form method="GET" class="p-4 border-b border-gray-100 flex flex-wrap gap-2 items-center">
             @if($session)<input type="hidden" name="sesi" value="{{ $session->id }}">@endif
             <label for="q" class="sr-only">Cari peserta</label>
@@ -137,3 +137,15 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('admin-event-peserta', [
+  { element: '[data-tour="kuota"]', popover: { title: 'Sisa kursi', description: 'Jumlah pendaftar dan sisa kursi tiap sesi. Klik kotak sesi untuk melihat peserta sesi itu saja.', side: 'bottom' } },
+  { element: '[data-tour="cek-tiket"]', popover: { title: 'Di hari acara', description: 'Pindai QR tiket peserta pakai kamera HP (login sebagai admin dulu), lalu tekan Tandai hadir. Kalau QR tidak terbaca, ketik kodenya di sini.', side: 'bottom' } },
+  { element: '[data-tour="tabel"]', popover: { title: 'Daftar peserta', description: 'Klik nomor WhatsApp untuk langsung chat. Tombol Tandai hadir juga bisa ditekan dari sini.', side: 'top' } },
+  { element: '[data-tour="csv"]', popover: { title: 'Unduh data', description: 'Data peserta lengkap dengan kode tiket dan jam hadir, langsung rapi saat dibuka di Excel.', side: 'left' } }
+]);
+</script>
+@endpush

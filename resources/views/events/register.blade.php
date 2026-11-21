@@ -74,7 +74,7 @@
     <form method="POST" action="{{ route('events.register', $event) }}" class="evd-card evr-form" x-data="{ busy: false }" @submit="busy = true">
         @csrf
         <h2 class="evr-step"><span>1</span> Data kamu</h2>
-        <div class="evr-acc">
+        <div class="evr-acc" data-tour="akun">
             <div class="av" aria-hidden="true">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</div>
             <div style="min-width:0;"><b>{{ $user->name }}</b><span>{{ $user->email }}</span></div>
             <i class="fas fa-circle-check" aria-hidden="true"></i>
@@ -82,17 +82,17 @@
         <p class="evr-hint">Diambil dari akunmu. Salah nama? Ubah di <a href="{{ route('profile.edit') }}" style="color:var(--blue);">profil</a>.</p>
 
         <label class="evr-label" for="whatsapp">Nomor WhatsApp</label>
-        <input class="evr-input" type="tel" id="whatsapp" name="whatsapp" inputmode="tel" autocomplete="tel" required
+        <input class="evr-input" type="tel" id="whatsapp" data-tour="wa" name="whatsapp" inputmode="tel" autocomplete="tel" required
             placeholder="08xxxxxxxxxx" value="{{ old('whatsapp', $user->phone) }}" @if($errors->has('whatsapp')) aria-invalid="true" aria-describedby="wa-err" @endif>
         @error('whatsapp')<p class="evr-err" id="wa-err">{{ $message }}</p>@else<p class="evr-hint">Untuk info mendadak dari panitia, misalnya perubahan jadwal.</p>@enderror
 
         <label class="evr-label" for="age">Usia</label>
-        <input class="evr-input" type="number" id="age" name="age" min="10" max="100" inputmode="numeric" required style="max-width:9rem;"
+        <input class="evr-input" type="number" id="age" data-tour="usia" name="age" min="10" max="100" inputmode="numeric" required style="max-width:9rem;"
             value="{{ old('age') }}" @if($errors->has('age')) aria-invalid="true" aria-describedby="age-err" @endif>
         @error('age')<p class="evr-err" id="age-err">{{ $message }}</p>@enderror
 
         <h2 class="evr-step" id="sesi-label"><span>2</span> Pilih sesi</h2>
-        <div class="evr-opts" role="radiogroup" aria-labelledby="sesi-label">
+        <div class="evr-opts" role="radiogroup" aria-labelledby="sesi-label" data-tour="sesi">
             @foreach($event->sessions as $session)
                 @php $left = $session->seatsLeft(); @endphp
                 <label class="evr-opt {{ $left === 0 ? 'full' : '' }}">
@@ -107,10 +107,23 @@
             @endforeach
         </div>
 
-        <button type="submit" class="evf-btn" :disabled="busy" @disabled(! $anySeat) style="margin-top:1.5rem;">
+        <button type="submit" class="evf-btn" data-tour="kirim" :disabled="busy" @disabled(! $anySeat) style="margin-top:1.5rem;">
             <span x-text="busy ? 'Menyimpan…' : @js($anySeat ? 'Daftar sekarang' : 'Semua sesi sudah penuh')">{{ $anySeat ? 'Daftar sekarang' : 'Semua sesi sudah penuh' }}</span>
         </button>
         <p class="evr-free"><i class="fas fa-circle-check" aria-hidden="true"></i> Gratis. Kalau nanti berhalangan, kamu bisa membatalkan pendaftaran dari halaman event supaya kursinya terbuka untuk orang lain.</p>
     </form>
 </div>
 @endsection
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('event-form', [
+  { element: '[data-tour="akun"]', popover: { title: 'Nama dan email sudah terisi', description: 'Diambil dari akunmu, jadi tidak perlu diketik lagi.', side: 'bottom' } },
+  { element: '[data-tour="wa"]', popover: { title: 'Nomor WhatsApp', description: 'Isi nomor yang aktif, contohnya 081234567890. Panitia memakainya kalau ada info mendadak.', side: 'bottom' } },
+  { element: '[data-tour="usia"]', popover: { title: 'Usia', description: 'Cukup tulis angkanya, misalnya 35.', side: 'bottom' } },
+  { element: '[data-tour="sesi"]', popover: { title: 'Pilih satu sesi', description: 'Ketuk sesi yang masih ada kursinya. Sesi yang penuh tidak bisa dipilih.', side: 'top' } },
+  { element: '[data-tour="kirim"]', popover: { title: 'Selesai, tekan Daftar', description: 'Setelah ditekan, tiketmu langsung muncul dan juga dikirim ke email.', side: 'top' } }
+]);
+</script>
+@endpush

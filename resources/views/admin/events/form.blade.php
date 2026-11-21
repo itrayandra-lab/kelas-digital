@@ -22,7 +22,7 @@
             @if($event->exists)
                 <a href="{{ route('events.show', $event) }}" target="_blank" class="px-5 py-2.5 text-sm font-semibold rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">Lihat halaman</a>
             @endif
-            <button type="submit" class="px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700">
+            <button type="submit" data-tour="simpan" class="px-6 py-2.5 bg-primary-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-primary-700">
                 {{ $event->exists ? 'Simpan perubahan' : 'Buat event' }}
             </button>
         </div>
@@ -42,7 +42,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             {{-- Basic info --}}
-            <section class="bg-white rounded-lg shadow-sm p-6 space-y-5">
+            <section class="bg-white rounded-lg shadow-sm p-6 space-y-5" data-tour="step1">
                 <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">1</span> Judul dan deskripsi</h2>
                 <div>
                     <label for="title" class="{{ $label }}">Judul event</label>
@@ -66,7 +66,7 @@
             </section>
 
             {{-- When & where --}}
-            <section class="bg-white rounded-lg shadow-sm p-6 space-y-5">
+            <section class="bg-white rounded-lg shadow-sm p-6 space-y-5" data-tour="step2">
                 <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">2</span> Kapan dan di mana</h2>
                 <div>
                     <span class="{{ $label }}">Jenis event</span>
@@ -118,7 +118,7 @@
             </section>
 
             {{-- Sessions --}}
-            <section class="bg-white rounded-lg shadow-sm p-6">
+            <section class="bg-white rounded-lg shadow-sm p-6" data-tour="step3">
                 <div class="flex items-center justify-between gap-3 mb-1">
                     <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">3</span> Sesi dan kuota peserta</h2>
                     <button type="button" @click="sessions.push({ id: null, label: 'Sesi ' + (sessions.length + 1), starts_at: '', ends_at: '', capacity: sessions.length ? sessions[sessions.length - 1].capacity : 15, registered: 0 })"
@@ -163,7 +163,7 @@
 
         {{-- Sidebar --}}
         <div class="space-y-6">
-            <section class="bg-white rounded-lg shadow-sm p-6">
+            <section class="bg-white rounded-lg shadow-sm p-6" data-tour="cover">
                 <h2 class="font-semibold text-gray-900 mb-3">Poster / gambar cover</h2>
                 <div class="aspect-[4/5] rounded-lg overflow-hidden bg-gray-100 mb-3 flex items-center justify-center">
                     <img x-show="preview" :src="preview" alt="" class="w-full h-full object-cover" x-cloak>
@@ -180,7 +180,7 @@
                 <p class="mt-2 text-xs text-gray-500">JPG, PNG, atau WebP, maksimal 4 MB.{{ $event->cover ? ' Kosongkan kalau tidak ingin mengganti.' : '' }}</p>
             </section>
 
-            <section class="bg-white rounded-lg shadow-sm p-6 space-y-4">
+            <section class="bg-white rounded-lg shadow-sm p-6 space-y-4" data-tour="step4">
                 <h2 class="flex items-center gap-2 font-semibold text-gray-900"><span class="w-7 h-7 rounded-full bg-primary-600 text-white text-sm flex items-center justify-center">4</span> Terbitkan</h2>
                 <label class="flex items-start gap-3 cursor-pointer">
                     <input type="hidden" name="is_published" value="0">
@@ -197,3 +197,17 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+@include('partials.tour-assets')
+<script>
+KATour.page('admin-event-form', [
+  { element: '[data-tour="step1"]', popover: { title: '1. Judul dan deskripsi', description: 'Tulis judul yang mudah dipahami. Di deskripsi, awali baris dengan ## untuk judul kecil dan - untuk daftar poin.', side: 'right' } },
+  { element: '[data-tour="cover"]', popover: { title: 'Poster', description: 'Upload poster tegak (4:5), misalnya 1080x1350 px. Poster ini tampil di halaman event, beranda, dan tiket.', side: 'left' } },
+  { element: '[data-tour="step2"]', popover: { title: '2. Kapan dan di mana', description: 'Pilih Offline lalu isi nama tempat, atau Online lalu tempel link Zoom/Meet. Link online hanya terlihat oleh peserta yang sudah mendaftar.', side: 'right' } },
+  { element: '[data-tour="step3"]', popover: { title: '3. Sesi dan kuota', description: 'Satu baris = satu sesi. Isi jam mulai dan kuota. Tambah sesi lewat tombol di kanan atas kotak ini.', side: 'top' } },
+  { element: '[data-tour="step4"]', popover: { title: '4. Terbitkan', description: 'Centang "Tampilkan di website" kalau event sudah siap dilihat orang. Belum dicentang = masih draf.', side: 'left' } },
+  { element: '[data-tour="simpan"]', popover: { title: 'Simpan', description: 'Terakhir, tekan tombol ini. Kalau ada yang kurang, pesan merah muncul di bagian atas form.', side: 'bottom' } }
+]);
+</script>
+@endpush
