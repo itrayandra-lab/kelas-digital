@@ -18,6 +18,11 @@ class Course extends Model
     use HasSEO;
     use Sluggable;
 
+    protected static function booted(): void
+    {
+        static::saved(fn (Course $course) => \App\Services\IndexNow::ping([route('course.show', $course->slug), route('course.index')]));
+    }
+
     /** Learner counts below this look empty on a new platform, so pages hide them until a course reaches it. */
     public const MIN_STUDENTS_SHOWN = 50;
 

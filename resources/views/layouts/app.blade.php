@@ -286,6 +286,7 @@
     </style>
 
     @stack('styles')
+    @include('partials.schema-site')
 </head>
 <body x-data="{ mobileMenuOpen: false }">
 

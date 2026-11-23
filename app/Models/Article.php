@@ -510,5 +510,10 @@ class Article extends Model
                 $article->hero_slider_order = null;
             }
         });
+        static::saved(function (Article $article) {
+            if ($article->status === 'published') {
+                \App\Services\IndexNow::ping([route('article.show', $article->slug), route('article.index')]);
+            }
+        });
     }
 }

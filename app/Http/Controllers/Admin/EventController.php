@@ -234,7 +234,8 @@ class EventController extends Controller
         unset($data['sessions']);
         // Left as the default text: keep it empty so improvements to the default reach this event too.
         $template = trim(str_replace("\r\n", "\n", (string) ($data['whatsapp_template'] ?? '')));
-        $data['whatsapp_template'] = $template === '' || $template === trim(Event::DEFAULT_WHATSAPP_TEMPLATE) ? null : $template;
+        $default = trim(str_replace("\r\n", "\n", Event::DEFAULT_WHATSAPP_TEMPLATE));
+        $data['whatsapp_template'] = $template === '' || $template === $default ? null : $template;
         $data['is_published'] = $request->boolean('is_published');
         $data['registration_open'] = $request->boolean('registration_open');
         if ($request->hasFile('cover')) {

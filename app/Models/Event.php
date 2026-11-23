@@ -12,6 +12,15 @@ class Event extends Model
 {
     use Sluggable;
 
+    protected static function booted(): void
+    {
+        static::saved(function (Event $event) {
+            if ($event->is_published) {
+                \App\Services\IndexNow::ping([route('events.show', $event), route('events.index')]);
+            }
+        });
+    }
+
     public const FORMATS = ['offline' => 'Offline', 'online' => 'Online'];
 
     public const TIMEZONES = ['WIB', 'WITA', 'WIT'];

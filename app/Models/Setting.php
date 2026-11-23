@@ -28,7 +28,8 @@ class Setting extends Model
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        $setting = static::where('key', $key)->first();
+        // Every page reads several settings (footer, schema); one query per request covers all of them.
+        $setting = once(fn () => static::all()->keyBy('key'))->get($key);
 
         if (! $setting) {
             return $default;

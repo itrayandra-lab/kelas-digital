@@ -82,7 +82,7 @@ return [
          * so you'll need to add the suffix manually if you want that. If set to null, we'll determine the title
          * just like the other pages.
          */
-        'homepage_title' => 'Ray Academy - Empowering Minds for a Lifetime of Growth',
+        'homepage_title' => 'RayAcademy - Where Knowledge Becomes Capability',
     ],
 
     'description' => [
@@ -91,7 +91,7 @@ return [
          * where we don't have a description set via an associated ->seo model or via
          * the ->getDynamicSEOData() method.
          */
-        'fallback' => 'Platform edukasi kecantikan berbasis sains dengan kursus skincare, makeup, dan hair care berkualitas tinggi. Pelajari kecantikan yang aman dan efektif bersama para ahli dari UNPAD. Where Beauty Meets Science.',
+        'fallback' => 'RayAcademy adalah ekosistem pendidikan dan pengembangan kompetensi bagi individu, profesional, dan perusahaan: Sekolah Kosmetik Indonesia, doBetter Class untuk branding dan marketing, amAIzing Class untuk AI, dan LevelUp Class untuk entrepreneurship.',
     ],
 
     'image' => [
@@ -118,5 +118,23 @@ return [
          * Enter the username like 'yourUserName', so without the '@'.
          */
         '@username' => null,
+    ],
+
+    /*
+     * Our own settings (not the package's), used by robots.txt, llms.txt, ai.txt, the sitemaps and IndexNow.
+     * Only the hosts listed here may be indexed; any other host (local, staging) answers "Disallow: /".
+     */
+    'primary_host' => env('SEO_PRIMARY_HOST', 'rayacademy.id'),
+    'indexable_hosts' => array_filter(explode(',', env('SEO_INDEXABLE_HOSTS', 'rayacademy.id,www.rayacademy.id'))),
+
+    // IndexNow key (8-128 letters, digits or dashes). Empty turns pinging off.
+    'indexnow_key' => env('INDEXNOW_KEY'),
+
+    // Fixed pages for sitemap/pages.xml: path => [changefreq, priority]
+    'pages' => [
+        '/' => ['daily', '1.0'],
+        '/courses' => ['daily', '0.9'],
+        '/events' => ['daily', '0.9'],
+        '/articles' => ['daily', '0.8'],
     ],
 ];

@@ -268,6 +268,16 @@
 </style>
 @endpush
 
+@push('schema')
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => collect(config('faq'))->map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']]])->all(),
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
+</script>
+@endpush
+
 @include('partials.event-styles')
 @push('styles')
 <style>
@@ -553,17 +563,7 @@
     <div class="wrap">
         <h2>Pertanyaan yang sering diajukan</h2>
         <div class="faq-box rv">
-            @php
-            $faqs=[
-                ['q'=>'Bagaimana cara belajar di Ray Academy?','a'=>'Setiap kelas terbagi menjadi beberapa modul. Di setiap modul kamu mengerjakan pre-test, mempelajari materi video dan bacaan secara berurutan, lalu mengerjakan post-test. Modul berikutnya terbuka setelah post-test lulus.'],
-                ['q'=>'Apakah ada kelas gratis?','a'=>'Ada. Kelas berlabel Gratis bisa langsung diikuti setelah mendaftar akun, tanpa pembayaran.'],
-                ['q'=>'Bagaimana cara membayar kelas berbayar?','a'=>'Pembayaran diproses lewat Midtrans. Kamu bisa membayar dengan virtual account bank, QRIS, e-wallet, atau kartu. Kelas langsung terbuka setelah pembayaran berhasil.'],
-                ['q'=>'Berapa lama akses kelas yang sudah saya ikuti?','a'=>'Tidak ada batas waktu. Kelas yang sudah kamu ikuti tetap bisa dibuka kapan saja dari halaman Kursus Saya.'],
-                ['q'=>'Bisakah saya belajar dari smartphone?','a'=>'Bisa. Ray Academy bisa dibuka dari smartphone, tablet, maupun laptop. Progres belajarmu tersimpan, jadi kamu bisa lanjut di perangkat lain.'],
-                ['q'=>'Kapan nilai tes saya keluar?','a'=>'Nilai langsung keluar setelah tes dikirim. Jawaban essay dinilai otomatis dengan mencocokkan maknanya ke kunci jawaban. Kalau sistem penilai sedang tidak tersedia, essay diperiksa oleh tim kami dan nilainya menyusul.'],
-            ];
-            @endphp
-            @foreach($faqs as $faq)
+            @foreach(config('faq') as $faq)
             <div class="faq-item" onclick="toggleFAQ(this)">
                 <div class="faq-q">
                     <h3>{{ $faq['q'] }}</h3>

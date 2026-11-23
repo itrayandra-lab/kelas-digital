@@ -4,6 +4,26 @@
     {!! seo($course) !!}
 @endsection
 
+@push('schema')
+<script type="application/ld+json">
+{!! json_encode(array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'Course',
+    'name' => $course->title,
+    'description' => Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) $course->description))), 500),
+    'url' => route('course.show', $course->slug),
+    'image' => $course->thumbnail_url,
+    'inLanguage' => 'id-ID',
+    'educationalLevel' => $course->level,
+    'provider' => ['@type' => 'Organization', 'name' => 'RayAcademy', 'sameAs' => url('/')],
+    'instructor' => $course->instructor ? ['@type' => 'Person', 'name' => $course->instructor] : null,
+    'offers' => ['@type' => 'Offer', 'category' => $course->price > 0 ? 'Paid' : 'Free', 'price' => (int) $course->price, 'priceCurrency' => 'IDR', 'url' => route('course.show', $course->slug)],
+    'hasCourseInstance' => ['@type' => 'CourseInstance', 'courseMode' => 'Online', 'courseWorkload' => $totalMinutes ? 'PT'.$totalMinutes.'M' : null],
+]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
+</script>
+@include('partials.breadcrumb-schema', ['crumbs' => array_filter(['Beranda' => url('/'), 'Kursus' => route('course.index'), $course->category?->name => $course->category ? route('course.index', ['category' => $course->category->slug]) : null, $course->title => route('course.show', $course->slug)])])
+@endpush
+
 @push('styles')
 <style>
 .cd-hero { background:#F5F5F4; color:#0F1114; border-bottom:1px solid #E2E8F0; position:relative; }

@@ -27,10 +27,25 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Files for search engines and AI assistants (robots, sitemaps, llms.txt, ai.txt, RSS, OpenSearch, IndexNow)
+Route::controller(SeoController::class)->group(function () {
+    Route::get('/robots.txt', 'robots')->name('robots');
+    Route::get('/sitemap.xml', 'sitemapIndex')->name('sitemap');
+    Route::get('/sitemap/{name}.xml', 'sitemap')->where('name', '[a-z]+')->name('sitemap.part');
+    Route::get('/llms.txt', 'llms')->name('llms');
+    Route::get('/llms-full.txt', 'llmsFull')->name('llms.full');
+    Route::get('/ai.txt', 'aiTxt')->name('ai.txt');
+    Route::get('/.well-known/ai.txt', 'aiTxt');
+    Route::get('/feed.xml', 'feed')->name('feed');
+    Route::get('/opensearch.xml', 'opensearch')->name('opensearch');
+    Route::get('/indexnow.txt', 'indexNowKey');
+});
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -8,6 +8,41 @@
     @if($event->cover_url)<meta property="og:image" content="{{ $event->cover_url }}">@endif
 @endsection
 
+@push('schema')
+@php
+    $first = $event->sessions->first();
+    $last = $event->sessions->last();
+    $tz = ['WIB' => '+07:00', 'WITA' => '+08:00', 'WIT' => '+09:00'][$event->timezone] ?? '+07:00';
+    $at = fn (?string $time) => $time ? $event->event_date->format('Y-m-d').'T'.substr($time, 0, 5).':00'.$tz : null;
+@endphp
+<script type="application/ld+json">
+{!! json_encode(array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'Event',
+    'name' => $event->title,
+    'description' => Str::limit(trim(($event->subtitle ? $event->subtitle.'. ' : '').$event->plainDescription()), 500),
+    'image' => $event->cover_url ? [$event->cover_url] : null,
+    'startDate' => $at($first?->starts_at),
+    'endDate' => $at($last?->ends_at ?: $last?->starts_at),
+    'eventStatus' => 'https://schema.org/EventScheduled',
+    'eventAttendanceMode' => $event->isOnline() ? 'https://schema.org/OnlineEventAttendanceMode' : 'https://schema.org/OfflineEventAttendanceMode',
+    'location' => $event->isOnline()
+        ? ['@type' => 'VirtualLocation', 'url' => route('events.show', $event)]
+        : array_filter(['@type' => 'Place', 'name' => $event->venue, 'address' => $event->address ? ['@type' => 'PostalAddress', 'streetAddress' => $event->address, 'addressCountry' => 'ID'] : null]),
+    'organizer' => ['@type' => 'Organization', 'name' => 'RayAcademy', 'url' => url('/')],
+    'offers' => [
+        '@type' => 'Offer', 'price' => 0, 'priceCurrency' => 'IDR', 'url' => route('events.show', $event),
+        'availability' => $event->acceptsRegistrations() && $event->seatsLeft() > 0 ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+        'validFrom' => $event->created_at?->toAtomString(),
+    ],
+    'maximumAttendeeCapacity' => (int) $event->sessions->sum('capacity'),
+    'remainingAttendeeCapacity' => $event->seatsLeft(),
+    'inLanguage' => 'id-ID',
+]), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
+</script>
+@include('partials.breadcrumb-schema', ['crumbs' => ['Beranda' => url('/'), 'Event' => route('events.index'), $event->title => route('events.show', $event)]])
+@endpush
+
 @include('partials.event-styles')
 @include('events._page-styles')
 
