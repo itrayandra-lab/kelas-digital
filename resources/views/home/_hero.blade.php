@@ -13,6 +13,19 @@
 .rh-bg { position:absolute; inset:0; }
 .rh-bg img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
 .rh .splide__spinner { display:none; }
+/* Text laid over a blank panel inside a photo. The box is cropped exactly like the picture (cover, centred),
+   so the panel text stays on the panel at any slide size. Wide screens only: on phones the panel is too small. */
+.rh-photo-box { display:none; }
+@media (min-width: 900px) {
+    .rh-bg { container-type:size; }
+    .rh-photo-box { display:block; position:absolute; pointer-events:none; container-type:inline-size;
+        width:max(100cqw, 177.78cqh); aspect-ratio:16 / 9;
+        left:calc((100cqw - max(100cqw, 177.78cqh)) / 2); top:calc((100cqh - max(100cqw, 177.78cqh) * .5625) / 2); }
+    .rh-panel { position:absolute; display:flex; flex-direction:column; justify-content:center; gap:.35cqw; padding-left:.8cqw; color:#fff; font-family:'DM Sans',sans-serif; }
+    .rh-panel b { font-size:.95cqw; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#f5b544; }
+    .rh-panel span { font-size:1.28cqw; font-weight:600; line-height:1.3; }
+    .rh-panel i { font-style:normal; color:#38c8f5; margin:0 .35em; }
+}
 /* Keeps the text side readable whatever is in the photo. */
 .rh-shade { position:absolute; inset:0; pointer-events:none; }
 .rh-slide.dark.left .rh-shade { background:linear-gradient(90deg,rgba(5,20,48,.86) 0%,rgba(5,20,48,.62) 38%,rgba(5,20,48,0) 62%); }
@@ -115,6 +128,15 @@
                                     <img src="{{ asset($img.'-m.webp') }}" srcset="{{ $srcset }}" sizes="100vw" alt="" width="1920" height="1080" fetchpriority="high">
                                 @else
                                     <img data-splide-lazy="{{ asset($img.'-m.webp') }}" data-splide-lazy-srcset="{{ $srcset }}" sizes="100vw" alt="" width="1920" height="1080">
+                                @endif
+                                @if(! empty($slide['panel']))
+                                    @php [$px, $py, $pw, $ph] = $slide['panel']['box']; @endphp
+                                    <div class="rh-photo-box" aria-hidden="true">
+                                        <div class="rh-panel" style="left:{{ $px }}%;top:{{ $py }}%;width:{{ $pw }}%;height:{{ $ph }}%;">
+                                            <b>{{ $slide['panel']['title'] }}</b>
+                                            <span>{!! collect($slide['panel']['items'])->map(fn ($item) => e($item))->implode('<i>·</i>') !!}</span>
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
                             <div class="rh-shade"></div>
