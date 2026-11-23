@@ -18,7 +18,7 @@
 .rh-slide.dark.left .rh-shade { background:linear-gradient(90deg,rgba(5,20,48,.86) 0%,rgba(5,20,48,.62) 38%,rgba(5,20,48,0) 62%); }
 .rh-slide.dark.right .rh-shade { background:linear-gradient(270deg,rgba(5,20,48,.86) 0%,rgba(5,20,48,.62) 38%,rgba(5,20,48,0) 62%); }
 .rh-slide.light.left .rh-shade { background:linear-gradient(90deg,rgba(246,249,253,.94) 0%,rgba(246,249,253,.75) 36%,rgba(246,249,253,0) 58%); }
-.rh-inner { position:relative; z-index:2; width:100%; max-width:1280px; margin:0 auto; padding:3.5rem 2rem 4.5rem; display:flex; }
+.rh-inner { position:relative; z-index:2; width:100%; max-width:1280px; margin:0 auto; padding:3.5rem 2rem 5.5rem; display:flex; }
 .rh-slide.right .rh-inner { justify-content:flex-end; }
 .rh-text { max-width:690px; color:#fff; }
 .rh-slide.light .rh-text { color:#14294f; }
@@ -67,10 +67,12 @@
 .rh .splide__pagination { bottom:1.4rem; gap:.4rem; z-index:3; }
 .rh .splide__pagination__page { width:10px; height:10px; margin:0; background:rgba(255,255,255,.6); box-shadow:0 0 0 1px rgba(15,42,92,.35); opacity:1; transition:width .25s, background .25s; }
 .rh .splide__pagination__page.is-active { width:30px; border-radius:999px; background:#fff; transform:none; }
-.rh .splide__arrow { width:48px; height:48px; background:rgba(255,255,255,.18); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.35); opacity:1; z-index:3; }
+.rh .splide__arrow { width:40px; height:40px; background:rgba(255,255,255,.18); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.35); opacity:1; z-index:3; }
 .rh .splide__arrow svg { fill:#fff; width:1.1em; height:1.1em; }
 .rh .splide__arrow:hover:not(:disabled) { background:rgba(255,255,255,.32); }
-.rh .splide__arrow--prev { left:1rem; } .rh .splide__arrow--next { right:1rem; }
+/* Arrows sit beside the dots at the bottom, so they never cover the text. */
+.rh .splide__arrow { top:auto; bottom:calc(1.4rem - 15px); transform:none; }
+.rh .splide__arrow--prev { left:auto; right:calc(50% + 82px); } .rh .splide__arrow--next { left:calc(50% + 82px); right:auto; }
 .rh .splide__arrow:focus-visible, .rh .splide__pagination__page:focus-visible { outline:3px solid #38c8f5; outline-offset:2px; }
 
 @media (prefers-reduced-motion: reduce) { .rh-card { animation:none; } .rh-cta { transition:none; } }
