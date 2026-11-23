@@ -50,5 +50,15 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('register', function (Request $request) {
             return Limit::perHour(2)->by($request->ip());
         });
+
+        // RAYA chat: behind Cloudflare every visitor shares the edge IP, so key on the real client IP header when present.
+        RateLimiter::for('raya', function (Request $request) {
+            $ip = $request->header('CF-Connecting-IP') ?: $request->ip();
+
+            return [
+                Limit::perMinute(config('raya.limits.per_minute'))->by('m'.$ip),
+                Limit::perDay(config('raya.limits.per_day'))->by('d'.$ip),
+            ];
+        });
     }
 }

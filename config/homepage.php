@@ -104,7 +104,7 @@ return [
 
     /*
      * Where buttons without their own page go. null means the fallback:
-     * raya → class search (no RAYA chat yet), corporate → WhatsApp or e-mail from Site Settings.
+     * raya → opens the RAYA chat widget, corporate → WhatsApp or e-mail from Site Settings.
      */
     'links' => [
         'raya' => env('RAYA_URL'),

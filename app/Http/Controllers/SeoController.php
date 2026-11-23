@@ -217,7 +217,13 @@ class SeoController extends Controller
     // llms-full.txt: full plain-text content so AI can answer without scraping HTML.
     public function llmsFull()
     {
-        $body = Cache::remember('llms-full:'.$this->siteUrl(), 3600, function () {
+        return $this->text($this->llmsFullText());
+    }
+
+    /** The llms-full.txt body; RAYA's knowledge base reads it too. */
+    public function llmsFullText(): string
+    {
+        return Cache::remember('llms-full:'.$this->siteUrl(), 3600, function () {
             $base = $this->siteUrl();
             $out = ['# RayAcademy - Konten Lengkap', "# Sumber: {$base}", "# Ringkasan singkat: {$base}/llms.txt", '', $this->about()];
             if ($contact = $this->contact()) {
@@ -268,8 +274,6 @@ class SeoController extends Controller
 
             return implode("\n", $out)."\n";
         });
-
-        return $this->text($body);
     }
 
     // ai.txt: AI usage policy, mirrors robots.txt.

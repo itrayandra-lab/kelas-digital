@@ -546,6 +546,7 @@
 </script>
 
 
+@include('partials.raya-chat')
 @stack('scripts')
 </body>
 </html>

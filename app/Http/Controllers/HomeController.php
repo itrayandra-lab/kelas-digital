@@ -42,7 +42,7 @@ class HomeController extends Controller
 
         $whatsapp = Setting::get('social_whatsapp');
         $links = [
-            'raya' => config('homepage.links.raya') ?: route('search'),
+            'raya' => config('homepage.links.raya') ?: '#tanya-raya',
             'corporate' => config('homepage.links.corporate')
                 ?: ($whatsapp ?: 'mailto:'.Setting::get('contact_email').'?subject='.rawurlencode('Konsultasi Corporate Training')),
             'smart_book' => config('homepage.links.smart_book'),

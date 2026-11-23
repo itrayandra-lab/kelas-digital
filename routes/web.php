@@ -25,6 +25,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RayaChatController;
 use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
@@ -96,6 +97,7 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('article.inde
 Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category');
 Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::post('/raya/chat', [RayaChatController::class, 'chat'])->middleware('throttle:raya')->name('raya.chat');
 
 // Midtrans payment routes
 // Each checkout calls Midtrans, so one person can't hammer it.
