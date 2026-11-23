@@ -66,4 +66,49 @@ return [
             'journey' => ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
         ],
     ],
+
+    /*
+     * Learning Families shown in "Explore What You Can Learn". Add a new family here and it appears on the page.
+     * image: public/img/home/{image}.webp. theme: blue, peach, teal or navy. featured: shown as the large card.
+     * categories: course category slugs that belong to the family; their classes carry the family name.
+     */
+    'families_intro' => 'RayAcademy menghadirkan empat bidang pembelajaran utama: pendidikan industri kosmetik, Artificial Intelligence (AI), branding dan marketing, serta kewirausahaan dan pengembangan usaha. Jelajahi kelas dan program sesuai minat, profesi, dan kebutuhan pengembangan kompetensi Anda.',
+    'families' => [
+        [
+            'name' => 'Sekolah Kosmetik Indonesia', 'href' => '/courses', 'image' => 'family-ski', 'theme' => 'navy',
+            'active' => true, 'featured' => true, 'order' => 1, 'categories' => [],
+            'description' => 'Pendidikan dan pelatihan industri kosmetik yang mencakup sains kosmetik, formulasi, pengembangan produk kosmetik, manufaktur, hingga regulasi, pengujian, dan pengembangan produk. Menggabungkan teori, pengetahuan ilmiah, pengalaman praktis, dan kebutuhan nyata industri.',
+        ],
+        [
+            'name' => 'amAIzing Class', 'href' => '/courses?category=technology-ai', 'image' => 'family-amaizing', 'theme' => 'blue',
+            'active' => true, 'featured' => false, 'order' => 2, 'categories' => ['technology-ai'],
+            'description' => 'Pembelajaran Artificial Intelligence (AI) untuk membantu riset, analisis informasi, pembuatan konten, penyusunan strategi, hingga otomatisasi pekerjaan dan pengembangan produktivitas.',
+        ],
+        [
+            'name' => 'doBetter Class', 'href' => '/courses?category=digital-marketing', 'image' => 'family-dobetter', 'theme' => 'peach',
+            'active' => true, 'featured' => false, 'order' => 3, 'categories' => ['digital-marketing', 'personal-branding', 'content-social-media'],
+            'description' => 'Pembelajaran branding dan marketing untuk memahami konsumen, melakukan riset pasar, membangun positioning brand, serta merancang strategi dan campaign pemasaran berbasis insight.',
+        ],
+        [
+            'name' => 'LevelUp Class', 'href' => '/courses?category=business-strategy', 'image' => 'family-levelup', 'theme' => 'teal',
+            'active' => true, 'featured' => false, 'order' => 4, 'categories' => ['business-strategy', 'leadership', 'komunikasi-soft-skills'],
+            'description' => 'Pembelajaran kewirausahaan, pengembangan usaha, leadership, komunikasi, dan keterampilan profesional untuk membantu strategi bisnis, kepemimpinan tim, dan pengambilan keputusan.',
+        ],
+    ],
+
+    // Names under the experts photo, one inner list per line on wide screens.
+    'experts' => [
+        ['Ria R. Christiana, MBA', 'Dr. apt. Soraya Ratnawulan Mita, M.Si', 'apt. Zelika Mega Ramadhania, M.Sc, Ph.D', 'Yusep Maulana, M.Kom, MBA'],
+        ['Prof. Dr. apt. Sriwidodo, M.Si', 'apt. Cahya Khairani Kusumawulan, M.Farm', 'Wendra Wilendra, M.MT', 'Prof. Dr. rer. nat. apt. Anis Yohana Chaerunisaa'],
+    ],
+
+    /*
+     * Where buttons without their own page go. null means the fallback:
+     * raya → class search (no RAYA chat yet), corporate → WhatsApp or e-mail from Site Settings.
+     */
+    'links' => [
+        'raya' => env('RAYA_URL'),
+        'corporate' => env('CORPORATE_TRAINING_URL'),
+        'smart_book' => 'https://baleide.id/aismartbook',
+    ],
 ];

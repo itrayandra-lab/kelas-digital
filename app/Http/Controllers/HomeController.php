@@ -5,92 +5,50 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Course;
-use App\Models\CourseCategory;
 use App\Models\Event;
-use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // 1. Hero Slider - course-platform focused (max 5 slides)
-        $heroArticles = Article::published()
-            ->inHeroSlider()
-            ->with('categories', 'tags')
-            ->limit(5)
+        $families = collect(config('homepage.families'))->where('active', true)->sortBy('order')->values();
+        $flagship = $families->firstWhere('featured', true);
+        $otherFamilies = $families->reject(fn ($family) => $family === $flagship)->values();
+
+        // "Discover your next class": featured classes first, topped up with the newest ones.
+        $nextClasses = Course::featured()->with('category')->limit(4)->get();
+        $nextClasses = $nextClasses->concat(
+            Course::with('category')->whereKeyNot($nextClasses->modelKeys())->latest()->limit(4 - $nextClasses->count())->get()
+        );
+        // Each class is labelled with its Learning Family, or its own category when no family claims it.
+        $nextClasses->each(function (Course $course) use ($families) {
+            $family = $families->first(fn ($f) => in_array($course->category?->slug, $f['categories'], true));
+            $course->family_name = $family['name'] ?? $course->category?->name;
+            $course->family_theme = $family['theme'] ?? 'navy';
+        });
+
+        // Knowledge & Insights: a recommended article leads, the four newest others follow.
+        $leadArticle = Article::published()->recommended()->with('categories')->first()
+            ?? Article::published()->with('categories')->latest('published_at')->first();
+        $moreArticles = Article::published()->with('categories')
+            ->whereKeyNot($leadArticle?->getKey())
+            ->latest('published_at')
+            ->limit(4)
             ->get();
-
-        // Fallback: fill remaining slots with latest articles
-        if ($heroArticles->count() < 5) {
-            $needed = 5 - $heroArticles->count();
-            $excludedIds = $heroArticles->pluck('id');
-
-            $fallbackArticles = Article::published()
-                ->whereNull('hero_slider_order')
-                ->whereNotIn('id', $excludedIds)
-                ->with('categories', 'tags')
-                ->orderBy('published_at', 'desc')
-                ->limit($needed)
-                ->get();
-
-            $heroArticles = $heroArticles->merge($fallbackArticles);
-        }
-
-        // Card data shared by the "Mau belajar apa?" tabs.
-        $cardData = fn ($q) => $q->with('category')
-            ->withCount(['lessons', 'enrollments as students_count' => fn ($e) => $e->where('payment_status', 'completed')]);
-
-        // 2. Featured Courses for the first tab, falling back to the latest ones.
-        $featuredCourses = $cardData(Course::featured())->limit(4)->get();
-        $isFeaturedFallback = $featuredCourses->isEmpty();
-
-        if ($isFeaturedFallback) {
-            $featuredCourses = $cardData(Course::latest())->limit(4)->get();
-        }
-
-        // 3. Course Categories, each with its 4 newest courses for the category tabs.
-        $courseCategories = CourseCategory::whereHas('courses')
-            ->withCount('courses')
-            ->with(['courses' => fn ($q) => $cardData($q)->latest()->limit(4)])
-            ->orderBy('courses_count', 'desc')
-            ->get();
-
-        // Course model has no published() scope — query directly
-        $instructorCourses = Course::with('category')
-            ->whereNotNull('instructor')
-            ->whereNotNull('thumbnail')
-            ->inRandomOrder()
-            ->limit(10) // fetch more to ensure 5 unique instructors after dedup
-            ->get()
-            ->unique('instructor')
-            ->take(5);
-
-        $latestArticles = Article::published()
-            ->with('categories')
-            ->orderBy('published_at', 'desc')
-            ->limit(3)
-            ->get();
-
-        // 6. Site stats
-        $stats = [
-            'total_courses' => Course::count(),
-            'total_students' => User::count(),
-            'total_articles' => Article::published()->count(),
-        ];
 
         $events = Event::published()->upcoming()->with(['sessions' => fn ($q) => $q->withCount('registrations')])->limit(3)->get();
 
-        return view('home', compact(
-            'events',
-            'heroArticles',
-            'featuredCourses',
-            'isFeaturedFallback',
-            'courseCategories',
-            'instructorCourses',
-            'latestArticles',
-            'stats'
-        ));
+        $whatsapp = Setting::get('social_whatsapp');
+        $links = [
+            'raya' => config('homepage.links.raya') ?: route('search'),
+            'corporate' => config('homepage.links.corporate')
+                ?: ($whatsapp ?: 'mailto:'.Setting::get('contact_email').'?subject='.rawurlencode('Konsultasi Corporate Training')),
+            'smart_book' => config('homepage.links.smart_book'),
+        ];
+
+        return view('home', compact('flagship', 'otherFamilies', 'nextClasses', 'leadArticle', 'moreArticles', 'events', 'links'));
     }
 
     public function showArticle(Request $request, string $slug)
