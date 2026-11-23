@@ -9,27 +9,20 @@
 
 @push('styles')
 <style>
-.evx-hero { background:linear-gradient(135deg,#eaf4fd 0%,#f3f8ff 55%,#eefaf5 100%); border-bottom:1px solid var(--border); padding:2.5rem 0 2.25rem; }
-.evx-crumb { font-size:.78rem; color:var(--muted); margin-bottom:.6rem; }
-.evx-crumb a { color:var(--muted); text-decoration:none; }
-.evx-crumb a:hover { color:var(--blue); }
-.evx-hero h1 { font-family:'Sora',sans-serif; font-size:clamp(1.6rem,3.5vw,2.3rem); font-weight:700; letter-spacing:-.02em; margin:0 0 .5rem; }
-.evx-hero h1 span { color:var(--blue); }
-.evx-hero p { color:var(--ink-2); max-width:620px; margin:0; }
-.evx-h2 { font-family:'Sora',sans-serif; font-size:1.25rem; font-weight:700; margin:0 0 1.1rem; }
+.evx-body { background:#f6f9fe; padding-block:2.5rem 4rem; }
+.evx-body .ev-wrap { max-width:1280px; }
+.evx-h2 { font-family:'Sora',sans-serif; font-size:1.25rem; font-weight:700; color:#0b1f4d; margin:0 0 1.1rem; }
 </style>
 @endpush
 
 @section('content')
-<section class="evx-hero">
-    <div class="ev-wrap">
-        <div class="evx-crumb"><a href="{{ route('home') }}">Beranda</a> › Event</div>
-        <h1>Event <span>Ray Academy</span></h1>
-        <p>Kelas praktik dan workshop gratis, offline maupun online. Pilih sesi yang cocok, lalu daftar dengan akun Ray Academy-mu.</p>
-    </div>
-</section>
+<x-page-hero pill="Events & Workshops">
+    <x-slot:crumbs><a href="{{ route('home') }}">Beranda</a> › Event</x-slot:crumbs>
+    <x-slot:title>Join our <span>next event.</span></x-slot:title>
+    Kelas praktik dan workshop, offline maupun online. Pilih sesi yang cocok, lalu daftar dengan akun Ray Academy-mu.
+</x-page-hero>
 
-<div class="ev-wrap" style="padding-block:2.5rem 4rem;">
+<div class="evx-body"><div class="ev-wrap">
     <h2 class="evx-h2">Event mendatang</h2>
     @if($upcoming->isEmpty())
         <div class="ev-empty">
@@ -52,5 +45,5 @@
             @endforeach
         </div>
     @endif
-</div>
+</div></div>
 @endsection

@@ -14,39 +14,29 @@
     $link = fn (string $key, ?string $value) => route('course.index', array_filter([$key => $value] + Arr::except($filters, $key)));
 @endphp
 
-<section class="ct-hero">
-    <div class="ct-wrap ct-hero-inner">
-        <div class="ct-hero-left">
-            <div class="ct-crumb"><a href="{{ route('home') }}">Beranda</a> › <a href="{{ route('course.index') }}">Kelas</a>@if($activeCategory) › {{ $activeCategory->name }}@endif</div>
-            @if($activeCategory)
-                <h1>Belajar <span>{{ $activeCategory->name }}</span></h1>
-                <p>{{ $activeCategory->description && $activeCategory->description !== $activeCategory->name ? $activeCategory->description : $activeCategory->courses_count.' kelas di bidang '.$activeCategory->name.', dari dasar sampai siap praktik.' }}</p>
-            @elseif($search !== '')
-                <h1>Kelas untuk <span>"{{ $search }}"</span></h1>
-                <p>Ditemukan {{ $courses->total() }} kelas</p>
-            @else
-                <h1>Mau belajar <span>apa</span> hari ini?</h1>
-                <p>Pilih bidang yang ingin kamu kuasai. Setiap kelas berisi video, bacaan, serta pre-test dan post-test di tiap modul.</p>
-            @endif
-        </div>
-        <img src="{{ asset('img/search/hero.png') }}" alt="" class="ct-hero-img" onerror="this.style.display='none'">
-    </div>
-</section>
-
-<div class="ct-bar">
-    <div class="ct-wrap">
-        <form action="{{ route('course.index') }}" method="GET" class="ct-search" role="search">
+<x-page-hero pill="{{ $activeCategory ? 'Katalog Kelas' : 'Curated Learning Experiences' }}">
+    <x-slot:crumbs><a href="{{ route('home') }}">Beranda</a> › <a href="{{ route('course.index') }}">Kelas</a>@if($activeCategory) › {{ $activeCategory->name }}@endif</x-slot:crumbs>
+    @if($activeCategory)
+        <x-slot:title>Belajar <span>{{ $activeCategory->name }}</span></x-slot:title>
+        {{ $activeCategory->description && $activeCategory->description !== $activeCategory->name ? $activeCategory->description : $activeCategory->courses_count.' kelas di bidang '.$activeCategory->name.', dari dasar sampai siap praktik.' }}
+    @elseif($search !== '')
+        <x-slot:title>Kelas untuk <span>"{{ $search }}"</span></x-slot:title>
+        Ditemukan {{ $courses->total() }} kelas.
+    @else
+        <x-slot:title>Discover your <span>next class.</span></x-slot:title>
+        Pilih bidang yang ingin kamu kuasai. Setiap kelas berisi video, bacaan, serta pre-test dan post-test di tiap modul.
+    @endif
+    <x-slot:after>
+        <form action="{{ route('course.index') }}" method="GET" class="ph-search" role="search">
             @foreach(Arr::except($filters, 'q') as $key => $value)
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach
-            <div class="ct-search-wrap">
-                <i class="fas fa-search"></i>
-                <input type="search" name="q" value="{{ $search }}" placeholder="Cari kelas, topik, atau nama instruktur..." aria-label="Cari kelas" autocomplete="off">
-            </div>
-            <button type="submit"><i class="fas fa-search"></i> Cari</button>
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="search" name="q" value="{{ $search }}" placeholder="Cari kelas, topik, atau nama instruktur..." aria-label="Cari kelas" autocomplete="off">
+            <button type="submit"><i class="fas fa-search" aria-hidden="true"></i><span class="ph-btn-text">Cari</span></button>
         </form>
-    </div>
-</div>
+    </x-slot:after>
+</x-page-hero>
 
 @if(! $filters)
 {{-- The catalog opens on its categories; picking one (or searching) shows the classes. --}}

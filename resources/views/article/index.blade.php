@@ -22,43 +22,33 @@
     $filtered = $activeCategory || $activeTag || $search !== '' || $sort;
 @endphp
 
-<section class="ct-hero">
-    <div class="ct-wrap ct-hero-inner">
-        <div class="ct-hero-left">
-            <div class="ct-crumb">
-                <a href="{{ route('home') }}">Beranda</a> › <a href="{{ route('article.index') }}">Artikel</a>
-                @if($activeCategory) › {{ $activeCategory->name }}@elseif($activeTag) › #{{ $activeTag->name }}@endif
-            </div>
-            @if($activeCategory)
-                <h1>Artikel <span>{{ $activeCategory->name }}</span></h1>
-                <p>{{ $activeCategory->description && $activeCategory->description !== $activeCategory->name ? $activeCategory->description : 'Bacaan seputar '.$activeCategory->name.' dari instruktur dan tim Ray Academy.' }}</p>
-            @elseif($activeTag)
-                <h1>Artikel tentang <span>{{ $activeTag->name }}</span></h1>
-                <p>Semua artikel dengan topik {{ $activeTag->name }}.</p>
-            @elseif($search !== '')
-                <h1>Artikel untuk <span>"{{ $search }}"</span></h1>
-                <p>Ditemukan {{ $articles->total() }} artikel</p>
-            @else
-                <h1>Baca, <span>pahami</span>, lalu praktikkan</h1>
-                <p>Tips dan wawasan dari instruktur Ray Academy tentang marketing, bisnis, teknologi, dan pengembangan diri.</p>
-            @endif
-        </div>
-        <img src="{{ asset('img/search/hero.png') }}" alt="" class="ct-hero-img" onerror="this.style.display='none'">
-    </div>
-</section>
-
-<div class="ct-bar">
-    <div class="ct-wrap">
-        <form action="{{ $here }}" method="GET" class="ct-search" role="search">
+<x-page-hero pill="Knowledge & Insights">
+    <x-slot:crumbs>
+        <a href="{{ route('home') }}">Beranda</a> › <a href="{{ route('article.index') }}">Artikel</a>
+        @if($activeCategory) › {{ $activeCategory->name }}@elseif($activeTag) › #{{ $activeTag->name }}@endif
+    </x-slot:crumbs>
+    @if($activeCategory)
+        <x-slot:title>Artikel <span>{{ $activeCategory->name }}</span></x-slot:title>
+        {{ $activeCategory->description && $activeCategory->description !== $activeCategory->name ? $activeCategory->description : 'Bacaan seputar '.$activeCategory->name.' dari instruktur dan tim Ray Academy.' }}
+    @elseif($activeTag)
+        <x-slot:title>Artikel tentang <span>{{ $activeTag->name }}</span></x-slot:title>
+        Semua artikel dengan topik {{ $activeTag->name }}.
+    @elseif($search !== '')
+        <x-slot:title>Artikel untuk <span>"{{ $search }}"</span></x-slot:title>
+        Ditemukan {{ $articles->total() }} artikel.
+    @else
+        <x-slot:title>Understand the science. <span>Explore the industry.</span></x-slot:title>
+        Tips dan wawasan dari instruktur Ray Academy tentang marketing, bisnis, teknologi, dan pengembangan diri.
+    @endif
+    <x-slot:after>
+        <form action="{{ $here }}" method="GET" class="ph-search" role="search">
             @if($sort)<input type="hidden" name="sort" value="{{ $sort }}">@endif
-            <div class="ct-search-wrap">
-                <i class="fas fa-search"></i>
-                <input type="search" name="q" value="{{ $search }}" placeholder="Cari judul atau isi artikel..." aria-label="Cari artikel" autocomplete="off">
-            </div>
-            <button type="submit"><i class="fas fa-search"></i> Cari</button>
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="search" name="q" value="{{ $search }}" placeholder="Cari judul atau isi artikel..." aria-label="Cari artikel" autocomplete="off">
+            <button type="submit"><i class="fas fa-search" aria-hidden="true"></i><span class="ph-btn-text">Cari</span></button>
         </form>
-    </div>
-</div>
+    </x-slot:after>
+</x-page-hero>
 
 <section class="ct-body" x-data="{ showFilters: false }">
     <div class="ct-wrap ct-layout">

@@ -8,73 +8,8 @@
    ══════════════════════════════════════════════════ */
 .wrap { max-width:1280px; margin:0 auto; padding:0 1.5rem; }
 
-/* ── HERO ── */
-.sp-hero {
-    background:#F5F5F4;
-    border-bottom:1px solid #E2E8F0;
-    padding:2rem 0 0;
-    position:relative;
-    overflow:hidden;
-}
-.sp-hero::before{
-    content:'';position:absolute;inset:0;
-    background-image:linear-gradient(rgba(0,86,210,.03)1px,transparent 1px),
-                     linear-gradient(90deg,rgba(0,86,210,.03)1px,transparent 1px);
-    background-size:48px 48px;pointer-events:none;
-}
-.sp-hero-inner{
-    position:relative;z-index:1;
-    display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end;
-    max-width:1280px;margin:0 auto;padding:0 1.5rem;
-}
-.sp-hero-left { padding-bottom:1.5rem; }
-.sp-hero-left h1{
-    font-family:'Sora',sans-serif;
-    font-size:clamp(1.4rem,3vw,2rem);
-    font-weight:700;color:#0F1114;
-    margin-bottom:.25rem;letter-spacing:-.02em;
-}
-.sp-hero-left p { font-size:.85rem;color:#6B7280; }
-.sp-hero-img {
-    width:180px;height:120px;object-fit:contain;
-    object-position:bottom;display:block;
-    opacity:.9;
-}
-
-/* search bar */
-.sp-search-bar{
-    background:#fff;border-bottom:1px solid #E2E8F0;
-    padding:.875rem 0;position:sticky;top:0;z-index:50;
-    box-shadow:0 1px 8px rgba(0,0,0,.06);
-}
-.sp-search-form{
-    display:flex;align-items:center;gap:.75rem;
-}
-.sp-search-wrap{
-    flex:1;display:flex;align-items:center;
-    background:#F8FAFF;border:1.5px solid #CBD5E1;
-    border-radius:10px;overflow:hidden;
-    transition:border-color .2s,box-shadow .2s;
-}
-.sp-search-wrap:focus-within{border-color:#0056D2;box-shadow:0 0 0 3px rgba(0,86,210,.1);}
-.sp-search-wrap svg{width:18px;height:18px;color:#94A3B8;margin:0 .75rem;flex-shrink:0;}
-.sp-search-wrap input{
-    flex:1;border:none;background:transparent;outline:none;
-    padding:.75rem .5rem .75rem 0;
-    font-family:'DM Sans',sans-serif;font-size:.9rem;color:#0F1114;
-}
-.sp-search-wrap input::placeholder{color:#94A3B8;}
-.sp-search-btn{
-    background:#0056D2;color:#fff;border:none;
-    padding:.75rem 1.5rem;border-radius:8px;
-    font-weight:600;font-size:.875rem;cursor:pointer;
-    display:flex;align-items:center;gap:.35rem;
-    transition:background .2s;white-space:nowrap;flex-shrink:0;
-}
-.sp-search-btn:hover{background:#0048B0;}
-
 /* ── LAYOUT ── */
-.sp-body { background:#fff;padding:1.5rem 0 4rem; }
+.sp-body { background:#f6f9fe;padding:1.5rem 0 4rem; }
 .sp-layout {
     display:grid;
     grid-template-columns:240px 1fr;
@@ -85,17 +20,17 @@
 /* ── SIDEBAR ── */
 .sp-sidebar { position:sticky;top:72px; }
 .sp-sidebar-box{
-    border:1.5px solid #E2E8F0;border-radius:12px;
+    border:1px solid #e3ecf8;border-radius:18px;box-shadow:0 8px 24px rgba(31,77,140,.06);
     overflow:hidden;background:#fff;
     margin-bottom:1rem;
 }
 .sp-sidebar-head{
     padding:.875rem 1rem;border-bottom:1px solid #F1F5F9;
     font-family:'Sora',sans-serif;font-size:.82rem;
-    font-weight:700;color:#0F1114;
+    font-weight:700;color:#0b1f4d;
     display:flex;justify-content:space-between;align-items:center;
 }
-.sp-sidebar-head a{font-size:.72rem;font-weight:600;color:#0056D2;text-decoration:none;}
+.sp-sidebar-head a{font-size:.72rem;font-weight:600;color:#1f6fd1;text-decoration:none;}
 .sp-sidebar-head a:hover{text-decoration:underline;}
 .sp-sidebar-body{padding:.75rem 1rem;}
 
@@ -108,33 +43,33 @@
     cursor:pointer;transition:background .15s;border:none;background:transparent;
     text-align:left;width:100%;
 }
-.sp-chip:hover{background:#F1F5FF;color:#0056D2;}
-.sp-chip.active{background:#EEF4FF;color:#0056D2;font-weight:600;}
+.sp-chip:hover{background:#F1F5FF;color:#1f6fd1;}
+.sp-chip.active{background:#EEF4FF;color:#1f6fd1;font-weight:600;}
 .sp-chip .sp-chip-count{margin-left:auto;font-size:.7rem;color:#9CA3AF;}
-.sp-chip.active .sp-chip-count{color:#0056D2;opacity:.7;}
+.sp-chip.active .sp-chip-count{color:#1f6fd1;opacity:.7;}
 
 /* date inputs */
 .sp-date-group{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.6rem;}
 .sp-date-label{font-size:.72rem;font-weight:600;color:#6B7280;}
 .sp-date-input{
     padding:.55rem .75rem;border:1.5px solid #E2E8F0;
-    border-radius:8px;font-size:.8rem;color:#0F1114;
+    border-radius:8px;font-size:.8rem;color:#0b1f4d;
     outline:none;transition:border-color .2s;
 }
-.sp-date-input:focus{border-color:#0056D2;}
+.sp-date-input:focus{border-color:#1f6fd1;}
 .sp-filter-apply{
-    width:100%;padding:.65rem;background:#0056D2;color:#fff;
+    width:100%;padding:.65rem;background:#1f6fd1;color:#fff;
     border:none;border-radius:8px;font-weight:600;font-size:.8rem;
     cursor:pointer;transition:background .2s;margin-top:.5rem;
 }
-.sp-filter-apply:hover{background:#0048B0;}
+.sp-filter-apply:hover{background:#123a82;}
 .sp-filter-reset{
     display:block;text-align:center;
     width:100%;padding:.55rem;background:#F8FAFF;color:#6B7280;
     border:1.5px solid #E2E8F0;border-radius:8px;font-weight:600;font-size:.78rem;
     cursor:pointer;transition:all .2s;margin-top:.4rem;text-decoration:none;
 }
-.sp-filter-reset:hover{border-color:#0056D2;color:#0056D2;background:#EEF4FF;}
+.sp-filter-reset:hover{border-color:#1f6fd1;color:#1f6fd1;background:#EEF4FF;}
 
 /* tag pills */
 .sp-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
@@ -146,8 +81,8 @@
     font-size:.72rem;font-weight:500;color:#374151;
     cursor:pointer;transition:all .15s;
 }
-.sp-tag-lbl:hover{border-color:#0056D2;background:#EEF4FF;color:#0056D2;}
-.sp-tag-cb:checked + .sp-tag-lbl{background:#0056D2;border-color:#0056D2;color:#fff;}
+.sp-tag-lbl:hover{border-color:#1f6fd1;background:#EEF4FF;color:#1f6fd1;}
+.sp-tag-cb:checked + .sp-tag-lbl{background:#1f6fd1;border-color:#1f6fd1;color:#fff;}
 
 /* ── MAIN RESULTS ── */
 .sp-main {}
@@ -156,57 +91,57 @@
     margin-bottom:1rem;padding-bottom:.75rem;
     border-bottom:1px solid #F1F5F9;
 }
-.sp-results-title{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0F1114;}
+.sp-results-title{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0b1f4d;}
 .sp-results-count{font-size:.8rem;color:#6B7280;}
 
 /* active filter tags */
 .sp-active-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}
 .sp-active-tag{
     display:inline-flex;align-items:center;gap:.4rem;
-    padding:.3rem .75rem;background:#EEF4FF;color:#0056D2;
+    padding:.3rem .75rem;background:#EEF4FF;color:#1f6fd1;
     font-size:.73rem;font-weight:600;border-radius:999px;
-    border:1px solid rgba(0,86,210,.2);
+    border:1px solid rgba(31,111,209,.2);
 }
-.sp-active-tag a{color:#0056D2;text-decoration:none;font-size:.7rem;}
+.sp-active-tag a{color:#1f6fd1;text-decoration:none;font-size:.7rem;}
 .sp-active-tag a:hover{color:#c00;}
 
 /* section label */
 .sp-section-label{
     display:flex;align-items:center;gap:.5rem;
     font-family:'Sora',sans-serif;font-size:.82rem;font-weight:700;
-    color:#0F1114;margin-bottom:.75rem;margin-top:1.25rem;
+    color:#0b1f4d;margin-bottom:.75rem;margin-top:1.25rem;
     padding-bottom:.5rem;border-bottom:2px solid #EEF4FF;
 }
 .sp-section-label:first-child{margin-top:0;}
-.sp-section-label svg{width:15px;height:15px;color:#0056D2;}
+.sp-section-label svg{width:15px;height:15px;color:#1f6fd1;}
 
 
 /* ── ARTICLE CARD ── */
 .sp-art-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;}
 .sp-art-card{
-    background:#fff;border:1px solid #E2E8F0;border-radius:10px;
+    background:#fff;border:1px solid #e3ecf8;border-radius:16px;
     padding:.875rem;display:flex;gap:.875rem;align-items:flex-start;
     text-decoration:none;color:inherit;
     transition:box-shadow .15s,border-color .15s;
 }
-.sp-art-card:hover{box-shadow:0 4px 16px rgba(0,86,210,.08);border-color:#BFDBFE;}
+.sp-art-card:hover{box-shadow:0 4px 16px rgba(31,111,209,.08);border-color:#BFDBFE;}
 .sp-art-thumb{
     width:80px;height:60px;border-radius:8px;overflow:hidden;
     background:linear-gradient(135deg,#EEF4FF,#DBEAFE);flex-shrink:0;
 }
 .sp-art-thumb img{width:100%;height:100%;object-fit:cover;}
 .sp-art-thumb-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-.sp-art-thumb-ph svg{width:22px;height:22px;color:#0056D2;opacity:.35;}
+.sp-art-thumb-ph svg{width:22px;height:22px;color:#1f6fd1;opacity:.35;}
 .sp-art-body{flex:1;min-width:0;}
 .sp-art-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;flex-wrap:wrap;}
-.sp-art-cat{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#0056D2;}
+.sp-art-cat{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#1f6fd1;}
 .sp-art-date{font-size:.63rem;color:#9CA3AF;}
 .sp-art-title{
-    font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:#0F1114;
+    font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:#0b1f4d;
     line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 .sp-art-excerpt{font-size:.73rem;color:#6B7280;line-height:1.55;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.sp-art-read{font-size:.68rem;font-weight:600;color:#0056D2;margin-top:.35rem;}
+.sp-art-read{font-size:.68rem;font-weight:600;color:#1f6fd1;margin-top:.35rem;}
 
 /* ── CTA banner (Coursera join-for-free style) ── */
 .sp-cta-banner{
@@ -216,15 +151,15 @@
     margin-top:1.5rem;
 }
 .sp-cta-img{width:100px;height:80px;object-fit:contain;flex-shrink:0;}
-.sp-cta-text h3{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0F1114;margin-bottom:.3rem;}
+.sp-cta-text h3{font-family:'Sora',sans-serif;font-size:.95rem;font-weight:700;color:#0b1f4d;margin-bottom:.3rem;}
 .sp-cta-text p{font-size:.78rem;color:#374151;line-height:1.5;margin-bottom:.75rem;}
 .sp-cta-text a{
     display:inline-flex;align-items:center;gap:.35rem;
-    background:#0056D2;color:#fff;font-weight:600;font-size:.8rem;
+    background:#1f6fd1;color:#fff;font-weight:600;font-size:.8rem;
     padding:.55rem 1.25rem;border-radius:8px;text-decoration:none;
     transition:background .2s;
 }
-.sp-cta-text a:hover{background:#0048B0;}
+.sp-cta-text a:hover{background:#123a82;}
 
 /* ── PAGINATION ── */
 .sp-pager{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:2rem;}
@@ -234,8 +169,8 @@
     font-size:.8rem;font-weight:600;text-decoration:none;color:#374151;
     border:1.5px solid #E2E8F0;transition:all .15s;
 }
-.sp-pager a:hover{border-color:#0056D2;color:#0056D2;background:#EEF4FF;}
-.sp-pager span.current{background:#0056D2;color:#fff;border-color:#0056D2;}
+.sp-pager a:hover{border-color:#1f6fd1;color:#1f6fd1;background:#EEF4FF;}
+.sp-pager span.current{background:#1f6fd1;color:#fff;border-color:#1f6fd1;}
 .sp-pager span.dots{border:none;color:#9CA3AF;}
 
 /* ── EMPTY STATE ── */
@@ -245,34 +180,34 @@
     border-radius:16px;
 }
 .sp-empty svg{width:56px;height:56px;color:#CBD5E1;margin:0 auto 1rem;}
-.sp-empty h3{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:#0F1114;margin-bottom:.4rem;}
+.sp-empty h3{font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:700;color:#0b1f4d;margin-bottom:.4rem;}
 .sp-empty p{font-size:.85rem;color:#6B7280;}
-.sp-empty a{color:#0056D2;font-weight:600;text-decoration:none;}
+.sp-empty a{color:#1f6fd1;font-weight:600;text-decoration:none;}
 .sp-empty a:hover{text-decoration:underline;}
 
 /* ── NO KEYWORD STATE ── */
-.sp-landing{padding:3rem 0;}
+.sp-landing{padding:1.5rem 0 2rem;}
 .sp-landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
 .sp-landing-card{
-    border:1.5px solid #E2E8F0;border-radius:14px;padding:1.25rem;
+    border:1px solid #e3ecf8;border-radius:20px;padding:1.25rem;box-shadow:0 12px 30px rgba(31,77,140,.08);
     background:#fff;display:flex;align-items:center;gap:.875rem;
     cursor:pointer;text-decoration:none;color:inherit;
     transition:border-color .2s,box-shadow .2s;
 }
-.sp-landing-card:hover{border-color:#0056D2;box-shadow:0 4px 16px rgba(0,86,210,.1);}
+.sp-landing-card:hover{border-color:#1f6fd1;box-shadow:0 4px 16px rgba(31,111,209,.1);}
 .sp-landing-card-icon{
     width:44px;height:44px;border-radius:10px;background:#EEF4FF;
     display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.sp-landing-card-icon svg{width:22px;height:22px;color:#0056D2;}
-.sp-landing-card h3{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#0F1114;margin-bottom:.15rem;}
+.sp-landing-card-icon svg{width:22px;height:22px;color:#1f6fd1;}
+.sp-landing-card h3{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#0b1f4d;margin-bottom:.15rem;}
 .sp-landing-card p{font-size:.73rem;color:#6B7280;line-height:1.4;}
 
 /* related searches */
 .sp-related h3{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#6B7280;margin-bottom:.75rem;}
 .sp-related-list{display:flex;flex-wrap:wrap;gap:.5rem;}
 .sp-related-list a{
-    font-size:.82rem;font-weight:500;color:#0056D2;text-decoration:none;
+    font-size:.82rem;font-weight:500;color:#1f6fd1;text-decoration:none;
     padding:.3rem .75rem;background:#EEF4FF;border-radius:999px;
     transition:background .15s;
 }
@@ -287,7 +222,6 @@
 }
 @media(max-width:640px){
     .sp-landing-grid{grid-template-columns:1fr;}
-    .sp-hero-img{display:none;}
     .sp-cta-banner{flex-direction:column;text-align:center;}
     .sp-cta-img{display:none;}
 }
@@ -297,46 +231,27 @@
 @section('content')
 
 {{-- ══ HERO ══ --}}
-<section class="sp-hero">
-    <div class="sp-hero-inner">
-        <div class="sp-hero-left">
-            @if($keyword)
-                <h1>Hasil untuk <span style="color:#0056D2;">"{{ $keyword }}"</span></h1>
-                <p>
-                    @php $total = ($courses->count() ?? 0) + ($articles->total() ?? 0); @endphp
-                    Ditemukan {{ number_format($total) }} hasil pencarian
-                </p>
-            @else
-                <h1>Jelajahi Kursus & Artikel</h1>
-                <p>Temukan kursus, artikel, dan materi pembelajaran terbaik untuk Anda</p>
-            @endif
-        </div>
-        <img src="{{ asset('img/search/hero.png') }}"
-             alt="Search" class="sp-hero-img"
-             onerror="this.style.display='none'">
-    </div>
-</section>
-
-{{-- ══ STICKY SEARCH BAR ══ --}}
-<div class="sp-search-bar">
-    <div class="wrap">
-        <form action="{{ route('search') }}" method="GET" class="sp-search-form">
-            <div class="sp-search-wrap">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                <input type="search" name="q" value="{{ $keyword }}"
-                       placeholder="Cari kursus, artikel, instruktur..."
-                       autocomplete="off">
-            </div>
+<x-page-hero pill="Search">
+    <x-slot:crumbs><a href="{{ route('home') }}">Beranda</a> › Cari</x-slot:crumbs>
+    @if($keyword)
+        @php $total = ($courses->count() ?? 0) + ($articles->total() ?? 0); @endphp
+        <x-slot:title>Hasil untuk <span>"{{ $keyword }}"</span></x-slot:title>
+        Ditemukan {{ number_format($total) }} hasil pencarian.
+    @else
+        <x-slot:title>Find what you <span>want to learn.</span></x-slot:title>
+        Temukan kursus, artikel, dan materi pembelajaran yang sesuai dengan kebutuhan Anda.
+    @endif
+    <x-slot:after>
+        <form action="{{ route('search') }}" method="GET" class="ph-search" role="search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="search" name="q" value="{{ $keyword }}" placeholder="Cari kursus, artikel, instruktur..." aria-label="Cari kursus dan artikel" autocomplete="off">
             @if($selectedCategoryId) <input type="hidden" name="category_id" value="{{ $selectedCategoryId }}"> @endif
             @if($selectedDateFrom)   <input type="hidden" name="date_from"    value="{{ $selectedDateFrom }}"> @endif
             @if($selectedDateTo)     <input type="hidden" name="date_to"      value="{{ $selectedDateTo }}"> @endif
-            <button type="submit" class="sp-search-btn">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="15" height="15"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z"/></svg>
-                Cari
-            </button>
+            <button type="submit"><i class="fas fa-search" aria-hidden="true"></i><span class="ph-btn-text">Cari</span></button>
         </form>
-    </div>
-</div>
+    </x-slot:after>
+</x-page-hero>
 
 {{-- ══ BODY ══ --}}
 <section class="sp-body">
@@ -386,7 +301,7 @@
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                         Kursus Terbaru
                     </div>
-                    <a href="{{ route('course.index') }}" style="font-size:.78rem;color:#0056D2;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    <a href="{{ route('course.index') }}" style="font-size:.78rem;color:#1f6fd1;text-decoration:none;font-weight:600;">Lihat semua →</a>
                 </div>
                 <div class="cc-grid" style="margin-top:.75rem;">
                     @foreach($popularCourses as $course)
@@ -404,18 +319,18 @@
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                         Jelajahi Kategori
                     </div>
-                    <a href="{{ route('article.index') }}" style="font-size:.78rem;color:#0056D2;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    <a href="{{ route('article.index') }}" style="font-size:.78rem;color:#1f6fd1;text-decoration:none;font-weight:600;">Lihat semua →</a>
                 </div>
                 <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.75rem;">
                     @foreach($popularCategories as $cat)
                     <a href="{{ route('search', ['q' => $cat->name]) }}"
                        style="display:inline-flex;align-items:center;gap:.4rem;
                               padding:.5rem 1.1rem;background:#EEF4FF;
-                              border:1.5px solid rgba(0,86,210,.15);border-radius:999px;
-                              font-size:.8rem;font-weight:600;color:#0056D2;
+                              border:1.5px solid rgba(31,111,209,.15);border-radius:999px;
+                              font-size:.8rem;font-weight:600;color:#1f6fd1;
                               text-decoration:none;transition:all .15s;"
-                       onmouseover="this.style.background='#0056D2';this.style.color='#fff'"
-                       onmouseout="this.style.background='#EEF4FF';this.style.color='#0056D2'">
+                       onmouseover="this.style.background='#1f6fd1';this.style.color='#fff'"
+                       onmouseout="this.style.background='#EEF4FF';this.style.color='#1f6fd1'">
                         {{ $cat->name }}
                         <span style="font-size:.68rem;opacity:.65;">{{ $cat->articles_count }}</span>
                     </a>
@@ -432,7 +347,7 @@
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Artikel Terbaru
                     </div>
-                    <a href="{{ route('article.index') }}" style="font-size:.78rem;color:#0056D2;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    <a href="{{ route('article.index') }}" style="font-size:.78rem;color:#1f6fd1;text-decoration:none;font-weight:600;">Lihat semua →</a>
                 </div>
                 <div class="sp-art-list" style="margin-top:.75rem;">
                     @foreach($popularArticles as $article)
@@ -601,7 +516,7 @@
                 </div>
                 <div class="sp-results-header">
                     <span class="sp-results-title">{{ $courses->count() }} kursus ditemukan</span>
-                    <a href="{{ route('course.index') }}?q={{ urlencode($keyword) }}" style="font-size:.78rem;color:#0056D2;text-decoration:none;font-weight:600;">
+                    <a href="{{ route('course.index') }}?q={{ urlencode($keyword) }}" style="font-size:.78rem;color:#1f6fd1;text-decoration:none;font-weight:600;">
                         Lihat semua →
                     </a>
                 </div>
@@ -629,7 +544,7 @@
                             @if($article->thumbnail_url)
                                 <img src="{{ $article->thumbnail_url }}"
                                      alt="{{ $article->title }}" loading="lazy"
-                                     onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\' style=\'width:22px;height:22px;color:#0056D2;opacity:.35\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
+                                     onerror="this.parentElement.innerHTML='<div class=sp-art-thumb-ph><svg fill=none stroke=currentColor viewBox=\'0 0 24 24\' style=\'width:22px;height:22px;color:#1f6fd1;opacity:.35\'><path stroke-linecap=round stroke-linejoin=round stroke-width=1.5 d=\'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\'/></svg></div>'">
                             @else
                                 <div class="sp-art-thumb-ph">
                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -700,13 +615,13 @@
                 @endif
 
                 {{-- ── PARTNER BANNER ── --}}
-                <div class="sp-cta-banner" style="background:linear-gradient(135deg,#0F1114 0%,#1a2942 100%);border-color:#334155;">
+                <div class="sp-cta-banner" style="background:linear-gradient(135deg,#0b1f4d 0%,#1a2942 100%);border-color:#334155;">
                     <img src="{{ asset('img/search/content-2.png') }}" alt="" class="sp-cta-img"
                          onerror="this.style.display='none'">
                     <div class="sp-cta-text">
                         <h3 style="color:#fff;">Memajukan karier Anda bersama mitra kami</h3>
                         <p style="color:rgba(255,255,255,.6);">Berkembang dengan kursus dari instruktur berpengalaman bersama Ray Academy.</p>
-                        <a href="{{ route('course.index') }}" style="background:#fff;color:#0056D2;">
+                        <a href="{{ route('course.index') }}" style="background:#fff;color:#1f6fd1;">
                             Bergabung Sekarang
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
