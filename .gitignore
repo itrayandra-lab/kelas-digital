@@ -29,3 +29,5 @@ Thumbs.db
 *.save
 *.bak
 *.sql
+
+.omc/
