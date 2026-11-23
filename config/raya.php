@@ -3,7 +3,7 @@
 // RAYA, the AI learning advisor chat. Uses the same DeepSeek and Groq keys as essay grading (config/services.php).
 return [
     // Tried in this order; a provider without an API key is skipped.
-    'providers' => array_filter(explode(',', env('RAYA_PROVIDERS', 'deepseek,groq'))),
+    'providers' => array_filter(explode(',', env('RAYA_PROVIDERS', 'groq,deepseek'))),
 
     'max_tokens' => (int) env('RAYA_MAX_TOKENS', 700),
     'temperature' => 0.5,
