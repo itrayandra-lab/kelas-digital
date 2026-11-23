@@ -1,4 +1,4 @@
-/* ===== RAYA chat widget (adapted from Lunaray's AILUNA). Sits bottom-left: the guide button owns bottom-right. ===== */
+/* ===== RAYA chat widget (adapted from Lunaray's AILUNA). Sits bottom-right, stacked above the guide (Panduan) button when the page has one. ===== */
 
 #rayaChatRoot {
     --rc-navy: #0b1f4d;
@@ -15,11 +15,12 @@
 /* ----- Floating badge ----- */
 .rc-fab {
     position: fixed;
-    left: 24px;
+    right: 18px;
     bottom: 24px;
     z-index: 1090;
     display: flex;
     align-items: center;
+    flex-direction: row-reverse;
     gap: 0;
     height: 60px;
     min-width: 60px;
@@ -58,7 +59,7 @@
 
 .rc-fab-ring {
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
     width: 60px;
     height: 60px;
@@ -70,7 +71,7 @@
 
 .rc-fab-dot {
     position: absolute;
-    left: 45px;
+    right: 3px;
     top: 3px;
     z-index: 2;
     width: 13px;
@@ -94,9 +95,14 @@
 .rc-fab:hover .rc-fab-label,
 .rc-fab.is-expanded .rc-fab-label {
     max-width: 150px;
-    padding-left: 12px;
-    padding-right: 20px;
+    padding-left: 20px;
+    padding-right: 10px;
     opacity: 1;
+}
+
+/* The guide button (public/css/ka-tour.css) sits at the very bottom; RAYA stacks above it. */
+body:has(.ka-tour-btn) .rc-fab {
+    bottom: 74px;
 }
 
 .rc-fab.is-hidden {
@@ -112,7 +118,7 @@
 /* ----- Panel ----- */
 .rc-panel {
     position: fixed;
-    left: 24px;
+    right: 24px;
     bottom: 24px;
     z-index: 1100;
     display: flex;
@@ -126,7 +132,7 @@
     overflow: hidden;
     opacity: 0;
     transform: translateY(14px) scale(.98);
-    transform-origin: bottom left;
+    transform-origin: bottom right;
     pointer-events: none;
     visibility: hidden;
     transition: opacity .22s ease, transform .22s ease, visibility 0s linear .22s;
@@ -509,7 +515,7 @@
 /* ----- Mobile: badge shrinks, panel becomes a bottom sheet ----- */
 @media (max-width: 640px) {
     .rc-fab {
-        left: 14px;
+        right: 9px;
         bottom: 14px;
         height: 54px;
         min-width: 54px;
@@ -522,8 +528,8 @@
         height: 54px;
     }
 
-    .rc-fab-dot {
-        left: 40px;
+    body:has(.ka-tour-btn) .rc-fab {
+        bottom: 68px;
     }
 
     .rc-panel {
@@ -543,10 +549,10 @@
     }
 }
 
-/* Event pages have a sticky register bar on phones; lift the badge above it. */
+/* Event pages have a sticky register bar on phones and lift the guide button to 88px; stay above both. */
 @media (max-width: 900px) {
     body:has(.evd-bar) .rc-fab {
-        bottom: 88px;
+        bottom: 142px;
     }
 }
 
