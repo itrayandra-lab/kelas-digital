@@ -31,65 +31,7 @@
     padding:.3rem .85rem;border-radius:999px;margin-bottom:.85rem;
 }
 
-/* ═══ 1. HERO ═══ */
-.hero-ra{
-    background:#F5F5F4;
-    position:relative;
-    overflow:hidden;
-    min-height:600px;
-    padding:4rem 0 2rem;
-}
-/* subtle grid lines */
-.hero-ra::before{
-    content:'';position:absolute;inset:0;
-    background-image:
-        linear-gradient(rgba(0,86,210,.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(0,86,210,.04) 1px,transparent 1px);
-    background-size:48px 48px;
-    pointer-events:none;
-}
-/* inner: left is normal flow, right is relative for photo */
-.hero-ra-inner{
-    max-width:1280px;margin:0 auto;padding:0 1.5rem;
-    display:block;
-    position:relative;z-index:1;
-    min-height:520px;
-}
-.hero-ra-left{
-    padding-bottom:3.5rem;
-    padding-top:1.5rem;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    max-width:52%;
-}
-
-
-.hero-ra-badge{
-    display:inline-flex;align-items:center;gap:.5rem;
-    background:#fff;border:1px solid rgba(0,86,210,.18);
-    border-radius:999px;padding:.35rem 1rem .35rem .5rem;
-    margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(0,86,210,.08);
-}
-.hero-ra-badge-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse-g 2s infinite;}
-@keyframes pulse-g{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
-.hero-ra-badge span{font-size:.72rem;font-weight:600;color:#0F1114;}
-
-.hero-ra-left h1{
-    font-family:'Sora',sans-serif;
-    font-size:clamp(2rem,4.5vw,3.2rem);
-    font-weight:600;color:#0F1114;
-    line-height:1.15;letter-spacing:-.03em;
-    margin-bottom:1rem;
-}
-.hero-ra-left h1 strong{
-    color:#0056D2;font-weight:600;
-    background:linear-gradient(135deg,#0056D2,#3b82f6);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-ra-left p{font-size:.95rem;color:#4B5563;line-height:1.7;margin-bottom:2rem;max-width:460px;}
-.hero-btns-row{display:flex;gap:.85rem;flex-wrap:wrap;align-items:center;}
-
+/* Shared button (bottom call-to-action) */
 .btn-primary-ra{
     display:inline-flex;align-items:center;gap:.5rem;
     background:#0056D2;color:#fff;font-family:'Sora',sans-serif;
@@ -98,98 +40,6 @@
     transition:all .22s;box-shadow:0 4px 16px rgba(0,86,210,.35);
 }
 .btn-primary-ra:hover{background:#0048B0;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,86,210,.4);color:#fff;}
-.btn-ghost-ra{
-    display:inline-flex;align-items:center;gap:.5rem;
-    background:transparent;color:#0F1114;font-weight:600;font-size:.875rem;
-    padding:.8rem 1.5rem;border-radius:8px;text-decoration:none;
-    border:1.5px solid rgba(15,17,20,.15);transition:all .22s;
-}
-.btn-ghost-ra:hover{border-color:#0056D2;color:#0056D2;background:#EEF4FF;}
-
-/* hero stats row */
-.hero-stats-row{
-    display:flex;flex-direction:column;gap:1rem;margin-top:2rem;
-    padding-top:1.75rem;border-top:1px solid rgba(15,17,20,.08);
-}
-.hero-proof{display:flex;align-items:center;gap:.9rem;text-decoration:none;}
-.hero-avatars{display:flex;flex-shrink:0;}
-.hero-avatars i{width:44px;height:44px;border-radius:50%;border:3px solid #F5F5F4;margin-left:-12px;box-shadow:0 2px 8px rgba(15,17,20,.08);}
-.hero-avatars i:first-child{margin-left:0;}
-.hero-proof strong{display:block;font-family:'Sora',sans-serif;font-size:.92rem;font-weight:600;color:#0F1114;}
-.hero-proof small{display:block;font-size:.76rem;color:#6B7280;margin-top:.1rem;}
-.hero-proof:hover strong{color:#0056D2;}
-.hero-points{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin:0;padding:0;list-style:none;}
-.hero-points li{display:flex;align-items:center;gap:.45rem;font-size:.82rem;font-weight:500;color:#374151;}
-.hero-points i{width:18px;height:18px;border-radius:50%;background:#0056D2;color:#fff;font-size:.55rem;display:inline-flex;align-items:center;justify-content:center;}
-
-/* floating cards on the hero photo */
-.hero-float{position:absolute;z-index:4;display:flex;align-items:center;gap:.65rem;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.7);border-radius:14px;padding:.7rem .95rem;box-shadow:0 12px 32px rgba(15,17,20,.12);animation:hero-bob 5s ease-in-out infinite;}
-.hero-float strong{display:block;font-family:'Sora',sans-serif;font-size:.78rem;font-weight:600;color:#0F1114;}
-.hero-float small{display:block;font-size:.68rem;color:#6B7280;margin-top:.1rem;}
-.hero-float b{font-family:'Sora',sans-serif;font-size:.85rem;color:#0056D2;}
-.hero-float-ic{width:32px;height:32px;border-radius:10px;background:#EEF4FF;color:#0056D2;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;}
-.hero-float-bar{display:block;width:120px;height:6px;background:#EEF4FF;border-radius:999px;overflow:hidden;margin-top:.35rem!important;}
-.hero-float-bar i{display:block;height:100%;background:#0056D2;border-radius:999px;}
-.hero-float-a{left:-28px;top:34%;}
-.hero-float-b{right:28px;bottom:150px;animation-delay:-2.5s;}
-@keyframes hero-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@media(prefers-reduced-motion:reduce){.hero-float{animation:none;}}
-
-/* hero right image */
-.hero-ra-right{
-    position:absolute;
-    right:0;
-    bottom:0;
-    width:46%;
-    display:flex;
-    align-items:flex-end;
-    justify-content:flex-end;
-    z-index:2;
-}
-.hero-ra-img-wrap{
-    position:relative;
-    width:100%;
-    display:flex;
-    align-items:flex-end;
-    justify-content:flex-end;
-}
-/* soft blob — warna nyambung ke #F5F5F4 hero bg */
-.hero-ra-img-wrap::before{
-    content:'';
-    position:absolute;
-    bottom:70px;
-    right:16px;
-    width:88%;
-    height:80%;
-    background:linear-gradient(145deg,#e8f0fb 0%,#d4e5f9 40%,#eaf4ff 100%);
-    border-radius:36px;
-    z-index:0;
-    box-shadow:0 12px 56px rgba(0,86,210,.13),inset 0 1px 0 rgba(255,255,255,.7);
-}
-/* fade tepi foto nyatu ke background #F5F5F4 */
-.hero-ra-img-wrap::after{
-    content:'';
-    position:absolute;
-    inset:0;
-    border-radius:28px;
-    background:
-        linear-gradient(to right,#F5F5F4 0%,transparent 18%),
-        linear-gradient(to top,#F5F5F4 0%,transparent 14%);
-    z-index:3;
-    pointer-events:none;
-}
-.hero-ra-right img{
-    display:block;
-    width:100%;
-    height:auto;
-    object-fit:contain;
-    object-position:bottom center;
-    transform:translateY(-80px);
-    border-radius:28px;
-    position:relative;
-    z-index:2;
-    filter:drop-shadow(0 8px 32px rgba(0,86,210,.14)) drop-shadow(0 2px 8px rgba(0,0,0,.07));
-}
 
 /* ═══ 2. PROMO CARDS ═══ */
 .promo-section{background:#fff;padding:2rem 0;position:relative;z-index:2;}
@@ -404,9 +254,6 @@
     .ins-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:768px){
-    .hero-ra-inner{grid-template-columns:1fr;min-height:auto;}
-    .hero-ra-right{display:none;}
-    .hero-ra-left{padding-bottom:3rem;max-width:100%;}
     .free-banner-inner{grid-template-columns:1fr;}
     .free-banner-img-wrap{min-height:220px;}
     .free-banner-img-wrap::before{width:100%;top:0;bottom:0;right:0;}
@@ -417,7 +264,6 @@
     .promo-grid{grid-template-columns:1fr;}
     .promo-card-img{width:120px;}
     .ins-grid{grid-template-columns:1fr;}
-    .hero-stats-row{gap:.85rem;}
 }
 </style>
 @endpush
@@ -437,69 +283,12 @@
 {{-- ═══════════════════════════════
      1. HERO
 ═══════════════════════════════ --}}
-<section class="hero-ra">
-    <div class="hero-ra-inner">
-        <div class="hero-ra-left rv" id="hero-left">
-            <h1>Wujudkan karier impian Anda bersama <strong>{{ config('app.name', 'Ray Academy') }}</strong></h1>
-            <p>Tingkatkan kompetensi dan kuasai keterampilan yang dibutuhkan industri dengan dukungan praktisi dan ahli berpengalaman. Belajar fleksibel, kapan saja, di mana saja.</p>
-            <div class="hero-btns-row">
-                <a href="{{ route('course.index') }}" class="btn-primary-ra">
-                    Mulai Gratis
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-                <a href="{{ route('course.index') }}" class="btn-ghost-ra">Jelajahi Kelas</a>
-            </div>
-            <div class="hero-stats-row">
-                <a href="#instruktur" class="hero-proof">
-                    <span class="hero-avatars">
-                        {{-- photo => crop; ria.png is a wide shot, so it is zoomed in on the face --}}
-                        @foreach(['ria.png' => '38% 4% / 210% auto', 's-sukmayanti.png' => 'center top / cover', 's-cahya.png' => 'center top / cover', 's-wendra_new.png' => 'center top / cover', 's-fricil-1.png' => 'center top / cover'] as $photo => $crop)
-                            <i style="background:#DBEAFE url('{{ asset('assets/'.$photo) }}') {{ $crop }} no-repeat;"></i>
-                        @endforeach
-                    </span>
-                    <span>
-                        <strong>Diajar langsung oleh praktisi & akademisi</strong>
-                        {{-- Small counts look empty, so learner numbers only appear once they are worth showing. --}}
-                        <small>{{ $stats['total_students'] >= 100 ? number_format($stats['total_students']).'+ pelajar sudah bergabung' : 'Bisnis, psikologi, farmasi, teknologi, dan kesehatan' }}</small>
-                    </span>
-                </a>
-                <ul class="hero-points">
-                    <li><i class="fas fa-check"></i> Video & bacaan per modul</li>
-                    <li><i class="fas fa-check"></i> Pre-test & post-test</li>
-                    <li><i class="fas fa-check"></i> Belajar kapan saja</li>
-                </ul>
-            </div>
-        </div>
-        <div class="hero-ra-right" id="hero-right">
-            <!-- decorative circles (like Figma) -->
-            <svg style="position:absolute;bottom:0;right:0;width:55%;opacity:.12;z-index:0;pointer-events:none;" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="200" cy="200" r="190" stroke="#0056D2" stroke-width="1.5"/>
-                <circle cx="200" cy="200" r="145" stroke="#0056D2" stroke-width="1.5"/>
-                <circle cx="200" cy="200" r="100" stroke="#0056D2" stroke-width="1.5"/>
-                <circle cx="200" cy="200" r="55"  stroke="#0056D2" stroke-width="1.5"/>
-            </svg>
-            <div class="hero-ra-img-wrap">
-                <img src="{{ asset('img/hero.png') }}" alt="Belajar di Ray Academy"
-                     onerror="this.style.display='none'">
-            </div>
-            {{-- Floating cards showing what learning here looks like. --}}
-            <div class="hero-float hero-float-a" aria-hidden="true">
-                <span class="hero-float-ic" style="background:#DCFCE7;color:#16A34A;"><i class="fas fa-check"></i></span>
-                <span><strong>Post-test lulus</strong><small>Modul 1 · Skor 92</small></span>
-            </div>
-            <div class="hero-float hero-float-b" aria-hidden="true">
-                <span class="hero-float-ic"><i class="fas fa-play"></i></span>
-                <span style="flex:1;"><strong>Progres belajar</strong><small class="hero-float-bar"><i style="width:75%;"></i></small></span>
-                <b>75%</b>
-            </div>
-        </div>
-    </div>
-</section>
+@include('home._hero')
 
 {{-- ═══════════════════════════════
      2. PROMO CARDS
 ═══════════════════════════════ --}}
-<section class="promo-section">
+<section class="promo-section" id="program">
     <div class="wrap">
         <div class="promo-grid">
             <a href="{{ route('course.index') }}" class="promo-card" style="background:#CCDDF6;">
@@ -760,7 +549,7 @@
 {{-- ═══════════════════════════════
      9. FAQ
 ═══════════════════════════════ --}}
-<section class="faq-section">
+<section class="faq-section" id="faq">
     <div class="wrap">
         <h2>Pertanyaan yang sering diajukan</h2>
         <div class="faq-box rv">
@@ -830,12 +619,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold:0.06, rootMargin:'0px 0px -40px 0px' });
     document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
-    /* Trigger hero immediately */
-    setTimeout(() => {
-        document.getElementById('hero-left')?.classList.add('in');
-        setTimeout(() => document.getElementById('hero-right')?.classList.add('in'), 150);
-    }, 50);
-
     /* FAQ */
     window.toggleFAQ = function(item) {
         const isOpen = item.classList.contains('open');
@@ -852,7 +635,8 @@ document.addEventListener('DOMContentLoaded', () => {
 KATour.page('home-guest', [
   { popover: { title: 'Selamat datang di Ray Academy 👋', description: 'Tempat belajar online langsung dari praktisi dan akademisi. Yuk, kenalan sebentar dengan menu di atas.' } },
   { element: '.nav-links > li:nth-child(2)', popover: { title: 'Kursus', description: 'Semua kelas ada di sini, dari bisnis sampai teknologi. Ada yang gratis dan ada yang berbayar.', side: 'bottom' } },
-  { element: '.nav-links > li:nth-child(3)', popover: { title: 'Artikel', description: 'Bacaan dan tips gratis dari instruktur kami. Bisa dibaca tanpa akun.', side: 'bottom' } },
+  { element: '.nav-links > li:nth-child(3)', popover: { title: 'Event', description: 'Kelas praktik dan workshop gratis, offline maupun online. Daftar, lalu tunjukkan tiketnya saat datang.', side: 'bottom' } },
+  { element: '.nav-links > li:nth-child(4)', popover: { title: 'Artikel', description: 'Bacaan dan tips gratis dari instruktur kami. Bisa dibaca tanpa akun.', side: 'bottom' } },
   { element: '.btn-nav-cta', popover: { title: 'Daftar gratis', description: 'Belum punya akun? Daftar di sini cukup dengan nama, email, dan kata sandi. Gratis.', side: 'bottom' } },
   { element: '.btn-nav-login', popover: { title: 'Masuk', description: 'Sudah punya akun? Masuk di sini. Setelah masuk, kami tunjukkan cara mulai belajar.', side: 'bottom' } },
   { element: '.nav-mobile-btn', popover: { title: 'Menu', description: 'Menu Kursus, Artikel, Daftar, dan Masuk ada di tombol ini.', side: 'bottom' } }

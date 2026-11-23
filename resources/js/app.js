@@ -26,12 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
             type: "loop",
             perPage: 1,
             autoplay: true,
-            interval: 5000,
+            interval: 7000, // long enough to read a slide's paragraph
+            speed: 700,
             pauseOnHover: true,
             pauseOnFocus: true,
             arrows: true,
             pagination: true,
+            keyboard: "focused",
+            lazyLoad: "nearby",
             gap: 0,
+            i18n: { prev: "Slide sebelumnya", next: "Slide berikutnya", slideX: "Ke slide %s", pageX: "Ke slide %s", carousel: "slider", slide: "slide", slideLabel: "%s dari %s" },
         }).mount();
     }
 });
