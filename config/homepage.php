@@ -41,7 +41,7 @@ return [
             'text' => 'amAIzing Class dari RayAcademy menghadirkan pembelajaran Artificial Intelligence (AI) yang praktis bagi individu, profesional, dan perusahaan. Pelajari cara menggunakan AI untuk riset, analisis informasi, pembuatan konten, penyusunan strategi, hingga otomatisasi pekerjaan—agar AI dapat membantu menyelesaikan tugas nyata dalam pekerjaan dan bisnis di berbagai industri.',
             'cta' => 'Jelajahi amAIzing Class', 'href' => '/courses?category=technology-ai', 'button' => 'white', 'focus' => '18% center', 'arrow' => true,
             // Fills the empty glass panel in the photo; box is left/top/width/height in % of the picture.
-            'panel' => ['box' => [15.4, 73.4, 21, 14], 'title' => 'AI untuk kerja nyata', 'items' => ['Riset', 'Konten', 'Strategi', 'Otomatisasi']],
+            'panel' => ['box' => [15.9, 72, 19.6, 16], 'title' => 'AI untuk kerja nyata', 'items' => ['Riset', 'Konten', 'Strategi', 'Otomatisasi']],
         ],
         [
             'image' => 5, 'align' => 'right', 'theme' => 'dark', 'accent' => '#f5a04a', 'italic' => false, 'bar' => '#f5a04a',

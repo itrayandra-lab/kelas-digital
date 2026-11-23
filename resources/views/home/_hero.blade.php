@@ -21,9 +21,9 @@
     .rh-photo-box { display:block; position:absolute; pointer-events:none; container-type:inline-size;
         width:max(100cqw, 177.78cqh); aspect-ratio:16 / 9;
         left:calc((100cqw - max(100cqw, 177.78cqh)) / 2); top:calc((100cqh - max(100cqw, 177.78cqh) * .5625) / 2); }
-    .rh-panel { position:absolute; display:flex; flex-direction:column; justify-content:center; gap:.35cqw; padding-left:.8cqw; color:#fff; font-family:'DM Sans',sans-serif; }
-    .rh-panel b { font-size:.95cqw; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#f5b544; }
-    .rh-panel span { font-size:1.28cqw; font-weight:600; line-height:1.3; }
+    .rh-panel { position:absolute; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; gap:.45cqw; color:#fff; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+    .rh-panel b { font-size:.74cqw; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:#f5b544; }
+    .rh-panel span { font-size:.98cqw; font-weight:600; line-height:1.3; }
     .rh-panel i { font-style:normal; color:#38c8f5; margin:0 .35em; }
 }
 /* Keeps the text side readable whatever is in the photo. */
