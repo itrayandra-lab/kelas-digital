@@ -8,7 +8,9 @@
 .rh { position:relative; background:#071c3f; }
 .rh .splide__track { overflow:hidden; }
 .rh .splide__slide > .rh-slide { height:100%; }
-.rh-slide { position:relative; display:flex; align-items:center; min-height:clamp(480px, 42vw, 640px); overflow:hidden; background:linear-gradient(135deg,#061634 0%,#0b2f66 60%,#123f86 100%); }
+.rh-slide { position:relative; display:flex; align-items:center; aspect-ratio:16 / 9; max-height:calc(100vh - 64px); min-height:480px; overflow:hidden; background:linear-gradient(135deg,#061634 0%,#0b2f66 60%,#123f86 100%); }
+/* Desktop content is zoomed to .8, which shrinks vh too; 125vh - 86px = one screen minus the unzoomed header. */
+@media (min-width:1024px) { .rh-slide { max-height:calc(125vh - 86px); } }
 .rh-slide.light { background:linear-gradient(135deg,#f6f9fd 0%,#e7eef8 100%); }
 .rh-bg { position:absolute; inset:0; }
 .rh-bg img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
@@ -31,9 +33,9 @@
 .rh-slide.dark.left .rh-shade { background:linear-gradient(90deg,rgba(5,20,48,.86) 0%,rgba(5,20,48,.62) 38%,rgba(5,20,48,0) 62%); }
 .rh-slide.dark.right .rh-shade { background:linear-gradient(270deg,rgba(5,20,48,.86) 0%,rgba(5,20,48,.62) 38%,rgba(5,20,48,0) 62%); }
 .rh-slide.light.left .rh-shade { background:linear-gradient(90deg,rgba(246,249,253,.94) 0%,rgba(246,249,253,.75) 36%,rgba(246,249,253,0) 58%); }
-.rh-inner { position:relative; z-index:2; width:100%; max-width:1280px; margin:0 auto; padding:3rem clamp(2rem,4vw,3.5rem) 5rem; display:flex; }
+.rh-inner { position:relative; z-index:2; width:100%; max-width:1560px; margin:0 auto; padding:3rem clamp(2rem,4vw,3.5rem) 5rem; display:flex; }
 .rh-slide.right .rh-inner { justify-content:flex-end; }
-.rh-text { max-width:600px; color:#fff; }
+.rh-text { max-width:660px; color:#fff; }
 .rh-slide.light .rh-text { color:#14294f; }
 .rh-bar { display:block; width:48px; height:5px; border-radius:999px; background:var(--bar); margin-bottom:1rem; }
 .rh-label { font-family:'DM Sans',sans-serif; font-weight:600; font-size:clamp(.7rem,1vw,.82rem); letter-spacing:.2em; text-transform:none; margin:0 0 .8rem; opacity:.95; }
