@@ -317,6 +317,18 @@
             .rh .splide__track { zoom: 1.25; }
             .rh .splide__slide > .rh-slide { zoom: .8; }
         }
+        /* Wide monitors: let the zoomed content use the space instead of a narrow centre column, and keep the header aligned with it. */
+        @media (min-width: 1600px) {
+            .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap { max-width: 1680px; }
+            .nav-inner { max-width: 1344px; }
+            .rh-inner { max-width: 1680px; }
+            .rh-text { max-width: 980px; }
+            .rh-label { font-size: 1.02rem; }
+            .rh-title { font-size: clamp(3rem, 3.1vw, 4.1rem); }
+            .rh-desc { font-size: 1.32rem; max-width: 720px; }
+            .hb-banner-text { max-width: 760px !important; }
+            .hb-banner-text .hs-lead, .hs-lead { font-size: 1.15rem; }
+        }
 
         /* Glass pill buttons with a light sweep on hover. Loaded after page styles so it layers on every variant. */
         .hb, .rh-cta, .ph-search button {
