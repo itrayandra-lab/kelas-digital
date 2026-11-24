@@ -317,7 +317,14 @@
             .rh .splide__track { zoom: 1.25; }
             .rh .splide__slide > .rh-slide { zoom: .8; }
         }
-        /* Wide monitors: let the zoomed content use the space instead of a narrow centre column, and keep the header aligned with it. */
+        /* Wider screens (including 1920px monitors at 125% Windows scaling, ~1536px): let the zoomed content use the space
+           instead of a narrow centre column, and keep the header aligned with it. */
+        @media (min-width: 1280px) {
+            .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap, .rh-inner { max-width: 1480px; }
+            .nav-inner { max-width: 1184px; }
+            .rh-desc { max-width: 640px; }
+            .hb-banner-text { max-width: 680px !important; }
+        }
         @media (min-width: 1600px) {
             .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap { max-width: 1680px; }
             .nav-inner { max-width: 1344px; }
