@@ -1,6 +1,6 @@
 {{-- Page header in the homepage look (light background, pill, Cinzel title) for the course, event, article and search pages.
-     Slots: crumbs, title (wrap the highlighted words in <span>), the default slot is the lead text, `after` sits below it (search form). --}}
-@props(['pill' => null])
+     Optional image shows on the right; keep-case skips the capitals (brand names like doBetter). Slots: crumbs, title (wrap the highlighted words in <span>), the default slot is the lead text, `after` sits below it (search form). --}}
+@props(['pill' => null, 'image' => null, 'keepCase' => false])
 @once
 @push('styles')
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
@@ -11,12 +11,16 @@
 .ph-crumb{font-size:.78rem;color:#5b6b8a;margin-bottom:1rem;}
 .ph-crumb a{color:#5b6b8a;text-decoration:none;}
 .ph-crumb a:hover{color:#1f6fd1;}
-.ph-pill{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0b1f4d;background:#dceaf9;border-radius:999px;padding:.4rem 1rem;margin-bottom:.9rem;}
+.ph-pill{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0b1f4d;background:#dceaf9;border-radius:999px;padding:.4rem 1rem;margin-bottom:.9rem;}
 .ph h1{font-family:'Cinzel',Georgia,serif;font-weight:600;text-transform:uppercase;line-height:1.1;letter-spacing:.01em;color:#0b1f4d;
     font-size:clamp(1.7rem,3.6vw,2.8rem);margin:0 0 .75rem;max-width:900px;text-wrap:balance;overflow-wrap:anywhere;}
 .ph h1 span{color:#1f6fd1;}
+.ph h1.keep-case{text-transform:none;}
 .ph-lead{font-size:clamp(.9rem,1.2vw,1rem);line-height:1.5;color:#33415c;max-width:680px;margin:0;}
 .ph-after{margin-top:1.5rem;max-width:860px;}
+.ph-in.has-img{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(1.5rem,4vw,3.5rem);align-items:center;}
+.ph-img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:24px;box-shadow:0 18px 44px rgba(31,77,140,.18);border:1px solid #fff;}
+@media (max-width:860px){ .ph-in.has-img{grid-template-columns:1fr;} .ph-img{order:-1;aspect-ratio:16/9;} }
 /* Pill search box used under the header */
 .ph-search{display:flex;align-items:center;gap:.5rem;background:#fff;border:1px solid #d6e3f5;border-radius:999px;padding:.35rem .35rem .35rem 1.1rem;
     box-shadow:0 12px 30px rgba(31,77,140,.1);transition:border-color .2s,box-shadow .2s;}
@@ -33,11 +37,14 @@
 @endonce
 <section class="ph">
     <img class="ph-bg" src="{{ asset('img/home/bg-light-m.webp') }}" srcset="{{ asset('img/home/bg-light-m.webp') }} 900w, {{ asset('img/home/bg-light.webp') }} 1672w" sizes="100vw" alt="" decoding="async" fetchpriority="high">
-    <div class="ph-in">
+    <div class="ph-in {{ $image ? 'has-img' : '' }}">
+        <div>
         @isset($crumbs)<nav class="ph-crumb" aria-label="Breadcrumb">{{ $crumbs }}</nav>@endisset
         @if($pill)<span class="ph-pill">{{ $pill }}</span>@endif
-        <h1>{{ $title }}</h1>
+        <h1 @class(['keep-case' => $keepCase])>{{ $title }}</h1>
         @if($slot->isNotEmpty())<p class="ph-lead">{{ $slot }}</p>@endif
         @isset($after)<div class="ph-after">{{ $after }}</div>@endisset
+        </div>
+        @if($image)<img class="ph-img" src="{{ $image }}" alt="" width="430" height="322" decoding="async">@endif
     </div>
 </section>

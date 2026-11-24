@@ -10,12 +10,12 @@
 .ev-poster { position:relative; aspect-ratio:4/5; background:linear-gradient(150deg,#0d5a96,#1474bc 60%,#10b981); overflow:hidden; }
 .ev-poster img { width:100%; height:100%; object-fit:cover; display:block; }
 .ev-tags { position:absolute; top:.75rem; left:.75rem; right:.75rem; display:flex; flex-wrap:wrap; gap:.4rem; }
-.ev-tag { font-size:.7rem; font-weight:700; letter-spacing:.03em; padding:.28rem .65rem; border-radius:999px; background:#fff; color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.12); }
+.ev-tag { font-size:.8rem; font-weight:700; letter-spacing:.03em; padding:.28rem .65rem; border-radius:999px; background:#fff; color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.12); }
 .ev-tag.free { background:#10b981; color:#fff; }
 .ev-tag.online { background:#6d4ed8; color:#fff; }
 .ev-date { position:absolute; left:.75rem; bottom:.75rem; background:#fff; border-radius:12px; padding:.35rem .7rem; text-align:center; line-height:1.1; box-shadow:0 4px 14px rgba(0,0,0,.18); }
 .ev-date b { display:block; font-family:'Sora',sans-serif; font-size:1.35rem; color:var(--ink); }
-.ev-date span { font-size:.68rem; font-weight:700; text-transform:uppercase; color:var(--blue); letter-spacing:.06em; }
+.ev-date span { font-size:.75rem; font-weight:700; text-transform:uppercase; color:var(--blue); letter-spacing:.06em; }
 .ev-body { padding:1rem 1.1rem 1.15rem; display:flex; flex-direction:column; gap:.45rem; flex:1; }
 .ev-title { font-family:'Sora',sans-serif; font-size:1.02rem; font-weight:700; line-height:1.35; margin:0; }
 .ev-sub { font-size:.82rem; color:var(--muted); margin:0; }

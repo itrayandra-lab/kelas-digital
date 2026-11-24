@@ -8,14 +8,14 @@
 .ct-side { position:sticky; top:88px; }
 .ct-box { border:1px solid #e3ecf8; border-radius:18px; box-shadow:0 8px 24px rgba(31,77,140,.06); overflow:hidden; background:#fff; margin-bottom:1rem; }
 .ct-box-head { padding:.875rem 1rem; border-bottom:1px solid #F1F5F9; font-family:'Sora',sans-serif; font-size:.82rem; font-weight:700; color:#0b1f4d; display:flex; justify-content:space-between; align-items:center; }
-.ct-box-head a { font-size:.72rem; font-weight:600; color:#1f6fd1; text-decoration:none; }
+.ct-box-head a { font-size:.8rem; font-weight:600; color:#1f6fd1; text-decoration:none; }
 .ct-box-body { padding:.6rem .75rem; display:flex; flex-direction:column; gap:.2rem; }
 .ct-chip { display:flex; align-items:center; gap:.5rem; padding:.45rem .6rem; border-radius:8px; font-size:.8rem; font-weight:500; color:#374151; text-decoration:none; transition:background .15s; }
-.ct-chip i { width:16px; text-align:center; font-size:.75rem; color:#94A3B8; }
+.ct-chip i { width:16px; text-align:center; font-size:.8rem; color:#64748B; }
 .ct-chip:hover { background:#F1F5FF; color:#1f6fd1; }
 .ct-chip.on { background:#EEF4FF; color:#1f6fd1; font-weight:600; }
 .ct-chip.on i { color:#1f6fd1; }
-.ct-chip em { margin-left:auto; font-style:normal; font-size:.7rem; color:#9CA3AF; }
+.ct-chip em { margin-left:auto; font-style:normal; font-size:.8rem; color:#6B7280; }
 
 .ct-head { display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; margin-bottom:1rem; padding-bottom:.75rem; border-bottom:1px solid #F1F5F9; }
 .ct-head h2 { font-family:'Sora',sans-serif; font-size:.95rem; font-weight:700; color:#0b1f4d; }
@@ -23,7 +23,7 @@
 .ct-sort { border:1.5px solid #E2E8F0; background:#fff; border-radius:8px; padding:.45rem .7rem; font-size:.8rem; color:#0b1f4d; }
 .ct-filter-btn { display:none; border:1.5px solid #E2E8F0; background:#fff; border-radius:8px; padding:.45rem .8rem; font-size:.8rem; font-weight:600; color:#0b1f4d; }
 .ct-tags { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
-.ct-tag { display:inline-flex; align-items:center; gap:.4rem; padding:.3rem .75rem; background:#EEF4FF; color:#1f6fd1; font-size:.73rem; font-weight:600; border-radius:999px; border:1px solid rgba(31,111,209,.2); text-decoration:none; }
+.ct-tag { display:inline-flex; align-items:center; gap:.4rem; padding:.3rem .75rem; background:#EEF4FF; color:#1f6fd1; font-size:.8rem; font-weight:600; border-radius:999px; border:1px solid rgba(31,111,209,.2); text-decoration:none; }
 .ct-tag:hover { color:#c00; }
 /* Category gate on the course catalog */
 .cg-all { font-size:.85rem; font-weight:600; color:#1f6fd1; text-decoration:none; }

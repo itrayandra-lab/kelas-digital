@@ -26,7 +26,7 @@
 .tw-body{position:relative;display:flex;flex-direction:column;flex:1;padding:0 clamp(1.25rem,2vw,1.9rem) clamp(1.25rem,2vw,1.75rem);}
 .tw-badge{align-self:flex-start;display:inline-flex;align-items:center;gap:.55rem;margin:-1.35rem 0 1rem;padding:.5rem 1rem;border-radius:999px;
     background:rgba(238,244,255,.96);box-shadow:0 6px 16px rgba(11,31,77,.12);
-    font-family:'Sora',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f5fc0;}
+    font-family:'Sora',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f5fc0;}
 .tw-card h3{font-family:'Sora',sans-serif;font-size:clamp(1.3rem,2vw,1.75rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;color:#0b1f4d;line-height:1.15;margin:0 0 .7rem;}
 .tw-card p{font-size:.93rem;line-height:1.5;color:#33415c;margin:0 0 1.4rem;flex:1;}
 .tw-card .hb{align-self:flex-start;}

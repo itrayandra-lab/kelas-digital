@@ -30,7 +30,7 @@
     font-weight:700;color:#0b1f4d;
     display:flex;justify-content:space-between;align-items:center;
 }
-.sp-sidebar-head a{font-size:.72rem;font-weight:600;color:#1f6fd1;text-decoration:none;}
+.sp-sidebar-head a{font-size:.8rem;font-weight:600;color:#1f6fd1;text-decoration:none;}
 .sp-sidebar-head a:hover{text-decoration:underline;}
 .sp-sidebar-body{padding:.75rem 1rem;}
 
@@ -45,12 +45,12 @@
 }
 .sp-chip:hover{background:#F1F5FF;color:#1f6fd1;}
 .sp-chip.active{background:#EEF4FF;color:#1f6fd1;font-weight:600;}
-.sp-chip .sp-chip-count{margin-left:auto;font-size:.7rem;color:#9CA3AF;}
+.sp-chip .sp-chip-count{margin-left:auto;font-size:.8rem;color:#6B7280;}
 .sp-chip.active .sp-chip-count{color:#1f6fd1;opacity:.7;}
 
 /* date inputs */
 .sp-date-group{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.6rem;}
-.sp-date-label{font-size:.72rem;font-weight:600;color:#6B7280;}
+.sp-date-label{font-size:.8rem;font-weight:600;color:#6B7280;}
 .sp-date-input{
     padding:.55rem .75rem;border:1.5px solid #E2E8F0;
     border-radius:8px;font-size:.8rem;color:#0b1f4d;
@@ -78,7 +78,7 @@
     display:inline-flex;align-items:center;gap:.3rem;
     padding:.28rem .75rem;background:#F8FAFF;
     border:1.5px solid #E2E8F0;border-radius:999px;
-    font-size:.72rem;font-weight:500;color:#374151;
+    font-size:.8rem;font-weight:500;color:#374151;
     cursor:pointer;transition:all .15s;
 }
 .sp-tag-lbl:hover{border-color:#1f6fd1;background:#EEF4FF;color:#1f6fd1;}
@@ -99,10 +99,10 @@
 .sp-active-tag{
     display:inline-flex;align-items:center;gap:.4rem;
     padding:.3rem .75rem;background:#EEF4FF;color:#1f6fd1;
-    font-size:.73rem;font-weight:600;border-radius:999px;
+    font-size:.8rem;font-weight:600;border-radius:999px;
     border:1px solid rgba(31,111,209,.2);
 }
-.sp-active-tag a{color:#1f6fd1;text-decoration:none;font-size:.7rem;}
+.sp-active-tag a{color:#1f6fd1;text-decoration:none;font-size:.8rem;}
 .sp-active-tag a:hover{color:#c00;}
 
 /* section label */
@@ -134,14 +134,14 @@
 .sp-art-thumb-ph svg{width:22px;height:22px;color:#1f6fd1;opacity:.35;}
 .sp-art-body{flex:1;min-width:0;}
 .sp-art-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;flex-wrap:wrap;}
-.sp-art-cat{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#1f6fd1;}
-.sp-art-date{font-size:.63rem;color:#9CA3AF;}
+.sp-art-cat{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#1f6fd1;}
+.sp-art-date{font-size:.75rem;color:#6B7280;}
 .sp-art-title{
     font-family:'Sora',sans-serif;font-size:.82rem;font-weight:600;color:#0b1f4d;
     line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
-.sp-art-excerpt{font-size:.73rem;color:#6B7280;line-height:1.55;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.sp-art-read{font-size:.68rem;font-weight:600;color:#1f6fd1;margin-top:.35rem;}
+.sp-art-excerpt{font-size:.8rem;color:#6B7280;line-height:1.55;margin-top:.2rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.sp-art-read{font-size:.75rem;font-weight:600;color:#1f6fd1;margin-top:.35rem;}
 
 /* ── CTA banner (Coursera join-for-free style) ── */
 .sp-cta-banner{
@@ -171,7 +171,7 @@
 }
 .sp-pager a:hover{border-color:#1f6fd1;color:#1f6fd1;background:#EEF4FF;}
 .sp-pager span.current{background:#1f6fd1;color:#fff;border-color:#1f6fd1;}
-.sp-pager span.dots{border:none;color:#9CA3AF;}
+.sp-pager span.dots{border:none;color:#6B7280;}
 
 /* ── EMPTY STATE ── */
 .sp-empty{
@@ -201,7 +201,7 @@
 }
 .sp-landing-card-icon svg{width:22px;height:22px;color:#1f6fd1;}
 .sp-landing-card h3{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#0b1f4d;margin-bottom:.15rem;}
-.sp-landing-card p{font-size:.73rem;color:#6B7280;line-height:1.4;}
+.sp-landing-card p{font-size:.8rem;color:#6B7280;line-height:1.4;}
 
 /* related searches */
 .sp-related h3{font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#6B7280;margin-bottom:.75rem;}
@@ -332,7 +332,7 @@
                        onmouseover="this.style.background='#1f6fd1';this.style.color='#fff'"
                        onmouseout="this.style.background='#EEF4FF';this.style.color='#1f6fd1'">
                         {{ $cat->name }}
-                        <span style="font-size:.68rem;opacity:.65;">{{ $cat->articles_count }}</span>
+                        <span style="font-size:.75rem;opacity:.65;">{{ $cat->articles_count }}</span>
                     </a>
                     @endforeach
                 </div>

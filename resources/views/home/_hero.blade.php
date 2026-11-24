@@ -72,10 +72,10 @@
 
 /* "From knowledge to expertise": learning journey card */
 .rh-journey { margin-top:1.6rem; max-width:520px; padding:1rem 1.2rem; border-radius:18px; background:rgba(255,255,255,.7); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.95); box-shadow:0 12px 30px rgba(15,42,92,.1); }
-.rh-journey small { display:block; font-family:'DM Sans',sans-serif; font-weight:700; font-size:.72rem; letter-spacing:.18em; color:#c98a4b; margin-bottom:.7rem; }
+.rh-journey small { display:block; font-family:'DM Sans',sans-serif; font-weight:700; font-size:.8rem; letter-spacing:.18em; color:#c98a4b; margin-bottom:.7rem; }
 .rh-journey ol { list-style:none; margin:0; padding:0; display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; }
 .rh-journey li { display:flex; align-items:center; gap:.4rem; font-family:'DM Sans',sans-serif; font-weight:700; font-size:.9rem; color:#14294f; }
-.rh-journey li b { width:24px; height:24px; border-radius:50%; background:#0f2a5c; color:#fff; font-size:.72rem; display:flex; align-items:center; justify-content:center; }
+.rh-journey li b { width:24px; height:24px; border-radius:50%; background:#0f2a5c; color:#fff; font-size:.8rem; display:flex; align-items:center; justify-content:center; }
 .rh-journey li + li::before { content:'\2192'; color:#4a86b8; font-weight:700; margin-right:.15rem; }
 
 /* Slider controls */

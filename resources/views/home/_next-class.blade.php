@@ -16,7 +16,7 @@
 .nc-thumb{aspect-ratio:16/7;background:linear-gradient(135deg,#dbe9fa,#b9d3f3);display:flex;align-items:center;justify-content:center;color:#7fa3d6;font-size:2rem;overflow:hidden;}
 .nc-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .nc-body{display:flex;flex-direction:column;flex:1;padding:1rem 1.25rem 1.25rem;}
-.nc-family{align-self:flex-start;font-size:.7rem;font-weight:700;letter-spacing:.03em;color:#1f4f9c;background:#dceaf9;border-radius:999px;padding:.25rem .7rem;margin-bottom:.6rem;}
+.nc-family{align-self:flex-start;font-size:.8rem;font-weight:700;letter-spacing:.03em;color:#1f4f9c;background:#dceaf9;border-radius:999px;padding:.25rem .7rem;margin-bottom:.6rem;}
 .nc-card h3{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;line-height:1.3;color:#0b1f4d;border-left:3px solid var(--nc-accent);padding-left:.6rem;margin:0 0 .45rem;}
 .nc-card p{font-size:.85rem;line-height:1.55;color:#4a5878;margin:0 0 .9rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .nc-link{align-self:flex-start;margin-top:auto;display:inline-flex;align-items:center;gap:.45rem;font-family:'Sora',sans-serif;font-size:.85rem;font-weight:700;color:#0b2a63;

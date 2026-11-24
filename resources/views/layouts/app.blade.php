@@ -273,8 +273,8 @@
 
         .footer-contact-item { display: flex; gap: .75rem; align-items: flex-start; }
         .footer-contact-item .icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,.07); display: flex; align-items: center; justify-content: center; margin-top: 2px; }
-        .footer-contact-item .icon i { font-size: .75rem; color: rgba(255,255,255,.6); }
-        .footer-contact-item p { font-size: .8rem; color: rgba(255,255,255,.42); margin: 0; }
+        .footer-contact-item .icon i { font-size: .8rem; color: rgba(255,255,255,.6); }
+        .footer-contact-item p { font-size: .8rem; color: rgba(255,255,255,.6); margin: 0; }
         .footer-contact-item span { font-size: .875rem; color: rgba(255,255,255,.8); display: block; }
         .footer-contact-list { display: flex; flex-direction: column; gap: .9rem; }
 
@@ -283,6 +283,28 @@
             display: flex; align-items: center; justify-content: center;
             font-size: .8rem; color: rgba(255,255,255,.35);
         }
+
+        /* Scroll reveal */
+        .rv{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+        .rv.in{opacity:1;transform:translateY(0)}
+        @media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
+
+        /* Pill buttons */
+        .hb{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:46px;padding:.7rem 1.6rem;border-radius:999px;
+            font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;text-decoration:none;text-align:center;
+            transition:transform .2s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease;border:1.5px solid transparent;cursor:pointer;}
+        .hb i{font-size:.8em;transition:transform .2s ease;}
+        .hb:hover{transform:translateY(-2px);}
+        .hb:hover i{transform:translateX(3px);}
+        .hb:focus-visible{outline:3px solid #7cb7ff;outline-offset:3px;}
+        .hb-navy{background:#0b2a63;color:#fff;box-shadow:0 8px 22px rgba(11,42,99,.25);}
+        .hb-navy:hover{background:#123a82;color:#fff;}
+        .hb-outline{background:rgba(255,255,255,.8);color:#0b2a63;border-color:#0b2a63;}
+        .hb-outline:hover{background:#0b2a63;color:#fff;}
+        .hb-white{background:#fff;color:#0b2a63;box-shadow:0 8px 22px rgba(0,0,0,.18);}
+        .hb-white:hover{background:#eef4ff;color:#0b2a63;}
+        .hb-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.85);}
+        .hb-ghost:hover{background:rgba(255,255,255,.12);color:#fff;}
     </style>
 
     @stack('styles')
@@ -445,7 +467,7 @@
 
     @if(isset($articleCategories) && $articleCategories->count() > 0)
     <div class="nav-mobile-divider"></div>
-    <p style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.25rem 1rem .1rem;">Kategori Artikel</p>
+    <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.25rem 1rem .1rem;">Kategori Artikel</p>
     @foreach($articleCategories->take(5) as $cat)
         <a href="{{ route('article.category', $cat->slug) }}" class="nav-mobile-link" style="font-size:.875rem;padding:.6rem 1rem;">{{ $cat->name }}</a>
     @endforeach
@@ -567,6 +589,14 @@
 </footer>
 
 <script>
+    // Scroll reveal for .rv blocks
+    document.addEventListener('DOMContentLoaded', () => {
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+        }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+    });
+
     // Navbar scroll effect
     const nav = document.getElementById('site-nav');
     window.addEventListener('scroll', () => {

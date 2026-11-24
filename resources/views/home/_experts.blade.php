@@ -1,4 +1,4 @@
-{{-- Meet Our Experts: text above the group photo, the names in a navy pill over its lower edge. Names: config/homepage.php. --}}
+{{-- Meet Our Experts: text above the group photo, the names in a navy pill over its lower edge, then a link to the experts page. Names: config/homepage.php. --}}
 @push('styles')
 <style>
 .xp{background:linear-gradient(180deg,#f4f8fd 0%,#e9f2fb 100%);padding-bottom:clamp(2.5rem,5vw,4rem);}
@@ -14,6 +14,8 @@
     background:linear-gradient(180deg,#1747a6,#0b2a6b);box-shadow:0 14px 32px rgba(11,42,107,.3);border:1px solid rgba(255,255,255,.35);
     color:#fff;font-family:'DM Sans',sans-serif;font-size:clamp(.74rem,1vw,.9rem);font-weight:600;line-height:1.45;text-align:center;}
 .xp-names p{margin:0;}
+.xp-cta{display:flex;flex-direction:column;align-items:center;gap:.75rem;margin-top:clamp(1.75rem,3vw,2.5rem);text-align:center;}
+.xp-cta p{margin:0;font-size:.95rem;color:#33415c;max-width:520px;}
 @media (max-width:900px){
     .xp-names{border-radius:22px;margin-top:-1rem;}
     .xp-names p + p{margin-top:.25rem;}
@@ -30,12 +32,16 @@
         </header>
         <figure class="xp-photo">
             <img src="{{ asset('img/home/experts-m.webp') }}" srcset="{{ asset('img/home/experts-m.webp') }} 900w, {{ asset('img/home/experts.webp') }} 1672w" sizes="(min-width:1280px) 1280px, 100vw" width="1672" height="605"
-                 alt="Para pakar RayAcademy: {{ collect(config('homepage.experts'))->flatten()->implode(', ') }}" loading="lazy" decoding="async">
+                 alt="Para pakar RayAcademy: {{ collect(config('homepage.experts'))->pluck('name')->implode(', ') }}" loading="lazy" decoding="async">
         </figure>
         <div class="xp-names rv">
-            @foreach(config('homepage.experts') as $line)
-                <p>{{ implode(' - ', $line) }}</p>
+            @foreach(collect(config('homepage.experts'))->pluck('name')->chunk(4) as $line)
+                <p>{{ $line->implode(' · ') }}</p>
             @endforeach
+        </div>
+        <div class="xp-cta rv">
+            <a href="{{ route('experts.index') }}" class="hb hb-navy">Meet All Experts <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            <p>Kenali profil para expert dan kelas yang mereka ajar di setiap bidang belajar.</p>
         </div>
     </div>
 </section>

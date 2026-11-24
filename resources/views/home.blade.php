@@ -3,11 +3,6 @@
 
 @push('styles')
 <style>
-/* Scroll reveal */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:translateY(0)}
-@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
-
 .wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
 @media(max-width:640px){.wrap{padding:0 1.25rem}}
 @media(max-width:640px){html,body{overflow-x:hidden!important;max-width:100vw!important;}}
@@ -28,24 +23,6 @@
 .hs-lead{font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.5;color:var(--hs-text);margin:0;}
 .hs-pill{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
     color:var(--hs-navy);background:#dceaf9;border-radius:999px;padding:.4rem 1rem;margin-bottom:1rem;}
-
-/* Pill buttons */
-.hb{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;min-height:46px;padding:.7rem 1.6rem;border-radius:999px;
-    font-family:'Sora',sans-serif;font-size:.9rem;font-weight:600;text-decoration:none;text-align:center;
-    transition:transform .2s ease,background-color .2s ease,color .2s ease,box-shadow .2s ease;border:1.5px solid transparent;cursor:pointer;}
-.hb i{font-size:.8em;transition:transform .2s ease;}
-.hb:hover{transform:translateY(-2px);}
-.hb:hover i{transform:translateX(3px);}
-.hb:focus-visible{outline:3px solid #7cb7ff;outline-offset:3px;}
-.hb-navy{background:#0b2a63;color:#fff;box-shadow:0 8px 22px rgba(11,42,99,.25);}
-.hb-navy:hover{background:#123a82;color:#fff;}
-.hb-outline{background:rgba(255,255,255,.8);color:#0b2a63;border-color:#0b2a63;}
-.hb-outline:hover{background:#0b2a63;color:#fff;}
-.hb-white{background:#fff;color:#0b2a63;box-shadow:0 8px 22px rgba(0,0,0,.18);}
-.hb-white:hover{background:#eef4ff;color:#0b2a63;}
-.hb-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.85);}
-.hb-ghost:hover{background:rgba(255,255,255,.12);color:#fff;}
-
 
 </style>
 @endpush
@@ -85,14 +62,6 @@
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);} });
-    }, { threshold:0.06, rootMargin:'0px 0px -40px 0px' });
-    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
-});
-</script>
 @include('partials.tour-assets')
 <script>
 {{-- Plain-words tours, so visitors of any age know where to start. Guests get a short look at the menu;

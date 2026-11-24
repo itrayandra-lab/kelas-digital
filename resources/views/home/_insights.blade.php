@@ -21,7 +21,7 @@
 .ki-lead .ki-thumb{aspect-ratio:auto;flex:1;min-height:220px;}
 .ki-body{display:flex;align-items:flex-end;gap:.75rem;padding:1rem 1.2rem 1.15rem;}
 .ki-body div{flex:1;min-width:0;border-left:3px solid #f07a2a;padding-left:.7rem;}
-.ki-cat{display:block;font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1f5fc0;margin-bottom:.2rem;}
+.ki-cat{display:block;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1f5fc0;margin-bottom:.2rem;}
 .ki-card h3{font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;line-height:1.35;color:#0b1f4d;margin:0;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .ki-lead h3{font-size:clamp(1.15rem,1.8vw,1.45rem);-webkit-line-clamp:3;}

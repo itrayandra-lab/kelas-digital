@@ -27,6 +27,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RayaChatController;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\TestController;
@@ -97,6 +98,8 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('article.inde
 Route::get('/articles/category/{slug}', [ArticleController::class, 'showByCategory'])->name('article.category');
 Route::get('/recommendations', [RecommendationController::class, 'index'])->name('recommendations.index');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/schools/{slug}', [SchoolController::class, 'show'])->name('school.show');
+Route::get('/experts', [SchoolController::class, 'experts'])->name('experts.index');
 Route::post('/raya/chat', [RayaChatController::class, 'chat'])->middleware('throttle:raya')->name('raya.chat');
 
 // Midtrans payment routes
