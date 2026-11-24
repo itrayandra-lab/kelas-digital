@@ -278,9 +278,6 @@
         .footer-contact-item span { font-size: .875rem; color: rgba(255,255,255,.8); display: block; }
         .footer-contact-list { display: flex; flex-direction: column; gap: .9rem; }
 
-        .footer-partners { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: .6rem 1rem; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
-        .footer-partners span { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-right: .25rem; }
-        .footer-partners img { height: 56px; width: 128px; object-fit: contain; padding: .25rem .5rem; background: #fff; border-radius: 8px; }
         .footer-bottom {
             padding: 1.5rem 0;
             display: flex; align-items: center; justify-content: center;
@@ -480,6 +477,7 @@
                 <img src="{{ asset('logo.png') }}" alt="Ray Academy" class="footer-brand-logo" onerror="this.style.display='none';document.getElementById('footer-brand-text').style.display='block'">
                 <span id="footer-brand-text" style="display:none;" class="footer-brand-name">Ray<em>Academy</em></span>
                 <p>Platform belajar online terpercaya dengan ratusan kursus dari instruktur berpengalaman. Belajar kapan saja, di mana saja.</p>
+                <p>Bekerja sama dengan Universitas Padjadjaran, Fakultas Farmasi Unpad, dan Labcos.</p>
                 @if(!empty($settings['social_facebook']) || !empty($settings['social_instagram']) || !empty($settings['social_youtube']) || !empty($settings['social_tiktok']) || !empty($settings['social_whatsapp']) || !empty($settings['social_linkedin']) || !empty($settings['social_twitter']))
                 <div class="footer-social">
                     @if(!empty($settings['social_facebook']))
@@ -561,12 +559,6 @@
             </div>
         </div>
 
-        <div class="footer-partners">
-            <span>Bekerja sama dengan</span>
-            <img src="{{ asset('img/logo-unpad.png') }}" alt="Universitas Padjadjaran" loading="lazy" onerror="this.remove()">
-            <img src="{{ asset('img/logo-farmasi-unpad.jpg') }}" alt="Fakultas Farmasi Unpad" loading="lazy" onerror="this.remove()">
-            <img src="{{ asset('img/logo-labcos.png') }}" alt="Labcos" loading="lazy" onerror="this.remove()">
-        </div>
 
         <div class="footer-bottom">
             <p>Copyright &copy; {{ date('Y') }} Ray Academy. All Rights Reserved.</p>
