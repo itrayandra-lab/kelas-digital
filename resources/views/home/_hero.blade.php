@@ -8,7 +8,7 @@
 .rh { position:relative; background:#071c3f; }
 .rh .splide__track { overflow:hidden; }
 .rh .splide__slide > .rh-slide { height:100%; }
-.rh-slide { position:relative; display:flex; align-items:center; aspect-ratio:16 / 9; max-height:calc(100vh - 64px); min-height:480px; overflow:hidden; background:linear-gradient(135deg,#061634 0%,#0b2f66 60%,#123f86 100%); }
+.rh-slide { position:relative; display:flex; align-items:center; width:100%; aspect-ratio:16 / 9; max-height:calc(100vh - 64px); min-height:480px; overflow:hidden; background:linear-gradient(135deg,#061634 0%,#0b2f66 60%,#123f86 100%); }
 /* Desktop content is zoomed to .8, which shrinks vh too; 125vh - 86px = one screen minus the unzoomed header. */
 @media (min-width:1024px) { .rh-slide { max-height:calc(125vh - 86px); } }
 .rh-slide.light { background:linear-gradient(135deg,#f6f9fd 0%,#e7eef8 100%); }
