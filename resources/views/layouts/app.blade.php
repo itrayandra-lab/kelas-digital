@@ -320,7 +320,9 @@
         /* Wider screens (including 1920px monitors at 125% Windows scaling, ~1536px): let the zoomed content use the space
            instead of a narrow centre column, and keep the header aligned with it. */
         @media (min-width: 1280px) {
-            .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap, .rh-inner { max-width: 1480px; }
+            .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap { max-width: 1480px; }
+            /* The hero text follows the screen edge so it sits in the empty side of each photo. */
+            .rh-inner { max-width: none; padding-inline: 6vw; }
             .nav-inner { max-width: 1184px; }
             .rh-desc { max-width: 640px; }
             .hb-banner-text { max-width: 680px !important; }
@@ -328,11 +330,10 @@
         @media (min-width: 1600px) {
             .wrap, .ct-wrap, .sc-wrap, .ph-in, .footer-inner, .ev-wrap { max-width: 1680px; }
             .nav-inner { max-width: 1344px; }
-            .rh-inner { max-width: 1680px; }
-            .rh-text { max-width: 980px; }
-            .rh-label { font-size: 1.02rem; }
-            .rh-title { font-size: clamp(3rem, 3.1vw, 4.1rem); }
-            .rh-desc { font-size: 1.32rem; max-width: 720px; }
+            .rh-text { max-width: 1080px; }
+            .rh-label { font-size: 1.1rem; }
+            .rh-title { font-size: clamp(3.2rem, 3.6vw, 4.8rem); }
+            .rh-desc { font-size: 1.45rem; max-width: 820px; }
             .hb-banner-text { max-width: 760px !important; }
             .hb-banner-text .hs-lead, .hs-lead { font-size: 1.15rem; }
         }
