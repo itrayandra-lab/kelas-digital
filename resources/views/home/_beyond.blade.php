@@ -26,7 +26,7 @@
 .bc-head p{margin:0;font-family:'Sora',sans-serif;font-size:.8rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3;color:#1f5fc0;
     border-left:3px solid #d9a441;padding-left:.6rem;}
 .bc-card h3{font-family:'Sora',sans-serif;font-size:1.05rem;font-weight:700;color:#0b1f4d;margin:0 0 .45rem;}
-.bc-card > p{font-size:.88rem;line-height:1.6;color:#4a5878;margin:0;}
+.bc-card > p{font-size:.88rem;line-height:1.45;color:#4a5878;margin:0;}
 .bc-close{display:flex;align-items:center;justify-content:center;gap:1.25rem;margin:clamp(2rem,4vw,3rem) 0 1.5rem;
     font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:clamp(1.15rem,2.2vw,1.65rem);color:#0b1f4d;text-align:center;}
 .bc-close::before,.bc-close::after{content:'';flex:0 0 clamp(2rem,6vw,5rem);height:2px;background:#d9a441;}

@@ -4,13 +4,13 @@
 @push('styles')
 <style>
 .lf{background:#eaf2fc;}
-.lf-flag{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:stretch;overflow:hidden;border-radius:24px;
+.lf-flag{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:stretch;overflow:hidden;border-radius:24px;
     background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.95);box-shadow:0 18px 44px rgba(31,77,140,.12);margin-bottom:clamp(1rem,2vw,1.5rem);}
 .lf-flag-body{padding:clamp(1.5rem,3vw,2.5rem);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
 .lf-flag-body .hs-pill{background:#d9e9fb;color:#1f5fc0;}
 .lf-flag h3{font-family:'Sora',sans-serif;font-size:clamp(1.4rem,2.6vw,2.1rem);font-weight:800;text-transform:uppercase;line-height:1.12;color:#0b1f4d;
     border-left:5px solid #d9a441;padding-left:.9rem;margin:0 0 .9rem;}
-.lf-flag p{font-size:.95rem;line-height:1.7;color:#33415c;margin:0 0 1.4rem;max-width:560px;}
+.lf-flag p{font-size:.95rem;line-height:1.5;color:#33415c;margin:0 0 1.4rem;max-width:560px;}
 .lf-flag-photo{position:relative;min-height:240px;}
 .lf-flag-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center;
     -webkit-mask-image:linear-gradient(to right,transparent,#000 28%);mask-image:linear-gradient(to right,transparent,#000 28%);}

@@ -10,7 +10,7 @@
 .fq-intro .hs-title{font-size:clamp(1.8rem,3vw,2.9rem);}
 .fq-intro .hs-title span{display:block;}
 .fq-intro h3{font-family:'Sora',sans-serif;font-size:clamp(1.05rem,1.6vw,1.3rem);font-weight:700;line-height:1.35;color:#0b1f4d;margin:2rem 0 .7rem;}
-.fq-intro > p:last-child{color:#5a7194;font-size:.95rem;line-height:1.7;margin:0;max-width:420px;}
+.fq-intro > p:last-child{color:#5a7194;font-size:.95rem;line-height:1.5;margin:0;max-width:420px;}
 .fq-panel{border-radius:22px;padding:clamp(1rem,2vw,1.4rem);background:rgba(255,255,255,.6);border:1px solid #cfe0f3;box-shadow:0 18px 44px rgba(31,77,140,.08);}
 .fq-list{display:flex;flex-direction:column;gap:.65rem;}
 .fq-item{border-radius:14px;border:1px solid #d4e3f5;background:rgba(255,255,255,.85);transition:background-color .2s ease;}
@@ -25,7 +25,7 @@
 .fq-sign::before,.fq-sign::after{content:'';position:absolute;left:0;top:7px;width:16px;height:2px;border-radius:2px;background:currentColor;transition:transform .25s ease;}
 .fq-sign::after{transform:rotate(90deg);}
 .fq-item.open .fq-sign::after{transform:rotate(0);}
-.fq-a p{margin:0;padding:0 1.25rem 1.15rem 5.7rem;font-size:.9rem;line-height:1.7;color:#33415c;}
+.fq-a p{margin:0;padding:0 1.25rem 1.15rem 5.7rem;font-size:.9rem;line-height:1.5;color:#33415c;}
 .fq-foot{margin-top:1.3rem;}
 .fq-foot > p{font-family:'Sora',sans-serif;font-weight:700;color:#0b1f4d;margin:0 0 .75rem;}
 .fq-foot div{display:flex;flex-wrap:wrap;gap:.75rem;}

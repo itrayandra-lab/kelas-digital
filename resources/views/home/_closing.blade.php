@@ -6,7 +6,7 @@
 .cl .hs-bar{margin-inline:auto;}
 .cl .hs-eyebrow{color:#e0ae62;letter-spacing:.28em;}
 .cl h2{font-family:'Sora',sans-serif;font-size:clamp(1.7rem,4.4vw,3.1rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;line-height:1.12;color:#fff;margin:0 0 1rem;text-wrap:balance;}
-.cl p.cl-text{font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.7;color:rgba(255,255,255,.9);margin:0 auto 2rem;max-width:900px;}
+.cl p.cl-text{font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.5;color:rgba(255,255,255,.9);margin:0 auto 2rem;max-width:900px;}
 .cl-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;}
 .cl .hb{min-width:220px;font-weight:700;}
 @media (max-width:480px){ .cl .hb{width:100%;} }

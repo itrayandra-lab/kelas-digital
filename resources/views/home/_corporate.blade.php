@@ -22,8 +22,8 @@
 .ct{background:#0b1f45;--hb-shade:rgba(11,31,69,.9);}
 .ct .hs-eyebrow{color:#e9b98a;letter-spacing:.14em;}
 .ct .hs-title span{display:block;color:#e9b98a;}
-.hb-gold{background:linear-gradient(180deg,#f0c89c,#d99d66);color:#0b1f4d;font-size:clamp(.95rem,1.3vw,1.1rem);font-weight:700;padding:.85rem 2rem;box-shadow:0 10px 26px rgba(217,157,102,.3);}
-.hb-gold:hover{background:linear-gradient(180deg,#f5d4ae,#e3a978);color:#0b1f4d;}
+.hb-gold{background:linear-gradient(180deg,rgba(240,200,156,.9),rgba(217,157,102,.82));color:#0b1f4d;font-size:clamp(.95rem,1.3vw,1.1rem);font-weight:700;padding:.85rem 2rem;box-shadow:0 10px 26px rgba(217,157,102,.3);}
+.hb-gold:hover{background:linear-gradient(180deg,rgba(245,212,174,.92),rgba(227,169,120,.86));color:#0b1f4d;}
 </style>
 @endpush
 <section class="hb-banner ct" id="corporate" aria-labelledby="ct-title">

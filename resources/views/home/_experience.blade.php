@@ -18,7 +18,7 @@
 .lx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1rem,2vw,1.5rem);}
 .lx-card{display:flex;flex-direction:column;overflow:hidden;border-radius:26px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);
     box-shadow:0 18px 40px rgba(31,77,140,.12);}
-.lx-card img{display:block;width:100%;aspect-ratio:480/300;object-fit:cover;}
+.lx-card img{display:block;width:100%;aspect-ratio:480/195;object-fit:cover;}
 .lx-body{position:relative;padding:0 1.4rem 1.5rem;}
 .lx-head{display:flex;align-items:flex-end;gap:.8rem;margin:-1.6rem 0 .8rem;}
 .lx-icon{flex-shrink:0;width:3.2rem;height:3.2rem;border-radius:50%;background:#fff;border:2px solid #cfe0f6;display:flex;align-items:center;justify-content:center;
@@ -26,7 +26,7 @@
 .lx-label{margin:0 0 .3rem;font-family:'Sora',sans-serif;font-size:.82rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#1f5fc0;
     border-left:3px solid #d9a441;padding-left:.6rem;}
 .lx-card h3{font-family:'Sora',sans-serif;font-size:1.02rem;font-weight:700;line-height:1.35;color:#0b1f4d;margin:0 0 .5rem;}
-.lx-card p{font-size:.88rem;line-height:1.6;color:#4a5878;margin:0;}
+.lx-card p{font-size:.88rem;line-height:1.45;color:#4a5878;margin:0;}
 .lx-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-top:clamp(1.75rem,3vw,2.5rem);}
 @media (max-width:900px){ .lx-grid{grid-template-columns:1fr;max-width:520px;margin-inline:auto;} }
 </style>

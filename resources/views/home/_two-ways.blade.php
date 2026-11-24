@@ -19,16 +19,16 @@
 @media (max-width:380px){.tw-title{white-space:normal;}}
 .tw-title span{display:block;color:#4a9bf5;}
 .tw-sub{font-family:'Sora',sans-serif;font-size:clamp(1.1rem,1.7vw,1.4rem);font-weight:500;line-height:1.35;color:#fff;margin:0 0 .9rem;}
-.tw-text{font-size:.94rem;line-height:1.7;color:rgba(255,255,255,.82);margin:0;}
+.tw-text{font-size:.94rem;line-height:1.5;color:rgba(255,255,255,.82);margin:0;}
 .tw-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1rem,2vw,1.5rem);}
 .tw-card{display:flex;flex-direction:column;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.35);}
-.tw-card img{display:block;width:100%;aspect-ratio:630/295;object-fit:cover;}
+.tw-card img{display:block;width:100%;aspect-ratio:630/200;object-fit:cover;}
 .tw-body{position:relative;display:flex;flex-direction:column;flex:1;padding:0 clamp(1.25rem,2vw,1.9rem) clamp(1.25rem,2vw,1.75rem);}
 .tw-badge{align-self:flex-start;display:inline-flex;align-items:center;gap:.55rem;margin:-1.35rem 0 1rem;padding:.5rem 1rem;border-radius:999px;
     background:rgba(238,244,255,.96);box-shadow:0 6px 16px rgba(11,31,77,.12);
     font-family:'Sora',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f5fc0;}
 .tw-card h3{font-family:'Sora',sans-serif;font-size:clamp(1.3rem,2vw,1.75rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;color:#0b1f4d;line-height:1.15;margin:0 0 .7rem;}
-.tw-card p{font-size:.93rem;line-height:1.65;color:#33415c;margin:0 0 1.4rem;flex:1;}
+.tw-card p{font-size:.93rem;line-height:1.5;color:#33415c;margin:0 0 1.4rem;flex:1;}
 .tw-card .hb{align-self:flex-start;}
 @media (max-width:1024px){
     .tw-grid{grid-template-columns:1fr;}

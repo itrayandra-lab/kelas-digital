@@ -15,7 +15,7 @@
 .ph h1{font-family:'Cinzel',Georgia,serif;font-weight:600;text-transform:uppercase;line-height:1.1;letter-spacing:.01em;color:#0b1f4d;
     font-size:clamp(1.7rem,3.6vw,2.8rem);margin:0 0 .75rem;max-width:900px;text-wrap:balance;overflow-wrap:anywhere;}
 .ph h1 span{color:#1f6fd1;}
-.ph-lead{font-size:clamp(.9rem,1.2vw,1rem);line-height:1.7;color:#33415c;max-width:680px;margin:0;}
+.ph-lead{font-size:clamp(.9rem,1.2vw,1rem);line-height:1.5;color:#33415c;max-width:680px;margin:0;}
 .ph-after{margin-top:1.5rem;max-width:860px;}
 /* Pill search box used under the header */
 .ph-search{display:flex;align-items:center;gap:.5rem;background:#fff;border:1px solid #d6e3f5;border-radius:999px;padding:.35rem .35rem .35rem 1.1rem;
@@ -27,7 +27,7 @@
     font-family:'Sora',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;white-space:nowrap;transition:background-color .2s;}
 .ph-search button:hover{background:#123a82;}
 .ph-search button:focus-visible{outline:3px solid #7cb7ff;outline-offset:2px;}
-@media (max-width:640px){ .ph-in{padding:0 1rem;} .ph-search button{padding:0 1rem;} .ph-search button .ph-btn-text{display:none;} }
+@media (max-width:640px){ .ph-in{padding:0 1.25rem;} .ph-search button{padding:0 1rem;} .ph-search button .ph-btn-text{display:none;} }
 </style>
 @endpush
 @endonce

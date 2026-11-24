@@ -278,6 +278,9 @@
         .footer-contact-item span { font-size: .875rem; color: rgba(255,255,255,.8); display: block; }
         .footer-contact-list { display: flex; flex-direction: column; gap: .9rem; }
 
+        .footer-partners { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: .6rem 1rem; padding: 1.5rem 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+        .footer-partners span { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-right: .25rem; }
+        .footer-partners img { height: 56px; width: 128px; object-fit: contain; padding: .25rem .5rem; background: #fff; border-radius: 8px; }
         .footer-bottom {
             padding: 1.5rem 0;
             display: flex; align-items: center; justify-content: center;
@@ -286,6 +289,40 @@
     </style>
 
     @stack('styles')
+    <style>
+        /* Desktop renders as if the browser were at 80% zoom (management request); phones and tablets stay at 100%. */
+        @media (min-width: 1024px) {
+            /* The header keeps its full size. Driver.js (tour) adds its popover straight to <body> and positions it in screen pixels, so it stays unzoomed too. */
+            body > :not(.site-nav, .driver-popover, .driver-overlay, script, style) { zoom: .8; }
+            /* Splide measures in screen pixels too, so the track runs unzoomed (.8 × 1.25 = 1) and the slide content is zoomed back. */
+            .rh .splide__track { zoom: 1.25; }
+            .rh .splide__slide > .rh-slide { zoom: .8; }
+        }
+
+        /* Glass pill buttons with a light sweep on hover. Loaded after page styles so it layers on every variant. */
+        .hb, .rh-cta, .ph-search button {
+            position: relative; overflow: hidden; isolation: isolate;
+            -webkit-backdrop-filter: blur(12px) saturate(160%); backdrop-filter: blur(12px) saturate(160%);
+            border-color: rgba(255,255,255,.5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(0,0,0,.06), 0 10px 26px rgba(11,42,99,.18);
+        }
+        .hb::before, .rh-cta::before, .ph-search button::before {
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.5) 50%, transparent 65%);
+            transform: translateX(-120%); transition: transform .7s ease;
+        }
+        .hb:hover::before, .rh-cta:hover::before, .ph-search button:hover::before { transform: translateX(120%); }
+        .hb:hover, .rh-cta:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 -1px 0 rgba(0,0,0,.06), 0 14px 32px rgba(11,42,99,.26); }
+        .hb-navy, .ph-search button { background: rgba(11,42,99,.85); }
+        .hb-navy:hover, .ph-search button:hover { background: rgba(18,58,130,.9); }
+        .hb-white { background: rgba(255,255,255,.72); }
+        .hb-outline { background: rgba(255,255,255,.45); border-color: currentColor; }
+        .hb-ghost { background: rgba(255,255,255,.14); }
+        .hb-maroon { background: rgba(155,27,48,.86); }
+        .hb-maroon:hover { background: rgba(179,34,58,.9); }
+        .lf-card .hb { background: rgba(255,255,255,.14); border-color: currentColor; }
+        @media (prefers-reduced-motion: reduce) { .hb::before, .rh-cta::before, .ph-search button::before { transition: none; } }
+    </style>
     @include('partials.schema-site')
 </head>
 <body x-data="{ mobileMenuOpen: false }">
@@ -522,6 +559,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="footer-partners">
+            <span>Bekerja sama dengan</span>
+            <img src="{{ asset('img/logo-unpad.png') }}" alt="Universitas Padjadjaran" loading="lazy" onerror="this.remove()">
+            <img src="{{ asset('img/logo-farmasi-unpad.jpg') }}" alt="Fakultas Farmasi Unpad" loading="lazy" onerror="this.remove()">
+            <img src="{{ asset('img/logo-labcos.png') }}" alt="Labcos" loading="lazy" onerror="this.remove()">
         </div>
 
         <div class="footer-bottom">

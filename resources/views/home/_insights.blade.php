@@ -18,7 +18,7 @@
 .ki-thumb{position:relative;aspect-ratio:16/7;overflow:hidden;background:linear-gradient(135deg,#dbe9fa,#b9d3f3);display:flex;align-items:center;justify-content:center;color:#7fa3d6;font-size:1.8rem;}
 .ki-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .35s ease;}
 .ki-card:hover .ki-thumb img{transform:scale(1.04);}
-.ki-lead .ki-thumb{aspect-ratio:auto;flex:1;min-height:260px;}
+.ki-lead .ki-thumb{aspect-ratio:auto;flex:1;min-height:220px;}
 .ki-body{display:flex;align-items:flex-end;gap:.75rem;padding:1rem 1.2rem 1.15rem;}
 .ki-body div{flex:1;min-width:0;border-left:3px solid #f07a2a;padding-left:.7rem;}
 .ki-cat{display:block;font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1f5fc0;margin-bottom:.2rem;}

@@ -9,7 +9,7 @@
 @media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
 
 .wrap{max-width:1280px;margin:0 auto;padding:0 1.5rem}
-@media(max-width:640px){.wrap{padding:0 1rem}}
+@media(max-width:640px){.wrap{padding:0 1.25rem}}
 @media(max-width:640px){html,body{overflow-x:hidden!important;max-width:100vw!important;}}
 
 /* ═══ Shared pieces of the homepage sections ═══ */
@@ -25,7 +25,7 @@
 .hs-title{font-family:'Cinzel',Georgia,serif;font-weight:600;text-transform:uppercase;line-height:1.08;letter-spacing:.01em;color:var(--hs-navy);
     font-size:clamp(1.85rem,4.2vw,3.25rem);margin:0 0 1rem;text-wrap:balance;}
 .hs-title span{color:var(--hs-blue);}
-.hs-lead{font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.7;color:var(--hs-text);margin:0;}
+.hs-lead{font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.5;color:var(--hs-text);margin:0;}
 .hs-pill{display:inline-block;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
     color:var(--hs-navy);background:#dceaf9;border-radius:999px;padding:.4rem 1rem;margin-bottom:1rem;}
 
@@ -46,11 +46,6 @@
 .hb-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.85);}
 .hb-ghost:hover{background:rgba(255,255,255,.12);color:#fff;}
 
-/* Partners strip */
-.partners-section{background:#F8FAFF;padding:2.5rem 0;border-top:1px solid #EDF2F9;}
-.partners-section h2{font-family:'Sora',sans-serif;font-size:clamp(1rem,2.2vw,1.15rem);font-weight:600;color:#6B7280;text-align:center;margin-bottom:1.25rem;}
-.partners-logos{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;}
-.partners-logos img{width:160px;height:88px;padding:.9rem 1.25rem;object-fit:contain;background:#fff;border:1px solid #E2E8F0;border-radius:12px;}
 
 </style>
 @endpush
@@ -81,18 +76,6 @@
 
 @include('home._raya')
 @include('home._experts')
-
-<section class="partners-section">
-    <div class="wrap rv">
-        <h2>Bekerja sama dengan universitas dan lembaga pelatihan</h2>
-        <div class="partners-logos">
-            <img src="{{ asset('img/logo-unpad.png') }}" alt="Universitas Padjadjaran" loading="lazy" onerror="this.style.display='none'">
-            <img src="{{ asset('img/logo-farmasi-unpad.jpg') }}" alt="Farmasi Unpad" loading="lazy" onerror="this.style.display='none'">
-            <img src="{{ asset('img/logo-labcos.png') }}" alt="Labcos" loading="lazy" onerror="this.style.display='none'">
-        </div>
-    </div>
-</section>
-
 @include('home._experience')
 @include('home._beyond')
 @include('home._insights')
