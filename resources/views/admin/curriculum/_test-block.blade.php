@@ -74,6 +74,7 @@
                 <p class="mt-1 text-xs text-gray-500">
                     Ikuti template tes RayAcademy: soal bernomor <strong>1. ...</strong>, opsi <strong>A. ...</strong> sampai <strong>D. ...</strong>, lalu tabel kunci jawaban (kolom No dan Kunci).
                     @if($kind === 'post') Essay ditulis dengan judul <strong>SOAL ESSAY 1: ...</strong> dan panduan penilaiannya <strong>PANDUAN JAWABAN IDEAL ESSAY 1 ...</strong>; panduan ini dipakai AI untuk menilai. @endif
+                    File <strong>Assessment Package</strong> (soal <strong>SOAL Q01</strong>, opsi <strong>[ A ]</strong>, kunci di bagian evaluator) juga bisa langsung diupload apa adanya.
                     Kalau ada yang tidak terbaca, tidak ada soal yang disimpan dan nomor soal yang bermasalah ditampilkan.
                 </p>
             </form>

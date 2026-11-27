@@ -95,6 +95,32 @@ class WordImportTest extends TestCase
         $this->assertSame(0, CourseQuestion::where('kind', 'pre')->count());
     }
 
+    public function test_test_questions_import_from_the_assessment_package(): void
+    {
+        $post = $this->docx(
+            $this->p('PETUNJUK PENGERJAAN BAGI PESERTA:').$this->p('1. Alokasi Waktu Total: 45 Menit.')
+            .$this->p('SOAL Q01 · NILAI (Alokasi: 60 Detik)').$this->p('Apa itu nilai?').$this->p('[ A ]  Harga murah').$this->p('[ B ]  Manfaat dikurangi pengorbanan')
+            .$this->p('Soal Q02: Apa itu POP?').$this->p('[ A ]  Syarat kategori').$this->p('[ B ]  Pembeda')
+            .$this->p('SOAL ESAI E01 (Bobot 50%) — Segmentasi').$this->p('KASUS BISNIS: Krim untuk semua orang.')
+            .$this->p('BAGIAN II: PAKET EVALUATOR INDEPENDEN')
+            .$this->p('EVALUASI Q01 · KUNCI: [ B ] · Nilai')
+            .$this->p('• Q02 (Kunci: A · Modul: M03.4): POP adalah syarat minimum.')
+            .$this->p('PANDUAN EVALUASI ESAI E01 — SEGMENTASI').$this->p('Target terlalu luas.')
+            .$this->p('Rubrik Baku Penilaian Esai').$this->p('Ketepatan Pengetahuan')
+            .$this->p('Skema Kontrak Output Evaluasi AI').$this->p('{ "score": 88 }')
+        );
+
+        $this->post(route('admin.questions.import', [$this->section, 'post']), ['docx' => $post])->assertSessionHasNoErrors();
+
+        $questions = CourseQuestion::with('options')->orderBy('order')->get();
+        $this->assertSame(['single', 'single', 'essay'], $questions->pluck('type')->all());
+        $this->assertSame('Apa itu nilai?', $questions[0]->question);
+        $this->assertSame('Manfaat dikurangi pengorbanan', $questions[0]->options->firstWhere('is_correct', true)->text);
+        $this->assertSame('Syarat kategori', $questions[1]->options->firstWhere('is_correct', true)->text);
+        $this->assertSame("SOAL ESAI E01 (Bobot 50%) — Segmentasi\nKASUS BISNIS: Krim untuk semua orang.", $questions[2]->question);
+        $this->assertSame("PANDUAN EVALUASI ESAI E01 — SEGMENTASI\nTarget terlalu luas.\nRubrik Baku Penilaian Esai\nKetepatan Pengetahuan", $questions[2]->answer_key);
+    }
+
     private function p(string $text, ?string $style = null): string
     {
         $runs = collect(explode("\n", $text))->map(fn ($line) => '<w:r><w:t xml:space="preserve">'.e($line).'</w:t></w:r>')->implode('<w:r><w:br/></w:r>');
