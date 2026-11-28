@@ -31,3 +31,7 @@ Thumbs.db
 *.sql
 
 .omc/
+
+# Raw course material (Word, PDF, mp4) and IDE language-server scratch files
+/docs/docs/
+/storage/framework/lsp-*.php

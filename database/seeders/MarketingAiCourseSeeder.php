@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * "Marketing Strategy in the AI Era" from docs/docs (Master Course Structure V2.3, Modul 01, Module 02 tests).
+ * "Marketing Strategy in the AI Era" from docs/docs (Master Course Structure V2.3, Modul 01, 03 and 04).
  * Content lives in data/marketing-ai-course.json; module PDFs next to it in data/.
  * Safe to run on production: when the course already exists it only adds the lessons and tests a chapter is
  * still missing, and never touches lessons or questions an admin added or edited.
@@ -61,6 +61,7 @@ class MarketingAiCourseSeeder extends Seeder
                     'title' => $sectionData['title'],
                     'order' => $sectionOrder + 1,
                     'is_free' => $sectionData['is_free'],
+                    'pretest_after' => $sectionData['pretest_after'] ?? 0,
                 ]);
 
                 foreach ($sectionData['lessons'] as $lessonOrder => $lesson) {
@@ -102,18 +103,6 @@ class MarketingAiCourseSeeder extends Seeder
                     $section->update(['title' => $sectionData['title']]);
                 }
 
-                // Modul 02 first went out with placeholder summaries and its tests ahead of its videos and PDF;
-                // it is taken back out until it is ready. Tests stay if a learner already took one.
-                if ($order === 1) {
-                    $placeholders = $section->lessons()->where('type', 'text')->where('content', 'like', '%Naskah lengkap lesson ini sedang disiapkan%')->get();
-                    $placeholders->each->delete();
-                    $taken = QuizAttempt::where('section_id', $section->id)->exists();
-                    $questions = $taken ? 0 : $section->questions()->get()->each->delete()->count();
-                    if ($placeholders->isNotEmpty() || $questions) {
-                        $this->command?->info("{$section->title}: {$placeholders->count()} materi sementara dan {$questions} soal dikeluarkan.");
-                    }
-                }
-
                 if ($order === 0) {
                     $old = $section->lessons()->get()->filter(fn (Lesson $l) => $l->type === 'text' && preg_match(self::OLD_BAB1_READING, $l->title));
                     $old->each->delete();
@@ -137,6 +126,11 @@ class MarketingAiCourseSeeder extends Seeder
                         $this->createQuestions($section, $kind, $sectionData[$kind]);
                         $this->command?->info("{$section->title}: {$kind}-test ditambahkan.");
                     }
+                }
+
+                // Only from the default "start of the module"; a position an admin picked stays.
+                if (($sectionData['pretest_after'] ?? 0) && $section->pretest_after === 0) {
+                    $section->update(['pretest_after' => $sectionData['pretest_after']]);
                 }
             }
         });
