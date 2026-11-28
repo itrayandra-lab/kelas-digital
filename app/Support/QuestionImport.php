@@ -23,7 +23,7 @@ class QuestionImport
     {
         $paragraphs = array_values($paragraphs);
 
-        if (preg_grep('/^SOAL\s+Q\d+\b/i', $paragraphs)) {
+        if (preg_grep(self::QUESTION, $paragraphs)) {
             return self::parsePackage($paragraphs, $kind);
         }
 
@@ -88,14 +88,19 @@ class QuestionImport
         return self::build($choices, $keys, $essays, $guides, $kind);
     }
 
+    /** "SOAL Q01 ..." or "SOAL 01 [Lesson ...]" starts a question; "Soal 01, 02, 03" in a key table does not. */
+    private const QUESTION = '/^SOAL\s+Q?(\d+)\b(?!\s*,)(?:\s*:\s*(.+))?/is';
+
     /**
-     * The RayAcademy assessment package (2026):
+     * The RayAcademy assessment packages (2026). Two variants are read:
      *
-     *   SOAL Q01 · TOPIC (Alokasi: 60 Detik)   then the question in the next paragraph, or "Soal Q01: question" in one
-     *   [ A ]  Option ... [ D ]  Option
-     *   EVALUASI Q01 · KUNCI: [ A ]            or "• Q01 (Kunci: A · Modul: ...)", in the evaluator part
-     *   SOAL ESAI E01 ...                      an essay, up to the next essay or "BAGIAN II"
-     *   PANDUAN EVALUASI ESAI E01 ...          its answer guide; the "Rubrik Baku" table is added to every guide
+     *   SOAL Q01 · TOPIC (Alokasi: 60 Detik)    SOAL 01  [Lesson 04.1 · Topic]   the question follows in the next paragraphs,
+     *                                                                            or "Soal Q01: question" in one
+     *   [ A ]  Option ... [ D ]  Option         A.  Option ... D.  Option
+     *   EVALUASI Q01 · KUNCI: [ A ]             Soal 01: B,  Soal 01 (Kunci B — ...),  or a row "1. B | 2. A | 3. B"
+     *   SOAL ESAI E01 ...                       SOAL 01: STUDI KASUS ESAI 1: ...   an essay, up to the next essay or section
+     *   PANDUAN EVALUASI ESAI E01 ...           Model Jawaban Sempurna Esai 1 ...  its answer guide
+     *   Rubrik Baku ...                         RUBRIK PENILAIAN ...               the rubric, added to every essay guide
      */
     private static function parsePackage(array $paragraphs, string $kind): array
     {
@@ -104,33 +109,45 @@ class QuestionImport
         $current = null;
 
         foreach ($paragraphs as $text) {
-            if (preg_match('/^(?:•\s*)?(?:EVALUASI\s+)?Q(\d+)\b.{0,40}?KUNCI\s*:\s*\[?\s*([A-H])\b/iu', $text, $m)) {
+            if (preg_match('/^(?:•\s*)?(?:EVALUASI\s+)?Q(\d+)\b.{0,40}?KUNCI\s*:\s*\[?\s*([A-H])\b/iu', $text, $m)
+                || preg_match('/^Soal\s+(\d+)\s*(?::\s*|\(\s*Kunci\s+)([A-H])\b/i', $text, $m)) {
                 $keys[(int) $m[1]] = strtoupper($m[2]);
 
                 continue;
             }
-            if (preg_match('/^SOAL\s+ESA[IY]\s+E?(\d+)/i', $text, $m)) {
+            if (preg_match('/^\d+\.\s*[A-H]\s*(\||$)/', $text) && preg_match_all('/(\d+)\.\s*([A-H])\b/', $text, $rows, PREG_SET_ORDER)) {
+                foreach ($rows as [, $no, $letter]) {
+                    $keys[(int) $no] = strtoupper($letter);
+                }
+
+                continue;
+            }
+            if (preg_match('/^SOAL\s+(?:\d+\s*:\s*STUDI\s+KASUS\s+)?ESA[IY]\s+E?(\d+)/i', $text, $m)) {
                 [$mode, $current] = ['essay', (int) $m[1]];
                 $essays[$current] = [$text];
 
                 continue;
             }
-            if (preg_match('/^PANDUAN\s+EVALUASI\s+ESA[IY]\s+E?(\d+)/i', $text, $m)) {
+            if (preg_match('/^(?:PANDUAN\s+EVALUASI|Model\s+Jawaban\b.*?)\s+ESA[IY]\s+E?(\d+)/i', $text, $m)) {
                 [$mode, $current] = ['guide', (int) $m[1]];
                 $guides[$current] = [$text];
 
                 continue;
             }
-            if (preg_match('/^Rubrik\s+Baku/i', $text)) {
+            if (preg_match('/^Rubrik\s+(Baku|Penilaian)/i', $text)) {
                 $mode = 'rubric';
                 $rubric[] = $text;
 
                 continue;
             }
-            if (preg_match('/^(BAGIAN\s+II\b|Skema\s+Kontrak)/i', $text)) {
+            if (preg_match('/^(BAGIAN\s+II\b|Skema\s+Kontrak|PEDOMAN\s+PENILAIAN|KUNCI\s+JAWABAN|STANDAR\s+KONVERSI)/i', $text)) {
                 $mode = 'skip';
 
                 continue;
+            }
+            // Section headings ("BAGIAN II: ...") can sit between questions; the next question resumes reading.
+            if ($mode === 'skip' && preg_match(self::QUESTION, $text)) {
+                $mode = null;
             }
 
             match ($mode) {
@@ -151,13 +168,15 @@ class QuestionImport
 
     private static function readChoiceLine(string $text, array &$choices, ?int &$current): void
     {
-        if (preg_match('/^SOAL\s+Q(\d+)\b(?:\s*:\s*(.+))?/is', $text, $m)) {
+        if (preg_match(self::QUESTION, $text, $m)) {
             $current = (int) $m[1];
-            $choices[$current] = ['question' => trim($m[2] ?? ''), 'options' => []];
-        } elseif ($current !== null && preg_match('/^\[\s*([A-H])\s*\]\s*(.+)$/s', $text, $m)) {
-            $choices[$current]['options'][strtoupper($m[1])] = trim($m[2]);
+            // "Soal Q01: question", or a "SOAL 01 [Lesson ...]" header line with the question below it in the same paragraph.
+            $question = $m[2] ?? (str_contains($text, "\n") ? substr($text, strpos($text, "\n") + 1) : '');
+            $choices[$current] = ['question' => trim($question), 'options' => []];
+        } elseif ($current !== null && preg_match('/^(?:\[\s*([A-H])\s*\]|([A-H])[.)])\s+(.+)$/s', $text, $m)) {
+            $choices[$current]['options'][strtoupper($m[1] ?: $m[2])] = trim($m[3]);
         } elseif ($current !== null && ! $choices[$current]['options']) {
-            // The question text follows its "SOAL Q01 · TOPIC" header.
+            // The question text follows its "SOAL 01 [Lesson ...]" header.
             $choices[$current]['question'] = trim($choices[$current]['question']."\n".$text);
         }
     }

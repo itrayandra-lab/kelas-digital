@@ -112,6 +112,11 @@ class WordDocument
 
     private function table(DOMElement $table): string
     {
+        // Word templates use empty tables as divider lines; on the page they would show as a blank box.
+        if (trim($this->xpath->evaluate('string(.)', $table)) === '') {
+            return '';
+        }
+
         $rows = $this->xpath->query('w:tr', $table);
         $html = '';
 

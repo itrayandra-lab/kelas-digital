@@ -121,6 +121,33 @@ class WordImportTest extends TestCase
         $this->assertSame("PANDUAN EVALUASI ESAI E01 — SEGMENTASI\nTarget terlalu luas.\nRubrik Baku Penilaian Esai\nKetepatan Pengetahuan", $questions[2]->answer_key);
     }
 
+    public function test_test_questions_import_from_the_lesson_tagged_package(): void
+    {
+        $post = $this->docx(
+            $this->p('BAGIAN I: 15 SOAL PILIHAN GANDA')
+            .$this->p("SOAL 01  [Lesson 04.1 · Brand Meaning]\nMengapa produk B lebih mahal?").$this->p('A.  Iklan suap').$this->p('B.  Makna merek')
+            .$this->p('BAGIAN II: KOMPAS FILOSOFIS').$this->p('Fokus Pembelajaran: Lesson 04.2')
+            .$this->p('SOAL 02  [Lesson 04.2 · Purpose]').$this->p('Apa itu purpose?').$this->p('A.  Alasan ada').$this->p('B.  Target omzet')
+            .$this->p('SOAL 01: STUDI KASUS ESAI 1: JANJI FORMULA').$this->p('a. Mengapa janji 48 jam keliru?')
+            .$this->p('PEDOMAN PENILAIAN, KUNCI JAWABAN & RUBRIK EVALUASI RESMI')
+            .$this->p('Soal 01, 02').$this->p('1. B   |   2. A')
+            .$this->p('Model Jawaban Sempurna Esai 1 (Skor Maksimal 20 Poin):').$this->p('Siklus kulit 28 hari.')
+            .$this->p('RUBRIK PENILAIAN ANALITIS SOAL STUDI KASUS ESAI').$this->p('Akurasi Pemahaman Konseptual')
+            .$this->p('STANDAR KONVERSI NILAI AKHIR').$this->p('Skor 86 – 100 Sangat Memuaskan')
+        );
+
+        $this->post(route('admin.questions.import', [$this->section, 'post']), ['docx' => $post])->assertSessionHasNoErrors();
+
+        $questions = CourseQuestion::with('options')->orderBy('order')->get();
+        $this->assertSame(['single', 'single', 'essay'], $questions->pluck('type')->all());
+        $this->assertSame('Mengapa produk B lebih mahal?', $questions[0]->question);
+        $this->assertSame('Makna merek', $questions[0]->options->firstWhere('is_correct', true)->text);
+        $this->assertSame('Apa itu purpose?', $questions[1]->question);
+        $this->assertSame('Alasan ada', $questions[1]->options->firstWhere('is_correct', true)->text);
+        $this->assertSame("SOAL 01: STUDI KASUS ESAI 1: JANJI FORMULA\na. Mengapa janji 48 jam keliru?", $questions[2]->question);
+        $this->assertSame("Model Jawaban Sempurna Esai 1 (Skor Maksimal 20 Poin):\nSiklus kulit 28 hari.\nRUBRIK PENILAIAN ANALITIS SOAL STUDI KASUS ESAI\nAkurasi Pemahaman Konseptual", $questions[2]->answer_key);
+    }
+
     private function p(string $text, ?string $style = null): string
     {
         $runs = collect(explode("\n", $text))->map(fn ($line) => '<w:r><w:t xml:space="preserve">'.e($line).'</w:t></w:r>')->implode('<w:r><w:br/></w:r>');
