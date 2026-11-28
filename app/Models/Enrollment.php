@@ -55,6 +55,15 @@ class Enrollment extends Model
      * Opens the course. Midtrans may confirm the same payment twice (browser callback and webhook),
      * so the voucher is counted only on the first switch to completed.
      */
+    /**
+     * Whether a Midtrans payment pays for this order. An older, cheaper order (say a voucher checkout followed by
+     * one without) must not open the course, or the voucher is used without being counted.
+     */
+    public function isPaidBy(mixed $grossAmount): bool
+    {
+        return (int) round((float) $grossAmount) >= (int) $this->paid_amount;
+    }
+
     public function markPaid(array $attributes = []): void
     {
         DB::transaction(function () use ($attributes) {

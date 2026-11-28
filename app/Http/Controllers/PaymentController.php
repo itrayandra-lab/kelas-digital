@@ -7,6 +7,8 @@ use App\Models\Enrollment;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
 use Midtrans\Notification;
 use Midtrans\Snap;
@@ -73,18 +75,30 @@ class PaymentController extends Controller
 
         $order = ['payment_status' => 'pending', 'status' => 'pending', 'voucher_id' => $voucher?->id, 'paid_amount' => $amount];
 
-        if ($existing) {
-            // Old tokens expire or belong to failed orders, so every checkout gets a fresh order.
-            // A "Mulai gratis" row keeps payment_method 'trial' until paid, so its free chapters stay open meanwhile.
-            $enrollment = $existing;
-            $enrollment->update($order);
-        } else {
-            $enrollment = Enrollment::create($order + [
+        // The voucher row stays locked until this order is saved, so simultaneous checkouts are counted one by one.
+        $enrollment = DB::transaction(function () use ($voucher, $user, $course, $existing, $order) {
+            if ($voucher && Voucher::lockForUpdate()->find($voucher->id)->isFullFor($user->id)) {
+                return null;
+            }
+
+            if ($existing) {
+                // Old tokens expire or belong to failed orders, so every checkout gets a fresh order.
+                // A "Mulai gratis" row keeps payment_method 'trial' until paid, so its free chapters stay open meanwhile.
+                $existing->update($order);
+
+                return $existing;
+            }
+
+            return Enrollment::create($order + [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
                 'enrolled_at' => now(),
                 'payment_method' => 'midtrans',
             ]);
+        });
+
+        if (! $enrollment) {
+            return response()->json(['error' => 'voucher', 'message' => 'Kuota voucher ini sudah habis.'], 422);
         }
 
         if ($amount === 0) {
@@ -141,7 +155,7 @@ class PaymentController extends Controller
             return response()->json(['success' => false], 422);
         }
 
-        if (! in_array($status->transaction_status ?? null, ['capture', 'settlement'])) {
+        if (! in_array($status->transaction_status ?? null, ['capture', 'settlement']) || ! $enrollment->isPaidBy($status->gross_amount ?? 0)) {
             return response()->json(['success' => false], 422);
         }
 
@@ -181,7 +195,9 @@ class PaymentController extends Controller
             'midtrans_response' => $notif->getResponse(),
         ]);
 
-        if (in_array($transactionStatus, ['capture', 'settlement'])) {
+        if (in_array($transactionStatus, ['capture', 'settlement']) && ! $enrollment->isPaidBy($notif->gross_amount ?? 0)) {
+            Log::warning('Midtrans: order dibayar dengan nominal lebih kecil dari pesanan terakhir, kelas tidak dibuka.', ['order_id' => $orderId, 'enrollment' => $enrollment->id]);
+        } elseif (in_array($transactionStatus, ['capture', 'settlement'])) {
             $enrollment->markPaid(['payment_method' => 'midtrans']);
         } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire']) && $enrollment->payment_status !== 'completed') {
             // An old abandoned order expiring must not revoke a course that was already paid.

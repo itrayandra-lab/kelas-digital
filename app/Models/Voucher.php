@@ -46,6 +46,22 @@ class Voucher extends Model
         };
     }
 
+    /**
+     * A limited voucher counts paid uses plus other people's orders still waiting for payment (a Snap link lasts a
+     * day), so ten checkouts can't share a single-use voucher before anyone pays. Call inside a lock on this row.
+     */
+    public function isFullFor(int $userId): bool
+    {
+        if ($this->max_uses === null) {
+            return false;
+        }
+
+        $held = Enrollment::where('voucher_id', $this->id)->where('payment_status', 'pending')
+            ->where('user_id', '!=', $userId)->where('updated_at', '>', now()->subDay())->count();
+
+        return $this->used_count + $held >= $this->max_uses;
+    }
+
     public function discountFor(int $price): int
     {
         $discount = $this->discount_type === 'percent'

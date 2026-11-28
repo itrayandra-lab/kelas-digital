@@ -138,6 +138,30 @@ class PartlyFreeCourseTest extends TestCase
         $this->assertFalse($check('GRATIS')['ok']);
     }
 
+    public function test_a_limited_voucher_counts_unpaid_orders_and_a_cheaper_old_order_does_not_unlock(): void
+    {
+        $voucher = Voucher::create(['code' => 'SATU', 'discount_type' => 'percent', 'discount_value' => 50, 'max_uses' => 1]);
+        $first = $this->student();
+        $second = User::factory()->create(['username' => 'peserta2'])->assignRole('student');
+
+        // The first learner's order holds the only use while it waits for payment.
+        $order = Enrollment::create(['user_id' => $first->id, 'course_id' => $this->course->id, 'enrolled_at' => now(), 'payment_method' => 'midtrans',
+            'payment_status' => 'pending', 'status' => 'pending', 'voucher_id' => $voucher->id, 'paid_amount' => 50000]);
+        $this->assertTrue($voucher->isFullFor($second->id));
+        $this->assertFalse($voucher->isFullFor($first->id));
+        $this->actingAs($second)->postJson(route('payment.checkout', $this->course->slug), ['voucher' => 'SATU'])
+            ->assertStatus(422)->assertJson(['error' => 'voucher']);
+
+        // A day-old unpaid order no longer holds it.
+        $order->forceFill(['updated_at' => now()->subDays(2)])->saveQuietly();
+        $this->assertFalse($voucher->isFullFor($second->id));
+
+        // The same learner then checks out at full price: the old half-price link must not open the course.
+        $order->update(['voucher_id' => null, 'paid_amount' => 100000]);
+        $this->assertFalse($order->isPaidBy('50000.00'));
+        $this->assertTrue($order->isPaidBy('100000.00'));
+    }
+
     public function test_admins_open_any_lesson_in_any_order(): void
     {
         $slug = $this->course->slug;
