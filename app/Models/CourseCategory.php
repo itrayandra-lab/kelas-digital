@@ -18,11 +18,8 @@ class CourseCategory extends Model
 
     protected static function booted()
     {
+        // The slug is set once: renaming a category must not break its links or the school pages that list it by slug.
         static::creating(function ($category) {
-            $category->slug = Str::slug($category->name);
-        });
-
-        static::updating(function ($category) {
             $category->slug = Str::slug($category->name);
         });
     }
