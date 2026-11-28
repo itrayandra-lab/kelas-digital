@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Expert;
 use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -83,8 +83,9 @@ class ArticleController extends Controller
     {
         $categories = ArticleCategory::orderBy('name')->get();
         $tags = Tag::orderBy('name')->get();
+        $experts = Expert::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.articles.create', compact('categories', 'tags'));
+        return view('admin.articles.create', compact('categories', 'tags', 'experts'));
     }
 
     /**
@@ -99,7 +100,7 @@ class ArticleController extends Controller
             'content' => 'nullable|required_if:content_format,wordpress',
             'body' => 'nullable|required_if:content_format,rich_text',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'author' => 'required|string|max:255',
+            'expert_id' => 'required|exists:experts,id',
             'excerpt' => 'nullable|string',
             'post_type' => 'nullable|string|max:255',
             'categories' => 'required|array|min:1',
@@ -114,11 +115,6 @@ class ArticleController extends Controller
             'hero_slider_order.unique' => 'This slider position is already taken. Please choose a different order (1-5).',
         ]);
 
-        // Auto-fill author if empty (backup safety)
-        if (empty($data['author'])) {
-            $data['author'] = Auth::user()->name;
-        }
-
         $thumbnail = 'default-article.jpg';
         if ($request->hasFile('thumbnail')) {
             $thumbnail = $request->file('thumbnail')->store('articles', 'public');
@@ -131,7 +127,7 @@ class ArticleController extends Controller
             'content' => $data['content'] ?? null,
             'body' => $data['body'] ?? null,
             'thumbnail' => $thumbnail,
-            'author' => $data['author'],
+            'expert_id' => $data['expert_id'],
             'excerpt' => $data['excerpt'] ?? null,
             'post_type' => $data['post_type'] ?? 'post',
             'status' => $data['status'],
@@ -173,8 +169,9 @@ class ArticleController extends Controller
             ->findOrFail($id);
         $categories = ArticleCategory::orderBy('name')->get();
         $tags = Tag::orderBy('name')->get();
+        $experts = Expert::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.articles.edit', compact('article', 'categories', 'tags'));
+        return view('admin.articles.edit', compact('article', 'categories', 'tags', 'experts'));
     }
 
     /**
@@ -222,7 +219,7 @@ class ArticleController extends Controller
             'content' => 'nullable|required_if:content_format,wordpress',
             'body' => 'nullable|required_if:content_format,rich_text',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'author' => 'required|string|max:255',
+            'expert_id' => 'required|exists:experts,id',
             'excerpt' => 'nullable|string',
             'post_type' => 'nullable|string|max:255',
             'categories' => 'required|array|min:1',
@@ -243,18 +240,13 @@ class ArticleController extends Controller
             'hero_slider_order.unique' => 'This slider position is already taken. Please choose a different order (1-5).',
         ]);
 
-        // Auto-fill author if empty (backup safety)
-        if (empty($data['author'])) {
-            $data['author'] = Auth::user()->name;
-        }
-
         $payload = [
             'content_format' => $data['content_format'],
             'title' => $data['title'],
             'slug' => $data['slug'],
             'content' => $data['content'] ?? null,
             'body' => $data['body'] ?? null,
-            'author' => $data['author'],
+            'expert_id' => $data['expert_id'],
             'excerpt' => $data['excerpt'] ?? null,
             'post_type' => $data['post_type'] ?? 'post',
             'status' => $data['status'],

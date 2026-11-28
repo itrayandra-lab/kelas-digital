@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ArticleCategoryController as AdminArticleCategoryController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CourseCategoryController as AdminCourseCategoryController;
+use App\Http\Controllers\Admin\ExpertController as AdminExpertController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\CurriculumController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -163,6 +164,7 @@ Route::prefix('admin')
         // Course category management
         Route::middleware('can:view course categories')->group(function () {
             Route::resource('course-categories', AdminCourseCategoryController::class)->except(['show']);
+            Route::resource('experts', AdminExpertController::class)->except(['show']);
         });
 
 

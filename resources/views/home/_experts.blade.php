@@ -1,4 +1,4 @@
-{{-- Meet Our Experts: text above the group photo, the names in a navy pill over its lower edge, then a link to the experts page. Names: config/homepage.php. --}}
+{{-- Meet Our Experts: text above the group photo, the names in a navy pill over its lower edge, then a link to the experts page. Names: experts marked "Tampil di beranda" in Admin → Pakar. --}}
 @push('styles')
 <style>
 .xp{background:linear-gradient(180deg,#f4f8fd 0%,#e9f2fb 100%);padding-bottom:clamp(2.5rem,5vw,4rem);}
@@ -32,10 +32,10 @@
         </header>
         <figure class="xp-photo">
             <img src="{{ asset('img/home/experts-m.webp') }}" srcset="{{ asset('img/home/experts-m.webp') }} 900w, {{ asset('img/home/experts.webp') }} 1672w" sizes="(min-width:1280px) 1280px, 100vw" width="1672" height="605"
-                 alt="Para pakar RayAcademy: {{ collect(config('homepage.experts'))->pluck('name')->implode(', ') }}" loading="lazy" decoding="async">
+                 alt="Para pakar RayAcademy: {{ $expertNames->implode(', ') }}" loading="lazy" decoding="async">
         </figure>
         <div class="xp-names rv">
-            @foreach(collect(config('homepage.experts'))->pluck('name')->chunk(4) as $line)
+            @foreach($expertNames->chunk(4) as $line)
                 <p>{{ $line->implode(' · ') }}</p>
             @endforeach
         </div>

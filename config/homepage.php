@@ -97,22 +97,6 @@ return [
     ],
 
     /*
-     * Experts, in the order of the names under the group photo (four per line on wide screens).
-     * schools: slugs of the Learning Families above; the expert is listed on those school pages.
-     * Their classes are found by matching the name (without titles) against each class's instructor.
-     */
-    'experts' => [
-        ['name' => 'Ria R. Christiana, MBA', 'schools' => ['dobetter-class', 'levelup-class']],
-        ['name' => 'Dr. apt. Soraya Ratnawulan Mita, M.Si', 'schools' => ['sekolah-kosmetik-indonesia']],
-        ['name' => 'apt. Zelika Mega Ramadhania, M.Sc, Ph.D', 'schools' => ['sekolah-kosmetik-indonesia']],
-        ['name' => 'Yusep Maulana, M.Kom, MBA', 'schools' => ['amaizing-class']],
-        ['name' => 'Prof. Dr. apt. Sriwidodo, M.Si', 'schools' => ['sekolah-kosmetik-indonesia']],
-        ['name' => 'apt. Cahya Khairani Kusumawulan, M.Farm', 'schools' => ['sekolah-kosmetik-indonesia']],
-        ['name' => 'Wendra Wilendra, M.MT', 'schools' => ['dobetter-class']],
-        ['name' => 'Prof. Dr. rer. nat. apt. Anis Yohana Chaerunisaa', 'schools' => ['sekolah-kosmetik-indonesia']],
-    ],
-
-    /*
      * Where buttons without their own page go. null means the fallback:
      * raya → opens the RAYA chat widget, corporate → WhatsApp or e-mail from Site Settings.
      */

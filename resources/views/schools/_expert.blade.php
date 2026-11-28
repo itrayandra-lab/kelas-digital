@@ -20,17 +20,17 @@
 @endonce
 <article class="ex-card">
     <div class="ex-top">
-        <span class="ex-avatar" aria-hidden="true">{{ $expert['initials'] }}</span>
-        <h3 class="ex-name">{{ $expert['name'] }}</h3>
+        <span class="ex-avatar" aria-hidden="true">{{ $expert->initials() }}</span>
+        <h3 class="ex-name">{{ $expert->name }}</h3>
     </div>
     <div class="ex-tags">
-        @foreach($expert['schools'] as $slug)
+        @foreach($expert->schools ?? [] as $slug)
             @isset($schools[$slug])<a href="{{ route('school.show', $slug) }}">{{ $schools[$slug]['name'] }}</a>@endisset
         @endforeach
     </div>
-    @if($expert['courses']->isNotEmpty())
+    @if($expert->courses->isNotEmpty())
         <p class="ex-classes"><b>Mengajar</b>
-            @foreach($expert['courses'] as $course)<a href="{{ route('course.show', $course->slug) }}">{{ $course->title }}</a>@if(! $loop->last), @endif @endforeach
+            @foreach($expert->courses as $course)<a href="{{ route('course.show', $course->slug) }}">{{ $course->title }}</a>@if(! $loop->last), @endif @endforeach
         </p>
     @endif
 </article>

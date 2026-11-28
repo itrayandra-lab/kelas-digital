@@ -7,6 +7,7 @@ use App\Models\CourseCategory;
 use App\Models\CourseQuestion;
 use App\Models\CourseSection;
 use App\Models\Enrollment;
+use App\Models\Expert;
 use App\Models\Lesson;
 use App\Models\QuizAttempt;
 use App\Models\User;
@@ -473,7 +474,7 @@ class CourseLearningFlowTest extends TestCase
 
         // 1. Course details. A paid course without a price is rejected.
         $details = [
-            'title' => 'Kelas Uji Coba', 'instructor' => 'Admin', 'description' => 'Deskripsi kelas.',
+            'title' => 'Kelas Uji Coba', 'expert_id' => Expert::create(['name' => 'Pengajar Uji'])->id, 'description' => 'Deskripsi kelas.',
             'course_type' => 'paid', 'trailer_video_id' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
             'course_category_id' => $this->course->course_category_id, 'level' => 'Beginner',
             'benefits' => "Poin satu\nPoin dua",

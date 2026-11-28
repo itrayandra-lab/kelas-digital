@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\Expert;
 use App\Models\User;
 use App\Support\CourseRoster;
 use Illuminate\Http\Request;
@@ -38,8 +39,9 @@ class CourseController extends Controller
     {
         $this->authorize('create courses');
         $categories = CourseCategory::orderBy('name')->get();
+        $experts = Expert::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.courses.create', compact('categories'));
+        return view('admin.courses.create', compact('categories', 'experts'));
     }
 
     /**
@@ -50,7 +52,7 @@ class CourseController extends Controller
         $this->authorize('create courses');
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'instructor' => 'required|string|max:255',
+            'expert_id' => 'required|exists:experts,id',
             'description' => 'required',
             'course_type' => 'required|in:paid,free',
             'price' => 'exclude_if:course_type,free|required|integer|min:1000',
@@ -73,7 +75,7 @@ class CourseController extends Controller
 
         $course = Course::create([
             'title' => $data['title'],
-            'instructor' => $data['instructor'],
+            'expert_id' => $data['expert_id'],
             'description' => $data['description'],
             'course_type' => $data['course_type'],
             'price' => $data['course_type'] === 'free' ? 0 : ($data['price'] ?? 0),
@@ -182,8 +184,9 @@ class CourseController extends Controller
         $this->authorize('edit courses');
         $course = Course::with('category')->findOrFail($id);
         $categories = CourseCategory::orderBy('name')->get();
+        $experts = Expert::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.courses.edit', compact('course', 'categories'));
+        return view('admin.courses.edit', compact('course', 'categories', 'experts'));
     }
 
     /**
@@ -196,7 +199,7 @@ class CourseController extends Controller
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
-            'instructor' => 'required|string|max:255',
+            'expert_id' => 'required|exists:experts,id',
             'description' => 'required',
             'course_type' => 'required|in:paid,free',
             'price' => 'exclude_if:course_type,free|required|integer|min:1000',
@@ -214,7 +217,7 @@ class CourseController extends Controller
 
         $payload = [
             'title' => $data['title'],
-            'instructor' => $data['instructor'],
+            'expert_id' => $data['expert_id'],
             'description' => $data['description'],
             'course_type' => $data['course_type'],
             'price' => $data['course_type'] === 'free' ? 0 : ($data['price'] ?? $course->price),

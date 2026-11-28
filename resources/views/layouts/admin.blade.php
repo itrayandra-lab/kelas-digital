@@ -100,6 +100,11 @@
                             <i class="fas fa-sitemap mr-3 text-base"></i>
                             Course Categories
                         </a>
+                        <a href="{{ route('admin.experts.index') }}"
+                            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.experts.*') ? 'bg-primary-100 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                            <i class="fas fa-user-tie mr-3 text-base"></i>
+                            Pakar
+                        </a>
                         @endcan
                     </div>
                 </div>

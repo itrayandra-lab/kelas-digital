@@ -67,15 +67,7 @@
                     </div>
 
                     <!-- Instructor -->
-                    <div>
-                        <label for="instructor" class="block text-sm font-medium text-gray-700 mb-2">Instructor</label>
-                        <input type="text" name="instructor" id="instructor" value="{{ old('instructor') }}" required
-                            placeholder="e.g., Dr. Amanda Larasati"
-                            class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                        @error('instructor')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @include('admin._expert-select', ['label' => 'Instructor', 'selected' => null])
 
                     <!-- Price (paid only) -->
                     <div x-show="courseType === 'paid'">

@@ -48,16 +48,7 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="author" class="block text-sm font-medium text-gray-700 mb-2">Author</label>
-                        <input type="text" name="author" id="author" value="{{ old('author', Auth::user()->name) }}" required
-                            placeholder="e.g., Dr. Amanda Larasati, Beauty Expert"
-                            class="w-full block px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
-                        <p class="mt-1 text-xs text-gray-500">Auto-filled with your name. You can edit if needed.</p>
-                        @error('author')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @include('admin._expert-select', ['label' => 'Author', 'selected' => null])
 
                     <div>
                         <x-multi-select

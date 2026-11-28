@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\Course;
 use App\Models\Event;
+use App\Models\Expert;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,10 @@ class HomeController extends Controller
             'smart_book' => config('homepage.links.smart_book'),
         ];
 
-        return view('home', compact('flagship', 'otherFamilies', 'nextClasses', 'leadArticle', 'moreArticles', 'events', 'links'));
+        // Names under the group photo: the experts marked "Tampil di beranda" in the admin.
+        $expertNames = Expert::where('featured', true)->orderBy('order')->pluck('name');
+
+        return view('home', compact('flagship', 'otherFamilies', 'nextClasses', 'leadArticle', 'moreArticles', 'events', 'links', 'expertNames'));
     }
 
     public function showArticle(Request $request, string $slug)

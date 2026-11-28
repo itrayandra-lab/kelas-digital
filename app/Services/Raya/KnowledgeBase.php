@@ -118,7 +118,7 @@ class KnowledgeBase
         $out[] = [
             'title' => 'Para pakar RayAcademy', 'url' => '/#instruktur',
             'text' => "[Pakar dan pengajar RayAcademy]\nRayAcademy belajar bersama akademisi, peneliti, pakar, dan praktisi: "
-                .collect(config('homepage.experts'))->pluck('name')->implode('; ').'.',
+                .\App\Models\Expert::where('featured', true)->orderBy('order')->pluck('name')->implode('; ').'.',
         ];
 
         return $out;

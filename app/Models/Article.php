@@ -24,6 +24,7 @@ class Article extends Model
         'body',
         'thumbnail',
         'author',
+        'expert_id',
         'excerpt',
         'post_type',
         'content_format',
@@ -65,6 +66,11 @@ class Article extends Model
                 'maxLengthKeepWords' => true,
             ],
         ];
+    }
+
+    public function expert()
+    {
+        return $this->belongsTo(Expert::class);
     }
 
     public function categories()
@@ -506,6 +512,12 @@ class Article extends Model
      */
     protected static function booted()
     {
+        // The author text is the chosen expert's name, so it can't be typed two ways.
+        static::saving(function (Article $article) {
+            if ($article->expert_id && $article->isDirty('expert_id')) {
+                $article->author = Expert::find($article->expert_id)?->name ?? $article->author;
+            }
+        });
         static::updating(function ($article) {
             // If status changing to draft/scheduled, remove from hero slider
             if ($article->isDirty('status') && in_array($article->status, ['draft', 'scheduled'])) {

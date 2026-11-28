@@ -20,6 +20,12 @@ class Course extends Model
 
     protected static function booted(): void
     {
+        // The instructor text is the chosen expert's name, so it can't be typed two ways.
+        static::saving(function (Course $course) {
+            if ($course->expert_id && $course->isDirty('expert_id')) {
+                $course->instructor = Expert::find($course->expert_id)?->name ?? $course->instructor;
+            }
+        });
         static::saved(fn (Course $course) => \App\Services\IndexNow::ping([route('course.show', $course->slug), route('course.index')]));
     }
 
@@ -30,6 +36,7 @@ class Course extends Model
         'title',
         'slug',
         'instructor',
+        'expert_id',
         'description',
         'price',
         'thumbnail',
@@ -175,6 +182,11 @@ class Course extends Model
     public function category()
     {
         return $this->belongsTo(CourseCategory::class, 'course_category_id');
+    }
+
+    public function expert()
+    {
+        return $this->belongsTo(Expert::class);
     }
 
     /**

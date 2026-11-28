@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseSection;
+use App\Models\Expert;
 use App\Models\Lesson;
-use App\Models\QuizAttempt;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +26,8 @@ class MarketingAiCourseSeeder extends Seeder
 
     private const PRICE = 599000;
 
-    private const INSTRUCTOR = 'Wendra Wilendra M.MT.';
+    /** Name of the course's expert (Admin → Pakar); the course's instructor text follows it. */
+    private const INSTRUCTOR = 'Wendra Wilendra, M.MT';
 
     /** The first seed went out with this placeholder; an admin-set price is never overwritten. */
     private const PLACEHOLDER_PRICE = 299000;
@@ -46,6 +47,7 @@ class MarketingAiCourseSeeder extends Seeder
                 'title' => $data['title'],
                 'slug' => $data['slug'],
                 'instructor' => self::INSTRUCTOR,
+                'expert_id' => $this->expertId(),
                 'description' => $data['description'],
                 'benefits' => $data['benefits'],
                 'price' => self::PRICE,
@@ -87,8 +89,8 @@ class MarketingAiCourseSeeder extends Seeder
                 $this->command?->info('Harga kelas diubah jadi Rp'.number_format(self::PRICE, 0, ',', '.').'.');
             }
 
-            if ($course->instructor === 'Tim Ray Academy') {
-                $course->update(['instructor' => self::INSTRUCTOR]);
+            if (! $course->expert_id) {
+                $course->update(['expert_id' => $this->expertId()]);
                 $this->command?->info('Instruktur diubah jadi '.self::INSTRUCTOR);
             }
 
@@ -134,6 +136,11 @@ class MarketingAiCourseSeeder extends Seeder
                 }
             }
         });
+    }
+
+    private function expertId(): int
+    {
+        return Expert::firstOrCreate(['name' => self::INSTRUCTOR], ['schools' => ['dobetter-class']])->id;
     }
 
     private function createLesson(CourseSection $section, array $lesson, int $order): void
