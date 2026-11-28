@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
+use App\Support\SafeHtml;
 use App\Support\YouTube;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
-use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 class Lesson extends Model
 {
@@ -84,13 +83,6 @@ class Lesson extends Model
     /** Lesson text written by instructors, stripped of scripts and event handlers before it reaches the page. */
     public function safeContent(): string
     {
-        $config = (new HtmlSanitizerConfig)
-            ->allowSafeElements()
-            ->allowLinkSchemes(['https', 'http', 'mailto'])
-            ->allowMediaSchemes(['https', 'http'])
-            ->allowRelativeLinks()
-            ->allowRelativeMedias();
-
-        return (new HtmlSanitizer($config))->sanitize((string) $this->content);
+        return SafeHtml::clean($this->content);
     }
 }

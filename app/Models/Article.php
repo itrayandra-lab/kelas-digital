@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\SafeHtml;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -101,10 +102,11 @@ class Article extends Model
      */
     public function getProcessedContentAttribute()
     {
-        return match ($this->content_format) {
+        // Article HTML comes from the admin editor or old WordPress posts; scripts must never reach readers.
+        return SafeHtml::clean(match ($this->content_format) {
             'rich_text' => $this->renderRichTextContent(),
             default => $this->renderWordPressContent(),
-        };
+        });
     }
 
     /**

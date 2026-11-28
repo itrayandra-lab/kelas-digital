@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    /** Roles the user form may give. Super-Admin is set up on the server only, never through the form. */
+    private const ASSIGNABLE_ROLES = ['student', 'instructor', 'content-manager', 'admin'];
+
     /**
      * Display a listing of users.
      */
@@ -31,7 +35,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles = Role::whereIn('name', ['student', 'instructor', 'content-manager', 'admin'])->get();
+        $roles = Role::whereIn('name', self::ASSIGNABLE_ROLES)->get();
 
         return view('admin.users.create', compact('roles'));
     }
@@ -46,7 +50,7 @@ class UserController extends Controller
             'username' => 'required|string|max:20|unique:users|regex:/^[a-zA-Z0-9_-]+$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|exists:roles,name',
+            'role' => ['required', Rule::in(self::ASSIGNABLE_ROLES)],
         ]);
 
         $user = User::create([
@@ -84,7 +88,7 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('error', 'Super Admin users cannot be edited.');
         }
 
-        $roles = Role::whereIn('name', ['student', 'instructor', 'content-manager', 'admin'])->get();
+        $roles = Role::whereIn('name', self::ASSIGNABLE_ROLES)->get();
 
         return view('admin.users.edit', compact('user', 'roles'));
     }
@@ -105,7 +109,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:20|unique:users,username,'.$user->id.'|regex:/^[a-zA-Z0-9_-]+$/',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|exists:roles,name',
+            'role' => ['required', Rule::in(self::ASSIGNABLE_ROLES)],
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -120,9 +124,12 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        $user->update($data);
+        // Nobody changes their own role, so an admin can't promote or lock themselves.
+        if ($user->is(auth()->user()) && ! $user->hasRole($request->role)) {
+            return back()->withInput()->with('error', 'Kamu tidak bisa mengubah role akunmu sendiri.');
+        }
 
-        // Update role using Spatie
+        $user->update($data);
         $user->syncRoles([$request->role]);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');

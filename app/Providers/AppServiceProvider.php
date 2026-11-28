@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Http\View\Composers\CategoryComposer;
 use App\Http\View\Composers\SettingsComposer;
-use App\Models\ArticleCategory;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -30,9 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // Daftarkan composer untuk layout app
         View::composer('layouts.app', CategoryComposer::class);
         View::composer('layouts.app', SettingsComposer::class);
-        View::composer('*', function ($view) {
-            $view->with('articleCategories', ArticleCategory::all());
-        });
 
         // Implicitly grant "Super-Admin" role all permission checks using can()
         Gate::before(function ($user, $ability) {
