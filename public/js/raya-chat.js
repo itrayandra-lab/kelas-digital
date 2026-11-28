@@ -60,7 +60,7 @@
     function inline(s) {
         s = esc(s);
         s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-        s = s.replace(/\[([^\]]+)\]\((\/(?!\/)[^)\s]*)\)/g, '<a href="$2">$1</a>');
+        s = s.replace(/\[([^\]]+)\]\((\/(?![\/\\])[^)\s]*)\)/g, '<a href="$2">$1</a>');
         // Links to anywhere else show as plain text.
         s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '$1');
         return linkContacts(s);
@@ -105,7 +105,8 @@
                 var links = el('div', 'rc-links');
                 m.links.forEach(function (l) {
                     if (typeof l.url !== 'string') return;
-                    var internal = l.url.charAt(0) === '/' && l.url.charAt(1) !== '/';
+                    // Browsers read "/\host" like "//host", so a backslash after the slash is just as external.
+                    var internal = l.url.charAt(0) === '/' && l.url.charAt(1) !== '/' && l.url.charAt(1) !== '\\';
                     if (!internal) return;
                     var a = el('a', null, l.label);
                     a.href = l.url;

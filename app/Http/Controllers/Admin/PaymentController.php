@@ -13,9 +13,12 @@ class PaymentController extends Controller
      */
     public function index()
     {
+        // "Mulai gratis" learners also have payment_status pending but status active; only real orders wait here.
         $pendingEnrollments = Enrollment::where('payment_status', 'pending')
+            ->where('status', 'pending')
             ->with(['user', 'course'])
             ->latest()
+            ->limit(100)
             ->get();
 
         $allEnrollments = Enrollment::with(['user', 'course'])

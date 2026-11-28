@@ -131,7 +131,7 @@ class ChatService
         $text = preg_replace('~<think>.*?</think>~is', '', $text);
         $text = strip_tags($text);
         // Only links inside this site survive; any other link collapses to its label.
-        $text = preg_replace_callback('~\[([^\]]+)\]\(([^)\s]*)\)~u', fn ($m) => preg_match('~^/(?!/)~', $m[2]) ? $m[0] : $m[1], $text);
+        $text = preg_replace_callback('~\[([^\]]+)\]\(([^)\s]*)\)~u', fn ($m) => preg_match('~^/(?![/\\\\])~', $m[2]) ? $m[0] : $m[1], $text);
         $text = preg_replace('~^\s*[*•]\s+~mu', '- ', $text);
         $text = preg_replace("~\n{3,}~", "\n\n", $text);
 

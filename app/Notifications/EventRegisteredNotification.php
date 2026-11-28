@@ -4,11 +4,16 @@ namespace App\Notifications;
 
 use App\Http\Controllers\TicketController;
 use App\Models\EventRegistration;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EventRegisteredNotification extends Notification
+// Queued: building the ticket PDF and talking to the mail server must not keep the sign-up page waiting.
+class EventRegisteredNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
+
     public function __construct(public EventRegistration $registration)
     {
     }

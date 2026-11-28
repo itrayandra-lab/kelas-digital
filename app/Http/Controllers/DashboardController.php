@@ -52,7 +52,7 @@ class DashboardController extends Controller
         // Courses from the categories the learner already studies come first.
         $categoryIds = $items->pluck('course.course_category_id')->unique();
         $recommended = Course::with('category')
-            ->withCount(['lessons', 'enrollments as students_count' => fn ($q) => $q->where('payment_status', 'completed')])
+            ->withCount(['lessons', 'freeSections', 'enrollments as students_count' => fn ($q) => $q->where('payment_status', 'completed')])
             ->whereNotIn('id', $items->pluck('course.id')->merge($unpaid->pluck('id')))
             ->latest()
             ->limit(12)

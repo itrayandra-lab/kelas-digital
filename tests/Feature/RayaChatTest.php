@@ -18,12 +18,12 @@ class RayaChatTest extends TestCase
 
     public function test_reply_keeps_only_internal_links(): void
     {
-        Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => 'Coba [Dasar Marketing](/course/dasar-marketing) atau [situs lain](https://evil.test).']]]])]);
+        Http::fake(['api.groq.com/*' => Http::response(['choices' => [['message' => ['content' => 'Coba [Dasar Marketing](/course/dasar-marketing) atau [situs lain](https://evil.test) dan [jebakan](/\\evil.test).']]]])]);
 
         $this->withHeader('Origin', config('app.url'))
             ->postJson(route('raya.chat'), ['message' => 'Saya mau belajar marketing'])
             ->assertOk()
-            ->assertJsonPath('reply', 'Coba [Dasar Marketing](/course/dasar-marketing) atau situs lain.')
+            ->assertJsonPath('reply', 'Coba [Dasar Marketing](/course/dasar-marketing) atau situs lain dan jebakan.')
             ->assertJsonPath('links.0.url', '/course/dasar-marketing');
     }
 
